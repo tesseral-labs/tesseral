@@ -1,12 +1,14 @@
 // src/components/audit-log-viewer.tsx
 import { timestampDate, timestampFromDate } from "@bufbuild/protobuf/wkt";
 import { useQuery } from "@connectrpc/connect-query";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import {
   ArrowLeft,
   ArrowRight,
   ArrowUpDown,
   CalendarIcon,
+  ChevronDown,
+  ChevronRight,
   FilterX,
   LucideIcon,
   Search,
@@ -15,7 +17,7 @@ import {
   ShieldIcon,
   ShieldPlusIcon,
 } from "lucide-react";
-import React, { useCallback, useState } from "react";
+import React, { act, useCallback, useState } from "react";
 import { DateRange } from "react-day-picker";
 
 import { MultiSelect } from "@/components/MultiSelect";
@@ -43,7 +45,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { AuditLogEvent } from "@/gen/tesseral/common/v1/common_pb";
-import { listAuditLogEvents } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
+import {
+  getUser,
+  listAuditLogEvents,
+} from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
+import { getAPIKey } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 import {
   ListAuditLogEventsRequest,
   ListAuditLogEventsRequest_Filter,
@@ -62,25 +68,17 @@ type EventData = {
    * The label to use in the events list.
    */
   label: string;
-
-  /**
-   * The icon to use.
-   */
-  icon: LucideIcon;
 };
 
 const TESSERAL_EVENTS: Record<EventName, EventData> = {
   [EventName.CreateSAMLConnection]: {
     label: "Create SAML Connection",
-    icon: ShieldPlusIcon,
   },
   [EventName.UpdateSAMLConnection]: {
     label: "Update SAML Connection",
-    icon: ShieldEllipsisIcon,
   },
   [EventName.DeleteSAMLConnection]: {
     label: "Delete SAML Connection",
-    icon: ShieldCloseIcon,
   },
 };
 
@@ -216,6 +214,16 @@ export function AuditLogEventsPage() {
   const [pageTokens, setPageTokens] = useState<string[]>([""]);
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
 
+  // Track expanded rows by event ID
+  const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
+
+  const toggleRow = (eventId: string) => {
+    setExpandedRows((prev) => ({
+      ...prev,
+      [eventId]: !prev[eventId],
+    }));
+  };
+
   const handleApplyFilters = useCallback(
     (filter: ListAuditLogEventsRequest_Filter, orderBy: string) => {
       setRequest({
@@ -227,6 +235,7 @@ export function AuditLogEventsPage() {
       });
       setPageTokens([""]); // Reset pagination on filter change
       setCurrentPageIndex(0);
+      setExpandedRows({}); // Reset expanded rows on filter change
     },
     [],
   );
@@ -279,13 +288,10 @@ export function AuditLogEventsPage() {
 
   const renderActor = (event: AuditLogEvent) => {
     if (event.userId) {
-      return `User: ${event.userId}`;
-    }
-    if (event.sessionId) {
-      return `Session: ${event.sessionId}`;
+      return event.userId;
     }
     if (event.apiKeyId) {
-      return `API Key: ${event.apiKeyId}`;
+      return event.apiKeyId;
     }
     return <span className="text-muted-foreground">System</span>;
   };
@@ -307,12 +313,11 @@ export function AuditLogEventsPage() {
           onApply={handleApplyFilters}
           isLoading={isLoading || isFetching}
         />
-
         <div className="p-4">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[50px]"></TableHead>
+                <TableHead className="w-[40px]"></TableHead>
                 <TableHead
                   className="cursor-pointer group"
                   onClick={() => handleSort("event_name")}
@@ -322,11 +327,10 @@ export function AuditLogEventsPage() {
                 <TableHead>Actor</TableHead>
                 <TableHead
                   className="cursor-pointer group"
-                  onClick={() => handleSort("id")} // Sorting by ID = Sorting by time
+                  onClick={() => handleSort("id")}
                 >
                   Time {getSortIndicator("id")}
                 </TableHead>
-                <TableHead>Details</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -346,9 +350,6 @@ export function AuditLogEventsPage() {
                       <TableCell>
                         <Skeleton className="h-4 w-[200px]" />
                       </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-4 w-[50px]" />
-                      </TableCell>
                     </TableRow>
                   ))}
                 </>
@@ -356,7 +357,7 @@ export function AuditLogEventsPage() {
               {isError && (
                 <TableRow>
                   <TableCell
-                    colSpan={5}
+                    colSpan={4}
                     className="text-center text-destructive"
                   >
                     Failed to load audit logs:{" "}
@@ -367,7 +368,7 @@ export function AuditLogEventsPage() {
               {!isLoading && !isError && data?.auditLogEvents.length === 0 && (
                 <TableRow>
                   <TableCell
-                    colSpan={5}
+                    colSpan={4}
                     className="text-center text-muted-foreground"
                   >
                     No audit log events found matching your criteria.
@@ -376,55 +377,54 @@ export function AuditLogEventsPage() {
               )}
               {!isLoading &&
                 data?.auditLogEvents.map((event) => (
-                  <TableRow key={event.id}>
-                    <TableCell>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <AuditLogIcon eventName={event.eventName} />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>{event.eventName}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      {TESSERAL_EVENTS[event.eventName as EventName]?.label ??
-                        event.eventName}
-                    </TableCell>
-                    <TableCell>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <span>{renderActor(event)}</span>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          {event.userId && <p>User ID: {event.userId}</p>}
-                          {event.sessionId && (
-                            <p>Session ID: {event.sessionId}</p>
-                          )}
-                          {event.apiKeyId && (
-                            <p>API Key ID: {event.apiKeyId}</p>
-                          )}
-                        </TooltipContent>
-                      </Tooltip>
-                    </TableCell>
-                    <TableCell>
-                      {format(timestampDate(event.eventTime!), "PPpp")}
-                    </TableCell>
-                    <TableCell>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            View
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-80">
-                          <pre className="text-xs overflow-auto max-h-60">
-                            {JSON.stringify(event.eventDetails, null, 2)}
-                          </pre>
-                        </PopoverContent>
-                      </Popover>
-                    </TableCell>
-                  </TableRow>
+                  <React.Fragment key={event.id}>
+                    <TableRow
+                      className="cursor-pointer"
+                      onClick={() => toggleRow(event.id)}
+                      data-testid={`audit-log-row-${event.id}`}
+                    >
+                      <TableCell className="align-middle">
+                        {expandedRows[event.id] ? (
+                          <ChevronDown className="h-4 w-4" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4" />
+                        )}
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        <Tooltip>
+                          <TooltipTrigger>
+                            {TESSERAL_EVENTS[event.eventName as EventName]
+                              ?.label ?? event.eventName}
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{event.eventName}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TableCell>
+                      <TableCell>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <span>{renderActor(event)}</span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            {event.userId && <p>User ID: {event.userId}</p>}
+                            {event.sessionId && (
+                              <p>Session ID: {event.sessionId}</p>
+                            )}
+                            {event.apiKeyId && (
+                              <p>API Key ID: {event.apiKeyId}</p>
+                            )}
+                          </TooltipContent>
+                        </Tooltip>
+                      </TableCell>
+                      <TableCell>
+                        {format(timestampDate(event.eventTime!), "PPpp")}
+                      </TableCell>
+                    </TableRow>
+                    {expandedRows[event.id] && (
+                      <AuditLogEventDetails event={event} />
+                    )}
+                  </React.Fragment>
                 ))}
             </TableBody>
           </Table>
@@ -456,14 +456,131 @@ export function AuditLogEventsPage() {
   );
 }
 
-const AuditLogIcon: React.FC<{
-  eventName: string;
-  className?: string;
-}> = ({ eventName, className }) => {
-  // Try to find a specific match, then a prefix match, then default
-  const IconComponent =
-    TESSERAL_EVENTS[eventName as EventName]?.icon ?? ShieldIcon;
+function AuditLogEventDetails({ event }: { event: AuditLogEvent }) {
+  let actorDetails: React.ReactNode = null;
+  if (event.apiKeyId) {
+    actorDetails = <AuditLogEventApiKeyDetails apiKeyId={event.apiKeyId} />;
+  } else if (event.userId) {
+    actorDetails = <AuditLogEventUserDetails userId={event.userId} />;
+  } else {
+    actorDetails = <div className="text-muted-foreground">System</div>;
+  }
+
   return (
-    <IconComponent className={className ?? "h-4 w-4 text-muted-foreground"} />
+    <TableRow className="bg-muted/40">
+      <TableCell colSpan={4} className="p-4">
+        <div className="flex flex-col md:flex-row gap-4">
+          {/* Left: Actor details */}
+          <div className="w-full md:w-1/2 border-r pr-4">
+            <div className="font-semibold mb-2">Actor Details</div>
+            {actorDetails}
+          </div>
+          {/* Right: Event details */}
+          <div className="w-full md:w-1/2">
+            <div className="font-semibold mb-2">Event Details</div>
+            <div className="font-mono text-xs whitespace-pre-wrap break-all">
+              {JSON.stringify(event.eventDetails, null, 2)}
+            </div>
+          </div>
+        </div>
+      </TableCell>
+    </TableRow>
   );
-};
+}
+
+function AuditLogEventUserDetails({ userId }: { userId: string }) {
+  const { data, isLoading, isError, error } = useQuery(getUser, { id: userId });
+
+  if (isLoading) {
+    return <Skeleton className="h-4 w-[200px]" />;
+  }
+  if (isError) {
+    return (
+      <span className="text-destructive">
+        Failed to load user details:{" "}
+        {(error as Error)?.message ?? "Unknown error"}
+      </span>
+    );
+  }
+
+  const user = data?.user;
+  if (!user) {
+    return <span className="text-muted-foreground">User not found</span>;
+  }
+
+  return (
+    <div className="space-y-2">
+      <div>
+        <div className="text-sm font-medium">ID</div>
+        <div className="text-sm">{user.id}</div>
+      </div>
+      {user.displayName && (
+        <div>
+          <div className="text-sm font-medium">Name</div>
+          <div className="text-sm">{user.displayName}</div>
+        </div>
+      )}
+      {user.email && (
+        <div>
+          <div className="text-sm font-medium">Email</div>
+          <div className="text-sm">{user.email}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AuditLogEventApiKeyDetails({ apiKeyId }: { apiKeyId: string }) {
+  const { data, isLoading, isError, error } = useQuery(getAPIKey, {
+    id: apiKeyId,
+  });
+
+  if (isLoading) {
+    return <Skeleton className="h-4 w-[200px]" />;
+  }
+  if (isError) {
+    return (
+      <span className="text-destructive">
+        Failed to load API key details:{" "}
+        {(error as Error)?.message ?? "Unknown error"}
+      </span>
+    );
+  }
+
+  // Try both 'apiKey' and 'api_key' for compatibility
+  const apiKey = (data as any)?.apiKey || (data as any)?.api_key;
+  if (!apiKey) {
+    return <span className="text-muted-foreground">API Key not found</span>;
+  }
+
+  return (
+    <div className="space-y-2">
+      <div>
+        <div className="text-sm font-medium">ID</div>
+        <div className="text-sm font-mono">{apiKey.id}</div>
+      </div>
+      {apiKey.displayName && (
+        <div>
+          <div className="text-sm font-medium">Display Name</div>
+          <div className="text-sm font-mono">{apiKey.displayName}</div>
+        </div>
+      )}
+      {apiKey.createdAt && (
+        <div>
+          <div className="text-sm font-medium">Created</div>
+          <div className="text-sm font-mono text-muted-foreground">
+            {format(timestampDate(apiKey.createdAt), "PPpp")}
+          </div>
+        </div>
+      )}
+      {apiKey.lastUsedAt && (
+        <div>
+          <div className="text-sm font-medium">Last Used</div>
+          <div className="text-sm font-mono text-muted-foreground">
+            {format(timestampDate(apiKey.lastUsedAt), "PPpp")}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
