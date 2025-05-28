@@ -766,17 +766,20 @@ message ListAuditLogEventsRequest {
     // The start time.
     google.protobuf.Timestamp start_time = 1;
 
+    // The end time.
+    google.protobuf.Timestamp end_time = 2;
+
     // The event names to filter by, if any.
-    repeated string event_name = 2;
+    repeated string event_name = 3;
 
     // The user ID to filter by, if any.
-    optional string user_id = 3;
+    optional string user_id = 4;
 
     // The session ID to filter by, if any.
-    optional string session_id = 4;
+    optional string session_id = 5;
 
     // The API key ID to filter by, if any.
-    optional string api_key_id = 5;
+    optional string api_key_id = 6;
   }
 
   // Filters for the results.

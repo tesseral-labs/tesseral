@@ -269,6 +269,12 @@ paths:
                   schema:
                     type: string
                     format: date-time
+                - name: filter.endTime
+                  in: query
+                  description: The end time.
+                  schema:
+                    type: string
+                    format: date-time
                 - name: filter.eventName
                   in: query
                   description: The event names to filter by, if any.

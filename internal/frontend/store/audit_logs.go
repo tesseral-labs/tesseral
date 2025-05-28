@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"slices"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
@@ -47,16 +48,29 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 	var startTime time.Time
 	if filterStartTime := filter.GetStartTime(); filterStartTime != nil {
 		startTime = filterStartTime.AsTime()
-	} else {
-		startTime = time.Now().UTC()
 	}
-	slog.InfoContext(ctx, "list_audit_log_events", "startTime", startTime.UnixMilli(), "filter", filter)
 	startID := uuidv7.NilWithTime(startTime)
+
+	var endTime time.Time
+	if filterEndTime := filter.GetEndTime(); filterEndTime != nil {
+		endTime = filterEndTime.AsTime()
+	} else {
+		endTime = time.Now().UTC()
+	}
+	if endTime.Before(startTime) {
+		return nil, apierror.NewInvalidArgumentError("end_time must be after start_time", fmt.Errorf("end time %s is before start time %s", endTime, startTime))
+	}
+	endID := uuidv7.NilWithTime(endTime)
+
+	slog.InfoContext(ctx, "list_audit_log_events", "startTime", startTime, "endTime", endTime, "eventName", filter.EventName, "userId", filter.UserId, "sessionId", filter.SessionId, "apiKeyId", filter.ApiKeyId)
 
 	wheres := []sq.Sqlizer{
 		sq.Eq{"project_id": projectID[:]},
 		sq.Eq{"organization_id": orgID[:]},
-		sq.Lt{"id": startID},
+		sq.Lt{"id": endID},
+	}
+	if !startTime.IsZero() {
+		wheres = append(wheres, sq.Gt{"id": startID})
 	}
 	if len(filter.GetEventName()) > 0 {
 		wheres = append(wheres, sq.Eq{"event_name": filter.EventName})
@@ -129,8 +143,12 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 	var nextPageToken string
 	if len(results) == int(limit) {
 		last := results[len(results)-1]
-		filter.StartTime = last.EventTime
-		slog.InfoContext(ctx, "next_page_data", "startTime", last.EventTime.AsTime())
+		if slices.Contains(orderBy, "id asc") {
+			filter.StartTime = last.EventTime
+		} else {
+			filter.EndTime = last.EventTime
+		}
+		slog.InfoContext(ctx, "next_page_data", "startTime", filter.StartTime.AsTime(), "endTime", filter.EndTime.AsTime(), "eventName", filter.EventName, "userId", filter.UserId, "sessionId", filter.SessionId, "apiKeyId", filter.ApiKeyId)
 		nextPageToken = s.pageEncoder.Marshal(filter)
 	}
 

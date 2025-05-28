@@ -57,31 +57,6 @@ import {
 
 const PAGE_SIZE = 10;
 
-enum EventName {
-  CreateSAMLConnection = "tesseral.saml_connection.create",
-  UpdateSAMLConnection = "tesseral.saml_connection.update",
-  DeleteSAMLConnection = "tesseral.saml_connection.delete",
-}
-
-type EventData = {
-  /**
-   * The label to use in the events list.
-   */
-  label: string;
-};
-
-const TESSERAL_EVENTS: Record<EventName, EventData> = {
-  [EventName.CreateSAMLConnection]: {
-    label: "Create SAML Connection",
-  },
-  [EventName.UpdateSAMLConnection]: {
-    label: "Update SAML Connection",
-  },
-  [EventName.DeleteSAMLConnection]: {
-    label: "Delete SAML Connection",
-  },
-};
-
 // --- Filter Bar Component ---
 interface FilterBarProps {
   onApply: (filter: ListAuditLogEventsRequest_Filter, orderBy: string) => void;
@@ -110,6 +85,12 @@ const FilterBar: React.FC<FilterBarProps> = ({ onApply, isLoading }) => {
     const filter: ListAuditLogEventsRequest_Filter = makeFilter({});
     if (date?.from) {
       filter.startTime = timestampFromDate(date.from);
+    }
+    if (date?.to) {
+      // Set endTime to the end of the selected day (23:59:59.999)
+      const end = new Date(date.to);
+      end.setHours(23, 59, 59, 999);
+      filter.endTime = timestampFromDate(end);
     }
     if (eventNames.length > 0) filter.eventName = eventNames;
     if (userId) filter.userId = userId;
@@ -148,14 +129,14 @@ const FilterBar: React.FC<FilterBarProps> = ({ onApply, isLoading }) => {
                   format(date.from, "LLL dd, y")
                 )
               ) : (
-                <span>Pick a start date</span>
+                <span>Pick a date range</span>
               )}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
             <Calendar
               initialFocus
-              mode="range" // Use range, but only send 'from' based on proto
+              mode="range"
               selected={date}
               onSelect={setDate}
               numberOfMonths={1}
@@ -165,10 +146,6 @@ const FilterBar: React.FC<FilterBarProps> = ({ onApply, isLoading }) => {
 
         {/* Event Name Selector */}
         <MultiSelect
-          options={Object.entries(TESSERAL_EVENTS).map(([eventName, data]) => ({
-            value: eventName,
-            label: data.label,
-          }))}
           selected={eventNames}
           onChange={setEventNames}
           placeholder="Filter by event name..."
@@ -260,6 +237,7 @@ export function AuditLogEventsPage() {
         setPageTokens([...pageTokens, data.nextPageToken]);
         setCurrentPageIndex(currentPageIndex + 1);
       }
+      setExpandedRows({}); // Reset expanded rows on next page
     }
   };
 
@@ -391,15 +369,7 @@ export function AuditLogEventsPage() {
                         )}
                       </TableCell>
                       <TableCell className="font-medium">
-                        <Tooltip>
-                          <TooltipTrigger>
-                            {TESSERAL_EVENTS[event.eventName as EventName]
-                              ?.label ?? event.eventName}
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>{event.eventName}</p>
-                          </TooltipContent>
-                        </Tooltip>
+                        {event.eventName}
                       </TableCell>
                       <TableCell>
                         <Tooltip>
@@ -478,8 +448,17 @@ function AuditLogEventDetails({ event }: { event: AuditLogEvent }) {
           {/* Right: Event details */}
           <div className="w-full md:w-1/2">
             <div className="font-semibold mb-2">Event Details</div>
-            <div className="font-mono text-xs whitespace-pre-wrap break-all">
-              {JSON.stringify(event.eventDetails, null, 2)}
+            <div className="space-y-2">
+              <div>
+                <div className="text-sm font-medium">ID</div>
+                <div className="text-sm">{event.id}</div>
+              </div>
+              <div>
+                <div className="text-sm font-medium">JSON</div>
+                <div className="font-mono text-xs whitespace-pre-wrap break-all">
+                  {JSON.stringify(event.eventDetails, null, 2)}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -516,7 +495,7 @@ function AuditLogEventUserDetails({ userId }: { userId: string }) {
       </div>
       {user.displayName && (
         <div>
-          <div className="text-sm font-medium">Name</div>
+          <div className="text-sm font-medium">Display Name</div>
           <div className="text-sm">{user.displayName}</div>
         </div>
       )}
@@ -546,9 +525,7 @@ function AuditLogEventApiKeyDetails({ apiKeyId }: { apiKeyId: string }) {
       </span>
     );
   }
-
-  // Try both 'apiKey' and 'api_key' for compatibility
-  const apiKey = (data as any)?.apiKey || (data as any)?.api_key;
+  const apiKey = data?.apiKey;
   if (!apiKey) {
     return <span className="text-muted-foreground">API Key not found</span>;
   }
@@ -563,22 +540,6 @@ function AuditLogEventApiKeyDetails({ apiKeyId }: { apiKeyId: string }) {
         <div>
           <div className="text-sm font-medium">Display Name</div>
           <div className="text-sm font-mono">{apiKey.displayName}</div>
-        </div>
-      )}
-      {apiKey.createdAt && (
-        <div>
-          <div className="text-sm font-medium">Created</div>
-          <div className="text-sm font-mono text-muted-foreground">
-            {format(timestampDate(apiKey.createdAt), "PPpp")}
-          </div>
-        </div>
-      )}
-      {apiKey.lastUsedAt && (
-        <div>
-          <div className="text-sm font-medium">Last Used</div>
-          <div className="text-sm font-mono text-muted-foreground">
-            {format(timestampDate(apiKey.lastUsedAt), "PPpp")}
-          </div>
         </div>
       )}
     </div>
