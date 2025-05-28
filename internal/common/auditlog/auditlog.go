@@ -2,6 +2,7 @@ package auditlog
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/tesseral-labs/tesseral/internal/common/store/queries"
@@ -13,45 +14,38 @@ type Event queries.AuditLogEvent
 type EventName string
 
 const (
-	CreateSAMLConnectionEventName EventName = "tesseral.saml_connection.create"
-	UpdateSAMLConnectionEventName EventName = "tesseral.saml_connection.update"
-	DeleteSAMLConnectionEventName EventName = "tesseral.saml_connection.delete"
+	CreateSAMLConnectionEventName EventName = "tesseral.saml_connections.create"
+	UpdateSAMLConnectionEventName EventName = "tesseral.saml_connections.update"
+	DeleteSAMLConnectionEventName EventName = "tesseral.saml_connections.delete"
 )
 
 type EventData struct {
-	ProjectID      uuid.UUID
-	OrganizationID *uuid.UUID
-	UserID         *uuid.UUID
-	SessionID      *uuid.UUID
-	ApiKeyID       *uuid.UUID
-	EventName      EventName
-	ResourceBefore proto.Message
-	ResourceAfter  proto.Message
+	ProjectID        uuid.UUID
+	OrganizationID   *uuid.UUID
+	UserID           *uuid.UUID
+	SessionID        *uuid.UUID
+	ApiKeyID         *uuid.UUID
+	EventName        EventName
+	ResourceName     string
+	Resource         proto.Message
+	PreviousResource proto.Message
 }
 
-func NewEvent(data EventData) (event Event, err error) {
-	var (
-		beforeBytes []byte
-		afterBytes  []byte
-	)
-	if data.ResourceBefore != nil {
-		beforeBytes, err = protojson.Marshal(data.ResourceBefore)
+func NewEvent(data EventData) (Event, error) {
+	details := make(map[string]any)
+	if data.PreviousResource != nil {
+		previousResourceBytes, err := protojson.Marshal(data.PreviousResource)
 		if err != nil {
-			return
+			return Event{}, err
 		}
+		details[fmt.Sprintf("previous_%s", data.ResourceName)] = json.RawMessage(previousResourceBytes)
 	}
-	if data.ResourceAfter != nil {
-		afterBytes, err = protojson.Marshal(data.ResourceAfter)
+	if data.Resource != nil {
+		resourceBytes, err := protojson.Marshal(data.Resource)
 		if err != nil {
-			return
+			return Event{}, err
 		}
-	}
-	details := struct {
-		Before json.RawMessage `json:"before,omitempty"`
-		After  json.RawMessage `json:"after,omitempty"`
-	}{
-		Before: beforeBytes,
-		After:  afterBytes,
+		details[data.ResourceName] = json.RawMessage(resourceBytes)
 	}
 	detailsBytes, err := json.Marshal(details)
 	if err != nil {

@@ -185,7 +185,8 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *frontendv1.Create
 		UserID:         &userID,
 		SessionID:      &sessionID,
 		EventName:      auditlog.CreateSAMLConnectionEventName,
-		ResourceAfter:  pSAMLConnection,
+		ResourceName:   "saml_connection",
+		Resource:       pSAMLConnection,
 	})
 	if err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
@@ -293,16 +294,17 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *frontendv1.Update
 
 	userID := authn.UserID(ctx)
 	sessionID := authn.SessionID(ctx)
-	pBeforeSAMLConnection := parseSAMLConnection(qProject, qSAMLConnection)
-	pAfterSAMLConnection := parseSAMLConnection(qProject, qUpdatedSAMLConnection)
+	pPreviousSAMLConnection := parseSAMLConnection(qProject, qSAMLConnection)
+	pSAMLConnection := parseSAMLConnection(qProject, qUpdatedSAMLConnection)
 	event, err := auditlog.NewEvent(auditlog.EventData{
-		ProjectID:      qProject.ID,
-		OrganizationID: &qSAMLConnection.OrganizationID,
-		UserID:         &userID,
-		SessionID:      &sessionID,
-		EventName:      auditlog.UpdateSAMLConnectionEventName,
-		ResourceBefore: pBeforeSAMLConnection,
-		ResourceAfter:  pAfterSAMLConnection,
+		ProjectID:        qProject.ID,
+		OrganizationID:   &qSAMLConnection.OrganizationID,
+		UserID:           &userID,
+		SessionID:        &sessionID,
+		EventName:        auditlog.UpdateSAMLConnectionEventName,
+		ResourceName:     "saml_connection",
+		Resource:         pSAMLConnection,
+		PreviousResource: pPreviousSAMLConnection,
 	})
 	if err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
@@ -310,7 +312,7 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *frontendv1.Update
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}
 
-	return &frontendv1.UpdateSAMLConnectionResponse{SamlConnection: pAfterSAMLConnection}, nil
+	return &frontendv1.UpdateSAMLConnectionResponse{SamlConnection: pSAMLConnection}, nil
 }
 
 func (s *Store) DeleteSAMLConnection(ctx context.Context, req *frontendv1.DeleteSAMLConnectionRequest) (*frontendv1.DeleteSAMLConnectionResponse, error) {
@@ -364,7 +366,8 @@ func (s *Store) DeleteSAMLConnection(ctx context.Context, req *frontendv1.Delete
 		UserID:         &userID,
 		SessionID:      &sessionID,
 		EventName:      auditlog.DeleteSAMLConnectionEventName,
-		ResourceBefore: pSAMLConnection,
+		ResourceName:   "saml_connection",
+		Resource:       pSAMLConnection,
 	})
 	if err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
