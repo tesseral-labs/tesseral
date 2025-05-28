@@ -465,6 +465,7 @@ const EditUserSettingsButton: FC = () => {
       owner: false,
       googleUserId: '',
       microsoftUserId: '',
+      githubUserId: '',
       displayName: '',
       profilePictureUrl: '',
     },
@@ -483,30 +484,72 @@ const EditUserSettingsButton: FC = () => {
         owner: getUserResponse.user.owner,
         googleUserId: getUserResponse.user.googleUserId || '',
         microsoftUserId: getUserResponse.user.microsoftUserId || '',
+        githubUserId: getUserResponse.user.githubUserId || '',
         displayName: getUserResponse.user.displayName || '',
         profilePictureUrl: getUserResponse.user.profilePictureUrl || '',
       });
     }
   }, [getUserResponse]);
 
-  const handleSubmit = async (data: z.infer<typeof schema>) => {
-    const updatedUser: Partial<User> = {
-      email: data.email,
-      owner: data.owner,
-    };
+  const hasPerformedInitialFetch = Boolean(getUserResponse?.user);
 
-    if (data.googleUserId) {
-      updatedUser.googleUserId = data.googleUserId;
+  const diffUser = (data: z.infer<typeof schema>) => {
+    let hasEdits = false;
+    const updatedUser: Partial<User> = {};
+
+    if (hasPerformedInitialFetch) {
+      const user = getUserResponse!.user!;
+
+      if (data.email !== user.email) {
+        updatedUser.email = data.email;
+        hasEdits = true;
+      }
+      if (data.owner !== user.owner) {
+        updatedUser.owner = data.owner;
+        hasEdits = true;
+      }
+      if (
+        data.googleUserId !== user.googleUserId &&
+        (user.googleUserId || data.googleUserId) // to distinguish between empty string and undefined
+      ) {
+        updatedUser.googleUserId = data.googleUserId;
+        hasEdits = true;
+      }
+      if (
+        data.microsoftUserId !== user.microsoftUserId &&
+        (user.microsoftUserId || data.microsoftUserId)
+      ) {
+        updatedUser.microsoftUserId = data.microsoftUserId;
+        hasEdits = true;
+      }
+      if (
+        data.githubUserId !== user.githubUserId &&
+        (user.githubUserId || data.githubUserId)
+      ) {
+        updatedUser.githubUserId = data.githubUserId;
+        hasEdits = true;
+      }
+      if (
+        data.displayName !== user.displayName &&
+        (user.displayName || data.displayName)
+      ) {
+        updatedUser.displayName = data.displayName;
+        hasEdits = true;
+      }
+      if (
+        data.profilePictureUrl !== user.profilePictureUrl &&
+        (user.profilePictureUrl || data.profilePictureUrl)
+      ) {
+        updatedUser.profilePictureUrl = data.profilePictureUrl;
+        hasEdits = true;
+      }
     }
-    if (data.microsoftUserId) {
-      updatedUser.microsoftUserId = data.microsoftUserId;
-    }
-    if (data.displayName) {
-      updatedUser.displayName = data.displayName;
-    }
-    if (data.profilePictureUrl) {
-      updatedUser.profilePictureUrl = data.profilePictureUrl;
-    }
+
+    return hasEdits ? updatedUser : null;
+  };
+
+  const handleSubmit = async (data: z.infer<typeof schema>) => {
+    const updatedUser = diffUser(data);
 
     await updateUserMutation.mutateAsync({
       id: userId,
@@ -522,7 +565,9 @@ const EditUserSettingsButton: FC = () => {
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="outline">Edit</Button>
+        <Button variant="outline" disabled={!hasPerformedInitialFetch}>
+          Edit
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -677,7 +722,12 @@ const EditUserSettingsButton: FC = () => {
 
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <Button type="submit">Save</Button>
+              <Button
+                type="submit"
+                disabled={diffUser(form.getValues()) === null}
+              >
+                Save
+              </Button>
             </AlertDialogFooter>
           </form>
         </Form>
