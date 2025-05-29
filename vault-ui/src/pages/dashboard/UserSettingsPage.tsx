@@ -1,9 +1,18 @@
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { DateTime } from "luxon";
-import React from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -163,8 +172,9 @@ function RegisterPasskeyButton() {
 
 function DeletePasskeyButton({ passkeyId }: { passkeyId: string }) {
   const { mutateAsync: deletePasskeyAsync } = useMutation(deleteMyPasskey);
-
   const { refetch: refetchListMyPasskeys } = useQuery(listMyPasskeys);
+
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   async function handleDeletePasskey() {
     await deletePasskeyAsync({ id: passkeyId });
@@ -173,9 +183,26 @@ function DeletePasskeyButton({ passkeyId }: { passkeyId: string }) {
   }
 
   return (
-    <Button variant="outline" onClick={handleDeletePasskey}>
-      Delete
-    </Button>
+    <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <AlertDialogTrigger asChild>
+        <Button variant="outline">Delete</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+          <p>
+            This action cannot be undone. The passkey will be permanently
+            deleted.
+          </p>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <Button variant="destructive" onClick={handleDeletePasskey}>
+            Delete Passkey
+          </Button>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
 
