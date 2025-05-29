@@ -13,6 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  deleteMyPasskey,
   getPasskeyOptions,
   listMyPasskeys,
   registerPasskey,
@@ -95,7 +96,7 @@ export function UserSettingsPage() {
                   </div>
                 </div>
 
-                <Button variant="outline">Delete</Button>
+                <DeletePasskeyButton passkeyId={passkey.id} />
               </div>
             ))}
           </div>
@@ -156,6 +157,24 @@ function RegisterPasskeyButton() {
   return (
     <Button variant="outline" onClick={handleRegisterPasskey}>
       Register Passkey
+    </Button>
+  );
+}
+
+function DeletePasskeyButton({ passkeyId }: { passkeyId: string }) {
+  const { mutateAsync: deletePasskeyAsync } = useMutation(deleteMyPasskey);
+
+  const { refetch: refetchListMyPasskeys } = useQuery(listMyPasskeys);
+
+  async function handleDeletePasskey() {
+    await deletePasskeyAsync({ id: passkeyId });
+    await refetchListMyPasskeys();
+    toast.success("Passkey deleted");
+  }
+
+  return (
+    <Button variant="outline" onClick={handleDeletePasskey}>
+      Delete
     </Button>
   );
 }
