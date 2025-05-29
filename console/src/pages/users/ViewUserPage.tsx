@@ -539,7 +539,7 @@ const EditUserSettingsButton: FC = () => {
       <AlertDialogTrigger asChild>
         <Button variant="outline">Edit</Button>
       </AlertDialogTrigger>
-      <AlertDialogContent className="overflow-y-scroll max-h-full">
+      <AlertDialogContent className="overflow-y-scroll max-h-[calc(100vh-6rem)]">
         <AlertDialogHeader>
           <AlertDialogTitle>Edit User Settings</AlertDialogTitle>
         </AlertDialogHeader>
