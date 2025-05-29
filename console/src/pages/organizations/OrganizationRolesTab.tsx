@@ -10,12 +10,14 @@ import {
   updateOrganization,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDetails,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import {
@@ -41,9 +43,11 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  AlertDialog, AlertDialogCancel,
+  AlertDialog,
+  AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter,
+  AlertDialogDescription,
+  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
@@ -86,17 +90,17 @@ export function OrganizationRolesTab() {
 
   return (
     <div className="space-y-8">
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
-            <CardTitle>Organization Role Settings</CardTitle>
-            <CardDescription>
+      <ConsoleCard>
+        <ConsoleCardHeader>
+          <ConsoleCardDetails>
+            <ConsoleCardTitle>Organization Role Settings</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Role-related settings for this Organization.
-            </CardDescription>
-          </div>
+            </ConsoleCardDescription>
+          </ConsoleCardDetails>
           <EditRolesSettingsButton />
-        </CardHeader>
-        <CardContent>
+        </ConsoleCardHeader>
+        <ConsoleCardContent>
           <DetailsGrid>
             <DetailsGridColumn>
               <DetailsGridEntry>
@@ -109,17 +113,17 @@ export function OrganizationRolesTab() {
               </DetailsGridEntry>
             </DetailsGridColumn>
           </DetailsGrid>
-        </CardContent>
-      </Card>
+        </ConsoleCardContent>
+      </ConsoleCard>
 
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
-            <CardTitle>Organization-Specific Roles</CardTitle>
-            <CardDescription>
+      <ConsoleCard>
+        <ConsoleCardHeader>
+          <ConsoleCardDetails>
+            <ConsoleCardTitle>Organization-Specific Roles</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Roles that exist only for this Organization.
-            </CardDescription>
-          </div>
+            </ConsoleCardDescription>
+          </ConsoleCardDetails>
 
           <Link
             to={`/roles/new?organization-id=${organizationId}`}
@@ -127,8 +131,8 @@ export function OrganizationRolesTab() {
           >
             Create Role
           </Link>
-        </CardHeader>
-        <CardContent>
+        </ConsoleCardHeader>
+        <ConsoleCardTableContent>
           <Table>
             <TableHeader>
               <TableRow>
@@ -171,7 +175,7 @@ export function OrganizationRolesTab() {
 
           {hasNextPage && (
             <Button
-              className="mt-4"
+              className="mt-4 mb-6"
               variant="outline"
               onClick={() => fetchNextPage()}
             >
@@ -181,8 +185,8 @@ export function OrganizationRolesTab() {
               Load more
             </Button>
           )}
-        </CardContent>
-      </Card>
+        </ConsoleCardTableContent>
+      </ConsoleCard>
     </div>
   );
 }
@@ -207,8 +211,9 @@ function EditRolesSettingsButton() {
   useEffect(() => {
     if (getOrganizationResponse?.organization) {
       form.reset({
-        customRolesEnabled: getOrganizationResponse.organization.customRolesEnabled,
-      })
+        customRolesEnabled:
+          getOrganizationResponse.organization.customRolesEnabled,
+      });
     }
   }, [form, getOrganizationResponse]);
 

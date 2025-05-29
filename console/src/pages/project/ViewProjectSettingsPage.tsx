@@ -10,7 +10,12 @@ import {
   PageHeader,
   PageTitle,
 } from '@/components/page';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  ConsoleCard,
+  ConsoleCardContent,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+} from '@/components/ui/console-card';
 import {
   DetailsGrid,
   DetailsGridColumn,
@@ -79,12 +84,12 @@ export const ViewProjectSettingsPage = () => {
         </PageDescription>
       </PageHeader>
       <PageContent>
-        <Card className="my-8">
-          <CardHeader>
-            <CardTitle>General configuration</CardTitle>
-          </CardHeader>
+        <ConsoleCard className="my-8">
+          <ConsoleCardHeader>
+            <ConsoleCardTitle>General configuration</ConsoleCardTitle>
+          </ConsoleCardHeader>
 
-          <CardContent>
+          <ConsoleCardContent>
             <DetailsGrid>
               <DetailsGridColumn>
                 <DetailsGridEntry>
@@ -117,8 +122,8 @@ export const ViewProjectSettingsPage = () => {
                 </DetailsGridEntry>
               </DetailsGridColumn>
             </DetailsGrid>
-          </CardContent>
-        </Card>
+          </ConsoleCardContent>
+        </ConsoleCard>
 
         <div className="mt-4">
           <Outlet />

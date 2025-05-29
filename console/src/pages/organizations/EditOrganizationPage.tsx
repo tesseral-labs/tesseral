@@ -24,20 +24,12 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Link } from 'react-router-dom';
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+} from '@/components/ui/console-card';
 import { Input } from '@/components/ui/input';
 import { PageContent, PageHeader, PageTitle } from '@/components/page';
 import { toast } from 'sonner';
@@ -175,14 +167,14 @@ export const EditOrganizationPage = () => {
             className="mt-8 space-y-8"
           >
             {/** eslint-enable @typescript-eslint/no-unsafe-call */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Organization settings</CardTitle>
-                <CardDescription>
+            <ConsoleCard>
+              <ConsoleCardHeader>
+                <ConsoleCardTitle>Organization settings</ConsoleCardTitle>
+                <ConsoleCardDescription>
                   Configure basic settings on this organization.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-8">
+                </ConsoleCardDescription>
+              </ConsoleCardHeader>
+              <ConsoleCardContent className="space-y-8">
                 <FormField
                   control={form.control}
                   name="displayName"
@@ -203,17 +195,17 @@ export const EditOrganizationPage = () => {
                     </FormItem>
                   )}
                 />
-              </CardContent>
-            </Card>
+              </ConsoleCardContent>
+            </ConsoleCard>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Login settings</CardTitle>
-                <CardDescription>
+            <ConsoleCard>
+              <ConsoleCardHeader>
+                <ConsoleCardTitle>Login settings</ConsoleCardTitle>
+                <ConsoleCardDescription>
                   Configure how users can log into this organization.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-8">
+                </ConsoleCardDescription>
+              </ConsoleCardHeader>
+              <ConsoleCardContent className="space-y-8">
                 {getProjectResponse?.project?.logInWithGoogle && (
                   <FormField
                     control={form.control}
@@ -371,17 +363,17 @@ export const EditOrganizationPage = () => {
                     </FormItem>
                   )}
                 />
-              </CardContent>
-            </Card>
+              </ConsoleCardContent>
+            </ConsoleCard>
             {getProjectResponse?.project?.apiKeysEnabled && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>API Keys settings</CardTitle>
-                  <CardDescription>
+              <ConsoleCard>
+                <ConsoleCardHeader>
+                  <ConsoleCardTitle>API Keys settings</ConsoleCardTitle>
+                  <ConsoleCardDescription>
                     Configure whether this organization can use API Keys.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-8">
+                  </ConsoleCardDescription>
+                </ConsoleCardHeader>
+                <ConsoleCardContent className="space-y-8">
                   <FormField
                     control={form.control}
                     name="apiKeysEnabled"
@@ -399,17 +391,17 @@ export const EditOrganizationPage = () => {
                       </FormItem>
                     )}
                   />
-                </CardContent>
-              </Card>
+                </ConsoleCardContent>
+              </ConsoleCard>
             )}
-            <Card>
-              <CardHeader>
-                <CardTitle>Enterprise settings</CardTitle>
-                <CardDescription>
+            <ConsoleCard>
+              <ConsoleCardHeader>
+                <ConsoleCardTitle>Enterprise settings</ConsoleCardTitle>
+                <ConsoleCardDescription>
                   Configure whether this organization can use SCIM.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-8">
+                </ConsoleCardDescription>
+              </ConsoleCardHeader>
+              <ConsoleCardContent className="space-y-8">
                 {getProjectResponse?.project?.logInWithSaml && (
                   <FormField
                     control={form.control}
@@ -478,8 +470,8 @@ export const EditOrganizationPage = () => {
                     </FormItem>
                   )}
                 />
-              </CardContent>
-            </Card>
+              </ConsoleCardContent>
+            </ConsoleCard>
 
             <div className="flex justify-end gap-x-4 pb-8">
               <Button variant="outline" asChild>

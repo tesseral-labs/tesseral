@@ -1,12 +1,3 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import { Link } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useMutation, useQuery } from '@connectrpc/connect-query';
@@ -19,12 +10,13 @@ import {
   updateSCIMAPIKey,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDetails,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+} from '@/components/ui/console-card';
 import { DateTime } from 'luxon';
 import { timestampDate } from '@bufbuild/protobuf/wkt';
 import { toast } from 'sonner';
@@ -81,17 +73,17 @@ export const ViewSCIMAPIKeyPage = () => {
       </PageHeader>
 
       <PageContent>
-        <Card className="my-8">
-          <CardHeader className="flex-row justify-between items-center">
-            <div className="flex flex-col space-y-1 5">
-              <CardTitle>Configuration</CardTitle>
-              <CardDescription>
+        <ConsoleCard className="my-8">
+          <ConsoleCardHeader>
+            <ConsoleCardDetails>
+              <ConsoleCardTitle>Configuration</ConsoleCardTitle>
+              <ConsoleCardDescription>
                 Details about this SCIM API Key.
-              </CardDescription>
-            </div>
+              </ConsoleCardDescription>
+            </ConsoleCardDetails>
             <EditSCIMAPIKeyButton />
-          </CardHeader>
-          <CardContent>
+          </ConsoleCardHeader>
+          <ConsoleCardContent>
             <div className="grid grid-cols-2 gap-x-2 text-sm">
               <div className="border-r border-gray-200 pr-8 flex flex-col gap-4">
                 <div>
@@ -138,8 +130,8 @@ export const ViewSCIMAPIKeyPage = () => {
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </ConsoleCardContent>
+        </ConsoleCard>
 
         <DangerZoneCard />
       </PageContent>
@@ -311,12 +303,12 @@ const DangerZoneCard = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <Card className="border-destructive">
-        <CardHeader>
-          <CardTitle>Danger Zone</CardTitle>
-        </CardHeader>
+      <ConsoleCard className="border-destructive">
+        <ConsoleCardHeader>
+          <ConsoleCardTitle>Danger Zone</ConsoleCardTitle>
+        </ConsoleCardHeader>
 
-        <CardContent className="space-y-8">
+        <ConsoleCardContent className="space-y-8">
           <div className="flex justify-between items-center">
             <div>
               <div className="text-sm font-semibold">Revoke SCIM API Key</div>
@@ -352,8 +344,8 @@ const DangerZoneCard = () => {
               Delete SCIM API Key
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </ConsoleCardContent>
+      </ConsoleCard>
     </>
   );
 };

@@ -1,11 +1,12 @@
 import React from 'react';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardDetails,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+} from '@/components/ui/console-card';
 import { useParams } from 'react-router';
 import { useQuery } from '@connectrpc/connect-query';
 import {
@@ -54,19 +55,19 @@ export const OrganizationDetailsTab = () => {
 
   return (
     <div className="space-y-8">
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
-            <CardTitle>Details</CardTitle>
-            <CardDescription>
+      <ConsoleCard>
+        <ConsoleCardHeader>
+          <ConsoleCardDetails>
+            <ConsoleCardTitle>Details</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Additional details about this Organization.
-            </CardDescription>
-          </div>
+            </ConsoleCardDescription>
+          </ConsoleCardDetails>
           <Button variant="outline" asChild>
             <Link to={`/organizations/${organizationId}/edit`}>Edit</Link>
           </Button>
-        </CardHeader>
-        <CardContent>
+        </ConsoleCardHeader>
+        <ConsoleCardContent>
           <DetailsGrid>
             <DetailsGridColumn>
               {getProjectResponse?.project?.logInWithGoogle && (
@@ -184,21 +185,21 @@ export const OrganizationDetailsTab = () => {
               </DetailsGridEntry>
             </DetailsGridColumn>
           </DetailsGrid>
-        </CardContent>
-      </Card>
+        </ConsoleCardContent>
+      </ConsoleCard>
 
       {getOrganizationResponse?.organization?.logInWithGoogle && (
-        <Card>
-          <CardHeader className="flex-row justify-between items-center">
-            <div className="flex flex-col space-y-1 5">
-              <CardTitle>Google configuration</CardTitle>
-              <CardDescription>
+        <ConsoleCard>
+          <ConsoleCardHeader>
+            <ConsoleCardDetails>
+              <ConsoleCardTitle>Google configuration</ConsoleCardTitle>
+              <ConsoleCardDescription>
                 Settings related to logging into this organization with Google.
-              </CardDescription>
-            </div>
+              </ConsoleCardDescription>
+            </ConsoleCardDetails>
             <EditOrganizationGoogleConfigurationButton />
-          </CardHeader>
-          <CardContent>
+          </ConsoleCardHeader>
+          <ConsoleCardContent>
             <DetailsGrid>
               <DetailsGridColumn>
                 <DetailsGridEntry>
@@ -220,23 +221,23 @@ export const OrganizationDetailsTab = () => {
                 </DetailsGridEntry>
               </DetailsGridColumn>
             </DetailsGrid>
-          </CardContent>
-        </Card>
+          </ConsoleCardContent>
+        </ConsoleCard>
       )}
 
       {getOrganizationResponse?.organization?.logInWithMicrosoft && (
-        <Card>
-          <CardHeader className="flex-row justify-between items-center">
-            <div className="flex flex-col space-y-1 5">
-              <CardTitle>Microsoft configuration</CardTitle>
-              <CardDescription>
+        <ConsoleCard>
+          <ConsoleCardHeader>
+            <ConsoleCardDetails>
+              <ConsoleCardTitle>Microsoft configuration</ConsoleCardTitle>
+              <ConsoleCardDescription>
                 Settings related to logging into this organization with
                 Microsoft.
-              </CardDescription>
-            </div>
+              </ConsoleCardDescription>
+            </ConsoleCardDetails>
             <EditOrganizationMicrosoftConfigurationButton />
-          </CardHeader>
-          <CardContent>
+          </ConsoleCardHeader>
+          <ConsoleCardContent>
             <DetailsGrid>
               <DetailsGridColumn>
                 <DetailsGridEntry>
@@ -258,8 +259,8 @@ export const OrganizationDetailsTab = () => {
                 </DetailsGridEntry>
               </DetailsGridColumn>
             </DetailsGrid>
-          </CardContent>
-        </Card>
+          </ConsoleCardContent>
+        </ConsoleCard>
       )}
     </div>
   );

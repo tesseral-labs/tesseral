@@ -9,12 +9,14 @@ import {
   updateVaultDomainSettings,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDetails,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 import {
   Table,
   TableHeader,
@@ -32,7 +34,7 @@ import {
   DetailsGridValue,
 } from '@/components/details-grid';
 import { Badge } from '@/components/ui/badge';
-import { CheckIcon, CircleXIcon, XIcon } from 'lucide-react';
+import { CircleXIcon } from 'lucide-react';
 import { VaultDomainSettingsDNSRecord } from '@/gen/tesseral/backend/v1/models_pb';
 import { Button } from '@/components/ui/button';
 import {
@@ -97,17 +99,17 @@ export const VaultDomainSettingsTab = () => {
 
   return (
     <div className="space-y-8">
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
-            <CardTitle>Vault Domain Settings</CardTitle>
-            <CardDescription>
+      <ConsoleCard>
+        <ConsoleCardHeader>
+          <ConsoleCardDetails>
+            <ConsoleCardTitle>Vault Domain Settings</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Configure a custom domain for your Vault.
-            </CardDescription>
-          </div>
+            </ConsoleCardDescription>
+          </ConsoleCardDetails>
           <EditCustomAuthDomainButton />
-        </CardHeader>
-        <CardContent>
+        </ConsoleCardHeader>
+        <ConsoleCardContent>
           {/* do not treat undefined as unentitled, to avoid flickering here */}
           {getProjectEntitlementsResponse?.entitledBackendApiKeys === false ? (
             <div className="text-sm my-8 w-full flex flex-col items-center justify-center space-y-6">
@@ -158,15 +160,15 @@ export const VaultDomainSettingsTab = () => {
               </DetailsGridColumn>
             </DetailsGrid>
           )}
-        </CardContent>
-      </Card>
+        </ConsoleCardContent>
+      </ConsoleCard>
 
       {getVaultDomainSettingsResponse?.vaultDomainSettings?.pendingDomain && (
         <>
-          <Card>
-            <CardHeader className="flex-row justify-between items-center">
-              <div className="flex flex-col space-y-1 5">
-                <CardTitle className="flex items-center">
+          <ConsoleCard>
+            <ConsoleCardHeader>
+              <ConsoleCardDetails>
+                <ConsoleCardTitle className="flex items-center">
                   <span>Vault Domain Records</span>
                   {customVaultDomainActive && (
                     <Badge
@@ -177,8 +179,8 @@ export const VaultDomainSettingsTab = () => {
                       Live
                     </Badge>
                   )}
-                </CardTitle>
-                <CardDescription>
+                </ConsoleCardTitle>
+                <ConsoleCardDescription>
                   {customVaultDomainActive ? (
                     <p>
                       You need to keep these DNS records in place so that{' '}
@@ -200,12 +202,12 @@ export const VaultDomainSettingsTab = () => {
                       as your Vault domain.
                     </p>
                   )}
-                </CardDescription>
-              </div>
+                </ConsoleCardDescription>
+              </ConsoleCardDetails>
 
               {!customVaultDomainActive && <EnableCustomVaultDomainButton />}
-            </CardHeader>
-            <CardContent>
+            </ConsoleCardHeader>
+            <ConsoleCardTableContent>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -221,12 +223,12 @@ export const VaultDomainSettingsTab = () => {
                   )}
                 </TableBody>
               </Table>
-            </CardContent>
-          </Card>
-          <Card className="mt-8">
-            <CardHeader className="flex-row justify-between items-center">
-              <div className="flex flex-col space-y-1 5">
-                <CardTitle className="flex items-center">
+            </ConsoleCardTableContent>
+          </ConsoleCard>
+          <ConsoleCard className="mt-8">
+            <ConsoleCardHeader>
+              <ConsoleCardDetails>
+                <ConsoleCardTitle className="flex items-center">
                   <span>Email Send-From Records</span>
 
                   {customEmailSendFromDomainActive ? (
@@ -242,8 +244,8 @@ export const VaultDomainSettingsTab = () => {
                       Optional
                     </Badge>
                   )}
-                </CardTitle>
-                <CardDescription>
+                </ConsoleCardTitle>
+                <ConsoleCardDescription>
                   {customEmailSendFromDomainActive ? (
                     <p>
                       You need to keep these DNS records in place so that
@@ -263,14 +265,14 @@ export const VaultDomainSettingsTab = () => {
                       .
                     </p>
                   )}
-                </CardDescription>
-              </div>
+                </ConsoleCardDescription>
+              </ConsoleCardDetails>
 
               {!customEmailSendFromDomainActive && (
                 <EnableEmailSendFromDomainButton />
               )}
-            </CardHeader>
-            <CardContent>
+            </ConsoleCardHeader>
+            <ConsoleCardTableContent>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -286,8 +288,8 @@ export const VaultDomainSettingsTab = () => {
                   )}
                 </TableBody>
               </Table>
-            </CardContent>
-          </Card>
+            </ConsoleCardTableContent>
+          </ConsoleCard>
         </>
       )}
     </div>
@@ -547,8 +549,15 @@ const EditCustomAuthDomainButton = () => {
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger disabled={!getProjectEntitlementsResponse?.entitledCustomVaultDomains}>
-        <Button variant="outline" disabled={!getProjectEntitlementsResponse?.entitledCustomVaultDomains}>Edit</Button>
+      <AlertDialogTrigger
+        disabled={!getProjectEntitlementsResponse?.entitledCustomVaultDomains}
+      >
+        <Button
+          variant="outline"
+          disabled={!getProjectEntitlementsResponse?.entitledCustomVaultDomains}
+        >
+          Edit
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

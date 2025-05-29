@@ -5,12 +5,13 @@ import {
   listUserInvites,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDetails,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 import {
   Table,
   TableBody,
@@ -58,17 +59,17 @@ export const OrganizationUserInvitesTab = () => {
   });
 
   return (
-    <Card>
-      <CardHeader className="flex-row justify-between items-center">
-        <div className="flex flex-col space-y-1 5">
-          <CardTitle>User Invites</CardTitle>
-          <CardDescription>
+    <ConsoleCard>
+      <ConsoleCardHeader>
+        <ConsoleCardDetails>
+          <ConsoleCardTitle>User Invites</ConsoleCardTitle>
+          <ConsoleCardDescription>
             A User Invite lets outside collaborators join an Organization.
-          </CardDescription>
-        </div>
+          </ConsoleCardDescription>
+        </ConsoleCardDetails>
         <CreateUserInviteButton />
-      </CardHeader>
-      <CardContent>
+      </ConsoleCardHeader>
+      <ConsoleCardTableContent>
         <Table>
           <TableHeader>
             <TableRow>
@@ -112,8 +113,8 @@ export const OrganizationUserInvitesTab = () => {
             ))}
           </TableBody>
         </Table>
-      </CardContent>
-    </Card>
+      </ConsoleCardTableContent>
+    </ConsoleCard>
   );
 };
 
