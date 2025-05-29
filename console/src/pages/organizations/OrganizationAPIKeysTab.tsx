@@ -217,9 +217,9 @@ export const OrganizationAPIKeysTab = () => {
                         </TableCell>
                         <TableCell>
                           {apiKey.revoked ? (
-                            <span>Active</span>
-                          ) : (
                             <span>Revoked</span>
+                          ) : (
+                            <span>Active</span>
                           )}
                         </TableCell>
                         <TableCell>
