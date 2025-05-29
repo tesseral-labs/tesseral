@@ -108,7 +108,7 @@ export const ViewUserPage = () => {
       </PageHeader>
       <PageContent>
         <ConsoleCard className="my-8">
-          <ConsoleCardHeader className="flex flex-row items-center justify-between space-y-4">
+          <ConsoleCardHeader>
             <ConsoleCardDetails>
               <ConsoleCardTitle>General settings</ConsoleCardTitle>
               <ConsoleCardDescription>
@@ -293,7 +293,7 @@ export const ViewUserPage = () => {
         </ConsoleCard>
 
         <ConsoleCard className="mt-8">
-          <ConsoleCardHeader className="flex-row justify-between items-center gap-x-2">
+          <ConsoleCardHeader>
             <ConsoleCardDetails>
               <ConsoleCardTitle>Assigned Roles</ConsoleCardTitle>
               <ConsoleCardDescription>

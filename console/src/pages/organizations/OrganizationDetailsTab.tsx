@@ -3,6 +3,7 @@ import {
   ConsoleCard,
   ConsoleCardContent,
   ConsoleCardDescription,
+  ConsoleCardDetails,
   ConsoleCardHeader,
   ConsoleCardTitle,
 } from '@/components/ui/console-card';
@@ -55,13 +56,13 @@ export const OrganizationDetailsTab = () => {
   return (
     <div className="space-y-8">
       <ConsoleCard>
-        <ConsoleCardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
+        <ConsoleCardHeader>
+          <ConsoleCardDetails>
             <ConsoleCardTitle>Details</ConsoleCardTitle>
             <ConsoleCardDescription>
               Additional details about this Organization.
             </ConsoleCardDescription>
-          </div>
+          </ConsoleCardDetails>
           <Button variant="outline" asChild>
             <Link to={`/organizations/${organizationId}/edit`}>Edit</Link>
           </Button>
@@ -189,13 +190,13 @@ export const OrganizationDetailsTab = () => {
 
       {getOrganizationResponse?.organization?.logInWithGoogle && (
         <ConsoleCard>
-          <ConsoleCardHeader className="flex-row justify-between items-center">
-            <div className="flex flex-col space-y-1 5">
+          <ConsoleCardHeader>
+            <ConsoleCardDetails>
               <ConsoleCardTitle>Google configuration</ConsoleCardTitle>
               <ConsoleCardDescription>
                 Settings related to logging into this organization with Google.
               </ConsoleCardDescription>
-            </div>
+            </ConsoleCardDetails>
             <EditOrganizationGoogleConfigurationButton />
           </ConsoleCardHeader>
           <ConsoleCardContent>
@@ -226,14 +227,14 @@ export const OrganizationDetailsTab = () => {
 
       {getOrganizationResponse?.organization?.logInWithMicrosoft && (
         <ConsoleCard>
-          <ConsoleCardHeader className="flex-row justify-between items-center">
-            <div className="flex flex-col space-y-1 5">
+          <ConsoleCardHeader>
+            <ConsoleCardDetails>
               <ConsoleCardTitle>Microsoft configuration</ConsoleCardTitle>
               <ConsoleCardDescription>
                 Settings related to logging into this organization with
                 Microsoft.
               </ConsoleCardDescription>
-            </div>
+            </ConsoleCardDetails>
             <EditOrganizationMicrosoftConfigurationButton />
           </ConsoleCardHeader>
           <ConsoleCardContent>

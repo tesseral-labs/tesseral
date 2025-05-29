@@ -92,7 +92,7 @@ export function ViewRolePage() {
       <PageContent>
         <div className="space-y-8">
           <ConsoleCard>
-            <ConsoleCardHeader className="flex-row justify-between items-center gap-x-2">
+            <ConsoleCardHeader>
               <ConsoleCardDetails>
                 <ConsoleCardTitle>General settings</ConsoleCardTitle>
                 <ConsoleCardDescription>

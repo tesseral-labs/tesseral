@@ -56,7 +56,7 @@ export function LoginSettingsTab() {
   return (
     <div className="space-y-8">
       <ConsoleCard>
-        <ConsoleCardHeader className="flex-row justify-between items-center">
+        <ConsoleCardHeader>
           <ConsoleCardDetails>
             <ConsoleCardTitle>Login Methods</ConsoleCardTitle>
             <ConsoleCardDescription>
@@ -124,7 +124,7 @@ export function LoginSettingsTab() {
       </ConsoleCard>
 
       <ConsoleCard>
-        <ConsoleCardHeader className="flex-row justify-between items-center">
+        <ConsoleCardHeader>
           <ConsoleCardDetails>
             <ConsoleCardTitle>Google settings</ConsoleCardTitle>
             <ConsoleCardDescription>
@@ -169,7 +169,7 @@ export function LoginSettingsTab() {
         </ConsoleCardContent>
       </ConsoleCard>
       <ConsoleCard>
-        <ConsoleCardHeader className="flex-row justify-between items-center">
+        <ConsoleCardHeader>
           <ConsoleCardDetails>
             <ConsoleCardTitle>Microsoft settings</ConsoleCardTitle>
             <ConsoleCardDescription>
@@ -215,7 +215,7 @@ export function LoginSettingsTab() {
       </ConsoleCard>
 
       <ConsoleCard>
-        <ConsoleCardHeader className="flex-row justify-between items-center">
+        <ConsoleCardHeader>
           <ConsoleCardDetails>
             <ConsoleCardTitle>GitHub settings</ConsoleCardTitle>
             <ConsoleCardDescription>

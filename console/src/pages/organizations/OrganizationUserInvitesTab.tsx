@@ -60,7 +60,7 @@ export const OrganizationUserInvitesTab = () => {
 
   return (
     <ConsoleCard>
-      <ConsoleCardHeader className="flex-row justify-between items-center">
+      <ConsoleCardHeader>
         <ConsoleCardDetails>
           <ConsoleCardTitle>User Invites</ConsoleCardTitle>
           <ConsoleCardDescription>

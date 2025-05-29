@@ -588,7 +588,7 @@ function BehaviorSettingsCard() {
 
   return (
     <ConsoleCard className="mt-8">
-      <ConsoleCardHeader className="flex-row justify-between items-center">
+      <ConsoleCardHeader>
         <div className="flex flex-col space-y-1 5">
           <ConsoleCardTitle>Behavior settings</ConsoleCardTitle>
           <ConsoleCardDescription>

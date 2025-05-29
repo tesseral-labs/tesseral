@@ -112,7 +112,7 @@ export const ViewOrganizationPage = () => {
       <PageContent>
         {currentTab?.root && (
           <ConsoleCard className="my-8">
-            <ConsoleCardHeader className="py-4 flex flex-row items-center justify-between">
+            <ConsoleCardHeader>
               <ConsoleCardDetails>
                 <ConsoleCardTitle className="text-xl">
                   General configuration

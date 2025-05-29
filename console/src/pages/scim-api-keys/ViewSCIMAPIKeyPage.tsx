@@ -74,7 +74,7 @@ export const ViewSCIMAPIKeyPage = () => {
 
       <PageContent>
         <ConsoleCard className="my-8">
-          <ConsoleCardHeader className="flex-row justify-between items-center">
+          <ConsoleCardHeader>
             <ConsoleCardDetails>
               <ConsoleCardTitle>Configuration</ConsoleCardTitle>
               <ConsoleCardDescription>

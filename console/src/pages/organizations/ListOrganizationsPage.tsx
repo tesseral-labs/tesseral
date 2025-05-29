@@ -90,7 +90,7 @@ export const ListOrganizationsPage = () => {
       </PageHeader>
       <PageContent>
         <ConsoleCard className="mt-8 overflow-hidden">
-          <ConsoleCardHeader className="flex-row justify-between items-start space-x-4">
+          <ConsoleCardHeader>
             <ConsoleCardDetails>
               <ConsoleCardTitle>Organizations list</ConsoleCardTitle>
               <ConsoleCardDescription>

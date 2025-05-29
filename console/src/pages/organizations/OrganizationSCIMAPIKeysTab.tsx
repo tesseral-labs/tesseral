@@ -59,7 +59,7 @@ export const OrganizationSCIMAPIKeysTab = () => {
 
   return (
     <ConsoleCard>
-      <ConsoleCardHeader className="flex-row justify-between items-center">
+      <ConsoleCardHeader>
         <ConsoleCardDetails>
           <ConsoleCardTitle>SCIM API Keys</ConsoleCardTitle>
           <ConsoleCardDescription>

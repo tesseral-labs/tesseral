@@ -141,7 +141,7 @@ export const OrganizationAPIKeysTab = () => {
       ) : (
         <>
           <ConsoleCard>
-            <ConsoleCardHeader className="py-4 flex flex-row items-center justify-between">
+            <ConsoleCardHeader>
               <div className="flex flex-col space-y-1 5">
                 <ConsoleCardTitle>API Key Management</ConsoleCardTitle>
                 <ConsoleCardDescription>
@@ -167,7 +167,7 @@ export const OrganizationAPIKeysTab = () => {
             </ConsoleCardContent>
           </ConsoleCard>
           <ConsoleCard>
-            <ConsoleCardHeader className="py-4 flex flex-row items-center justify-between">
+            <ConsoleCardHeader>
               <div className="flex flex-col space-y-1 5">
                 <ConsoleCardTitle>API Keys</ConsoleCardTitle>
                 <ConsoleCardDescription>

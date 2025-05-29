@@ -100,7 +100,7 @@ export const VaultDomainSettingsTab = () => {
   return (
     <div className="space-y-8">
       <ConsoleCard>
-        <ConsoleCardHeader className="flex-row justify-between items-center">
+        <ConsoleCardHeader>
           <ConsoleCardDetails>
             <ConsoleCardTitle>Vault Domain Settings</ConsoleCardTitle>
             <ConsoleCardDescription>
@@ -166,7 +166,7 @@ export const VaultDomainSettingsTab = () => {
       {getVaultDomainSettingsResponse?.vaultDomainSettings?.pendingDomain && (
         <>
           <ConsoleCard>
-            <ConsoleCardHeader className="flex-row justify-between items-center">
+            <ConsoleCardHeader>
               <ConsoleCardDetails>
                 <ConsoleCardTitle className="flex items-center">
                   <span>Vault Domain Records</span>
@@ -226,7 +226,7 @@ export const VaultDomainSettingsTab = () => {
             </ConsoleCardTableContent>
           </ConsoleCard>
           <ConsoleCard className="mt-8">
-            <ConsoleCardHeader className="flex-row justify-between items-center">
+            <ConsoleCardHeader>
               <ConsoleCardDetails>
                 <ConsoleCardTitle className="flex items-center">
                   <span>Email Send-From Records</span>

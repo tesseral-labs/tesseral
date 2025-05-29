@@ -103,7 +103,7 @@ export function EditRBACPolicyPage() {
       </PageHeader>
       <PageContent>
         <ConsoleCard className="mt-8">
-          <ConsoleCardHeader className="flex-row justify-between items-center gap-x-2">
+          <ConsoleCardHeader>
             <ConsoleCardDetails>
               <ConsoleCardTitle>
                 Role-Based Access Control Policy

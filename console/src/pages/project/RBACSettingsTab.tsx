@@ -40,7 +40,7 @@ function RBACPolicyCard() {
 
   return (
     <ConsoleCard>
-      <ConsoleCardHeader className="flex-row justify-between items-center gap-x-2">
+      <ConsoleCardHeader>
         <ConsoleCardDetails>
           <ConsoleCardTitle>Role-Based Access Control Policy</ConsoleCardTitle>
           <ConsoleCardDescription>
@@ -105,7 +105,7 @@ function RolesCard() {
 
   return (
     <ConsoleCard>
-      <ConsoleCardHeader className="flex-row justify-between items-center gap-x-2">
+      <ConsoleCardHeader>
         <ConsoleCardDetails>
           <ConsoleCardTitle>Roles</ConsoleCardTitle>
           <ConsoleCardDescription>

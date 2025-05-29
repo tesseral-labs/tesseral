@@ -71,7 +71,7 @@ export const ProjectDetailsTab = () => {
   return (
     <div className="space-y-8">
       <ConsoleCard>
-        <ConsoleCardHeader className="flex-row justify-between items-center">
+        <ConsoleCardHeader>
           <ConsoleCardDetails>
             <ConsoleCardTitle>Redirect Settings</ConsoleCardTitle>
             <ConsoleCardDescription>
@@ -119,7 +119,7 @@ export const ProjectDetailsTab = () => {
       </ConsoleCard>
 
       <ConsoleCard>
-        <ConsoleCardHeader className="flex-row justify-between items-center">
+        <ConsoleCardHeader>
           <ConsoleCardDetails>
             <ConsoleCardTitle>Domains settings</ConsoleCardTitle>
             <ConsoleCardDescription>
@@ -153,7 +153,7 @@ export const ProjectDetailsTab = () => {
       </ConsoleCard>
 
       <ConsoleCard>
-        <ConsoleCardHeader className="flex-row justify-between items-center">
+        <ConsoleCardHeader>
           <ConsoleCardDetails>
             <ConsoleCardTitle>API key settings</ConsoleCardTitle>
             <ConsoleCardDescription>
@@ -212,7 +212,7 @@ export const ProjectDetailsTab = () => {
       </ConsoleCard>
 
       <ConsoleCard>
-        <ConsoleCardHeader className="flex-row justify-between items-center">
+        <ConsoleCardHeader>
           <ConsoleCardDetails>
             <ConsoleCardTitle>Webhook settings</ConsoleCardTitle>
             <ConsoleCardDescription>

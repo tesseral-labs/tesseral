@@ -56,7 +56,7 @@ export const OrganizationSAMLConnectionsTab = () => {
 
   return (
     <ConsoleCard>
-      <ConsoleCardHeader className="flex-row justify-between items-center">
+      <ConsoleCardHeader>
         <ConsoleCardDetails>
           <ConsoleCardTitle>SAML Connections</ConsoleCardTitle>
           <ConsoleCardDescription>

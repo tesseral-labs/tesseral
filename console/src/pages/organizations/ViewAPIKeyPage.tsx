@@ -93,7 +93,7 @@ export const ViewAPIKeyPage = () => {
       <PageContent>
         <div className="space-y-8">
           <ConsoleCard>
-            <ConsoleCardHeader className="py-4 flex flex-row items-center justify-between">
+            <ConsoleCardHeader>
               <ConsoleCardDetails>
                 <ConsoleCardTitle>API Key Details</ConsoleCardTitle>
                 <ConsoleCardDescription></ConsoleCardDescription>
@@ -158,7 +158,7 @@ export const ViewAPIKeyPage = () => {
           </ConsoleCard>
 
           <ConsoleCard>
-            <ConsoleCardHeader className="py-4 flex flex-row items-center justify-between">
+            <ConsoleCardHeader>
               <ConsoleCardDetails>
                 <ConsoleCardTitle>API Key Roles</ConsoleCardTitle>
                 <ConsoleCardDescription>

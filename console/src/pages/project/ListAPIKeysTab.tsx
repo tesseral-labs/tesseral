@@ -78,7 +78,7 @@ export const ListAPIKeysTab = () => {
   return (
     <div className="mt-8 space-y-8">
       <ConsoleCard>
-        <ConsoleCardHeader className="flex-row justify-between items-center">
+        <ConsoleCardHeader>
           <ConsoleCardDetails>
             <ConsoleCardTitle>Publishable Keys</ConsoleCardTitle>
             <ConsoleCardDescription>
@@ -135,7 +135,7 @@ export const ListAPIKeysTab = () => {
       </ConsoleCard>
 
       <ConsoleCard>
-        <ConsoleCardHeader className="flex-row justify-between items-center">
+        <ConsoleCardHeader>
           <ConsoleCardDetails>
             <ConsoleCardTitle>Backend API Keys</ConsoleCardTitle>
             <ConsoleCardDescription>

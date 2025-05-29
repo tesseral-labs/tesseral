@@ -91,7 +91,7 @@ export function OrganizationRolesTab() {
   return (
     <div className="space-y-8">
       <ConsoleCard>
-        <ConsoleCardHeader className="flex-row justify-between items-center">
+        <ConsoleCardHeader>
           <ConsoleCardDetails>
             <ConsoleCardTitle>Organization Role Settings</ConsoleCardTitle>
             <ConsoleCardDescription>
@@ -117,7 +117,7 @@ export function OrganizationRolesTab() {
       </ConsoleCard>
 
       <ConsoleCard>
-        <ConsoleCardHeader className="flex-row justify-between items-center">
+        <ConsoleCardHeader>
           <ConsoleCardDetails>
             <ConsoleCardTitle>Organization-Specific Roles</ConsoleCardTitle>
             <ConsoleCardDescription>
