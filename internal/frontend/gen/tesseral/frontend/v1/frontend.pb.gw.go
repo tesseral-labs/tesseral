@@ -2913,7 +2913,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListAuditLogEvents", runtime.WithHTTPPathPattern("/frontend/v1/events"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListAuditLogEvents", runtime.WithHTTPPathPattern("/frontend/v1/audit-log-events"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -3906,7 +3906,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListAuditLogEvents", runtime.WithHTTPPathPattern("/frontend/v1/events"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListAuditLogEvents", runtime.WithHTTPPathPattern("/frontend/v1/audit-log-events"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -3978,7 +3978,7 @@ var (
 	pattern_FrontendService_CreateAPIKeyRoleAssignment_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"frontend", "v1", "api-key-role-assignments"}, ""))
 	pattern_FrontendService_DeleteAPIKeyRoleAssignment_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"frontend", "v1", "api-key-role-assignments", "id"}, ""))
 	pattern_FrontendService_ListAPIKeyRoleAssignments_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"frontend", "v1", "api-key-role-assignments"}, ""))
-	pattern_FrontendService_ListAuditLogEvents_0                    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"frontend", "v1", "events"}, ""))
+	pattern_FrontendService_ListAuditLogEvents_0                    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"frontend", "v1", "audit-log-events"}, ""))
 )
 
 var (

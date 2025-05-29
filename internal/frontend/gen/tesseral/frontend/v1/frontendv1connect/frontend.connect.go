@@ -276,7 +276,6 @@ type FrontendServiceClient interface {
 	CreateAPIKeyRoleAssignment(context.Context, *connect.Request[v1.CreateAPIKeyRoleAssignmentRequest]) (*connect.Response[v1.CreateAPIKeyRoleAssignmentResponse], error)
 	DeleteAPIKeyRoleAssignment(context.Context, *connect.Request[v1.DeleteAPIKeyRoleAssignmentRequest]) (*connect.Response[v1.DeleteAPIKeyRoleAssignmentResponse], error)
 	ListAPIKeyRoleAssignments(context.Context, *connect.Request[v1.ListAPIKeyRoleAssignmentsRequest]) (*connect.Response[v1.ListAPIKeyRoleAssignmentsResponse], error)
-	// Lists audit log events for an organization.
 	ListAuditLogEvents(context.Context, *connect.Request[v1.ListAuditLogEventsRequest]) (*connect.Response[v1.ListAuditLogEventsResponse], error)
 }
 
@@ -1062,7 +1061,6 @@ type FrontendServiceHandler interface {
 	CreateAPIKeyRoleAssignment(context.Context, *connect.Request[v1.CreateAPIKeyRoleAssignmentRequest]) (*connect.Response[v1.CreateAPIKeyRoleAssignmentResponse], error)
 	DeleteAPIKeyRoleAssignment(context.Context, *connect.Request[v1.DeleteAPIKeyRoleAssignmentRequest]) (*connect.Response[v1.DeleteAPIKeyRoleAssignmentResponse], error)
 	ListAPIKeyRoleAssignments(context.Context, *connect.Request[v1.ListAPIKeyRoleAssignmentsRequest]) (*connect.Response[v1.ListAPIKeyRoleAssignmentsResponse], error)
-	// Lists audit log events for an organization.
 	ListAuditLogEvents(context.Context, *connect.Request[v1.ListAuditLogEventsRequest]) (*connect.Response[v1.ListAuditLogEventsResponse], error)
 }
 

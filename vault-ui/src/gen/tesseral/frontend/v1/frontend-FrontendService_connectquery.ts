@@ -319,8 +319,6 @@ export const deleteAPIKeyRoleAssignment = FrontendService.method.deleteAPIKeyRol
 export const listAPIKeyRoleAssignments = FrontendService.method.listAPIKeyRoleAssignments;
 
 /**
- * Lists audit log events for an organization.
- *
  * @generated from rpc tesseral.frontend.v1.FrontendService.ListAuditLogEvents
  */
 export const listAuditLogEvents = FrontendService.method.listAuditLogEvents;

@@ -155,7 +155,6 @@ type FrontendServiceClient interface {
 	CreateAPIKeyRoleAssignment(ctx context.Context, in *CreateAPIKeyRoleAssignmentRequest, opts ...grpc.CallOption) (*CreateAPIKeyRoleAssignmentResponse, error)
 	DeleteAPIKeyRoleAssignment(ctx context.Context, in *DeleteAPIKeyRoleAssignmentRequest, opts ...grpc.CallOption) (*DeleteAPIKeyRoleAssignmentResponse, error)
 	ListAPIKeyRoleAssignments(ctx context.Context, in *ListAPIKeyRoleAssignmentsRequest, opts ...grpc.CallOption) (*ListAPIKeyRoleAssignmentsResponse, error)
-	// Lists audit log events for an organization.
 	ListAuditLogEvents(ctx context.Context, in *ListAuditLogEventsRequest, opts ...grpc.CallOption) (*ListAuditLogEventsResponse, error)
 }
 
@@ -814,7 +813,6 @@ type FrontendServiceServer interface {
 	CreateAPIKeyRoleAssignment(context.Context, *CreateAPIKeyRoleAssignmentRequest) (*CreateAPIKeyRoleAssignmentResponse, error)
 	DeleteAPIKeyRoleAssignment(context.Context, *DeleteAPIKeyRoleAssignmentRequest) (*DeleteAPIKeyRoleAssignmentResponse, error)
 	ListAPIKeyRoleAssignments(context.Context, *ListAPIKeyRoleAssignmentsRequest) (*ListAPIKeyRoleAssignmentsResponse, error)
-	// Lists audit log events for an organization.
 	ListAuditLogEvents(context.Context, *ListAuditLogEventsRequest) (*ListAuditLogEventsResponse, error)
 	mustEmbedUnimplementedFrontendServiceServer()
 }

@@ -240,54 +240,47 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /frontend/v1/events:
+    /frontend/v1/audit-log-events:
         get:
             tags:
                 - FrontendService
-            description: Lists audit log events for an organization.
             operationId: FrontendService_ListAuditLogEvents
             parameters:
-                - name: pageSize
-                  in: query
-                  description: The maximum number of events to return.
-                  schema:
-                    type: integer
-                    format: int32
                 - name: pageToken
                   in: query
                   description: A page token, received from a previous `ListAuditLogEvents` call.
                   schema:
                     type: string
-                - name: filter.startTime
+                - name: filterStartTime
                   in: query
-                  description: The start time.
+                  description: The start time to filter by, if any.
                   schema:
                     type: string
                     format: date-time
-                - name: filter.endTime
+                - name: filterEndTime
                   in: query
-                  description: The end time.
+                  description: The end time to filter by, if any.
                   schema:
                     type: string
                     format: date-time
-                - name: filter.eventName
+                - name: filterEventName
                   in: query
                   description: The event names to filter by, if any.
                   schema:
                     type: array
                     items:
                         type: string
-                - name: filter.userId
+                - name: filterUserId
                   in: query
                   description: The user ID to filter by, if any.
                   schema:
                     type: string
-                - name: filter.sessionId
+                - name: filterSessionId
                   in: query
                   description: The session ID to filter by, if any.
                   schema:
                     type: string
-                - name: filter.apiKeyId
+                - name: filterApiKeyId
                   in: query
                   description: The API key ID to filter by, if any.
                   schema:
@@ -1669,10 +1662,10 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/AuditLogEvent'
-                    description: The events.
+                    description: The audit log events.
                 nextPageToken:
                     type: string
-                    description: A token to retrieve the next page of results.
+                    description: The pagination token for the next page of results. Empty if there is no next page.
         ListMyPasskeysResponse:
             type: object
             properties:

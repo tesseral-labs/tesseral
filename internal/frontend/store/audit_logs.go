@@ -28,28 +28,23 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 
 	// TODO: Enforce owner-only
 
-	filter := new(frontendv1.ListAuditLogEventsRequest_Filter)
+	filter := new(frontendv1.ListAuditLogEventsRequest)
 	if req.PageToken != "" {
 		if err := s.pageEncoder.Unmarshal(req.PageToken, filter); err != nil {
 			return nil, apierror.NewInvalidArgumentError("invalid page_token", err)
 		}
-	} else if req.Filter != nil {
-		filter = req.Filter
-	}
-
-	limit := uint64(10)
-	if req.PageSize != 0 {
-		limit = uint64(req.PageSize)
+	} else {
+		filter = req
 	}
 
 	var startTime time.Time
-	if filterStartTime := filter.GetStartTime(); filterStartTime != nil {
+	if filterStartTime := filter.GetFilterStartTime(); filterStartTime != nil {
 		startTime = filterStartTime.AsTime()
 	}
 	startID := uuidv7.NilWithTime(startTime)
 
 	var endTime time.Time
-	if filterEndTime := filter.GetEndTime(); filterEndTime != nil {
+	if filterEndTime := filter.GetFilterEndTime(); filterEndTime != nil {
 		endTime = filterEndTime.AsTime()
 	} else {
 		endTime = time.Now().UTC()
@@ -67,24 +62,24 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 	if !startTime.IsZero() {
 		wheres = append(wheres, sq.Gt{"id": startID})
 	}
-	if len(filter.GetEventName()) > 0 {
-		wheres = append(wheres, sq.Eq{"event_name": filter.EventName})
+	if len(filter.GetFilterEventName()) > 0 {
+		wheres = append(wheres, sq.Eq{"event_name": filter.FilterEventName})
 	}
-	if userID := filter.GetUserId(); userID != "" {
+	if userID := filter.GetFilterUserId(); userID != "" {
 		userID, err := idformat.User.Parse(userID)
 		if err != nil {
 			return nil, apierror.NewInvalidArgumentError("invalid filter.user_id", err)
 		}
 		wheres = append(wheres, sq.Eq{"user_id": userID[:]})
 	}
-	if sessionID := filter.GetSessionId(); sessionID != "" {
+	if sessionID := filter.GetFilterSessionId(); sessionID != "" {
 		sessionID, err := idformat.Session.Parse(sessionID)
 		if err != nil {
 			return nil, apierror.NewInvalidArgumentError("invalid filter.session_id", err)
 		}
 		wheres = append(wheres, sq.Eq{"session_id": sessionID[:]})
 	}
-	if apiKeyID := filter.GetApiKeyId(); apiKeyID != "" {
+	if apiKeyID := filter.GetFilterApiKeyId(); apiKeyID != "" {
 		apiKeyID, err := idformat.APIKey.Parse(apiKeyID)
 		if err != nil {
 			return nil, apierror.NewInvalidArgumentError("invalid filter.api_key_id", err)
@@ -92,12 +87,14 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 		wheres = append(wheres, sq.Eq{"api_key_id": apiKeyID[:]})
 	}
 
+	const limit = 10
+
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	query := psql.Select("*").
 		From("audit_log_events").
 		Where(sq.And(wheres)).
 		OrderBy("id desc").
-		Limit(limit)
+		Limit(limit + 1)
 
 	sql, args, err := query.ToSql()
 	if err != nil {
@@ -130,10 +127,11 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 	}
 
 	var nextPageToken string
-	if len(results) == int(limit) {
-		last := results[len(results)-1]
-		filter.EndTime = last.EventTime
+	if len(results) == limit+1 {
+		last := results[limit-1]
+		filter.FilterEndTime = last.EventTime
 		nextPageToken = s.pageEncoder.Marshal(filter)
+		results = results[:limit]
 	}
 
 	return &frontendv1.ListAuditLogEventsResponse{

@@ -43,29 +43,29 @@ import {
   listAuditLogEvents,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 import { getAPIKey } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
-import {
-  ListAuditLogEventsRequest,
-  ListAuditLogEventsRequest_Filter,
-} from "@/gen/tesseral/frontend/v1/frontend_pb";
+import { ListAuditLogEventsRequest } from "@/gen/tesseral/frontend/v1/frontend_pb";
 import { AuditLogEvent } from "@/gen/tesseral/frontend/v1/models_pb";
-
-const PAGE_SIZE = 10;
 
 // --- Filter Bar Component ---
 interface FilterBarProps {
-  onApply: (filter: ListAuditLogEventsRequest_Filter) => void;
+  onApply: (filter: ListAuditLogEventsRequest) => void;
   isLoading: boolean;
 }
 
-function makeFilter(
-  params: Omit<ListAuditLogEventsRequest_Filter, "$typeName" | "eventName"> & {
-    eventName?: string[];
+function makeRequest(
+  params: Omit<
+    ListAuditLogEventsRequest,
+    "$typeName" | "filterEventName" | "pageToken"
+  > & {
+    pageToken?: string;
+    filterEventName?: string[];
   },
-): ListAuditLogEventsRequest_Filter {
+): ListAuditLogEventsRequest {
   return {
-    $typeName: "tesseral.frontend.v1.ListAuditLogEventsRequest.Filter",
+    $typeName: "tesseral.frontend.v1.ListAuditLogEventsRequest",
     ...params,
-    eventName: params.eventName ?? [],
+    pageToken: params.pageToken ?? "",
+    filterEventName: params.filterEventName ?? [],
   };
 }
 
@@ -75,18 +75,18 @@ function FilterBar({ onApply, isLoading }: FilterBarProps) {
   const [userId, setUserId] = useState("");
 
   function handleApply() {
-    const filter: ListAuditLogEventsRequest_Filter = makeFilter({});
+    const filter: ListAuditLogEventsRequest = makeRequest({});
     if (date?.from) {
-      filter.startTime = timestampFromDate(date.from);
+      filter.filterStartTime = timestampFromDate(date.from);
     }
     if (date?.to) {
       // Set endTime to the end of the selected day (23:59:59.999)
       const end = new Date(date.to);
       end.setHours(23, 59, 59, 999);
-      filter.endTime = timestampFromDate(end);
+      filter.filterEndTime = timestampFromDate(end);
     }
-    if (eventNames.length > 0) filter.eventName = eventNames;
-    if (userId) filter.userId = userId;
+    if (eventNames.length > 0) filter.filterEventName = eventNames;
+    if (userId) filter.filterUserId = userId;
 
     onApply(filter);
   }
@@ -95,7 +95,7 @@ function FilterBar({ onApply, isLoading }: FilterBarProps) {
     setDate(undefined);
     setEventNames([]);
     setUserId("");
-    onApply(makeFilter({}));
+    onApply(makeRequest({}));
   }
 
   const hasFilters = date || eventNames.length > 0 || userId;
@@ -174,11 +174,9 @@ function FilterBar({ onApply, isLoading }: FilterBarProps) {
 
 // --- Main Viewer Component ---
 export function AuditLogEventsPage() {
-  const [request, setRequest] = useState<ListAuditLogEventsRequest>({
-    $typeName: "tesseral.frontend.v1.ListAuditLogEventsRequest",
-    pageSize: PAGE_SIZE,
-    pageToken: "",
-  });
+  const [request, setRequest] = useState<ListAuditLogEventsRequest>(
+    makeRequest({}),
+  );
   const [pageTokens, setPageTokens] = useState<string[]>([""]);
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
 
@@ -193,13 +191,8 @@ export function AuditLogEventsPage() {
   }
 
   const handleApplyFilters = useCallback(
-    (filter: ListAuditLogEventsRequest_Filter) => {
-      setRequest({
-        $typeName: "tesseral.frontend.v1.ListAuditLogEventsRequest",
-        pageSize: PAGE_SIZE,
-        filter: Object.keys(filter).length > 0 ? filter : undefined,
-        pageToken: "",
-      });
+    (filter: ListAuditLogEventsRequest) => {
+      setRequest(makeRequest(filter));
       setPageTokens([""]); // Reset pagination on filter change
       setCurrentPageIndex(0);
       setExpandedRows({}); // Reset expanded rows on filter change
