@@ -284,7 +284,7 @@ const EditAPIKeyButton = () => {
                 <FormItem>
                   <FormLabel>Display Name</FormLabel>
                   <FormDescription>
-                    The human-friendly name for this API Key.
+                    A human-friendly name for this API Key.
                   </FormDescription>
                   <FormControl>
                     <Input placeholder="Display Name" {...field} />

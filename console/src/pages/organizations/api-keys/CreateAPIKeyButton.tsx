@@ -205,7 +205,7 @@ export function CreateAPIKeyButton() {
                   <FormItem>
                     <FormLabel>Display Name</FormLabel>
                     <FormDescription>
-                      The human-friendly name for the API Key.
+                      A human-friendly name for the API Key.
                     </FormDescription>
                     <FormControl>
                       <Input {...field} />
