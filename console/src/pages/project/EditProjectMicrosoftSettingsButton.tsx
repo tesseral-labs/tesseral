@@ -114,6 +114,9 @@ export function EditProjectMicrosoftSettingsButton() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Log in with Microsoft</FormLabel>
+                  <FormDescription>
+                    Whether Users can log in using their Microsoft account.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -121,9 +124,7 @@ export function EditProjectMicrosoftSettingsButton() {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Whether Users can log in using their Microsoft account.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -135,12 +136,13 @@ export function EditProjectMicrosoftSettingsButton() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Microsoft OAuth Client ID</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
                   <FormDescription>
                     Your company's Microsoft OAuth Client ID.
                   </FormDescription>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -152,12 +154,13 @@ export function EditProjectMicrosoftSettingsButton() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Microsoft OAuth Client Secret</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
                   <FormDescription>
                     Your company's Microsoft OAuth Client Secret.
                   </FormDescription>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}

@@ -27,6 +27,7 @@ import {
   ConsoleCard,
   ConsoleCardContent,
   ConsoleCardDescription,
+  ConsoleCardDetails,
   ConsoleCardHeader,
   ConsoleCardTitle,
 } from '@/components/ui/console-card';
@@ -169,10 +170,12 @@ export const EditOrganizationPage = () => {
             {/** eslint-enable @typescript-eslint/no-unsafe-call */}
             <ConsoleCard>
               <ConsoleCardHeader>
-                <ConsoleCardTitle>Organization settings</ConsoleCardTitle>
-                <ConsoleCardDescription>
-                  Configure basic settings on this organization.
-                </ConsoleCardDescription>
+                <ConsoleCardDetails>
+                  <ConsoleCardTitle>Organization settings</ConsoleCardTitle>
+                  <ConsoleCardDescription>
+                    Configure basic settings on this organization.
+                  </ConsoleCardDescription>
+                </ConsoleCardDetails>
               </ConsoleCardHeader>
               <ConsoleCardContent className="space-y-8">
                 <FormField
@@ -181,6 +184,9 @@ export const EditOrganizationPage = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Display Name</FormLabel>
+                      <FormDescription>
+                        A human-friendly name for the organization.
+                      </FormDescription>
                       <FormControl>
                         <Input
                           className="max-w-80"
@@ -188,9 +194,7 @@ export const EditOrganizationPage = () => {
                           {...field}
                         />
                       </FormControl>
-                      <FormDescription>
-                        A human-friendly name for the organization.
-                      </FormDescription>
+
                       <FormMessage />
                     </FormItem>
                   )}
@@ -200,10 +204,12 @@ export const EditOrganizationPage = () => {
 
             <ConsoleCard>
               <ConsoleCardHeader>
-                <ConsoleCardTitle>Login settings</ConsoleCardTitle>
-                <ConsoleCardDescription>
-                  Configure how users can log into this organization.
-                </ConsoleCardDescription>
+                <ConsoleCardDetails>
+                  <ConsoleCardTitle>Login settings</ConsoleCardTitle>
+                  <ConsoleCardDescription>
+                    Configure how users can log into this organization.
+                  </ConsoleCardDescription>
+                </ConsoleCardDetails>
               </ConsoleCardHeader>
               <ConsoleCardContent className="space-y-8">
                 {getProjectResponse?.project?.logInWithGoogle && (
@@ -213,6 +219,10 @@ export const EditOrganizationPage = () => {
                     render={({ field }: { field: any }) => (
                       <FormItem>
                         <FormLabel>Log in with Google</FormLabel>
+                        <FormDescription>
+                          Whether Users in this Organization can log in using
+                          their Google account.
+                        </FormDescription>
                         <FormControl>
                           <Switch
                             className="block"
@@ -220,6 +230,7 @@ export const EditOrganizationPage = () => {
                             onCheckedChange={field.onChange}
                           />
                         </FormControl>
+
                         <FormMessage />
                       </FormItem>
                     )}
@@ -233,6 +244,10 @@ export const EditOrganizationPage = () => {
                     render={({ field }: { field: any }) => (
                       <FormItem>
                         <FormLabel>Log in with Microsoft</FormLabel>
+                        <FormDescription>
+                          Whether Users in this Organization can log in using
+                          their Microsoft account.
+                        </FormDescription>
                         <FormControl>
                           <Switch
                             className="block"
@@ -240,6 +255,7 @@ export const EditOrganizationPage = () => {
                             onCheckedChange={field.onChange}
                           />
                         </FormControl>
+
                         <FormMessage />
                       </FormItem>
                     )}
@@ -253,6 +269,10 @@ export const EditOrganizationPage = () => {
                     render={({ field }: { field: any }) => (
                       <FormItem>
                         <FormLabel>Log in with GitHub</FormLabel>
+                        <FormDescription>
+                          Whether Users in this Organization can log in using
+                          their GitHub account.
+                        </FormDescription>
                         <FormControl>
                           <Switch
                             className="block"
@@ -260,6 +280,7 @@ export const EditOrganizationPage = () => {
                             onCheckedChange={field.onChange}
                           />
                         </FormControl>
+
                         <FormMessage />
                       </FormItem>
                     )}
@@ -273,6 +294,10 @@ export const EditOrganizationPage = () => {
                     render={({ field }: { field: any }) => (
                       <FormItem>
                         <FormLabel>Log in with Email</FormLabel>
+                        <FormDescription>
+                          Whether Users in this Organization can log in an
+                          email.
+                        </FormDescription>
                         <FormControl>
                           <Switch
                             className="block"
@@ -280,6 +305,7 @@ export const EditOrganizationPage = () => {
                             onCheckedChange={field.onChange}
                           />
                         </FormControl>
+
                         <FormMessage />
                       </FormItem>
                     )}
@@ -293,6 +319,10 @@ export const EditOrganizationPage = () => {
                     render={({ field }: { field: any }) => (
                       <FormItem>
                         <FormLabel>Log in with Password</FormLabel>
+                        <FormDescription>
+                          Whether Users in this Organization can log in using a
+                          password.
+                        </FormDescription>
                         <FormControl>
                           <Switch
                             className="block"
@@ -300,6 +330,7 @@ export const EditOrganizationPage = () => {
                             onCheckedChange={field.onChange}
                           />
                         </FormControl>
+
                         <FormMessage />
                       </FormItem>
                     )}
@@ -313,6 +344,10 @@ export const EditOrganizationPage = () => {
                     render={({ field }: { field: any }) => (
                       <FormItem>
                         <FormLabel>Log in with Authenticator App</FormLabel>
+                        <FormDescription>
+                          Whether Users in this Organization can log in using an
+                          Authenticator App as a secondary factor.
+                        </FormDescription>
                         <FormControl>
                           <Switch
                             className="block"
@@ -320,6 +355,7 @@ export const EditOrganizationPage = () => {
                             onCheckedChange={field.onChange}
                           />
                         </FormControl>
+
                         <FormMessage />
                       </FormItem>
                     )}
@@ -333,6 +369,10 @@ export const EditOrganizationPage = () => {
                     render={({ field }: { field: any }) => (
                       <FormItem>
                         <FormLabel>Log in with Passkey</FormLabel>
+                        <FormDescription>
+                          Whether Users in this Organization can log in using a
+                          Passkey as a secondary factor.
+                        </FormDescription>
                         <FormControl>
                           <Switch
                             className="block"
@@ -340,6 +380,7 @@ export const EditOrganizationPage = () => {
                             onCheckedChange={field.onChange}
                           />
                         </FormControl>
+
                         <FormMessage />
                       </FormItem>
                     )}
@@ -352,6 +393,10 @@ export const EditOrganizationPage = () => {
                   render={({ field }: { field: any }) => (
                     <FormItem>
                       <FormLabel>Require MFA</FormLabel>
+                      <FormDescription>
+                        Whether Users in this Organization must authenticate
+                        with a secondary factor when logging in.
+                      </FormDescription>
                       <FormControl>
                         <Switch
                           className="block"
@@ -359,6 +404,7 @@ export const EditOrganizationPage = () => {
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>
+
                       <FormMessage />
                     </FormItem>
                   )}
@@ -368,10 +414,12 @@ export const EditOrganizationPage = () => {
             {getProjectResponse?.project?.apiKeysEnabled && (
               <ConsoleCard>
                 <ConsoleCardHeader>
-                  <ConsoleCardTitle>API Keys settings</ConsoleCardTitle>
-                  <ConsoleCardDescription>
-                    Configure whether this organization can use API Keys.
-                  </ConsoleCardDescription>
+                  <ConsoleCardDetails>
+                    <ConsoleCardTitle>API Keys settings</ConsoleCardTitle>
+                    <ConsoleCardDescription>
+                      Configure whether this Organization can use API Keys.
+                    </ConsoleCardDescription>
+                  </ConsoleCardDetails>
                 </ConsoleCardHeader>
                 <ConsoleCardContent className="space-y-8">
                   <FormField
@@ -380,6 +428,10 @@ export const EditOrganizationPage = () => {
                     render={({ field }: { field: any }) => (
                       <FormItem>
                         <FormLabel>API Keys Enabled</FormLabel>
+                        <FormDescription>
+                          Whether this Organization can authenticate to your
+                          service using API Keys.
+                        </FormDescription>
                         <FormControl>
                           <Switch
                             className="block"
@@ -387,6 +439,7 @@ export const EditOrganizationPage = () => {
                             onCheckedChange={field.onChange}
                           />
                         </FormControl>
+
                         <FormMessage />
                       </FormItem>
                     )}
@@ -396,10 +449,12 @@ export const EditOrganizationPage = () => {
             )}
             <ConsoleCard>
               <ConsoleCardHeader>
-                <ConsoleCardTitle>Enterprise settings</ConsoleCardTitle>
-                <ConsoleCardDescription>
-                  Configure whether this organization can use SCIM.
-                </ConsoleCardDescription>
+                <ConsoleCardDetails>
+                  <ConsoleCardTitle>Enterprise settings</ConsoleCardTitle>
+                  <ConsoleCardDescription>
+                    Configure whether this Organization can use SCIM.
+                  </ConsoleCardDescription>
+                </ConsoleCardDetails>
               </ConsoleCardHeader>
               <ConsoleCardContent className="space-y-8">
                 {getProjectResponse?.project?.logInWithSaml && (
@@ -409,6 +464,10 @@ export const EditOrganizationPage = () => {
                     render={({ field }: { field: any }) => (
                       <FormItem>
                         <FormLabel>Log in with SAML</FormLabel>
+                        <FormDescription>
+                          Whether this organization can configure SAML
+                          Connections and use them to log in with SAML.
+                        </FormDescription>
                         <FormControl>
                           <Switch
                             className="block"
@@ -416,10 +475,7 @@ export const EditOrganizationPage = () => {
                             onCheckedChange={field.onChange}
                           />
                         </FormControl>
-                        <FormDescription>
-                          Whether this organization can configure SAML
-                          Connections and use them to log in with SAML.
-                        </FormDescription>
+
                         <FormMessage />
                       </FormItem>
                     )}
@@ -432,6 +488,10 @@ export const EditOrganizationPage = () => {
                   render={({ field }: { field: any }) => (
                     <FormItem>
                       <FormLabel>SCIM Enabled</FormLabel>
+                      <FormDescription>
+                        Whether this Organization can configure SCIM
+                        ("Enterprise Directory Sync").
+                      </FormDescription>
                       <FormControl>
                         <Switch
                           className="block"
@@ -439,10 +499,7 @@ export const EditOrganizationPage = () => {
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>
-                      <FormDescription>
-                        Whether this organization can configure SCIM
-                        ("Enterprise Directory Sync").
-                      </FormDescription>
+
                       <FormMessage />
                     </FormItem>
                   )}
@@ -454,6 +511,10 @@ export const EditOrganizationPage = () => {
                   render={({ field }: { field: any }) => (
                     <FormItem>
                       <FormLabel>SAML / SCIM Domains</FormLabel>
+                      <FormDescription>
+                        SAML and SCIM users must have emails from this list of
+                        domains.
+                      </FormDescription>
                       <FormControl>
                         <InputTags
                           className="max-w-96"
@@ -462,10 +523,7 @@ export const EditOrganizationPage = () => {
                           value={field.value || []}
                         />
                       </FormControl>
-                      <FormDescription>
-                        SAML and SCIM users must have emails from this list of
-                        domains.
-                      </FormDescription>
+
                       <FormMessage />
                     </FormItem>
                   )}

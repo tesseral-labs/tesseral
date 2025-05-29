@@ -212,7 +212,9 @@ const DangerZoneCard = () => {
 
       <ConsoleCard className="border-destructive">
         <ConsoleCardHeader>
-          <ConsoleCardTitle>Danger Zone</ConsoleCardTitle>
+          <ConsoleCardDetails>
+            <ConsoleCardTitle>Danger Zone</ConsoleCardTitle>
+          </ConsoleCardDetails>
         </ConsoleCardHeader>
 
         <ConsoleCardContent>

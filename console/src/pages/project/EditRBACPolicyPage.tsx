@@ -222,6 +222,9 @@ function EditActionButton({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Action Name</FormLabel>
+                  <FormDescription>
+                    The name of the Action. Must be of the form "x.y.z".
+                  </FormDescription>
                   <FormControl>
                     <Input
                       type="text"
@@ -229,9 +232,7 @@ function EditActionButton({
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    The name of the Action. Must be of the form "x.y.z".
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -243,6 +244,10 @@ function EditActionButton({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Description</FormLabel>
+                  <FormDescription>
+                    A human-readable description of what the Action lets Users
+                    perform in your product.
+                  </FormDescription>
                   <FormControl>
                     <Input
                       type="text"
@@ -250,10 +255,7 @@ function EditActionButton({
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    A human-readable description of what the Action lets Users
-                    perform in your product.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}

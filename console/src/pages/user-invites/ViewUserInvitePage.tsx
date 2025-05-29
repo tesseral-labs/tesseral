@@ -58,10 +58,12 @@ export const ViewUserInvitePage = () => {
       <PageContent>
         <ConsoleCard className="my-8">
           <ConsoleCardHeader>
-            <ConsoleCardTitle>General settings</ConsoleCardTitle>
-            <ConsoleCardDescription>
-              Basic settings for this user invite.
-            </ConsoleCardDescription>
+            <ConsoleCardDetails>
+              <ConsoleCardTitle>General settings</ConsoleCardTitle>
+              <ConsoleCardDescription>
+                Basic settings for this user invite.
+              </ConsoleCardDescription>
+            </ConsoleCardDetails>
           </ConsoleCardHeader>
           <ConsoleCardContent>
             <DetailsGrid>
@@ -133,7 +135,9 @@ const DangerZoneCard = () => {
     <>
       <ConsoleCard className="border-destructive">
         <ConsoleCardHeader>
-          <ConsoleCardTitle>Danger Zone</ConsoleCardTitle>
+          <ConsoleCardDetails>
+            <ConsoleCardTitle>Danger Zone</ConsoleCardTitle>
+          </ConsoleCardDetails>
         </ConsoleCardHeader>
 
         <ConsoleCardContent>

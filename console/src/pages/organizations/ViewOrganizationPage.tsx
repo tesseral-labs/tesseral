@@ -36,6 +36,7 @@ import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -230,6 +231,10 @@ const EditOrganizationButton: FC = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Display Name</FormLabel>
+                  <FormDescription>
+                    The name of this organization as it will be displayed in the
+                    login flow and Vault pages.
+                  </FormDescription>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>

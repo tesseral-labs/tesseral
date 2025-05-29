@@ -37,10 +37,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
+  FormControl,
   FormDescription,
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
@@ -159,7 +161,7 @@ export const ListOrganizationsPage = () => {
 };
 
 const schema = z.object({
-  displayName: z.string(),
+  displayName: z.string().min(1, 'Display name is required'),
 });
 
 const CreateOrganizationButton: FC = () => {
@@ -217,11 +219,15 @@ const CreateOrganizationButton: FC = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Display Name</FormLabel>
-                  <Input placeholder="ACME Corp" {...field} />
                   <FormDescription>
                     The display name of the Organization. This will be displayed
                     to users during the login process.
                   </FormDescription>
+                  <FormControl>
+                    <Input placeholder="ACME Corp" {...field} />
+                  </FormControl>
+
+                  <FormMessage />
                 </FormItem>
               )}
             />

@@ -256,6 +256,10 @@ function EditRolesSettingsButton() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Custom Roles</FormLabel>
+                  <FormDescription>
+                    Whether this Organization can create Organization-Specific
+                    Roles.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -263,10 +267,7 @@ function EditRolesSettingsButton() {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Whether this Organization can create Organization-Specific
-                    Roles.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}

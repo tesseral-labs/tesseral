@@ -215,12 +215,13 @@ function EditOrganizationNameButton() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Organization Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
                   <FormDescription>
                     The name of your organization.
                   </FormDescription>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}

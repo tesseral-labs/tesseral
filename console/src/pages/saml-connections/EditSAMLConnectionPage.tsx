@@ -25,6 +25,7 @@ import {
   ConsoleCard,
   ConsoleCardContent,
   ConsoleCardDescription,
+  ConsoleCardDetails,
   ConsoleCardHeader,
   ConsoleCardTitle,
 } from '@/components/ui/console-card';
@@ -109,10 +110,12 @@ export const EditSAMLConnectionPage = () => {
             {/* eslint-enable @typescript-eslint/no-unsafe-call */}
             <ConsoleCard>
               <ConsoleCardHeader>
-                <ConsoleCardTitle>SAML connection settings</ConsoleCardTitle>
-                <ConsoleCardDescription>
-                  Configure basic settings on this SAML connection.
-                </ConsoleCardDescription>
+                <ConsoleCardDetails>
+                  <ConsoleCardTitle>SAML connection settings</ConsoleCardTitle>
+                  <ConsoleCardDescription>
+                    Configure basic settings on this SAML connection.
+                  </ConsoleCardDescription>
+                </ConsoleCardDetails>
               </ConsoleCardHeader>
               <ConsoleCardContent className="space-y-8">
                 <FormField
@@ -121,6 +124,10 @@ export const EditSAMLConnectionPage = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Primary</FormLabel>
+                      <FormDescription>
+                        A primary SAML connection gets used by default within
+                        its organization.
+                      </FormDescription>
                       <FormControl>
                         <Switch
                           className="block"
@@ -128,10 +135,7 @@ export const EditSAMLConnectionPage = () => {
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>
-                      <FormDescription>
-                        A primary SAML connection gets used by default within
-                        its organization.
-                      </FormDescription>
+
                       <FormMessage />
                     </FormItem>
                   )}
@@ -141,12 +145,14 @@ export const EditSAMLConnectionPage = () => {
 
             <ConsoleCard>
               <ConsoleCardHeader>
-                <ConsoleCardTitle>Service Provider settings</ConsoleCardTitle>
-                <ConsoleCardDescription>
-                  The configuration here is assigned automatically by Tesseral,
-                  and needs to be inputted into your customer's Identity
-                  Provider by their IT admin.
-                </ConsoleCardDescription>
+                <ConsoleCardDetails>
+                  <ConsoleCardTitle>Service Provider settings</ConsoleCardTitle>
+                  <ConsoleCardDescription>
+                    The configuration here is assigned automatically by
+                    Tesseral, and needs to be inputted into your customer's
+                    Identity Provider by their IT admin.
+                  </ConsoleCardDescription>
+                </ConsoleCardDetails>
               </ConsoleCardHeader>
               <ConsoleCardContent className="space-y-8">
                 <div>
@@ -169,11 +175,15 @@ export const EditSAMLConnectionPage = () => {
             </ConsoleCard>
             <ConsoleCard>
               <ConsoleCardHeader>
-                <ConsoleCardTitle>Identity Provider settings</ConsoleCardTitle>
-                <ConsoleCardDescription>
-                  The configuration here needs to be copied over from the
-                  customer's Identity Provider ("IDP").
-                </ConsoleCardDescription>
+                <ConsoleCardDetails>
+                  <ConsoleCardTitle>
+                    Identity Provider settings
+                  </ConsoleCardTitle>
+                  <ConsoleCardDescription>
+                    The configuration here needs to be copied over from the
+                    customer's Identity Provider ("IDP").
+                  </ConsoleCardDescription>
+                </ConsoleCardDetails>
               </ConsoleCardHeader>
               <ConsoleCardContent className="space-y-8">
                 <FormField
@@ -182,9 +192,14 @@ export const EditSAMLConnectionPage = () => {
                   render={({ field }: { field: any }) => (
                     <FormItem>
                       <FormLabel>IDP Entity ID</FormLabel>
+                      <FormDescription>
+                        The IDP Entity ID, as configured in the customer's
+                        Identity Provider.
+                      </FormDescription>
                       <FormControl>
                         <Input className="max-w-96" {...field} />
                       </FormControl>
+
                       <FormMessage />
                     </FormItem>
                   )}
@@ -195,9 +210,14 @@ export const EditSAMLConnectionPage = () => {
                   render={({ field }: { field: any }) => (
                     <FormItem>
                       <FormLabel>IDP Redirect URL</FormLabel>
+                      <FormDescription>
+                        The IDP Redirect URL, as configured in the customer's
+                        Identity Provider.
+                      </FormDescription>
                       <FormControl>
                         <Input className="max-w-96" {...field} />
                       </FormControl>
+
                       <FormMessage />
                     </FormItem>
                   )}
@@ -212,6 +232,11 @@ export const EditSAMLConnectionPage = () => {
                   }) => (
                     <FormItem>
                       <FormLabel>IDP Certificate</FormLabel>
+                      <FormDescription>
+                        IDP Certificate, as a PEM-encoded X.509 certificate.
+                        These start with '-----BEGIN CERTIFICATE-----' and end
+                        with '-----END CERTIFICATE-----'.
+                      </FormDescription>
                       <FormControl>
                         <Input
                           className="max-w-96"
@@ -225,11 +250,7 @@ export const EditSAMLConnectionPage = () => {
                           }}
                         />
                       </FormControl>
-                      <FormDescription>
-                        IDP Certificate, as a PEM-encoded X.509 certificate.
-                        These start with '-----BEGIN CERTIFICATE-----' and end
-                        with '-----END CERTIFICATE-----'.
-                      </FormDescription>
+
                       <FormMessage />
                     </FormItem>
                   )}

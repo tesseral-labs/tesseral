@@ -93,6 +93,10 @@ export function EditBehaviorSettingsButton() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Auto-create organizations</FormLabel>
+                  <FormDescription>
+                    Instead of asking Users to create an Organization on signup,
+                    auto-create one for them.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -100,10 +104,7 @@ export function EditBehaviorSettingsButton() {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Instead of asking Users to create an Organization on
-                    signup, auto-create one for them.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}

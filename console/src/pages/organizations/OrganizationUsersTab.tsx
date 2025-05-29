@@ -39,6 +39,7 @@ import {
 import { Button } from '@/components/ui/button';
 import {
   Form,
+  FormControl,
   FormDescription,
   FormField,
   FormItem,
@@ -210,14 +211,16 @@ const CreateUserButton: FC = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
-                  <Input
-                    type="email"
-                    placeholder="jane.doe@example.com"
-                    {...field}
-                  />
                   <FormDescription>
                     The email address of the User being created.
                   </FormDescription>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="jane.doe@example.com"
+                      {...field}
+                    />
+                  </FormControl>
                 </FormItem>
               )}
             />
@@ -232,12 +235,14 @@ const CreateUserButton: FC = () => {
                       Google User ID{' '}
                       <span className="font-normal text-sm">(optional)</span>
                     </FormLabel>
-                    <Input placeholder="Google User ID" {...field} />
                     <FormDescription>
                       The Google User ID belonging to the User. This is
                       optional, and will be set on the User automatically on a
                       successful login attempt.
                     </FormDescription>
+                    <FormControl>
+                      <Input placeholder="Google User ID" {...field} />
+                    </FormControl>
                   </FormItem>
                 )}
               />
@@ -253,12 +258,14 @@ const CreateUserButton: FC = () => {
                       Microsoft User ID{' '}
                       <span className="font-normal text-sm">(optional)</span>
                     </FormLabel>
-                    <Input placeholder="Microsoft User ID" {...field} />
                     <FormDescription>
                       The Microsoft User ID belonging to the User. This is
                       optional, and will be set on the User automatically on a
                       successful login attempt.
                     </FormDescription>
+                    <FormControl>
+                      <Input placeholder="Microsoft User ID" {...field} />
+                    </FormControl>
                   </FormItem>
                 )}
               />
@@ -270,16 +277,18 @@ const CreateUserButton: FC = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Owner</FormLabel>
-                  <Switch
-                    className="block"
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
                   <FormDescription>
                     Whether the User should be an owner of the organization.
                     This will give them full access to the organization and all
                     its resources.
                   </FormDescription>
+                  <FormControl>
+                    <Switch
+                      className="block"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
                 </FormItem>
               )}
             />

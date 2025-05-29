@@ -42,6 +42,7 @@ import { z } from 'zod';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -282,9 +283,13 @@ const EditAPIKeyButton = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Display Name</FormLabel>
+                  <FormDescription>
+                    The human-friendly name for this API Key.
+                  </FormDescription>
                   <FormControl>
                     <Input placeholder="Display Name" {...field} />
                   </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -380,10 +385,13 @@ const DangerZoneCard = () => {
   return (
     <ConsoleCard className="border-destructive">
       <ConsoleCardHeader>
-        <ConsoleCardTitle>Danger Zone</ConsoleCardTitle>
-        <ConsoleCardDescription>
-          Actions in this section cannot be undone. Please proceed with caution.
-        </ConsoleCardDescription>
+        <ConsoleCardDetails>
+          <ConsoleCardTitle>Danger Zone</ConsoleCardTitle>
+          <ConsoleCardDescription>
+            Actions in this section cannot be undone. Please proceed with
+            caution.
+          </ConsoleCardDescription>
+        </ConsoleCardDetails>
       </ConsoleCardHeader>
       <ConsoleCardContent>
         <div className="space-y-8">

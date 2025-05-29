@@ -578,6 +578,11 @@ const EditCustomAuthDomainButton = () => {
               render={({ field }: { field: any }) => (
                 <FormItem>
                   <FormLabel>Custom Vault Domain</FormLabel>
+                  <FormDescription>
+                    A custom domain for your Vault. Typically, you'll use
+                    "vault.company.com", where "company.com" is your company
+                    domain.
+                  </FormDescription>
                   <FormControl>
                     <Input
                       className="max-w-96"
@@ -585,11 +590,7 @@ const EditCustomAuthDomainButton = () => {
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    A custom domain for your Vault. Typically, you'll use
-                    "vault.company.com", where "company.com" is your company
-                    domain.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}

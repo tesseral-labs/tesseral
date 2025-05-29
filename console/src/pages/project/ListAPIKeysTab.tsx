@@ -284,13 +284,14 @@ const CreatePublishableKeyButton = () => {
                 render={({ field }: { field: any }) => (
                   <FormItem>
                     <FormLabel>Display Name</FormLabel>
-                    <FormControl>
-                      <Input className="max-w-96" {...field} />
-                    </FormControl>
                     <FormDescription>
                       A human-friendly name for the Publishable Key. You can
                       edit this later.
                     </FormDescription>
+                    <FormControl>
+                      <Input className="max-w-96" {...field} />
+                    </FormControl>
+
                     <FormMessage />
                   </FormItem>
                 )}
@@ -302,6 +303,10 @@ const CreatePublishableKeyButton = () => {
                 render={({ field }: { field: any }) => (
                   <FormItem>
                     <FormLabel>Dev Mode</FormLabel>
+                    <FormDescription>
+                      Enable this if you want to use this publishable key from
+                      localhost.
+                    </FormDescription>
                     <FormControl>
                       <Switch
                         className="block"
@@ -309,10 +314,7 @@ const CreatePublishableKeyButton = () => {
                         onCheckedChange={field.onChange}
                       />
                     </FormControl>
-                    <FormDescription>
-                      Enable this if you want to use this publishable key from
-                      localhost.
-                    </FormDescription>
+
                     <FormMessage />
                   </FormItem>
                 )}
@@ -434,12 +436,13 @@ const CreateBackendAPIKeyButton = () => {
                 render={({ field }: { field: any }) => (
                   <FormItem>
                     <FormLabel>Display Name</FormLabel>
-                    <FormControl>
-                      <Input className="max-w-96" {...field} />
-                    </FormControl>
                     <FormDescription>
                       A human-friendly name for the Backend API Key.
                     </FormDescription>
+                    <FormControl>
+                      <Input className="max-w-96" {...field} />
+                    </FormControl>
+
                     <FormMessage />
                   </FormItem>
                 )}

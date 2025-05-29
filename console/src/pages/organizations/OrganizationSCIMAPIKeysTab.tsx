@@ -213,12 +213,13 @@ const CreateSCIMAPIKeyButton = () => {
                 render={({ field }: { field: any }) => (
                   <FormItem>
                     <FormLabel>Display Name</FormLabel>
-                    <FormControl>
-                      <Input className="max-w-96" {...field} />
-                    </FormControl>
                     <FormDescription>
                       A human-friendly name for the SCIM API Key.
                     </FormDescription>
+                    <FormControl>
+                      <Input className="max-w-96" {...field} />
+                    </FormControl>
+
                     <FormMessage />
                   </FormItem>
                 )}

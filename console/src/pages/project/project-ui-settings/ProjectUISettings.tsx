@@ -2,6 +2,7 @@ import {
   ConsoleCard,
   ConsoleCardContent,
   ConsoleCardDescription,
+  ConsoleCardDetails,
   ConsoleCardHeader,
   ConsoleCardTitle,
 } from '@/components/ui/console-card';
@@ -525,29 +526,31 @@ const settingsPage: FC = () => {
                 <div className="col-span-2">
                   <ConsoleCard>
                     <ConsoleCardHeader>
-                      <ConsoleCardTitle className="grid grid-cols-2">
-                        <div className="text-lg">Preview</div>
-                        {detectDarkModeEnabled && (
-                          <div className="relative text-right">
-                            <Switch
-                              checked={darkMode}
-                              onCheckedChange={setDarkMode}
-                            />
-                            {darkMode ? (
-                              <div className="absolute top-1 right-5 text-white">
-                                <Moon size={12} />
-                              </div>
-                            ) : (
-                              <div className="absolute top-1 right-1 text-muted-foreground">
-                                <Sun size={12} />
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </ConsoleCardTitle>
-                      <ConsoleCardDescription>
-                        A preview of how your vault login page will look.
-                      </ConsoleCardDescription>
+                      <ConsoleCardDetails>
+                        <ConsoleCardTitle className="grid grid-cols-2">
+                          <div className="text-lg">Preview</div>
+                          {detectDarkModeEnabled && (
+                            <div className="relative text-right">
+                              <Switch
+                                checked={darkMode}
+                                onCheckedChange={setDarkMode}
+                              />
+                              {darkMode ? (
+                                <div className="absolute top-1 right-5 text-white">
+                                  <Moon size={12} />
+                                </div>
+                              ) : (
+                                <div className="absolute top-1 right-1 text-muted-foreground">
+                                  <Sun size={12} />
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </ConsoleCardTitle>
+                        <ConsoleCardDescription>
+                          A preview of how your vault login page will look.
+                        </ConsoleCardDescription>
+                      </ConsoleCardDetails>
                     </ConsoleCardHeader>
                     <ConsoleCardContent>
                       <div

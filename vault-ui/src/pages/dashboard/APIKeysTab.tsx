@@ -38,6 +38,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -337,6 +338,9 @@ function CreateAPIKeyButton() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Display Name</FormLabel>
+                    <FormDescription>
+                      A human-friendly name for this API Key.
+                    </FormDescription>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -350,6 +354,10 @@ function CreateAPIKeyButton() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Expire time</FormLabel>
+                    <FormDescription>
+                      When this API Key will expire. After this time, the API
+                      Key will no longer be valid.
+                    </FormDescription>
                     <FormControl>
                       <div className="flex flex-row gap-2">
                         <Select

@@ -59,13 +59,13 @@ export function EditRoleForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Display Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Engineering" {...field} />
-                  </FormControl>
                   <FormDescription>
                     The display name of the Role. This will be displayed to
                     users.
                   </FormDescription>
+                  <FormControl>
+                    <Input placeholder="Engineering" {...field} />
+                  </FormControl>
                 </FormItem>
               )}
             />
@@ -75,15 +75,15 @@ export function EditRoleForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Description</FormLabel>
+                  <FormDescription>
+                    Description of the Role. This will be displayed to users.
+                  </FormDescription>
                   <FormControl>
                     <Input
                       placeholder="Grants read/write access to databases and logs."
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Description of the Role. This will be displayed to users.
-                  </FormDescription>
                 </FormItem>
               )}
             />
