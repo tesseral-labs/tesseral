@@ -630,7 +630,7 @@ ORDER BY
     id
 LIMIT $3;
 
--- name: RevokeAPIKey :exec
+-- name: RevokeAPIKey :one
 UPDATE
     api_keys
 SET
@@ -639,7 +639,9 @@ SET
     secret_token_suffix = NULL
 WHERE
     id = $1
-    AND organization_id = $2;
+    AND organization_id = $2
+RETURNING
+    *;
 
 -- name: CreateAPIKeyRoleAssignment :one
 INSERT INTO api_key_role_assignments (id, api_key_id, role_id)

@@ -341,7 +341,18 @@ export function AuditLogEventsPage() {
                         </Tooltip>
                       </TableCell>
                       <TableCell>
-                        {format(timestampDate(event.eventTime!), "PPpp")}
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <span>
+                              {format(timestampDate(event.eventTime!), "PPpp")}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <pre>
+                              {timestampDate(event.eventTime!).toISOString()}
+                            </pre>
+                          </TooltipContent>
+                        </Tooltip>
                       </TableCell>
                     </TableRow>
                     {expandedRows[event.id] && (
