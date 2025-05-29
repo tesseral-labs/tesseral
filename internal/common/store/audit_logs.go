@@ -125,6 +125,20 @@ func (s *Store) CreateAuditLogEvent(ctx context.Context, event auditlog.Event) (
 	return pEvent, nil
 }
 
+func (s *Store) CreateTesseralAuditLogEvent(ctx context.Context, data auditlog.TesseralEventData) (*commonv1.AuditLogEvent, error) {
+	event, err := auditlog.NewTesseralEvent(data)
+	if err != nil {
+		return nil, fmt.Errorf("make event: %w", err)
+	}
+
+	pEvent, err := s.CreateAuditLogEvent(ctx, event)
+	if err != nil {
+		return nil, fmt.Errorf("create event: %w", err)
+	}
+
+	return pEvent, nil
+}
+
 func parseAuditLogEvent(qEvent queries.AuditLogEvent) (*commonv1.AuditLogEvent, error) {
 	eventDetailsJSON := qEvent.EventDetails
 	var eventDetails structpb.Struct

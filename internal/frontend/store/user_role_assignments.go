@@ -4,10 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
@@ -230,7 +232,20 @@ func (s *Store) CreateUserRoleAssignment(ctx context.Context, req *frontendv1.Cr
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &frontendv1.CreateUserRoleAssignmentResponse{UserRoleAssignment: parseUserRoleAssignment(qUserRoleAssignment)}, nil
+	pUserRoleAssignment := parseUserRoleAssignment(qUserRoleAssignment)
+	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
+		ProjectID:      authn.ProjectID(ctx),
+		OrganizationID: ptr(authn.OrganizationID(ctx)),
+		UserID:         ptr(authn.UserID(ctx)),
+		SessionID:      ptr(authn.SessionID(ctx)),
+		EventName:      auditlog.CreateUserRoleAssignmentEventName,
+		ResourceName:   "user_role_assignment",
+		Resource:       pUserRoleAssignment,
+	}); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+	}
+
+	return &frontendv1.CreateUserRoleAssignmentResponse{UserRoleAssignment: pUserRoleAssignment}, nil
 }
 
 func (s *Store) DeleteUserRoleAssignment(ctx context.Context, req *frontendv1.DeleteUserRoleAssignmentRequest) (*frontendv1.DeleteUserRoleAssignmentResponse, error) {
@@ -250,11 +265,12 @@ func (s *Store) DeleteUserRoleAssignment(ctx context.Context, req *frontendv1.De
 	}
 
 	orgID := authn.OrganizationID(ctx)
-	if _, err := q.GetUserRoleAssignment(ctx, queries.GetUserRoleAssignmentParams{
+	qUserRoleAssignment, err := q.GetUserRoleAssignment(ctx, queries.GetUserRoleAssignmentParams{
 		ProjectID:      authn.ProjectID(ctx),
 		OrganizationID: &orgID,
 		ID:             id,
-	}); err != nil {
+	})
+	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("user role assignment not found", fmt.Errorf("get user role assignment: %w", err))
 		}
@@ -267,6 +283,19 @@ func (s *Store) DeleteUserRoleAssignment(ctx context.Context, req *frontendv1.De
 
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	pUserRoleAssignment := parseUserRoleAssignment(qUserRoleAssignment)
+	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
+		ProjectID:      authn.ProjectID(ctx),
+		OrganizationID: ptr(authn.OrganizationID(ctx)),
+		UserID:         ptr(authn.UserID(ctx)),
+		SessionID:      ptr(authn.SessionID(ctx)),
+		EventName:      auditlog.DeleteUserRoleAssignmentEventName,
+		ResourceName:   "user_role_assignment",
+		Resource:       pUserRoleAssignment,
+	}); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}
 
 	return &frontendv1.DeleteUserRoleAssignmentResponse{}, nil

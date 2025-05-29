@@ -4,10 +4,12 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
+	"log/slog"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
@@ -124,6 +126,19 @@ func (s *Store) CreateSCIMAPIKey(ctx context.Context, req *frontendv1.CreateSCIM
 
 	scimAPIKey := parseSCIMAPIKey(qSCIMAPIKey)
 	scimAPIKey.SecretToken = idformat.SCIMAPIKeySecretToken.Format(token)
+
+	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
+		ProjectID:      authn.ProjectID(ctx),
+		OrganizationID: ptr(authn.OrganizationID(ctx)),
+		UserID:         ptr(authn.UserID(ctx)),
+		SessionID:      ptr(authn.SessionID(ctx)),
+		EventName:      auditlog.CreateSCIMAPIKeyEventName,
+		ResourceName:   "scim_api_key",
+		Resource:       scimAPIKey,
+	}); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+	}
+
 	return &frontendv1.CreateSCIMAPIKeyResponse{ScimApiKey: scimAPIKey}, nil
 }
 
@@ -173,7 +188,22 @@ func (s *Store) UpdateSCIMAPIKey(ctx context.Context, req *frontendv1.UpdateSCIM
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &frontendv1.UpdateSCIMAPIKeyResponse{ScimApiKey: parseSCIMAPIKey(qUpdatedSCIMAPIKey)}, nil
+	pSCIMAPIKey := parseSCIMAPIKey(qUpdatedSCIMAPIKey)
+	pPreviousSCIMAPIKey := parseSCIMAPIKey(qSCIMAPIKey)
+	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
+		ProjectID:        authn.ProjectID(ctx),
+		OrganizationID:   ptr(authn.OrganizationID(ctx)),
+		UserID:           ptr(authn.UserID(ctx)),
+		SessionID:        ptr(authn.SessionID(ctx)),
+		EventName:        auditlog.UpdateSCIMAPIKeyEventName,
+		ResourceName:     "scim_api_key",
+		Resource:         pSCIMAPIKey,
+		PreviousResource: pPreviousSCIMAPIKey,
+	}); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+	}
+
+	return &frontendv1.UpdateSCIMAPIKeyResponse{ScimApiKey: pSCIMAPIKey}, nil
 }
 
 func (s *Store) DeleteSCIMAPIKey(ctx context.Context, req *frontendv1.DeleteSCIMAPIKeyRequest) (*frontendv1.DeleteSCIMAPIKeyResponse, error) {
@@ -217,6 +247,19 @@ func (s *Store) DeleteSCIMAPIKey(ctx context.Context, req *frontendv1.DeleteSCIM
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
+	pSCIMAPIKey := parseSCIMAPIKey(qSCIMAPIKey)
+	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
+		ProjectID:      authn.ProjectID(ctx),
+		OrganizationID: ptr(authn.OrganizationID(ctx)),
+		UserID:         ptr(authn.UserID(ctx)),
+		SessionID:      ptr(authn.SessionID(ctx)),
+		EventName:      auditlog.DeleteSCIMAPIKeyEventName,
+		ResourceName:   "scim_api_key",
+		Resource:       pSCIMAPIKey,
+	}); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+	}
+
 	return &frontendv1.DeleteSCIMAPIKeyResponse{}, nil
 }
 
@@ -257,7 +300,20 @@ func (s *Store) RevokeSCIMAPIKey(ctx context.Context, req *frontendv1.RevokeSCIM
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &frontendv1.RevokeSCIMAPIKeyResponse{ScimApiKey: parseSCIMAPIKey(qSCIMAPIKey)}, nil
+	pSCIMAPIKey := parseSCIMAPIKey(qSCIMAPIKey)
+	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
+		ProjectID:      authn.ProjectID(ctx),
+		OrganizationID: ptr(authn.OrganizationID(ctx)),
+		UserID:         ptr(authn.UserID(ctx)),
+		SessionID:      ptr(authn.SessionID(ctx)),
+		EventName:      auditlog.RevokeSCIMAPIKeyEventName,
+		ResourceName:   "scim_api_key",
+		Resource:       pSCIMAPIKey,
+	}); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+	}
+
+	return &frontendv1.RevokeSCIMAPIKeyResponse{ScimApiKey: pSCIMAPIKey}, nil
 }
 
 func parseSCIMAPIKey(qSCIMAPIKey queries.ScimApiKey) *frontendv1.SCIMAPIKey {

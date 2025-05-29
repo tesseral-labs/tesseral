@@ -14,6 +14,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
@@ -165,7 +166,20 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *frontendv1.CreateUser
 		}
 	}
 
-	return &frontendv1.CreateUserInviteResponse{UserInvite: parseUserInvite(qUserInvite)}, nil
+	pUserInvite := parseUserInvite(qUserInvite)
+	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
+		ProjectID:      authn.ProjectID(ctx),
+		OrganizationID: ptr(authn.OrganizationID(ctx)),
+		UserID:         ptr(authn.UserID(ctx)),
+		SessionID:      ptr(authn.SessionID(ctx)),
+		EventName:      auditlog.CreateUserInviteEventName,
+		ResourceName:   "user_invite",
+		Resource:       pUserInvite,
+	}); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+	}
+
+	return &frontendv1.CreateUserInviteResponse{UserInvite: pUserInvite}, nil
 }
 
 func (s *Store) DeleteUserInvite(ctx context.Context, req *frontendv1.DeleteUserInviteRequest) (*frontendv1.DeleteUserInviteResponse, error) {
@@ -184,10 +198,11 @@ func (s *Store) DeleteUserInvite(ctx context.Context, req *frontendv1.DeleteUser
 		return nil, fmt.Errorf("parse user invite id: %w", err)
 	}
 
-	if _, err := q.GetUserInvite(ctx, queries.GetUserInviteParams{
+	qUserInvite, err := q.GetUserInvite(ctx, queries.GetUserInviteParams{
 		ID:             userInviteID,
 		OrganizationID: authn.OrganizationID(ctx),
-	}); err != nil {
+	})
+	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("user invite not found", fmt.Errorf("get user invite: %w", err))
 		}
@@ -201,6 +216,19 @@ func (s *Store) DeleteUserInvite(ctx context.Context, req *frontendv1.DeleteUser
 
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	pUserInvite := parseUserInvite(qUserInvite)
+	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
+		ProjectID:      authn.ProjectID(ctx),
+		OrganizationID: ptr(authn.OrganizationID(ctx)),
+		UserID:         ptr(authn.UserID(ctx)),
+		SessionID:      ptr(authn.SessionID(ctx)),
+		EventName:      auditlog.DeleteUserInviteEventName,
+		ResourceName:   "user_invite",
+		Resource:       pUserInvite,
+	}); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}
 
 	return &frontendv1.DeleteUserInviteResponse{}, nil

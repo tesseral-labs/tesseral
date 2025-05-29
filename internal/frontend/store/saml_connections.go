@@ -176,21 +176,16 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *frontendv1.Create
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	userID := authn.UserID(ctx)
-	sessionID := authn.SessionID(ctx)
 	pSAMLConnection := parseSAMLConnection(qProject, qSAMLConnection)
-	event, err := auditlog.NewEvent(auditlog.EventData{
+	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
 		ProjectID:      qProject.ID,
-		OrganizationID: &qSAMLConnection.OrganizationID,
-		UserID:         &userID,
-		SessionID:      &sessionID,
+		OrganizationID: ptr(authn.OrganizationID(ctx)),
+		UserID:         ptr(authn.UserID(ctx)),
+		SessionID:      ptr(authn.SessionID(ctx)),
 		EventName:      auditlog.CreateSAMLConnectionEventName,
 		ResourceName:   "saml_connection",
 		Resource:       pSAMLConnection,
-	})
-	if err != nil {
-		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
-	} else if _, err := s.common.CreateAuditLogEvent(ctx, event); err != nil {
+	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}
 
@@ -292,23 +287,18 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *frontendv1.Update
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	userID := authn.UserID(ctx)
-	sessionID := authn.SessionID(ctx)
 	pPreviousSAMLConnection := parseSAMLConnection(qProject, qSAMLConnection)
 	pSAMLConnection := parseSAMLConnection(qProject, qUpdatedSAMLConnection)
-	event, err := auditlog.NewEvent(auditlog.EventData{
+	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
 		ProjectID:        qProject.ID,
-		OrganizationID:   &qSAMLConnection.OrganizationID,
-		UserID:           &userID,
-		SessionID:        &sessionID,
+		OrganizationID:   ptr(authn.OrganizationID(ctx)),
+		UserID:           ptr(authn.UserID(ctx)),
+		SessionID:        ptr(authn.SessionID(ctx)),
 		EventName:        auditlog.UpdateSAMLConnectionEventName,
 		ResourceName:     "saml_connection",
 		Resource:         pSAMLConnection,
 		PreviousResource: pPreviousSAMLConnection,
-	})
-	if err != nil {
-		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
-	} else if _, err := s.common.CreateAuditLogEvent(ctx, event); err != nil {
+	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}
 
@@ -357,21 +347,16 @@ func (s *Store) DeleteSAMLConnection(ctx context.Context, req *frontendv1.Delete
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	userID := authn.UserID(ctx)
-	sessionID := authn.SessionID(ctx)
 	pSAMLConnection := parseSAMLConnection(qProject, qSAMLConnection)
-	event, err := auditlog.NewEvent(auditlog.EventData{
+	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
 		ProjectID:      qProject.ID,
-		OrganizationID: &qSAMLConnection.OrganizationID,
-		UserID:         &userID,
-		SessionID:      &sessionID,
+		OrganizationID: ptr(authn.OrganizationID(ctx)),
+		UserID:         ptr(authn.UserID(ctx)),
+		SessionID:      ptr(authn.SessionID(ctx)),
 		EventName:      auditlog.DeleteSAMLConnectionEventName,
 		ResourceName:   "saml_connection",
 		Resource:       pSAMLConnection,
-	})
-	if err != nil {
-		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
-	} else if _, err := s.common.CreateAuditLogEvent(ctx, event); err != nil {
+	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}
 

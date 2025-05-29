@@ -9,6 +9,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/svix/svix-webhooks/go/models"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
@@ -156,6 +157,21 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 	// Commit the transaction
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit transaction: %w", err)
+	}
+
+	pOrganization := parseOrganization(qProject, qUpdatedOrg)
+	pPreviousOrganization := parseOrganization(qProject, qOrg)
+	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
+		ProjectID:        authn.ProjectID(ctx),
+		OrganizationID:   ptr(authn.OrganizationID(ctx)),
+		UserID:           ptr(authn.UserID(ctx)),
+		SessionID:        ptr(authn.SessionID(ctx)),
+		EventName:        auditlog.UpdateOrganizationEventName,
+		ResourceName:     "organization",
+		Resource:         pOrganization,
+		PreviousResource: pPreviousOrganization,
+	}); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}
 
 	// send sync organization event

@@ -4,10 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
@@ -184,7 +186,20 @@ func (s *Store) CreateRole(ctx context.Context, req *frontendv1.CreateRoleReques
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &frontendv1.CreateRoleResponse{Role: parseRole(qRole, qRoleActions, qActions)}, nil
+	pRole := parseRole(qRole, qRoleActions, qActions)
+	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
+		ProjectID:      authn.ProjectID(ctx),
+		OrganizationID: ptr(authn.OrganizationID(ctx)),
+		UserID:         ptr(authn.UserID(ctx)),
+		SessionID:      ptr(authn.SessionID(ctx)),
+		EventName:      auditlog.CreateRoleEventName,
+		ResourceName:   "role",
+		Resource:       pRole,
+	}); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+	}
+
+	return &frontendv1.CreateRoleResponse{Role: pRole}, nil
 }
 
 func (s *Store) UpdateRole(ctx context.Context, req *frontendv1.UpdateRoleRequest) (*frontendv1.UpdateRoleResponse, error) {
@@ -228,6 +243,11 @@ func (s *Store) UpdateRole(ctx context.Context, req *frontendv1.UpdateRoleReques
 	qActions, err := q.GetActions(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		return nil, fmt.Errorf("get actions: %w", err)
+	}
+
+	qRoleActions, err := q.BatchGetRoleActionsByRoleID(ctx, []uuid.UUID{qRole.ID})
+	if err != nil {
+		return nil, fmt.Errorf("batch get role actions by role id: %w", err)
 	}
 
 	var updates queries.UpdateRoleParams
@@ -283,7 +303,7 @@ func (s *Store) UpdateRole(ctx context.Context, req *frontendv1.UpdateRoleReques
 		return nil, fmt.Errorf("update role: %w", err)
 	}
 
-	qRoleActions, err := q.BatchGetRoleActionsByRoleID(ctx, []uuid.UUID{qUpdatedRole.ID})
+	qUpdatedRoleActions, err := q.BatchGetRoleActionsByRoleID(ctx, []uuid.UUID{qUpdatedRole.ID})
 	if err != nil {
 		return nil, fmt.Errorf("batch get role actions by role id: %w", err)
 	}
@@ -292,7 +312,22 @@ func (s *Store) UpdateRole(ctx context.Context, req *frontendv1.UpdateRoleReques
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &frontendv1.UpdateRoleResponse{Role: parseRole(qUpdatedRole, qRoleActions, qActions)}, nil
+	pRole := parseRole(qUpdatedRole, qUpdatedRoleActions, qActions)
+	pPreviousRole := parseRole(qRole, qRoleActions, qActions)
+	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
+		ProjectID:        authn.ProjectID(ctx),
+		OrganizationID:   ptr(authn.OrganizationID(ctx)),
+		UserID:           ptr(authn.UserID(ctx)),
+		SessionID:        ptr(authn.SessionID(ctx)),
+		EventName:        auditlog.UpdateRoleEventName,
+		ResourceName:     "role",
+		Resource:         pRole,
+		PreviousResource: pPreviousRole,
+	}); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+	}
+
+	return &frontendv1.UpdateRoleResponse{Role: pRole}, nil
 }
 
 func (s *Store) DeleteRole(ctx context.Context, req *frontendv1.DeleteRoleRequest) (*frontendv1.DeleteRoleResponse, error) {
@@ -312,15 +347,26 @@ func (s *Store) DeleteRole(ctx context.Context, req *frontendv1.DeleteRoleReques
 	}
 
 	orgID := authn.OrganizationID(ctx)
-	if _, err := q.GetRoleInOrganization(ctx, queries.GetRoleInOrganizationParams{
+	qRole, err := q.GetRoleInOrganization(ctx, queries.GetRoleInOrganizationParams{
 		ProjectID:      authn.ProjectID(ctx),
 		OrganizationID: &orgID,
 		ID:             roleID,
-	}); err != nil {
+	})
+	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("role not found", fmt.Errorf("get role: %w", err))
 		}
 		return nil, fmt.Errorf("get role: %w", err)
+	}
+
+	qRoleActions, err := q.BatchGetRoleActionsByRoleID(ctx, []uuid.UUID{qRole.ID})
+	if err != nil {
+		return nil, fmt.Errorf("batch get role actions by role id: %w", err)
+	}
+
+	qActions, err := q.GetActions(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get actions: %w", err)
 	}
 
 	err = q.DeleteRole(ctx, roleID)
@@ -330,6 +376,19 @@ func (s *Store) DeleteRole(ctx context.Context, req *frontendv1.DeleteRoleReques
 
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	pRole := parseRole(qRole, qRoleActions, qActions)
+	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
+		ProjectID:      authn.ProjectID(ctx),
+		OrganizationID: ptr(authn.OrganizationID(ctx)),
+		UserID:         ptr(authn.UserID(ctx)),
+		SessionID:      ptr(authn.SessionID(ctx)),
+		EventName:      auditlog.DeleteRoleEventName,
+		ResourceName:   "role",
+		Resource:       pRole,
+	}); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}
 
 	return &frontendv1.DeleteRoleResponse{}, nil

@@ -96,3 +96,7 @@ func timestampOrNil(t *time.Time) *timestamppb.Timestamp {
 	}
 	return timestamppb.New(*t)
 }
+
+func ptr[T any](t T) *T {
+	return &t
+}

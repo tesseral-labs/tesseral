@@ -11,6 +11,7 @@ import (
 	"github.com/svix/svix-webhooks/go/models"
 	"github.com/tesseral-labs/tesseral/internal/bcryptcost"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
@@ -176,7 +177,22 @@ func (s *Store) UpdateUser(ctx context.Context, req *frontendv1.UpdateUserReques
 		return nil, fmt.Errorf("send sync user event: %w", err)
 	}
 
-	return &frontendv1.UpdateUserResponse{User: parseUser(qUpdatedUser)}, nil
+	pUser := parseUser(qUpdatedUser)
+	pPreviousUser := parseUser(qUser)
+	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
+		ProjectID:        authn.ProjectID(ctx),
+		OrganizationID:   ptr(authn.OrganizationID(ctx)),
+		UserID:           ptr(authn.UserID(ctx)),
+		SessionID:        ptr(authn.SessionID(ctx)),
+		EventName:        auditlog.UpdateUserEventName,
+		ResourceName:     "user",
+		Resource:         pUser,
+		PreviousResource: pPreviousUser,
+	}); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+	}
+
+	return &frontendv1.UpdateUserResponse{User: pUser}, nil
 }
 
 func (s *Store) DeleteUser(ctx context.Context, req *frontendv1.DeleteUserRequest) (*frontendv1.DeleteUserResponse, error) {
@@ -222,6 +238,19 @@ func (s *Store) DeleteUser(ctx context.Context, req *frontendv1.DeleteUserReques
 	// send sync user event
 	if err := s.sendSyncUserEvent(ctx, qUser); err != nil {
 		return nil, fmt.Errorf("send sync user event: %w", err)
+	}
+
+	pUser := parseUser(qUser)
+	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
+		ProjectID:      authn.ProjectID(ctx),
+		OrganizationID: ptr(authn.OrganizationID(ctx)),
+		UserID:         ptr(authn.UserID(ctx)),
+		SessionID:      ptr(authn.SessionID(ctx)),
+		EventName:      auditlog.DeleteUserEventName,
+		ResourceName:   "user",
+		Resource:       pUser,
+	}); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}
 
 	return &frontendv1.DeleteUserResponse{}, nil
