@@ -314,7 +314,7 @@ function RemoveRoleButton({ id }: { id: string }) {
 
 function DangerZoneCard() {
   const navigate = useNavigate();
-  const { organizationId, apiKeyId } = useParams();
+  const { apiKeyId } = useParams();
   const { data: getAPIKeyResponse, refetch } = useQuery(getAPIKey, {
     id: apiKeyId,
   });
@@ -330,7 +330,7 @@ function DangerZoneCard() {
 
     toast.success("API key deleted successfully");
 
-    navigate(`/organizations/${organizationId}/api-keys`);
+    navigate(`/organization-settings/api-keys`);
   }
 
   async function handleRevoke() {
