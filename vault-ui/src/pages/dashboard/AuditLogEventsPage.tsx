@@ -74,7 +74,7 @@ function FilterBar({ onApply, isLoading }: FilterBarProps) {
   const [eventNames, setEventNames] = useState<string[]>([]);
   const [userId, setUserId] = useState("");
 
-  const handleApply = () => {
+  function handleApply() {
     const filter: ListAuditLogEventsRequest_Filter = makeFilter({});
     if (date?.from) {
       filter.startTime = timestampFromDate(date.from);
@@ -89,14 +89,14 @@ function FilterBar({ onApply, isLoading }: FilterBarProps) {
     if (userId) filter.userId = userId;
 
     onApply(filter);
-  };
+  }
 
-  const handleReset = () => {
+  function handleReset() {
     setDate(undefined);
     setEventNames([]);
     setUserId("");
     onApply(makeFilter({}));
-  };
+  }
 
   const hasFilters = date || eventNames.length > 0 || userId;
 
@@ -185,12 +185,12 @@ export function AuditLogEventsPage() {
   // Track expanded rows by event ID
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
 
-  const toggleRow = (eventId: string) => {
+  function toggleRow(eventId: string) {
     setExpandedRows((prev) => ({
       ...prev,
       [eventId]: !prev[eventId],
     }));
-  };
+  }
 
   const handleApplyFilters = useCallback(
     (filter: ListAuditLogEventsRequest_Filter) => {
@@ -217,7 +217,7 @@ export function AuditLogEventsPage() {
     currentRequest,
   );
 
-  const handleNextPage = () => {
+  function handleNextPage() {
     if (data?.nextPageToken) {
       // If we've been here before, just move forward
       if (currentPageIndex < pageTokens.length - 1) {
@@ -229,15 +229,15 @@ export function AuditLogEventsPage() {
       }
       setExpandedRows({}); // Reset expanded rows on next page
     }
-  };
+  }
 
-  const handlePrevPage = () => {
+  function handlePrevPage() {
     if (currentPageIndex > 0) {
       setCurrentPageIndex(currentPageIndex - 1);
     }
-  };
+  }
 
-  const renderActor = (event: AuditLogEvent) => {
+  function renderActor(event: AuditLogEvent) {
     if (event.userId) {
       return event.userId;
     }
@@ -245,7 +245,7 @@ export function AuditLogEventsPage() {
       return event.apiKeyId;
     }
     return <span className="text-muted-foreground">System</span>;
-  };
+  }
 
   return (
     <TooltipProvider>
