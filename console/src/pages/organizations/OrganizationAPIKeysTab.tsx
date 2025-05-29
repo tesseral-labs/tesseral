@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardDetails,
+  ConsoleCardHeader,
+  ConsoleCardTableContent,
+  ConsoleCardTitle,
+} from '@/components/ui/console-card';
 import { useParams } from 'react-router';
 import {
   createStripeCheckoutLink,
@@ -104,17 +106,17 @@ export const OrganizationAPIKeysTab = () => {
   return (
     <div className="space-y-8">
       {!getProjectEntitlementsResponse?.entitledBackendApiKeys ? (
-        <Card>
-          <CardHeader>
-            <div className="flex flex-col space-y-1 5">
-              <CardTitle>API Key Management</CardTitle>
-              <CardDescription>
+        <ConsoleCard>
+          <ConsoleCardHeader>
+            <ConsoleCardDetails>
+              <ConsoleCardTitle>API Key Management</ConsoleCardTitle>
+              <ConsoleCardDescription>
                 API keys are used to authenticate requests to your service. You
                 can create and manage API keys for this Organization.
-              </CardDescription>
-            </div>
-          </CardHeader>
-          <CardContent>
+              </ConsoleCardDescription>
+            </ConsoleCardDetails>
+          </ConsoleCardHeader>
+          <ConsoleCardContent>
             <div className="text-sm my-8 w-full flex flex-col items-center justify-center space-y-6">
               <div className="font-medium">
                 API Keys are available on the Growth Tier.
@@ -134,22 +136,22 @@ export const OrganizationAPIKeysTab = () => {
                 </span>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </ConsoleCardContent>
+        </ConsoleCard>
       ) : (
         <>
-          <Card>
-            <CardHeader className="py-4 flex flex-row items-center justify-between">
+          <ConsoleCard>
+            <ConsoleCardHeader className="py-4 flex flex-row items-center justify-between">
               <div className="flex flex-col space-y-1 5">
-                <CardTitle>API Key Management</CardTitle>
-                <CardDescription>
+                <ConsoleCardTitle>API Key Management</ConsoleCardTitle>
+                <ConsoleCardDescription>
                   API keys are used to authenticate requests to your service.
                   You can create and manage API keys for this Organization.
-                </CardDescription>
+                </ConsoleCardDescription>
               </div>
               <EditAPIKeySettingsButton />
-            </CardHeader>
-            <CardContent>
+            </ConsoleCardHeader>
+            <ConsoleCardContent>
               <DetailsGrid>
                 <DetailsGridColumn>
                   <DetailsGridEntry>
@@ -162,19 +164,19 @@ export const OrganizationAPIKeysTab = () => {
                   </DetailsGridEntry>
                 </DetailsGridColumn>
               </DetailsGrid>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="py-4 flex flex-row items-center justify-between">
+            </ConsoleCardContent>
+          </ConsoleCard>
+          <ConsoleCard>
+            <ConsoleCardHeader className="py-4 flex flex-row items-center justify-between">
               <div className="flex flex-col space-y-1 5">
-                <CardTitle>API Keys</CardTitle>
-                <CardDescription>
+                <ConsoleCardTitle>API Keys</ConsoleCardTitle>
+                <ConsoleCardDescription>
                   Manage the API keys for this organization.
-                </CardDescription>
+                </ConsoleCardDescription>
               </div>
               <CreateAPIKeyButton />
-            </CardHeader>
-            <CardContent>
+            </ConsoleCardHeader>
+            <ConsoleCardTableContent>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -254,8 +256,8 @@ export const OrganizationAPIKeysTab = () => {
                   </Button>
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </ConsoleCardTableContent>
+          </ConsoleCard>
         </>
       )}
     </div>

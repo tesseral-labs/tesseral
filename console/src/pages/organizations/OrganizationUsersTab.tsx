@@ -6,12 +6,13 @@ import {
   listUsers,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDescription,
+  ConsoleCardDetails,
+  ConsoleCardHeader,
+  ConsoleCardTableContent,
+  ConsoleCardTitle,
+} from '@/components/ui/console-card';
 import {
   Table,
   TableBody,
@@ -58,17 +59,17 @@ export const OrganizationUsersTab = () => {
   });
 
   return (
-    <Card>
-      <CardHeader className="flex-row justify-between items-center space-x-4">
-        <div className="flex flex-col space-y-1 5">
-          <CardTitle>Users</CardTitle>
-          <CardDescription>
+    <ConsoleCard>
+      <ConsoleCardHeader>
+        <ConsoleCardDetails>
+          <ConsoleCardTitle>Users</ConsoleCardTitle>
+          <ConsoleCardDescription>
             A user is what people using your product log into.
-          </CardDescription>
-        </div>
+          </ConsoleCardDescription>
+        </ConsoleCardDetails>
         <CreateUserButton />
-      </CardHeader>
-      <CardContent>
+      </ConsoleCardHeader>
+      <ConsoleCardTableContent>
         <Table>
           <TableHeader>
             <TableRow>
@@ -112,8 +113,8 @@ export const OrganizationUsersTab = () => {
             ))}
           </TableBody>
         </Table>
-      </CardContent>
-    </Card>
+      </ConsoleCardTableContent>
+    </ConsoleCard>
   );
 };
 
