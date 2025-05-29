@@ -257,12 +257,12 @@ function UserInviteRow({ userInvite }: { userInvite: UserInvite }) {
 
   const { mutateAsync: deleteUserInviteAsync } = useMutation(deleteUserInvite);
 
-  async function handleRevoke() {
+  async function handleDelete() {
     await deleteUserInviteAsync({
       id: userInvite.id,
     });
     await refetchListUserInvites();
-    toast.success("User invite revoked");
+    toast.success("User invite deleted");
   }
 
   return (
@@ -288,8 +288,8 @@ function UserInviteRow({ userInvite }: { userInvite: UserInvite }) {
         </div>
       </div>
 
-      <Button onClick={handleRevoke} variant="outline">
-        Revoke
+      <Button onClick={handleDelete} variant="outline">
+        Delete Invite
       </Button>
     </div>
   );

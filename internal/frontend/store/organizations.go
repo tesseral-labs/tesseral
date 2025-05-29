@@ -229,6 +229,7 @@ func parseOrganization(qProject queries.Project, qOrg queries.Organization) *fro
 		MicrosoftTenantIds:        nil, // TODO,
 		CustomRolesEnabled:        qOrg.CustomRolesEnabled,
 		ApiKeysEnabled:            qOrg.ApiKeysEnabled && qProject.ApiKeysEnabled && qProject.EntitledBackendApiKeys,
+		ScimEnabled:               qOrg.ScimEnabled,
 	}
 }
 

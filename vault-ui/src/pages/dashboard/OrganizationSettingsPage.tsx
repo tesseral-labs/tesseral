@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { clsx } from "clsx";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Outlet } from "react-router";
 import { Link, useLocation } from "react-router-dom";
@@ -43,17 +43,21 @@ import {
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 
 export function OrganizationSettingsPage() {
-  const [tabs, setTabs] = useState([
-    {
-      root: true,
-      name: "Users",
-      url: `/organization-settings`,
-    },
-    {
-      name: "Advanced Settings",
-      url: `/organization-settings/advanced`,
-    },
-  ]);
+  const initialTabs = useMemo(
+    () => [
+      {
+        root: true,
+        name: "Users",
+        url: `/organization-settings`,
+      },
+      {
+        name: "Login Settings",
+        url: `/organization-settings/login-settings`,
+      },
+    ],
+    [],
+  );
+  const [tabs, setTabs] = useState(initialTabs);
   const { data: getProjectResponse } = useQuery(getProject);
   const { data: getOrganizationResponse } = useQuery(getOrganization);
 
@@ -62,24 +66,48 @@ export function OrganizationSettingsPage() {
     (tab) =>
       tab.url === pathname ||
       (tab.url === "/organization-settings/api-keys" &&
-        pathname.startsWith("/organization-settings/api-keys/")),
+        pathname.startsWith("/organization-settings/api-keys/")) ||
+      (tab.url === "/organization-settings/saml-connections" &&
+        pathname.startsWith("/organization-settings/saml-connections/")) ||
+      (tab.url === "/organization-settings/scim-api-keys" &&
+        pathname.startsWith("/organization-settings/scim-api-keys/")),
   );
 
   useEffect(() => {
+    const newTabs = [...initialTabs];
+
+    if (
+      getProjectResponse?.project?.logInWithSaml &&
+      getOrganizationResponse?.organization?.logInWithSaml
+    ) {
+      newTabs.push({
+        name: "SAML Connections",
+        url: `/organization-settings/saml-connections`,
+      });
+
+      if (getOrganizationResponse?.organization?.scimEnabled) {
+        newTabs.push({
+          name: "SCIM API Keys",
+          url: `/organization-settings/scim-api-keys`,
+        });
+      }
+    }
     if (
       getProjectResponse?.project?.apiKeysEnabled &&
-      getOrganizationResponse?.organization?.apiKeysEnabled &&
-      tabs.length === 2
+      getOrganizationResponse?.organization?.apiKeysEnabled
     ) {
-      // Only add the API Keys tab if the project has API keys enabled
-      tabs.splice(1, 0, {
+      newTabs.push({
         name: "API Keys",
         url: `/organization-settings/api-keys`,
       });
-
-      setTabs([...tabs]);
     }
-  }, [getOrganizationResponse, getProjectResponse, tabs]);
+
+    setTabs((prevTabs) => {
+      const prev = JSON.stringify(prevTabs);
+      const next = JSON.stringify(newTabs);
+      return prev !== next ? newTabs : prevTabs;
+    });
+  }, [getOrganizationResponse, getProjectResponse, initialTabs]);
 
   return (
     <div className="space-y-8">

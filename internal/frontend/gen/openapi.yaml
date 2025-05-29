@@ -1790,6 +1790,8 @@ components:
                         type: string
                 samlEnabled:
                     type: boolean
+                scimEnabled:
+                    type: boolean
                 customRolesEnabled:
                     type: boolean
                 apiKeysEnabled:
