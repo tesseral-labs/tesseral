@@ -1,9 +1,19 @@
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { DateTime } from "luxon";
-import React from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,6 +23,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  deleteMyPasskey,
   getPasskeyOptions,
   listMyPasskeys,
   registerPasskey,
@@ -95,7 +106,7 @@ export function UserSettingsPage() {
                   </div>
                 </div>
 
-                <Button variant="outline">Delete</Button>
+                <DeletePasskeyButton passkeyId={passkey.id} />
               </div>
             ))}
           </div>
@@ -157,6 +168,42 @@ function RegisterPasskeyButton() {
     <Button variant="outline" onClick={handleRegisterPasskey}>
       Register Passkey
     </Button>
+  );
+}
+
+function DeletePasskeyButton({ passkeyId }: { passkeyId: string }) {
+  const { mutateAsync: deletePasskeyAsync } = useMutation(deleteMyPasskey);
+  const { refetch: refetchListMyPasskeys } = useQuery(listMyPasskeys);
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  async function handleDeletePasskey() {
+    await deletePasskeyAsync({ id: passkeyId });
+    await refetchListMyPasskeys();
+    toast.success("Passkey deleted");
+  }
+
+  return (
+    <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <AlertDialogTrigger asChild>
+        <Button variant="outline">Delete</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. The passkey will be permanently
+            deleted.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <Button variant="destructive" onClick={handleDeletePasskey}>
+            Delete Passkey
+          </Button>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
 
