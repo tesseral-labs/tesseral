@@ -76,7 +76,7 @@ func (s *Store) CreateAPIKeyRoleAssignment(ctx context.Context, req *frontendv1.
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
 		EventName:      auditlog.CreateAPIKeyRoleAssignmentEventName,
-		ResourceName:   "api_key_role_assignment",
+		ResourceName:   "apiKeyRoleAssignment",
 		Resource:       pAPIKeyRoleAssignment,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
@@ -128,7 +128,7 @@ func (s *Store) DeleteAPIKeyRoleAssignment(ctx context.Context, req *frontendv1.
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
 		EventName:      auditlog.DeleteAPIKeyRoleAssignmentEventName,
-		ResourceName:   "api_key_role_assignment",
+		ResourceName:   "apiKeyRoleAssignment",
 		Resource:       pAPIKeyRoleAssignment,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)

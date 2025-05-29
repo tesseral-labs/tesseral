@@ -6,6 +6,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/tesseral-labs/tesseral/internal/common/store/queries"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
@@ -58,6 +60,10 @@ type TesseralEventData struct {
 	PreviousResource proto.Message
 }
 
+var (
+	titleCaser = cases.Title(language.English)
+)
+
 func NewTesseralEvent(data TesseralEventData) (Event, error) {
 	details := make(map[string]any)
 	if data.PreviousResource != nil {
@@ -65,7 +71,7 @@ func NewTesseralEvent(data TesseralEventData) (Event, error) {
 		if err != nil {
 			return Event{}, err
 		}
-		details[fmt.Sprintf("previous_%s", data.ResourceName)] = json.RawMessage(previousResourceBytes)
+		details[fmt.Sprintf("previous%s", titleCaser.String(data.ResourceName))] = json.RawMessage(previousResourceBytes)
 	}
 	if data.Resource != nil {
 		resourceBytes, err := protojson.Marshal(data.Resource)

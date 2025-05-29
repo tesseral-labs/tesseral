@@ -70,7 +70,7 @@ func (s *Store) UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, req *f
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
 		EventName:      auditlog.UpdateMicrosoftTenantIDsEventName,
-		ResourceName:   "microsoft_tenant_ids",
+		ResourceName:   "microsoftTenantIds",
 		Resource:       pMicrosoftTenantIDs,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)

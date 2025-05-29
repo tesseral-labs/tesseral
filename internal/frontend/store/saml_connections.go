@@ -183,7 +183,7 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *frontendv1.Create
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
 		EventName:      auditlog.CreateSAMLConnectionEventName,
-		ResourceName:   "saml_connection",
+		ResourceName:   "samlConnection",
 		Resource:       pSAMLConnection,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
@@ -295,7 +295,7 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *frontendv1.Update
 		UserID:           ptr(authn.UserID(ctx)),
 		SessionID:        ptr(authn.SessionID(ctx)),
 		EventName:        auditlog.UpdateSAMLConnectionEventName,
-		ResourceName:     "saml_connection",
+		ResourceName:     "samlConnection",
 		Resource:         pSAMLConnection,
 		PreviousResource: pPreviousSAMLConnection,
 	}); err != nil {
@@ -354,7 +354,7 @@ func (s *Store) DeleteSAMLConnection(ctx context.Context, req *frontendv1.Delete
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
 		EventName:      auditlog.DeleteSAMLConnectionEventName,
-		ResourceName:   "saml_connection",
+		ResourceName:   "samlConnection",
 		Resource:       pSAMLConnection,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)

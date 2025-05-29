@@ -239,7 +239,7 @@ func (s *Store) CreateUserRoleAssignment(ctx context.Context, req *frontendv1.Cr
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
 		EventName:      auditlog.CreateUserRoleAssignmentEventName,
-		ResourceName:   "user_role_assignment",
+		ResourceName:   "userRoleAssignment",
 		Resource:       pUserRoleAssignment,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
@@ -292,7 +292,7 @@ func (s *Store) DeleteUserRoleAssignment(ctx context.Context, req *frontendv1.De
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
 		EventName:      auditlog.DeleteUserRoleAssignmentEventName,
-		ResourceName:   "user_role_assignment",
+		ResourceName:   "userRoleAssignment",
 		Resource:       pUserRoleAssignment,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)

@@ -133,7 +133,7 @@ func (s *Store) CreateSCIMAPIKey(ctx context.Context, req *frontendv1.CreateSCIM
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
 		EventName:      auditlog.CreateSCIMAPIKeyEventName,
-		ResourceName:   "scim_api_key",
+		ResourceName:   "scimApiKey",
 		Resource:       scimAPIKey,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
@@ -196,7 +196,7 @@ func (s *Store) UpdateSCIMAPIKey(ctx context.Context, req *frontendv1.UpdateSCIM
 		UserID:           ptr(authn.UserID(ctx)),
 		SessionID:        ptr(authn.SessionID(ctx)),
 		EventName:        auditlog.UpdateSCIMAPIKeyEventName,
-		ResourceName:     "scim_api_key",
+		ResourceName:     "scimApiKey",
 		Resource:         pSCIMAPIKey,
 		PreviousResource: pPreviousSCIMAPIKey,
 	}); err != nil {
@@ -254,7 +254,7 @@ func (s *Store) DeleteSCIMAPIKey(ctx context.Context, req *frontendv1.DeleteSCIM
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
 		EventName:      auditlog.DeleteSCIMAPIKeyEventName,
-		ResourceName:   "scim_api_key",
+		ResourceName:   "scimApiKey",
 		Resource:       pSCIMAPIKey,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
@@ -307,7 +307,7 @@ func (s *Store) RevokeSCIMAPIKey(ctx context.Context, req *frontendv1.RevokeSCIM
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
 		EventName:      auditlog.RevokeSCIMAPIKeyEventName,
-		ResourceName:   "scim_api_key",
+		ResourceName:   "scimApiKey",
 		Resource:       pSCIMAPIKey,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)

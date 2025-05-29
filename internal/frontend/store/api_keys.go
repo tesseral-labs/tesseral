@@ -95,7 +95,7 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *frontendv1.CreateAPIKeyRe
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
 		EventName:      auditlog.CreateAPIKeyEventName,
-		ResourceName:   "api_key",
+		ResourceName:   "apiKey",
 		Resource:       pAPIKey,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
@@ -151,7 +151,7 @@ func (s *Store) DeleteAPIKey(ctx context.Context, req *frontendv1.DeleteAPIKeyRe
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
 		EventName:      auditlog.DeleteAPIKeyEventName,
-		ResourceName:   "api_key",
+		ResourceName:   "apiKey",
 		Resource:       pAPIKey,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
@@ -270,7 +270,7 @@ func (s *Store) RevokeAPIKey(ctx context.Context, req *frontendv1.RevokeAPIKeyRe
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
 		EventName:      auditlog.RevokeAPIKeyEventName,
-		ResourceName:   "api_key",
+		ResourceName:   "apiKey",
 		Resource:       pAPIKey,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
@@ -323,7 +323,7 @@ func (s *Store) UpdateAPIKey(ctx context.Context, req *frontendv1.UpdateAPIKeyRe
 		UserID:           ptr(authn.UserID(ctx)),
 		SessionID:        ptr(authn.SessionID(ctx)),
 		EventName:        auditlog.UpdateAPIKeyEventName,
-		ResourceName:     "api_key",
+		ResourceName:     "apiKey",
 		Resource:         pAPIKey,
 		PreviousResource: pPreviousAPIKey,
 	}); err != nil {

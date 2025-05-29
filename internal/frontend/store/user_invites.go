@@ -173,7 +173,7 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *frontendv1.CreateUser
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
 		EventName:      auditlog.CreateUserInviteEventName,
-		ResourceName:   "user_invite",
+		ResourceName:   "userInvite",
 		Resource:       pUserInvite,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
@@ -225,7 +225,7 @@ func (s *Store) DeleteUserInvite(ctx context.Context, req *frontendv1.DeleteUser
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
 		EventName:      auditlog.DeleteUserInviteEventName,
-		ResourceName:   "user_invite",
+		ResourceName:   "userInvite",
 		Resource:       pUserInvite,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)

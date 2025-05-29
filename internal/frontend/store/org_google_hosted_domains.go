@@ -70,7 +70,7 @@ func (s *Store) UpdateOrganizationGoogleHostedDomains(ctx context.Context, req *
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
 		EventName:      auditlog.UpdateGoogleHostedDomainsEventName,
-		ResourceName:   "google_hosted_domains",
+		ResourceName:   "googleHostedDomains",
 		Resource:       pGoogleHostedDomains,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
