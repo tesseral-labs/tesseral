@@ -1993,7 +1993,7 @@ export const DeleteAPIKeyRoleAssignmentResponseSchema: GenMessage<DeleteAPIKeyRo
  */
 export type ListAuditLogEventsRequest = Message<"tesseral.frontend.v1.ListAuditLogEventsRequest"> & {
   /**
-   * A page token, received from a previous `ListAuditLogEvents` call.
+   * A pagination token. Leave empty to get the first page of results.
    *
    * @generated from field: string page_token = 1;
    */

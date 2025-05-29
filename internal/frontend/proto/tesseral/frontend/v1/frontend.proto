@@ -750,7 +750,7 @@ message DeleteAPIKeyRoleAssignmentRequest {
 message DeleteAPIKeyRoleAssignmentResponse {}
 
 message ListAuditLogEventsRequest {
-  // A page token, received from a previous `ListAuditLogEvents` call.
+  // A pagination token. Leave empty to get the first page of results.
   string page_token = 1;
 
   // The start time to filter by, if any.

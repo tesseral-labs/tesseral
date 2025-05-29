@@ -5026,7 +5026,7 @@ func (*DeleteAPIKeyRoleAssignmentResponse) Descriptor() ([]byte, []int) {
 
 type ListAuditLogEventsRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// A page token, received from a previous `ListAuditLogEvents` call.
+	// A pagination token. Leave empty to get the first page of results.
 	PageToken string `protobuf:"bytes,1,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	// The start time to filter by, if any.
 	FilterStartTime *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=filter_start_time,json=filterStartTime,proto3" json:"filter_start_time,omitempty"`
