@@ -12,12 +12,13 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDetails,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+} from '@/components/ui/console-card';
 import {
   getProject,
   updateProject,
@@ -48,26 +49,25 @@ import {
 import { EditProjectGoogleSettingsButton } from './EditProjectGoogleSettingsButton';
 import { EditProjectMicrosoftSettingsButton } from './EditProjectMicrosoftSettingsButton';
 import { EditProjectGithubSettingsButton } from './EditProjectGithubSettingsButton';
-import { ConsoleCardDetails } from '@/components/ui/console-card';
 
 export function LoginSettingsTab() {
   const { data: getProjectResponse } = useQuery(getProject, {});
 
   return (
     <div className="space-y-8">
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
+      <ConsoleCard>
+        <ConsoleCardHeader className="flex-row justify-between items-center">
           <ConsoleCardDetails>
-            <CardTitle>Login Methods</CardTitle>
-            <CardDescription>
+            <ConsoleCardTitle>Login Methods</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Primary and secondary authentication methods your users can use.
               Organizations can take this list and restrict it further, but they
               can't add to it.
-            </CardDescription>
+            </ConsoleCardDescription>
           </ConsoleCardDetails>
           <EditLoginMethodsButton />
-        </CardHeader>
-        <CardContent>
+        </ConsoleCardHeader>
+        <ConsoleCardContent>
           <DetailsGrid>
             <DetailsGridColumn>
               <DetailsGridEntry>
@@ -120,20 +120,20 @@ export function LoginSettingsTab() {
               </DetailsGridEntry>
             </DetailsGridColumn>
           </DetailsGrid>
-        </CardContent>
-      </Card>
+        </ConsoleCardContent>
+      </ConsoleCard>
 
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
+      <ConsoleCard>
+        <ConsoleCardHeader className="flex-row justify-between items-center">
           <ConsoleCardDetails>
-            <CardTitle>Google settings</CardTitle>
-            <CardDescription>
+            <ConsoleCardTitle>Google settings</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Settings for "Log in with Google" in your project.
-            </CardDescription>
+            </ConsoleCardDescription>
           </ConsoleCardDetails>
           <EditProjectGoogleSettingsButton />
-        </CardHeader>
-        <CardContent>
+        </ConsoleCardHeader>
+        <ConsoleCardContent>
           <DetailsGrid>
             <DetailsGridColumn>
               <DetailsGridEntry>
@@ -166,19 +166,19 @@ export function LoginSettingsTab() {
               </DetailsGridEntry>
             </DetailsGridColumn>
           </DetailsGrid>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
+        </ConsoleCardContent>
+      </ConsoleCard>
+      <ConsoleCard>
+        <ConsoleCardHeader className="flex-row justify-between items-center">
           <ConsoleCardDetails>
-            <CardTitle>Microsoft settings</CardTitle>
-            <CardDescription>
+            <ConsoleCardTitle>Microsoft settings</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Settings for "Log in with Microsoft" in your project.
-            </CardDescription>
+            </ConsoleCardDescription>
           </ConsoleCardDetails>
           <EditProjectMicrosoftSettingsButton />
-        </CardHeader>
-        <CardContent>
+        </ConsoleCardHeader>
+        <ConsoleCardContent>
           <DetailsGrid>
             <DetailsGridColumn>
               <DetailsGridEntry>
@@ -211,20 +211,20 @@ export function LoginSettingsTab() {
               </DetailsGridEntry>
             </DetailsGridColumn>
           </DetailsGrid>
-        </CardContent>
-      </Card>
+        </ConsoleCardContent>
+      </ConsoleCard>
 
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
+      <ConsoleCard>
+        <ConsoleCardHeader className="flex-row justify-between items-center">
           <ConsoleCardDetails>
-            <CardTitle>GitHub settings</CardTitle>
-            <CardDescription>
+            <ConsoleCardTitle>GitHub settings</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Settings for "Log in with GitHub" in your project.
-            </CardDescription>
+            </ConsoleCardDescription>
           </ConsoleCardDetails>
           <EditProjectGithubSettingsButton />
-        </CardHeader>
-        <CardContent>
+        </ConsoleCardHeader>
+        <ConsoleCardContent>
           <DetailsGrid>
             <DetailsGridColumn>
               <DetailsGridEntry>
@@ -257,8 +257,8 @@ export function LoginSettingsTab() {
               </DetailsGridEntry>
             </DetailsGridColumn>
           </DetailsGrid>
-        </CardContent>
-      </Card>
+        </ConsoleCardContent>
+      </ConsoleCard>
     </div>
   );
 }

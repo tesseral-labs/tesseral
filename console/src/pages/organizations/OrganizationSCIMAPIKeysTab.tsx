@@ -6,11 +6,14 @@ import {
   listSCIMAPIKeys,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDetails,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 import {
   Table,
   TableBody,
@@ -47,10 +50,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { SecretCopier } from '@/components/SecretCopier';
-import {
-  ConsoleCardDetails,
-  ConsoleCardTableContent,
-} from '@/components/ui/console-card';
 
 export const OrganizationSCIMAPIKeysTab = () => {
   const { organizationId } = useParams();
@@ -59,16 +58,16 @@ export const OrganizationSCIMAPIKeysTab = () => {
   });
 
   return (
-    <Card>
-      <CardHeader className="flex-row justify-between items-center">
+    <ConsoleCard>
+      <ConsoleCardHeader className="flex-row justify-between items-center">
         <ConsoleCardDetails>
-          <CardTitle>SCIM API Keys</CardTitle>
-          <CardDescription>
+          <ConsoleCardTitle>SCIM API Keys</ConsoleCardTitle>
+          <ConsoleCardDescription>
             A SCIM API key lets your customer do enterprise directory syncing.
-          </CardDescription>
+          </ConsoleCardDescription>
         </ConsoleCardDetails>
         <CreateSCIMAPIKeyButton />
-      </CardHeader>
+      </ConsoleCardHeader>
       <ConsoleCardTableContent>
         <Table>
           <TableHeader>
@@ -108,7 +107,7 @@ export const OrganizationSCIMAPIKeysTab = () => {
           </TableBody>
         </Table>
       </ConsoleCardTableContent>
-    </Card>
+    </ConsoleCard>
   );
 };
 

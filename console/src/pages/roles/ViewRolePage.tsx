@@ -33,12 +33,14 @@ import {
   DetailsGridValue,
 } from '@/components/details-grid';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDetails,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 import { DateTime } from 'luxon';
 import { timestampDate } from '@bufbuild/protobuf/wkt';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -55,10 +57,6 @@ import {
 } from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
 import { UserRoleAssignment } from '@/gen/tesseral/backend/v1/models_pb';
-import {
-  ConsoleCardDetails,
-  ConsoleCardTableContent,
-} from '@/components/ui/console-card';
 
 export function ViewRolePage() {
   const { roleId } = useParams();
@@ -93,17 +91,19 @@ export function ViewRolePage() {
 
       <PageContent>
         <div className="space-y-8">
-          <Card>
-            <CardHeader className="flex-row justify-between items-center gap-x-2">
+          <ConsoleCard>
+            <ConsoleCardHeader className="flex-row justify-between items-center gap-x-2">
               <ConsoleCardDetails>
-                <CardTitle>General settings</CardTitle>
-                <CardDescription>Basic settings for this Role.</CardDescription>
+                <ConsoleCardTitle>General settings</ConsoleCardTitle>
+                <ConsoleCardDescription>
+                  Basic settings for this Role.
+                </ConsoleCardDescription>
               </ConsoleCardDetails>
               <Link to={`/roles/${roleId}/edit`}>
                 <Button variant="outline">Edit</Button>
               </Link>
-            </CardHeader>
-            <CardContent>
+            </ConsoleCardHeader>
+            <ConsoleCardContent>
               <DetailsGrid>
                 <DetailsGridColumn>
                   <DetailsGridEntry>
@@ -171,14 +171,16 @@ export function ViewRolePage() {
                   </DetailsGridEntry>
                 </DetailsGridColumn>
               </DetailsGrid>
-            </CardContent>
-          </Card>
+            </ConsoleCardContent>
+          </ConsoleCard>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Assigned Users</CardTitle>
-              <CardDescription>Users assigned to this Role.</CardDescription>
-            </CardHeader>
+          <ConsoleCard>
+            <ConsoleCardHeader>
+              <ConsoleCardTitle>Assigned Users</ConsoleCardTitle>
+              <ConsoleCardDescription>
+                Users assigned to this Role.
+              </ConsoleCardDescription>
+            </ConsoleCardHeader>
             <ConsoleCardTableContent>
               <Table>
                 <TableHeader>
@@ -200,7 +202,7 @@ export function ViewRolePage() {
                 </TableBody>
               </Table>
             </ConsoleCardTableContent>
-          </Card>
+          </ConsoleCard>
         </div>
         <DangerZoneCard />
       </PageContent>
@@ -299,12 +301,12 @@ function UserRoleAssignmentRow({
 
 function DangerZoneCard() {
   return (
-    <Card className="mt-8 border-destructive">
-      <CardHeader>
-        <CardTitle>Danger Zone</CardTitle>
-      </CardHeader>
+    <ConsoleCard className="mt-8 border-destructive">
+      <ConsoleCardHeader>
+        <ConsoleCardTitle>Danger Zone</ConsoleCardTitle>
+      </ConsoleCardHeader>
 
-      <CardContent>
+      <ConsoleCardContent>
         <div className="flex justify-between items-center">
           <div>
             <div className="text-sm font-semibold">Delete Role</div>
@@ -316,8 +318,8 @@ function DangerZoneCard() {
 
           <DeleteRoleButton />
         </div>
-      </CardContent>
-    </Card>
+      </ConsoleCardContent>
+    </ConsoleCard>
   );
 }
 

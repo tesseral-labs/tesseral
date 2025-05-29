@@ -1,11 +1,3 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
 import { Link } from 'react-router-dom';
 import {
   PageCodeSubtitle,
@@ -22,12 +14,13 @@ import {
   updateRBACPolicy,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+  ConsoleCardTableContent,
+  ConsoleCardDetails,
+} from '@/components/ui/console-card';
 import {
   Table,
   TableBody,
@@ -61,7 +54,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router';
-import { ConsoleCardTableContent } from '@/components/ui/console-card';
 
 export function EditRBACPolicyPage() {
   const { data: getProjectResponse } = useQuery(getProject, {});
@@ -110,15 +102,17 @@ export function EditRBACPolicyPage() {
         </PageDescription>
       </PageHeader>
       <PageContent>
-        <Card className="mt-8">
-          <CardHeader className="flex-row justify-between items-center gap-x-2">
-            <div className="flex flex-col space-y-1.5">
-              <CardTitle>Role-Based Access Control Policy</CardTitle>
-              <CardDescription>
+        <ConsoleCard className="mt-8">
+          <ConsoleCardHeader className="flex-row justify-between items-center gap-x-2">
+            <ConsoleCardDetails>
+              <ConsoleCardTitle>
+                Role-Based Access Control Policy
+              </ConsoleCardTitle>
+              <ConsoleCardDescription>
                 A Role-Based Access Control Policy is the set of fine-grained
                 Actions in a Project.
-              </CardDescription>
-            </div>
+              </ConsoleCardDescription>
+            </ConsoleCardDetails>
 
             <div className="shrink-0 space-x-4">
               <Link to="/project-settings/rbac-settings">
@@ -126,7 +120,7 @@ export function EditRBACPolicyPage() {
               </Link>
               <Button onClick={handleSave}>Save</Button>
             </div>
-          </CardHeader>
+          </ConsoleCardHeader>
 
           <ConsoleCardTableContent>
             <Table>
@@ -173,7 +167,7 @@ export function EditRBACPolicyPage() {
               </Button>
             </EditActionButton>
           </ConsoleCardTableContent>
-        </Card>
+        </ConsoleCard>
       </PageContent>
     </>
   );

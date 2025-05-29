@@ -1,24 +1,19 @@
 import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   getOrganization,
-  getProjectEntitlements,
   updateOrganization,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import { Outlet, useLocation, useParams } from 'react-router';
 import React, { FC, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import { timestampDate } from '@bufbuild/protobuf/wkt';
-import { clsx } from 'clsx';
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDetails,
+  ConsoleCardContent,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+} from '@/components/ui/console-card';
 import {
   PageCodeSubtitle,
   PageContent,
@@ -49,7 +44,6 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { Organization } from '@/gen/tesseral/backend/v1/models_pb';
 import { TabBar, TabBarLink } from '@/components/ui/tab-bar';
-import { ConsoleCardDetails } from '@/components/ui/console-card';
 
 export const ViewOrganizationPage = () => {
   const { organizationId } = useParams();
@@ -117,14 +111,16 @@ export const ViewOrganizationPage = () => {
       </PageHeader>
       <PageContent>
         {currentTab?.root && (
-          <Card className="my-8">
-            <CardHeader className="py-4 flex flex-row items-center justify-between">
+          <ConsoleCard className="my-8">
+            <ConsoleCardHeader className="py-4 flex flex-row items-center justify-between">
               <ConsoleCardDetails>
-                <CardTitle className="text-xl">General configuration</CardTitle>
+                <ConsoleCardTitle className="text-xl">
+                  General configuration
+                </ConsoleCardTitle>
               </ConsoleCardDetails>
               <EditOrganizationButton />
-            </CardHeader>
-            <CardContent>
+            </ConsoleCardHeader>
+            <ConsoleCardContent>
               <div className="grid grid-cols-3 gap-x-2 text-sm">
                 <div className="border-r border-gray-200 pr-8">
                   <div className="font-semibold">Display Name</div>
@@ -155,8 +151,8 @@ export const ViewOrganizationPage = () => {
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </ConsoleCardContent>
+          </ConsoleCard>
         )}
 
         <div className="mt-4">

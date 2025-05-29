@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+} from '@/components/ui/console-card';
 import {
   DetailsGrid,
   DetailsGridColumn,
@@ -70,19 +70,19 @@ export const ProjectDetailsTab = () => {
 
   return (
     <div className="space-y-8">
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
+      <ConsoleCard>
+        <ConsoleCardHeader className="flex-row justify-between items-center">
           <ConsoleCardDetails>
-            <CardTitle>Redirect Settings</CardTitle>
-            <CardDescription>
+            <ConsoleCardTitle>Redirect Settings</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Where Tesseral will redirect your users whenever they return from
               your project's Vault. You can special-case where they go after
               logging in or signing up.
-            </CardDescription>
+            </ConsoleCardDescription>
           </ConsoleCardDetails>
           <EditProjectRedirectURIsButton />
-        </CardHeader>
-        <CardContent>
+        </ConsoleCardHeader>
+        <ConsoleCardContent>
           <DetailsGrid>
             <DetailsGridColumn>
               <DetailsGridEntry>
@@ -115,20 +115,20 @@ export const ProjectDetailsTab = () => {
               </DetailsGridEntry>
             </DetailsGridColumn>
           </DetailsGrid>
-        </CardContent>
-      </Card>
+        </ConsoleCardContent>
+      </ConsoleCard>
 
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
+      <ConsoleCard>
+        <ConsoleCardHeader className="flex-row justify-between items-center">
           <ConsoleCardDetails>
-            <CardTitle>Domains settings</CardTitle>
-            <CardDescription>
+            <ConsoleCardTitle>Domains settings</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Settings related to domains that your project runs on.
-            </CardDescription>
+            </ConsoleCardDescription>
           </ConsoleCardDetails>
           <EditProjectDomainSettingsButton />
-        </CardHeader>
-        <CardContent>
+        </ConsoleCardHeader>
+        <ConsoleCardContent>
           <DetailsGrid>
             <DetailsGridColumn>
               <DetailsGridEntry>
@@ -149,22 +149,22 @@ export const ProjectDetailsTab = () => {
               </DetailsGridEntry>
             </DetailsGridColumn>
           </DetailsGrid>
-        </CardContent>
-      </Card>
+        </ConsoleCardContent>
+      </ConsoleCard>
 
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
+      <ConsoleCard>
+        <ConsoleCardHeader className="flex-row justify-between items-center">
           <ConsoleCardDetails>
-            <CardTitle>API key settings</CardTitle>
-            <CardDescription>
+            <ConsoleCardTitle>API key settings</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Settings for API keys used by your customers with your product.
-            </CardDescription>
+            </ConsoleCardDescription>
           </ConsoleCardDetails>
           {getProjectEntitlementsResponse?.entitledBackendApiKeys && (
             <EditAPIKeySettingsButton />
           )}
-        </CardHeader>
-        <CardContent>
+        </ConsoleCardHeader>
+        <ConsoleCardContent>
           {!getProjectEntitlementsResponse?.entitledBackendApiKeys ? (
             <div className="text-sm my-8 w-full flex flex-col items-center justify-center space-y-6">
               <div className="font-medium">
@@ -208,24 +208,24 @@ export const ProjectDetailsTab = () => {
               </DetailsGridColumn>
             </DetailsGrid>
           )}
-        </CardContent>
-      </Card>
+        </ConsoleCardContent>
+      </ConsoleCard>
 
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
+      <ConsoleCard>
+        <ConsoleCardHeader className="flex-row justify-between items-center">
           <ConsoleCardDetails>
-            <CardTitle>Webhook settings</CardTitle>
-            <CardDescription>
+            <ConsoleCardTitle>Webhook settings</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Settings for webhooks sent from Tesseral to your application about
               your project.
-            </CardDescription>
+            </ConsoleCardDescription>
           </ConsoleCardDetails>
           <a href={getProjectWebhookManagementUrlResponse?.url} target="_blank">
             <Button variant="outline">Edit</Button>
           </a>
-        </CardHeader>
-        <CardContent></CardContent>
-      </Card>
+        </ConsoleCardHeader>
+        <ConsoleCardContent></ConsoleCardContent>
+      </ConsoleCard>
     </div>
   );
 };

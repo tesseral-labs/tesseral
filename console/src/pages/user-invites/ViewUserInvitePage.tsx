@@ -21,12 +21,14 @@ import {
   DetailsGridValue,
 } from '@/components/details-grid';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDetails,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 import { DateTime } from 'luxon';
 import { timestampDate } from '@bufbuild/protobuf/wkt';
 import { Button } from '@/components/ui/button';
@@ -54,14 +56,14 @@ export const ViewUserInvitePage = () => {
       </PageHeader>
 
       <PageContent>
-        <Card className="my-8">
-          <CardHeader>
-            <CardTitle>General settings</CardTitle>
-            <CardDescription>
+        <ConsoleCard className="my-8">
+          <ConsoleCardHeader>
+            <ConsoleCardTitle>General settings</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Basic settings for this user invite.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+            </ConsoleCardDescription>
+          </ConsoleCardHeader>
+          <ConsoleCardContent>
             <DetailsGrid>
               <DetailsGridColumn>
                 <DetailsGridEntry>
@@ -104,8 +106,8 @@ export const ViewUserInvitePage = () => {
                 </DetailsGridEntry>
               </DetailsGridColumn>
             </DetailsGrid>
-          </CardContent>
-        </Card>
+          </ConsoleCardContent>
+        </ConsoleCard>
 
         <DangerZoneCard />
       </PageContent>
@@ -129,12 +131,12 @@ const DangerZoneCard = () => {
 
   return (
     <>
-      <Card className="border-destructive">
-        <CardHeader>
-          <CardTitle>Danger Zone</CardTitle>
-        </CardHeader>
+      <ConsoleCard className="border-destructive">
+        <ConsoleCardHeader>
+          <ConsoleCardTitle>Danger Zone</ConsoleCardTitle>
+        </ConsoleCardHeader>
 
-        <CardContent>
+        <ConsoleCardContent>
           <div className="flex justify-between items-center">
             <div>
               <div className="text-sm font-semibold">Delete User Invite</div>
@@ -148,8 +150,8 @@ const DangerZoneCard = () => {
               Delete User Invite
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </ConsoleCardContent>
+      </ConsoleCard>
     </>
   );
 };

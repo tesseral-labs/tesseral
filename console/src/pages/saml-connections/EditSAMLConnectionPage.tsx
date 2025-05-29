@@ -22,12 +22,12 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Link } from 'react-router-dom';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+} from '@/components/ui/console-card';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { PageContent, PageHeader, PageTitle } from '@/components/page';
@@ -107,14 +107,14 @@ export const EditSAMLConnectionPage = () => {
         preventing the compiler from inferring the correct types.*/}
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             {/* eslint-enable @typescript-eslint/no-unsafe-call */}
-            <Card>
-              <CardHeader>
-                <CardTitle>SAML connection settings</CardTitle>
-                <CardDescription>
+            <ConsoleCard>
+              <ConsoleCardHeader>
+                <ConsoleCardTitle>SAML connection settings</ConsoleCardTitle>
+                <ConsoleCardDescription>
                   Configure basic settings on this SAML connection.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-8">
+                </ConsoleCardDescription>
+              </ConsoleCardHeader>
+              <ConsoleCardContent className="space-y-8">
                 <FormField
                   control={form.control}
                   name="primary"
@@ -136,19 +136,19 @@ export const EditSAMLConnectionPage = () => {
                     </FormItem>
                   )}
                 />
-              </CardContent>
-            </Card>
+              </ConsoleCardContent>
+            </ConsoleCard>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Service Provider settings</CardTitle>
-                <CardDescription>
+            <ConsoleCard>
+              <ConsoleCardHeader>
+                <ConsoleCardTitle>Service Provider settings</ConsoleCardTitle>
+                <ConsoleCardDescription>
                   The configuration here is assigned automatically by Tesseral,
                   and needs to be inputted into your customer's Identity
                   Provider by their IT admin.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-8">
+                </ConsoleCardDescription>
+              </ConsoleCardHeader>
+              <ConsoleCardContent className="space-y-8">
                 <div>
                   <div className="text-sm font-medium leading-none">
                     Assertion Consumer Service (ACS) URL
@@ -165,17 +165,17 @@ export const EditSAMLConnectionPage = () => {
                     {getSAMLConnectionResponse?.samlConnection?.spEntityId}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Identity Provider settings</CardTitle>
-                <CardDescription>
+              </ConsoleCardContent>
+            </ConsoleCard>
+            <ConsoleCard>
+              <ConsoleCardHeader>
+                <ConsoleCardTitle>Identity Provider settings</ConsoleCardTitle>
+                <ConsoleCardDescription>
                   The configuration here needs to be copied over from the
                   customer's Identity Provider ("IDP").
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-8">
+                </ConsoleCardDescription>
+              </ConsoleCardHeader>
+              <ConsoleCardContent className="space-y-8">
                 <FormField
                   control={form.control}
                   name="idpEntityId"
@@ -234,8 +234,8 @@ export const EditSAMLConnectionPage = () => {
                     </FormItem>
                   )}
                 />
-              </CardContent>
-            </Card>
+              </ConsoleCardContent>
+            </ConsoleCard>
 
             <div className="flex justify-end gap-x-4 pb-8">
               <Button variant="outline" asChild>

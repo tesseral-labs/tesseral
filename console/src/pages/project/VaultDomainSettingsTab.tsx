@@ -9,12 +9,14 @@ import {
   updateVaultDomainSettings,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDetails,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 import {
   Table,
   TableHeader,
@@ -32,7 +34,7 @@ import {
   DetailsGridValue,
 } from '@/components/details-grid';
 import { Badge } from '@/components/ui/badge';
-import { CheckIcon, CircleXIcon, XIcon } from 'lucide-react';
+import { CircleXIcon } from 'lucide-react';
 import { VaultDomainSettingsDNSRecord } from '@/gen/tesseral/backend/v1/models_pb';
 import { Button } from '@/components/ui/button';
 import {
@@ -68,10 +70,6 @@ import Loader from '@/components/ui/loader';
 import { StatusIndicator } from '@/components/status-indicator';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { toast } from 'sonner';
-import {
-  ConsoleCardDetails,
-  ConsoleCardTableContent,
-} from '@/components/ui/console-card';
 
 export const VaultDomainSettingsTab = () => {
   const { data: getProjectEntitlementsResponse } = useQuery(
@@ -101,17 +99,17 @@ export const VaultDomainSettingsTab = () => {
 
   return (
     <div className="space-y-8">
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
+      <ConsoleCard>
+        <ConsoleCardHeader className="flex-row justify-between items-center">
           <ConsoleCardDetails>
-            <CardTitle>Vault Domain Settings</CardTitle>
-            <CardDescription>
+            <ConsoleCardTitle>Vault Domain Settings</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Configure a custom domain for your Vault.
-            </CardDescription>
+            </ConsoleCardDescription>
           </ConsoleCardDetails>
           <EditCustomAuthDomainButton />
-        </CardHeader>
-        <CardContent>
+        </ConsoleCardHeader>
+        <ConsoleCardContent>
           {/* do not treat undefined as unentitled, to avoid flickering here */}
           {getProjectEntitlementsResponse?.entitledBackendApiKeys === false ? (
             <div className="text-sm my-8 w-full flex flex-col items-center justify-center space-y-6">
@@ -162,15 +160,15 @@ export const VaultDomainSettingsTab = () => {
               </DetailsGridColumn>
             </DetailsGrid>
           )}
-        </CardContent>
-      </Card>
+        </ConsoleCardContent>
+      </ConsoleCard>
 
       {getVaultDomainSettingsResponse?.vaultDomainSettings?.pendingDomain && (
         <>
-          <Card>
-            <CardHeader className="flex-row justify-between items-center">
+          <ConsoleCard>
+            <ConsoleCardHeader className="flex-row justify-between items-center">
               <ConsoleCardDetails>
-                <CardTitle className="flex items-center">
+                <ConsoleCardTitle className="flex items-center">
                   <span>Vault Domain Records</span>
                   {customVaultDomainActive && (
                     <Badge
@@ -181,8 +179,8 @@ export const VaultDomainSettingsTab = () => {
                       Live
                     </Badge>
                   )}
-                </CardTitle>
-                <CardDescription>
+                </ConsoleCardTitle>
+                <ConsoleCardDescription>
                   {customVaultDomainActive ? (
                     <p>
                       You need to keep these DNS records in place so that{' '}
@@ -204,11 +202,11 @@ export const VaultDomainSettingsTab = () => {
                       as your Vault domain.
                     </p>
                   )}
-                </CardDescription>
+                </ConsoleCardDescription>
               </ConsoleCardDetails>
 
               {!customVaultDomainActive && <EnableCustomVaultDomainButton />}
-            </CardHeader>
+            </ConsoleCardHeader>
             <ConsoleCardTableContent>
               <Table>
                 <TableHeader>
@@ -226,11 +224,11 @@ export const VaultDomainSettingsTab = () => {
                 </TableBody>
               </Table>
             </ConsoleCardTableContent>
-          </Card>
-          <Card className="mt-8">
-            <CardHeader className="flex-row justify-between items-center">
+          </ConsoleCard>
+          <ConsoleCard className="mt-8">
+            <ConsoleCardHeader className="flex-row justify-between items-center">
               <ConsoleCardDetails>
-                <CardTitle className="flex items-center">
+                <ConsoleCardTitle className="flex items-center">
                   <span>Email Send-From Records</span>
 
                   {customEmailSendFromDomainActive ? (
@@ -246,8 +244,8 @@ export const VaultDomainSettingsTab = () => {
                       Optional
                     </Badge>
                   )}
-                </CardTitle>
-                <CardDescription>
+                </ConsoleCardTitle>
+                <ConsoleCardDescription>
                   {customEmailSendFromDomainActive ? (
                     <p>
                       You need to keep these DNS records in place so that
@@ -267,13 +265,13 @@ export const VaultDomainSettingsTab = () => {
                       .
                     </p>
                   )}
-                </CardDescription>
+                </ConsoleCardDescription>
               </ConsoleCardDetails>
 
               {!customEmailSendFromDomainActive && (
                 <EnableEmailSendFromDomainButton />
               )}
-            </CardHeader>
+            </ConsoleCardHeader>
             <ConsoleCardTableContent>
               <Table>
                 <TableHeader>
@@ -291,7 +289,7 @@ export const VaultDomainSettingsTab = () => {
                 </TableBody>
               </Table>
             </ConsoleCardTableContent>
-          </Card>
+          </ConsoleCard>
         </>
       )}
     </div>

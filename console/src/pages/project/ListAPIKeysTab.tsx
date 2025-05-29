@@ -20,18 +20,13 @@ import React, { useState } from 'react';
 import { DateTime } from 'luxon';
 import { timestampDate } from '@bufbuild/protobuf/wkt';
 import {
-  PageContent,
-  PageDescription,
-  PageHeader,
-  PageTitle,
-} from '@/components/page';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+  ConsoleCardTableContent,
+  ConsoleCardDetails,
+} from '@/components/ui/console-card';
 import { Button } from '@/components/ui/button';
 import { z } from 'zod';
 import { useNavigate } from 'react-router';
@@ -59,10 +54,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import {
-  ConsoleCardDetails,
-  ConsoleCardTableContent,
-} from '@/components/ui/console-card';
 
 export const ListAPIKeysTab = () => {
   const { data: getProjectEntitlementsResponse } = useQuery(
@@ -86,18 +77,18 @@ export const ListAPIKeysTab = () => {
 
   return (
     <div className="mt-8 space-y-8">
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
+      <ConsoleCard>
+        <ConsoleCardHeader className="flex-row justify-between items-center">
           <ConsoleCardDetails>
-            <CardTitle>Publishable Keys</CardTitle>
-            <CardDescription>
+            <ConsoleCardTitle>Publishable Keys</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Tesseral's client-side SDKs require a publishable key. Publishable
               keys can be publicly accessible in your web or mobile app's
               client-side code.
-            </CardDescription>
+            </ConsoleCardDescription>
           </ConsoleCardDetails>
           <CreatePublishableKeyButton />
-        </CardHeader>
+        </ConsoleCardHeader>
         <ConsoleCardTableContent>
           <Table>
             <TableHeader>
@@ -141,19 +132,19 @@ export const ListAPIKeysTab = () => {
             </TableBody>
           </Table>
         </ConsoleCardTableContent>
-      </Card>
+      </ConsoleCard>
 
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
+      <ConsoleCard>
+        <ConsoleCardHeader className="flex-row justify-between items-center">
           <ConsoleCardDetails>
-            <CardTitle>Backend API Keys</CardTitle>
-            <CardDescription>
+            <ConsoleCardTitle>Backend API Keys</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Backend API keys are how your backend can automate operations in
               Tesseral using the Tesseral Backend API.
-            </CardDescription>
+            </ConsoleCardDescription>
           </ConsoleCardDetails>
           <CreateBackendAPIKeyButton />
-        </CardHeader>
+        </ConsoleCardHeader>
         <ConsoleCardTableContent>
           {/* do not treat undefined as unentitled, to avoid flickering here */}
           {getProjectEntitlementsResponse?.entitledBackendApiKeys === false ? (
@@ -224,7 +215,7 @@ export const ListAPIKeysTab = () => {
             </Table>
           )}
         </ConsoleCardTableContent>
-      </Card>
+      </ConsoleCard>
     </div>
   );
 };

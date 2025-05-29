@@ -1,13 +1,4 @@
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import { Link } from 'react-router-dom';
-import {
   PageCodeSubtitle,
   PageContent,
   PageDescription,
@@ -15,12 +6,12 @@ import {
   PageTitle,
 } from '@/components/page';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+} from '@/components/ui/console-card';
 import {
   DetailsGrid,
   DetailsGridColumn,
@@ -87,12 +78,14 @@ export const ViewPasskeyPage = () => {
       </PageHeader>
 
       <PageContent>
-        <Card className="my-8">
-          <CardHeader>
-            <CardTitle>General settings</CardTitle>
-            <CardDescription>Basic settings for this passkey.</CardDescription>
-          </CardHeader>
-          <CardContent>
+        <ConsoleCard className="my-8">
+          <ConsoleCardHeader>
+            <ConsoleCardTitle>General settings</ConsoleCardTitle>
+            <ConsoleCardDescription>
+              Basic settings for this passkey.
+            </ConsoleCardDescription>
+          </ConsoleCardHeader>
+          <ConsoleCardContent>
             <DetailsGrid>
               <DetailsGridColumn>
                 <DetailsGridEntry>
@@ -160,8 +153,8 @@ export const ViewPasskeyPage = () => {
                 </DetailsGridEntry>
               </DetailsGridColumn>
             </DetailsGrid>
-          </CardContent>
-        </Card>
+          </ConsoleCardContent>
+        </ConsoleCard>
 
         <DangerZoneCard />
       </PageContent>
@@ -238,12 +231,12 @@ const DangerZoneCard = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <Card className="border-destructive">
-        <CardHeader>
-          <CardTitle>Danger Zone</CardTitle>
-        </CardHeader>
+      <ConsoleCard className="border-destructive">
+        <ConsoleCardHeader>
+          <ConsoleCardTitle>Danger Zone</ConsoleCardTitle>
+        </ConsoleCardHeader>
 
-        <CardContent className="space-y-4">
+        <ConsoleCardContent className="space-y-4">
           {getPasskeyResponse?.passkey?.disabled ? (
             <div className="flex justify-between items-center">
               <div>
@@ -293,8 +286,8 @@ const DangerZoneCard = () => {
               Delete Passkey
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </ConsoleCardContent>
+      </ConsoleCard>
     </>
   );
 };

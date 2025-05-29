@@ -1,11 +1,3 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
 import { Link } from 'react-router-dom';
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
@@ -16,12 +8,13 @@ import {
   getSAMLConnection,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDetails,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+} from '@/components/ui/console-card';
 import { DateTime } from 'luxon';
 import { timestampDate } from '@bufbuild/protobuf/wkt';
 import { toast } from 'sonner';
@@ -49,13 +42,9 @@ import {
   PageHeader,
   PageTitle,
 } from '@/components/page';
-import { ConsoleCardDetails } from '@/components/ui/console-card';
 
 export const ViewSAMLConnectionPage = () => {
   const { organizationId, samlConnectionId } = useParams();
-  const { data: getOrganizationResponse } = useQuery(getOrganization, {
-    id: organizationId,
-  });
   const { data: getSAMLConnectionResponse } = useQuery(getSAMLConnection, {
     id: samlConnectionId,
   });
@@ -71,13 +60,13 @@ export const ViewSAMLConnectionPage = () => {
       </PageHeader>
 
       <PageContent>
-        <Card className="my-8">
-          <CardHeader className="flex-row justify-between items-center">
+        <ConsoleCard className="my-8">
+          <ConsoleCardHeader className="flex-row justify-between items-center">
             <ConsoleCardDetails>
-              <CardTitle>Configuration</CardTitle>
-              <CardDescription>
+              <ConsoleCardTitle>Configuration</ConsoleCardTitle>
+              <ConsoleCardDescription>
                 Details about this SAML Connection.
-              </CardDescription>
+              </ConsoleCardDescription>
             </ConsoleCardDetails>
             <Button variant="outline" asChild>
               <Link
@@ -86,8 +75,8 @@ export const ViewSAMLConnectionPage = () => {
                 Edit
               </Link>
             </Button>
-          </CardHeader>
-          <CardContent>
+          </ConsoleCardHeader>
+          <ConsoleCardContent>
             <DetailsGrid>
               <DetailsGridColumn>
                 <DetailsGridEntry>
@@ -174,8 +163,8 @@ export const ViewSAMLConnectionPage = () => {
                 </DetailsGridEntry>
               </DetailsGridColumn>
             </DetailsGrid>
-          </CardContent>
-        </Card>
+          </ConsoleCardContent>
+        </ConsoleCard>
 
         <DangerZoneCard />
       </PageContent>
@@ -221,12 +210,12 @@ const DangerZoneCard = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <Card className="border-destructive">
-        <CardHeader>
-          <CardTitle>Danger Zone</CardTitle>
-        </CardHeader>
+      <ConsoleCard className="border-destructive">
+        <ConsoleCardHeader>
+          <ConsoleCardTitle>Danger Zone</ConsoleCardTitle>
+        </ConsoleCardHeader>
 
-        <CardContent>
+        <ConsoleCardContent>
           <div className="flex justify-between items-center">
             <div>
               <div className="text-sm font-semibold">
@@ -241,8 +230,8 @@ const DangerZoneCard = () => {
               Delete SAML Connection
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </ConsoleCardContent>
+      </ConsoleCard>
     </>
   );
 };

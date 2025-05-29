@@ -5,12 +5,13 @@ import {
   listUserInvites,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDetails,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 import {
   Table,
   TableBody,
@@ -50,10 +51,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
-import {
-  ConsoleCardDetails,
-  ConsoleCardTableContent,
-} from '@/components/ui/console-card';
 
 export const OrganizationUserInvitesTab = () => {
   const { organizationId } = useParams();
@@ -62,16 +59,16 @@ export const OrganizationUserInvitesTab = () => {
   });
 
   return (
-    <Card>
-      <CardHeader className="flex-row justify-between items-center">
+    <ConsoleCard>
+      <ConsoleCardHeader className="flex-row justify-between items-center">
         <ConsoleCardDetails>
-          <CardTitle>User Invites</CardTitle>
-          <CardDescription>
+          <ConsoleCardTitle>User Invites</ConsoleCardTitle>
+          <ConsoleCardDescription>
             A User Invite lets outside collaborators join an Organization.
-          </CardDescription>
+          </ConsoleCardDescription>
         </ConsoleCardDetails>
         <CreateUserInviteButton />
-      </CardHeader>
+      </ConsoleCardHeader>
       <ConsoleCardTableContent>
         <Table>
           <TableHeader>
@@ -117,7 +114,7 @@ export const OrganizationUserInvitesTab = () => {
           </TableBody>
         </Table>
       </ConsoleCardTableContent>
-    </Card>
+    </ConsoleCard>
   );
 };
 

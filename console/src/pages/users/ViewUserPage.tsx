@@ -37,12 +37,14 @@ import {
   DetailsGridValue,
 } from '@/components/details-grid';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDetails,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 import { DateTime } from 'luxon';
 import { timestampDate } from '@bufbuild/protobuf/wkt';
 import { Button } from '@/components/ui/button';
@@ -73,10 +75,6 @@ import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { User, UserRoleAssignment } from '@/gen/tesseral/backend/v1/models_pb';
 import { AssignUserRolesButton } from './AssignUserRolesButton';
-import {
-  ConsoleCardDetails,
-  ConsoleCardTableContent,
-} from '@/components/ui/console-card';
 
 export const ViewUserPage = () => {
   const { organizationId, userId } = useParams();
@@ -109,15 +107,17 @@ export const ViewUserPage = () => {
         </PageDescription>
       </PageHeader>
       <PageContent>
-        <Card className="my-8">
-          <CardHeader className="flex flex-row items-center justify-between space-y-4">
+        <ConsoleCard className="my-8">
+          <ConsoleCardHeader className="flex flex-row items-center justify-between space-y-4">
             <ConsoleCardDetails>
-              <CardTitle>General settings</CardTitle>
-              <CardDescription>Basic settings for this User.</CardDescription>
+              <ConsoleCardTitle>General settings</ConsoleCardTitle>
+              <ConsoleCardDescription>
+                Basic settings for this User.
+              </ConsoleCardDescription>
             </ConsoleCardDetails>
             <EditUserSettingsButton />
-          </CardHeader>
-          <CardContent>
+          </ConsoleCardHeader>
+          <ConsoleCardContent>
             <DetailsGrid>
               <DetailsGridColumn>
                 <DetailsGridEntry>
@@ -194,17 +194,17 @@ export const ViewUserPage = () => {
                 </DetailsGridEntry>
               </DetailsGridColumn>
             </DetailsGrid>
-          </CardContent>
-        </Card>
+          </ConsoleCardContent>
+        </ConsoleCard>
 
-        <Card className="my-8">
-          <CardHeader>
-            <CardTitle>Sessions</CardTitle>
-            <CardDescription>
+        <ConsoleCard className="my-8">
+          <ConsoleCardHeader>
+            <ConsoleCardTitle>Sessions</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Every time your Users log in or perform an action, that's
               associated with a Session.
-            </CardDescription>
-          </CardHeader>
+            </ConsoleCardDescription>
+          </ConsoleCardHeader>
           <ConsoleCardTableContent>
             <Table>
               <TableHeader>
@@ -244,15 +244,15 @@ export const ViewUserPage = () => {
               </TableBody>
             </Table>
           </ConsoleCardTableContent>
-        </Card>
+        </ConsoleCard>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Passkeys</CardTitle>
-            <CardDescription>
+        <ConsoleCard>
+          <ConsoleCardHeader>
+            <ConsoleCardTitle>Passkeys</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Passkeys associated with this User.
-            </CardDescription>
-          </CardHeader>
+            </ConsoleCardDescription>
+          </ConsoleCardHeader>
           <ConsoleCardTableContent>
             <Table>
               <TableHeader>
@@ -290,21 +290,21 @@ export const ViewUserPage = () => {
               </TableBody>
             </Table>
           </ConsoleCardTableContent>
-        </Card>
+        </ConsoleCard>
 
-        <Card className="mt-8">
-          <CardHeader className="flex-row justify-between items-center gap-x-2">
+        <ConsoleCard className="mt-8">
+          <ConsoleCardHeader className="flex-row justify-between items-center gap-x-2">
             <ConsoleCardDetails>
-              <CardTitle>Assigned Roles</CardTitle>
-              <CardDescription>
+              <ConsoleCardTitle>Assigned Roles</ConsoleCardTitle>
+              <ConsoleCardDescription>
                 Roles this User has been assigned.
-              </CardDescription>
+              </ConsoleCardDescription>
             </ConsoleCardDetails>
 
             <div className="shrink-0 space-x-4">
               <AssignUserRolesButton />
             </div>
-          </CardHeader>
+          </ConsoleCardHeader>
           <ConsoleCardTableContent>
             <Table>
               <TableHeader>
@@ -326,7 +326,7 @@ export const ViewUserPage = () => {
               </TableBody>
             </Table>
           </ConsoleCardTableContent>
-        </Card>
+        </ConsoleCard>
 
         <DangerZoneCard />
       </PageContent>
@@ -427,12 +427,12 @@ const DangerZoneCard = () => {
   };
 
   return (
-    <Card className="mt-8 border-destructive">
-      <CardHeader>
-        <CardTitle>Danger Zone</CardTitle>
-      </CardHeader>
+    <ConsoleCard className="mt-8 border-destructive">
+      <ConsoleCardHeader>
+        <ConsoleCardTitle>Danger Zone</ConsoleCardTitle>
+      </ConsoleCardHeader>
 
-      <CardContent>
+      <ConsoleCardContent>
         <div className="flex justify-between items-center">
           <div>
             <div className="text-sm font-semibold">Impersonate User</div>
@@ -446,8 +446,8 @@ const DangerZoneCard = () => {
             Impersonate User
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </ConsoleCardContent>
+    </ConsoleCard>
   );
 };
 

@@ -10,12 +10,14 @@ import {
   updateOrganization,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDetails,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import {
@@ -61,10 +63,6 @@ import {
 } from '@/components/ui/form';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
-import {
-  ConsoleCardDetails,
-  ConsoleCardTableContent,
-} from '@/components/ui/console-card';
 
 export function OrganizationRolesTab() {
   const { organizationId } = useParams();
@@ -92,17 +90,17 @@ export function OrganizationRolesTab() {
 
   return (
     <div className="space-y-8">
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
+      <ConsoleCard>
+        <ConsoleCardHeader className="flex-row justify-between items-center">
           <ConsoleCardDetails>
-            <CardTitle>Organization Role Settings</CardTitle>
-            <CardDescription>
+            <ConsoleCardTitle>Organization Role Settings</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Role-related settings for this Organization.
-            </CardDescription>
+            </ConsoleCardDescription>
           </ConsoleCardDetails>
           <EditRolesSettingsButton />
-        </CardHeader>
-        <CardContent>
+        </ConsoleCardHeader>
+        <ConsoleCardContent>
           <DetailsGrid>
             <DetailsGridColumn>
               <DetailsGridEntry>
@@ -115,16 +113,16 @@ export function OrganizationRolesTab() {
               </DetailsGridEntry>
             </DetailsGridColumn>
           </DetailsGrid>
-        </CardContent>
-      </Card>
+        </ConsoleCardContent>
+      </ConsoleCard>
 
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
+      <ConsoleCard>
+        <ConsoleCardHeader className="flex-row justify-between items-center">
           <ConsoleCardDetails>
-            <CardTitle>Organization-Specific Roles</CardTitle>
-            <CardDescription>
+            <ConsoleCardTitle>Organization-Specific Roles</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Roles that exist only for this Organization.
-            </CardDescription>
+            </ConsoleCardDescription>
           </ConsoleCardDetails>
 
           <Link
@@ -133,7 +131,7 @@ export function OrganizationRolesTab() {
           >
             Create Role
           </Link>
-        </CardHeader>
+        </ConsoleCardHeader>
         <ConsoleCardTableContent>
           <Table>
             <TableHeader>
@@ -188,7 +186,7 @@ export function OrganizationRolesTab() {
             </Button>
           )}
         </ConsoleCardTableContent>
-      </Card>
+      </ConsoleCard>
     </div>
   );
 }
