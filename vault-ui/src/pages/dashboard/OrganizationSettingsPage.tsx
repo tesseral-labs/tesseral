@@ -68,7 +68,9 @@ export function OrganizationSettingsPage() {
       (tab.url === "/organization-settings/api-keys" &&
         pathname.startsWith("/organization-settings/api-keys/")) ||
       (tab.url === "/organization-settings/saml-connections" &&
-        pathname.startsWith("/organization-settings/saml-connections/")),
+        pathname.startsWith("/organization-settings/saml-connections/")) ||
+      (tab.url === "/organization-settings/scim-api-keys" &&
+        pathname.startsWith("/organization-settings/scim-api-keys/")),
   );
 
   useEffect(() => {
@@ -82,6 +84,13 @@ export function OrganizationSettingsPage() {
         name: "SAML Connections",
         url: `/organization-settings/saml-connections`,
       });
+
+      if (getOrganizationResponse?.organization?.scimEnabled) {
+        newTabs.push({
+          name: "SCIM API Keys",
+          url: `/organization-settings/scim-api-keys`,
+        });
+      }
     }
     if (
       getProjectResponse?.project?.apiKeysEnabled &&

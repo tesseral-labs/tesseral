@@ -40,6 +40,7 @@ message Organization {
   repeated string google_hosted_domains = 9;
   repeated string microsoft_tenant_ids = 10;
   bool saml_enabled = 11;
+  bool scim_enabled = 20;
   bool custom_roles_enabled = 17;
   bool api_keys_enabled = 19;
 }
