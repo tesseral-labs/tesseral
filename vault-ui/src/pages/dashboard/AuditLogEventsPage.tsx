@@ -38,7 +38,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { AuditLogEvent } from "@/gen/tesseral/common/v1/common_pb";
 import {
   getUser,
   listAuditLogEvents,
@@ -48,6 +47,7 @@ import {
   ListAuditLogEventsRequest,
   ListAuditLogEventsRequest_Filter,
 } from "@/gen/tesseral/frontend/v1/frontend_pb";
+import { AuditLogEvent } from "@/gen/tesseral/frontend/v1/models_pb";
 
 const PAGE_SIZE = 10;
 

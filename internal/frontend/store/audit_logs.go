@@ -8,10 +8,9 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
-	commonv1 "github.com/tesseral-labs/tesseral/internal/common/gen/tesseral/common/v1"
+	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
-	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/uuidv7"
 	"google.golang.org/protobuf/types/known/structpb"
@@ -109,8 +108,8 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute sql query: %w", err)
 	}
-	results, err := pgx.CollectRows(rows, func(row pgx.CollectableRow) (*commonv1.AuditLogEvent, error) {
-		var dto queries.AuditLogEvent
+	results, err := pgx.CollectRows(rows, func(row pgx.CollectableRow) (*frontendv1.AuditLogEvent, error) {
+		var dto auditlog.Event
 		if err := row.Scan(
 			&dto.ID,
 			&dto.ProjectID,
@@ -143,7 +142,7 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 	}, nil
 }
 
-func parseAuditLogEvent(qEvent queries.AuditLogEvent) (*commonv1.AuditLogEvent, error) {
+func parseAuditLogEvent(qEvent auditlog.Event) (*frontendv1.AuditLogEvent, error) {
 	eventDetailsJSON := qEvent.EventDetails
 	var eventDetails structpb.Struct
 	if err := eventDetails.UnmarshalJSON(eventDetailsJSON); err != nil {
@@ -172,7 +171,7 @@ func parseAuditLogEvent(qEvent queries.AuditLogEvent) (*commonv1.AuditLogEvent, 
 		apiKeyID = &apiKeyID_
 	}
 
-	return &commonv1.AuditLogEvent{
+	return &frontendv1.AuditLogEvent{
 		Id:             idformat.AuditLogEvent.Format(qEvent.ID),
 		OrganizationId: organizationID,
 		UserId:         userID,

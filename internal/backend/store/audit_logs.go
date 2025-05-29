@@ -12,6 +12,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
+	"google.golang.org/protobuf/types/known/structpb"
 )
 
 func (s *Store) CreateAuditLogEvent(ctx context.Context, req *backendv1.CreateAuditLogEventRequest) (*backendv1.CreateAuditLogEventResponse, error) {
@@ -93,7 +94,53 @@ func (s *Store) CreateAuditLogEvent(ctx context.Context, req *backendv1.CreateAu
 		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
+	pEvent, err := parseAuditLogEvent(event)
+	if err != nil {
+		return nil, fmt.Errorf("parse audit log event: %w", err)
+	}
+
 	return &backendv1.CreateAuditLogEventResponse{
-		AuditLogEvent: event,
+		AuditLogEvent: pEvent,
+	}, nil
+}
+
+func parseAuditLogEvent(qEvent auditlog.Event) (*backendv1.AuditLogEvent, error) {
+	eventDetailsJSON := qEvent.EventDetails
+	var eventDetails structpb.Struct
+	if err := eventDetails.UnmarshalJSON(eventDetailsJSON); err != nil {
+		return nil, err
+	}
+
+	var (
+		organizationID string
+		userID         *string
+		sessionID      *string
+		apiKeyID       *string
+	)
+	if orgUUID := qEvent.OrganizationID; orgUUID != nil {
+		organizationID = idformat.Organization.Format(*orgUUID)
+	}
+	if userUUID := qEvent.UserID; userUUID != nil {
+		userID_ := idformat.User.Format(*userUUID)
+		userID = &userID_
+	}
+	if sessionUUID := qEvent.SessionID; sessionUUID != nil {
+		sessionID_ := idformat.Session.Format(*sessionUUID)
+		sessionID = &sessionID_
+	}
+	if apiKeyUUID := qEvent.ApiKeyID; apiKeyUUID != nil {
+		apiKeyID_ := idformat.APIKey.Format(*apiKeyUUID)
+		apiKeyID = &apiKeyID_
+	}
+
+	return &backendv1.AuditLogEvent{
+		Id:             idformat.AuditLogEvent.Format(qEvent.ID),
+		OrganizationId: organizationID,
+		UserId:         userID,
+		SessionId:      sessionID,
+		ApiKeyId:       apiKeyID,
+		EventName:      qEvent.EventName,
+		EventTime:      timestampOrNil(qEvent.EventTime),
+		EventDetails:   &eventDetails,
 	}, nil
 }

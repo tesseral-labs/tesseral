@@ -4,7 +4,6 @@ package tesseral.frontend.v1;
 
 import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
-import "tesseral/common/v1/common.proto";
 import "tesseral/frontend/v1/models.proto";
 
 service FrontendService {
@@ -788,7 +787,7 @@ message ListAuditLogEventsRequest {
 
 message ListAuditLogEventsResponse {
   // The events.
-  repeated tesseral.common.v1.AuditLogEvent audit_log_events = 1;
+  repeated AuditLogEvent audit_log_events = 1;
 
   // A token to retrieve the next page of results.
   string next_page_token = 2;

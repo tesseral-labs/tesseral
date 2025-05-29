@@ -7,9 +7,6 @@ managed:
   override:
     - file_option: go_package_prefix
       value: "github.com/tesseral-labs/tesseral/internal/backend/gen"
-    - file_option: go_package
-      path: tesseral/common/v1
-      value: "github.com/tesseral-labs/tesseral/internal/common/gen/tesseral/common/v1"
 plugins:
   - remote: buf.build/protocolbuffers/go:v1.36.5
     out: internal/backend/gen
