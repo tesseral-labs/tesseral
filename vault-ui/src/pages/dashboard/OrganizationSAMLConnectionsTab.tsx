@@ -99,7 +99,7 @@ export function OrganizationSAMLConnectionsTab() {
           </Table>
 
           {hasNextPage && (
-            <div className="flex justify-center mt-4">
+            <div className="flex justify-center mt-4 mb-6">
               <button
                 className="btn btn-primary"
                 onClick={() => fetchNextPage()}

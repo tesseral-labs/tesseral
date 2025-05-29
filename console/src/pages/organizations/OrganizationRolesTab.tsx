@@ -41,9 +41,11 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  AlertDialog, AlertDialogCancel,
+  AlertDialog,
+  AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter,
+  AlertDialogDescription,
+  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
@@ -59,6 +61,10 @@ import {
 } from '@/components/ui/form';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
+import {
+  ConsoleCardDetails,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 
 export function OrganizationRolesTab() {
   const { organizationId } = useParams();
@@ -88,12 +94,12 @@ export function OrganizationRolesTab() {
     <div className="space-y-8">
       <Card>
         <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
+          <ConsoleCardDetails>
             <CardTitle>Organization Role Settings</CardTitle>
             <CardDescription>
               Role-related settings for this Organization.
             </CardDescription>
-          </div>
+          </ConsoleCardDetails>
           <EditRolesSettingsButton />
         </CardHeader>
         <CardContent>
@@ -114,12 +120,12 @@ export function OrganizationRolesTab() {
 
       <Card>
         <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
+          <ConsoleCardDetails>
             <CardTitle>Organization-Specific Roles</CardTitle>
             <CardDescription>
               Roles that exist only for this Organization.
             </CardDescription>
-          </div>
+          </ConsoleCardDetails>
 
           <Link
             to={`/roles/new?organization-id=${organizationId}`}
@@ -128,7 +134,7 @@ export function OrganizationRolesTab() {
             Create Role
           </Link>
         </CardHeader>
-        <CardContent>
+        <ConsoleCardTableContent>
           <Table>
             <TableHeader>
               <TableRow>
@@ -171,7 +177,7 @@ export function OrganizationRolesTab() {
 
           {hasNextPage && (
             <Button
-              className="mt-4"
+              className="mt-4 mb-6"
               variant="outline"
               onClick={() => fetchNextPage()}
             >
@@ -181,7 +187,7 @@ export function OrganizationRolesTab() {
               Load more
             </Button>
           )}
-        </CardContent>
+        </ConsoleCardTableContent>
       </Card>
     </div>
   );
@@ -207,8 +213,9 @@ function EditRolesSettingsButton() {
   useEffect(() => {
     if (getOrganizationResponse?.organization) {
       form.reset({
-        customRolesEnabled: getOrganizationResponse.organization.customRolesEnabled,
-      })
+        customRolesEnabled:
+          getOrganizationResponse.organization.customRolesEnabled,
+      });
     }
   }, [form, getOrganizationResponse]);
 

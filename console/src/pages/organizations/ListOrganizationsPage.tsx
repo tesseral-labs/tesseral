@@ -144,7 +144,7 @@ export const ListOrganizationsPage = () => {
 
         {hasNextPage && (
           <Button
-            className="mt-4"
+            className="mt-4 mb-6"
             variant="outline"
             onClick={() => fetchNextPage()}
           >

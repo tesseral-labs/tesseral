@@ -170,7 +170,7 @@ export function APIKeysTab() {
         </Table>
 
         {hasNextPage && (
-          <div className="flex justify-center mt-8">
+          <div className="flex justify-center mt-4 mb-6">
             <Button
               className="mt-4"
               variant="outline"
