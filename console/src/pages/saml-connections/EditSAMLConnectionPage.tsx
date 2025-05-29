@@ -22,14 +22,6 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Link } from 'react-router-dom';
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import {
   Card,
   CardContent,
   CardDescription,

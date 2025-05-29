@@ -59,6 +59,7 @@ import {
   PageHeader,
   PageTitle,
 } from '@/components/page';
+import { ConsoleCardDetails } from '@/components/ui/console-card';
 
 export const ViewSCIMAPIKeyPage = () => {
   const { organizationId, scimApiKeyId } = useParams();
@@ -83,12 +84,12 @@ export const ViewSCIMAPIKeyPage = () => {
       <PageContent>
         <Card className="my-8">
           <CardHeader className="flex-row justify-between items-center">
-            <div className="flex flex-col space-y-1 5">
+            <ConsoleCardDetails>
               <CardTitle>Configuration</CardTitle>
               <CardDescription>
                 Details about this SCIM API Key.
               </CardDescription>
-            </div>
+            </ConsoleCardDetails>
             <EditSCIMAPIKeyButton />
           </CardHeader>
           <CardContent>

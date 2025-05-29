@@ -48,6 +48,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { InputTags } from '@/components/input-tags';
 import { EditAPIKeySettingsButton } from './project-ui-settings/EditAPIKeySettingsButton';
+import { ConsoleCardDetails } from '@/components/ui/console-card';
 
 export const ProjectDetailsTab = () => {
   const { data: getProjectResponse } = useQuery(getProject, {});
@@ -71,14 +72,14 @@ export const ProjectDetailsTab = () => {
     <div className="space-y-8">
       <Card>
         <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
+          <ConsoleCardDetails>
             <CardTitle>Redirect Settings</CardTitle>
             <CardDescription>
               Where Tesseral will redirect your users whenever they return from
               your project's Vault. You can special-case where they go after
               logging in or signing up.
             </CardDescription>
-          </div>
+          </ConsoleCardDetails>
           <EditProjectRedirectURIsButton />
         </CardHeader>
         <CardContent>
@@ -119,12 +120,12 @@ export const ProjectDetailsTab = () => {
 
       <Card>
         <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
+          <ConsoleCardDetails>
             <CardTitle>Domains settings</CardTitle>
             <CardDescription>
               Settings related to domains that your project runs on.
             </CardDescription>
-          </div>
+          </ConsoleCardDetails>
           <EditProjectDomainSettingsButton />
         </CardHeader>
         <CardContent>
@@ -153,12 +154,12 @@ export const ProjectDetailsTab = () => {
 
       <Card>
         <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
+          <ConsoleCardDetails>
             <CardTitle>API key settings</CardTitle>
             <CardDescription>
               Settings for API keys used by your customers with your product.
             </CardDescription>
-          </div>
+          </ConsoleCardDetails>
           {getProjectEntitlementsResponse?.entitledBackendApiKeys && (
             <EditAPIKeySettingsButton />
           )}
@@ -212,13 +213,13 @@ export const ProjectDetailsTab = () => {
 
       <Card>
         <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
+          <ConsoleCardDetails>
             <CardTitle>Webhook settings</CardTitle>
             <CardDescription>
               Settings for webhooks sent from Tesseral to your application about
               your project.
             </CardDescription>
-          </div>
+          </ConsoleCardDetails>
           <a href={getProjectWebhookManagementUrlResponse?.url} target="_blank">
             <Button variant="outline">Edit</Button>
           </a>

@@ -23,6 +23,10 @@ import {
 import { DateTime } from 'luxon';
 import { timestampDate } from '@bufbuild/protobuf/wkt';
 import { Link } from 'react-router-dom';
+import {
+  ConsoleCardDetails,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 
 export function RBACSettingsTab() {
   return (
@@ -39,13 +43,13 @@ function RBACPolicyCard() {
   return (
     <Card>
       <CardHeader className="flex-row justify-between items-center gap-x-2">
-        <div className="flex flex-col space-y-1.5">
+        <ConsoleCardDetails>
           <CardTitle>Role-Based Access Control Policy</CardTitle>
           <CardDescription>
             A Role-Based Access Control Policy is the set of fine-grained
             Actions in a Project.
           </CardDescription>
-        </div>
+        </ConsoleCardDetails>
 
         <div className="shrink-0 space-x-4">
           <Link
@@ -104,14 +108,14 @@ function RolesCard() {
   return (
     <Card>
       <CardHeader className="flex-row justify-between items-center gap-x-2">
-        <div className="flex flex-col space-y-1.5">
+        <ConsoleCardDetails>
           <CardTitle>Roles</CardTitle>
           <CardDescription>
             Roles are a named collection of Actions, and can be assigned to
             Users. These are the Roles available to all Organizations in this
             Project.
           </CardDescription>
-        </div>
+        </ConsoleCardDetails>
 
         <div className="shrink-0 space-x-4">
           <Link
@@ -123,7 +127,7 @@ function RolesCard() {
         </div>
       </CardHeader>
 
-      <CardContent>
+      <ConsoleCardTableContent>
         <Table>
           <TableHeader>
             <TableRow>
@@ -163,7 +167,7 @@ function RolesCard() {
             ))}
           </TableBody>
         </Table>
-      </CardContent>
+      </ConsoleCardTableContent>
     </Card>
   );
 }

@@ -48,6 +48,7 @@ import {
 import { EditProjectGoogleSettingsButton } from './EditProjectGoogleSettingsButton';
 import { EditProjectMicrosoftSettingsButton } from './EditProjectMicrosoftSettingsButton';
 import { EditProjectGithubSettingsButton } from './EditProjectGithubSettingsButton';
+import { ConsoleCardDetails } from '@/components/ui/console-card';
 
 export function LoginSettingsTab() {
   const { data: getProjectResponse } = useQuery(getProject, {});
@@ -56,14 +57,14 @@ export function LoginSettingsTab() {
     <div className="space-y-8">
       <Card>
         <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
+          <ConsoleCardDetails>
             <CardTitle>Login Methods</CardTitle>
             <CardDescription>
               Primary and secondary authentication methods your users can use.
               Organizations can take this list and restrict it further, but they
               can't add to it.
             </CardDescription>
-          </div>
+          </ConsoleCardDetails>
           <EditLoginMethodsButton />
         </CardHeader>
         <CardContent>
@@ -124,12 +125,12 @@ export function LoginSettingsTab() {
 
       <Card>
         <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
+          <ConsoleCardDetails>
             <CardTitle>Google settings</CardTitle>
             <CardDescription>
               Settings for "Log in with Google" in your project.
             </CardDescription>
-          </div>
+          </ConsoleCardDetails>
           <EditProjectGoogleSettingsButton />
         </CardHeader>
         <CardContent>
@@ -169,12 +170,12 @@ export function LoginSettingsTab() {
       </Card>
       <Card>
         <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
+          <ConsoleCardDetails>
             <CardTitle>Microsoft settings</CardTitle>
             <CardDescription>
               Settings for "Log in with Microsoft" in your project.
             </CardDescription>
-          </div>
+          </ConsoleCardDetails>
           <EditProjectMicrosoftSettingsButton />
         </CardHeader>
         <CardContent>
@@ -215,12 +216,12 @@ export function LoginSettingsTab() {
 
       <Card>
         <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
+          <ConsoleCardDetails>
             <CardTitle>GitHub settings</CardTitle>
             <CardDescription>
               Settings for "Log in with GitHub" in your project.
             </CardDescription>
-          </div>
+          </ConsoleCardDetails>
           <EditProjectGithubSettingsButton />
         </CardHeader>
         <CardContent>

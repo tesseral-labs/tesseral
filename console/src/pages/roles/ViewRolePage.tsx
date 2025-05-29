@@ -55,6 +55,10 @@ import {
 } from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
 import { UserRoleAssignment } from '@/gen/tesseral/backend/v1/models_pb';
+import {
+  ConsoleCardDetails,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 
 export function ViewRolePage() {
   const { roleId } = useParams();
@@ -91,10 +95,10 @@ export function ViewRolePage() {
         <div className="space-y-8">
           <Card>
             <CardHeader className="flex-row justify-between items-center gap-x-2">
-              <div className="flex flex-col space-y-1.5">
+              <ConsoleCardDetails>
                 <CardTitle>General settings</CardTitle>
                 <CardDescription>Basic settings for this Role.</CardDescription>
-              </div>
+              </ConsoleCardDetails>
               <Link to={`/roles/${roleId}/edit`}>
                 <Button variant="outline">Edit</Button>
               </Link>
@@ -175,7 +179,7 @@ export function ViewRolePage() {
               <CardTitle>Assigned Users</CardTitle>
               <CardDescription>Users assigned to this Role.</CardDescription>
             </CardHeader>
-            <CardContent>
+            <ConsoleCardTableContent>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -195,7 +199,7 @@ export function ViewRolePage() {
                   )}
                 </TableBody>
               </Table>
-            </CardContent>
+            </ConsoleCardTableContent>
           </Card>
         </div>
         <DangerZoneCard />

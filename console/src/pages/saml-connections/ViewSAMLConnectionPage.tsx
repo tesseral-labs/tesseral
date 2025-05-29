@@ -49,6 +49,7 @@ import {
   PageHeader,
   PageTitle,
 } from '@/components/page';
+import { ConsoleCardDetails } from '@/components/ui/console-card';
 
 export const ViewSAMLConnectionPage = () => {
   const { organizationId, samlConnectionId } = useParams();
@@ -72,12 +73,12 @@ export const ViewSAMLConnectionPage = () => {
       <PageContent>
         <Card className="my-8">
           <CardHeader className="flex-row justify-between items-center">
-            <div className="flex flex-col space-y-1 5">
+            <ConsoleCardDetails>
               <CardTitle>Configuration</CardTitle>
               <CardDescription>
                 Details about this SAML Connection.
               </CardDescription>
-            </div>
+            </ConsoleCardDetails>
             <Button variant="outline" asChild>
               <Link
                 to={`/organizations/${organizationId}/saml-connections/${samlConnectionId}/edit`}

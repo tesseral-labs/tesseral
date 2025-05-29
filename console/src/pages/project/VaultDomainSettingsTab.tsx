@@ -68,6 +68,10 @@ import Loader from '@/components/ui/loader';
 import { StatusIndicator } from '@/components/status-indicator';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { toast } from 'sonner';
+import {
+  ConsoleCardDetails,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 
 export const VaultDomainSettingsTab = () => {
   const { data: getProjectEntitlementsResponse } = useQuery(
@@ -99,12 +103,12 @@ export const VaultDomainSettingsTab = () => {
     <div className="space-y-8">
       <Card>
         <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
+          <ConsoleCardDetails>
             <CardTitle>Vault Domain Settings</CardTitle>
             <CardDescription>
               Configure a custom domain for your Vault.
             </CardDescription>
-          </div>
+          </ConsoleCardDetails>
           <EditCustomAuthDomainButton />
         </CardHeader>
         <CardContent>
@@ -165,7 +169,7 @@ export const VaultDomainSettingsTab = () => {
         <>
           <Card>
             <CardHeader className="flex-row justify-between items-center">
-              <div className="flex flex-col space-y-1 5">
+              <ConsoleCardDetails>
                 <CardTitle className="flex items-center">
                   <span>Vault Domain Records</span>
                   {customVaultDomainActive && (
@@ -201,11 +205,11 @@ export const VaultDomainSettingsTab = () => {
                     </p>
                   )}
                 </CardDescription>
-              </div>
+              </ConsoleCardDetails>
 
               {!customVaultDomainActive && <EnableCustomVaultDomainButton />}
             </CardHeader>
-            <CardContent>
+            <ConsoleCardTableContent>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -221,11 +225,11 @@ export const VaultDomainSettingsTab = () => {
                   )}
                 </TableBody>
               </Table>
-            </CardContent>
+            </ConsoleCardTableContent>
           </Card>
           <Card className="mt-8">
             <CardHeader className="flex-row justify-between items-center">
-              <div className="flex flex-col space-y-1 5">
+              <ConsoleCardDetails>
                 <CardTitle className="flex items-center">
                   <span>Email Send-From Records</span>
 
@@ -264,13 +268,13 @@ export const VaultDomainSettingsTab = () => {
                     </p>
                   )}
                 </CardDescription>
-              </div>
+              </ConsoleCardDetails>
 
               {!customEmailSendFromDomainActive && (
                 <EnableEmailSendFromDomainButton />
               )}
             </CardHeader>
-            <CardContent>
+            <ConsoleCardTableContent>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -286,7 +290,7 @@ export const VaultDomainSettingsTab = () => {
                   )}
                 </TableBody>
               </Table>
-            </CardContent>
+            </ConsoleCardTableContent>
           </Card>
         </>
       )}
@@ -547,8 +551,15 @@ const EditCustomAuthDomainButton = () => {
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger disabled={!getProjectEntitlementsResponse?.entitledCustomVaultDomains}>
-        <Button variant="outline" disabled={!getProjectEntitlementsResponse?.entitledCustomVaultDomains}>Edit</Button>
+      <AlertDialogTrigger
+        disabled={!getProjectEntitlementsResponse?.entitledCustomVaultDomains}
+      >
+        <Button
+          variant="outline"
+          disabled={!getProjectEntitlementsResponse?.entitledCustomVaultDomains}
+        >
+          Edit
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

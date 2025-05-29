@@ -73,6 +73,10 @@ import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { User, UserRoleAssignment } from '@/gen/tesseral/backend/v1/models_pb';
 import { AssignUserRolesButton } from './AssignUserRolesButton';
+import {
+  ConsoleCardDetails,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 
 export const ViewUserPage = () => {
   const { organizationId, userId } = useParams();
@@ -107,10 +111,10 @@ export const ViewUserPage = () => {
       <PageContent>
         <Card className="my-8">
           <CardHeader className="flex flex-row items-center justify-between space-y-4">
-            <div>
+            <ConsoleCardDetails>
               <CardTitle>General settings</CardTitle>
               <CardDescription>Basic settings for this User.</CardDescription>
-            </div>
+            </ConsoleCardDetails>
             <EditUserSettingsButton />
           </CardHeader>
           <CardContent>
@@ -201,7 +205,7 @@ export const ViewUserPage = () => {
               associated with a Session.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <ConsoleCardTableContent>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -239,7 +243,7 @@ export const ViewUserPage = () => {
                 ))}
               </TableBody>
             </Table>
-          </CardContent>
+          </ConsoleCardTableContent>
         </Card>
 
         <Card>
@@ -249,7 +253,7 @@ export const ViewUserPage = () => {
               Passkeys associated with this User.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <ConsoleCardTableContent>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -285,23 +289,23 @@ export const ViewUserPage = () => {
                 ))}
               </TableBody>
             </Table>
-          </CardContent>
+          </ConsoleCardTableContent>
         </Card>
 
         <Card className="mt-8">
           <CardHeader className="flex-row justify-between items-center gap-x-2">
-            <div className="flex flex-col space-y-1.5">
+            <ConsoleCardDetails>
               <CardTitle>Assigned Roles</CardTitle>
               <CardDescription>
                 Roles this User has been assigned.
               </CardDescription>
-            </div>
+            </ConsoleCardDetails>
 
             <div className="shrink-0 space-x-4">
               <AssignUserRolesButton />
             </div>
           </CardHeader>
-          <CardContent>
+          <ConsoleCardTableContent>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -321,7 +325,7 @@ export const ViewUserPage = () => {
                 )}
               </TableBody>
             </Table>
-          </CardContent>
+          </ConsoleCardTableContent>
         </Card>
 
         <DangerZoneCard />
