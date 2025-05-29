@@ -192,7 +192,7 @@ func (s *Store) CreateRole(ctx context.Context, req *frontendv1.CreateRoleReques
 		OrganizationID: ptr(authn.OrganizationID(ctx)),
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      auditlog.CreateRoleEventName,
+		EventName:      "tesseral.roles.create",
 		ResourceName:   "role",
 		Resource:       pRole,
 	}); err != nil {
@@ -319,7 +319,7 @@ func (s *Store) UpdateRole(ctx context.Context, req *frontendv1.UpdateRoleReques
 		OrganizationID:   ptr(authn.OrganizationID(ctx)),
 		UserID:           ptr(authn.UserID(ctx)),
 		SessionID:        ptr(authn.SessionID(ctx)),
-		EventName:        auditlog.UpdateRoleEventName,
+		EventName:        "tesseral.roles.update",
 		ResourceName:     "role",
 		Resource:         pRole,
 		PreviousResource: pPreviousRole,
@@ -384,7 +384,7 @@ func (s *Store) DeleteRole(ctx context.Context, req *frontendv1.DeleteRoleReques
 		OrganizationID: ptr(authn.OrganizationID(ctx)),
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      auditlog.DeleteRoleEventName,
+		EventName:      "tesseral.roles.delete",
 		ResourceName:   "role",
 		Resource:       pRole,
 	}); err != nil {

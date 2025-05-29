@@ -129,7 +129,7 @@ func (s *Store) CreateSCIMAPIKey(ctx context.Context, req *frontendv1.CreateSCIM
 		OrganizationID: ptr(authn.OrganizationID(ctx)),
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      auditlog.CreateSCIMAPIKeyEventName,
+		EventName:      "tesseral.scim_api_keys.create",
 		ResourceName:   "scimApiKey",
 		Resource:       parseSCIMAPIKey(qSCIMAPIKey), // Don't include secret token in the audit log
 	}); err != nil {
@@ -195,7 +195,7 @@ func (s *Store) UpdateSCIMAPIKey(ctx context.Context, req *frontendv1.UpdateSCIM
 		OrganizationID:   ptr(authn.OrganizationID(ctx)),
 		UserID:           ptr(authn.UserID(ctx)),
 		SessionID:        ptr(authn.SessionID(ctx)),
-		EventName:        auditlog.UpdateSCIMAPIKeyEventName,
+		EventName:        "tesseral.scim_api_keys.update",
 		ResourceName:     "scimApiKey",
 		Resource:         pSCIMAPIKey,
 		PreviousResource: pPreviousSCIMAPIKey,
@@ -253,7 +253,7 @@ func (s *Store) DeleteSCIMAPIKey(ctx context.Context, req *frontendv1.DeleteSCIM
 		OrganizationID: ptr(authn.OrganizationID(ctx)),
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      auditlog.DeleteSCIMAPIKeyEventName,
+		EventName:      "tesseral.scim_api_keys.delete",
 		ResourceName:   "scimApiKey",
 		Resource:       pSCIMAPIKey,
 	}); err != nil {
@@ -308,7 +308,7 @@ func (s *Store) RevokeSCIMAPIKey(ctx context.Context, req *frontendv1.RevokeSCIM
 		OrganizationID:   ptr(authn.OrganizationID(ctx)),
 		UserID:           ptr(authn.UserID(ctx)),
 		SessionID:        ptr(authn.SessionID(ctx)),
-		EventName:        auditlog.RevokeSCIMAPIKeyEventName,
+		EventName:        "tesseral.scim_api_keys.revoke",
 		ResourceName:     "scimApiKey",
 		Resource:         pSCIMAPIKey,
 		PreviousResource: pPreviousSCIMAPIKey,

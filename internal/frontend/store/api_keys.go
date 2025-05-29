@@ -93,7 +93,7 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *frontendv1.CreateAPIKeyRe
 		OrganizationID: ptr(authn.OrganizationID(ctx)),
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      auditlog.CreateAPIKeyEventName,
+		EventName:      "tesseral.api_keys.create",
 		ResourceName:   "apiKey",
 		Resource:       parseAPIKey(qAPIKey, nil), // Don't include secret token in the audit log
 	}); err != nil {
@@ -149,7 +149,7 @@ func (s *Store) DeleteAPIKey(ctx context.Context, req *frontendv1.DeleteAPIKeyRe
 		OrganizationID: ptr(authn.OrganizationID(ctx)),
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      auditlog.DeleteAPIKeyEventName,
+		EventName:      "tesseral.api_keys.delete",
 		ResourceName:   "apiKey",
 		Resource:       pAPIKey,
 	}); err != nil {
@@ -270,7 +270,7 @@ func (s *Store) RevokeAPIKey(ctx context.Context, req *frontendv1.RevokeAPIKeyRe
 		OrganizationID:   ptr(authn.OrganizationID(ctx)),
 		UserID:           ptr(authn.UserID(ctx)),
 		SessionID:        ptr(authn.SessionID(ctx)),
-		EventName:        auditlog.RevokeAPIKeyEventName,
+		EventName:        "tesseral.api_keys.revoke",
 		ResourceName:     "apiKey",
 		Resource:         pAPIKey,
 		PreviousResource: pPreviousAPIKey,
@@ -324,7 +324,7 @@ func (s *Store) UpdateAPIKey(ctx context.Context, req *frontendv1.UpdateAPIKeyRe
 		OrganizationID:   ptr(authn.OrganizationID(ctx)),
 		UserID:           ptr(authn.UserID(ctx)),
 		SessionID:        ptr(authn.SessionID(ctx)),
-		EventName:        auditlog.UpdateAPIKeyEventName,
+		EventName:        "tesseral.api_keys.update",
 		ResourceName:     "apiKey",
 		Resource:         pAPIKey,
 		PreviousResource: pPreviousAPIKey,

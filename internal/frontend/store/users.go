@@ -184,7 +184,7 @@ func (s *Store) UpdateUser(ctx context.Context, req *frontendv1.UpdateUserReques
 		OrganizationID:   ptr(authn.OrganizationID(ctx)),
 		UserID:           ptr(authn.UserID(ctx)),
 		SessionID:        ptr(authn.SessionID(ctx)),
-		EventName:        auditlog.UpdateUserEventName,
+		EventName:        "tesseral.users.update",
 		ResourceName:     "user",
 		Resource:         pUser,
 		PreviousResource: pPreviousUser,
@@ -246,7 +246,7 @@ func (s *Store) DeleteUser(ctx context.Context, req *frontendv1.DeleteUserReques
 		OrganizationID: ptr(authn.OrganizationID(ctx)),
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      auditlog.DeleteUserEventName,
+		EventName:      "tesseral.users.delete",
 		ResourceName:   "user",
 		Resource:       pUser,
 	}); err != nil {

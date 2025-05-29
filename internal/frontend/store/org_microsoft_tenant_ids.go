@@ -69,7 +69,7 @@ func (s *Store) UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, req *f
 		OrganizationID: ptr(authn.OrganizationID(ctx)),
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      auditlog.UpdateMicrosoftTenantIDsEventName,
+		EventName:      "tesseral.microsoft_tenant_ids.update",
 		ResourceName:   "microsoftTenantIds",
 		Resource:       pMicrosoftTenantIDs,
 	}); err != nil {

@@ -166,7 +166,7 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 		OrganizationID:   ptr(authn.OrganizationID(ctx)),
 		UserID:           ptr(authn.UserID(ctx)),
 		SessionID:        ptr(authn.SessionID(ctx)),
-		EventName:        auditlog.UpdateOrganizationEventName,
+		EventName:        "tesseral.organizations.update",
 		ResourceName:     "organization",
 		Resource:         pOrganization,
 		PreviousResource: pPreviousOrganization,

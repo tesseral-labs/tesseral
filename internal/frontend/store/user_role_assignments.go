@@ -238,7 +238,7 @@ func (s *Store) CreateUserRoleAssignment(ctx context.Context, req *frontendv1.Cr
 		OrganizationID: ptr(authn.OrganizationID(ctx)),
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      auditlog.CreateUserRoleAssignmentEventName,
+		EventName:      "tesseral.user_role_assignments.create",
 		ResourceName:   "userRoleAssignment",
 		Resource:       pUserRoleAssignment,
 	}); err != nil {
@@ -291,7 +291,7 @@ func (s *Store) DeleteUserRoleAssignment(ctx context.Context, req *frontendv1.De
 		OrganizationID: ptr(authn.OrganizationID(ctx)),
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      auditlog.DeleteUserRoleAssignmentEventName,
+		EventName:      "tesseral.user_role_assignments.delete",
 		ResourceName:   "userRoleAssignment",
 		Resource:       pUserRoleAssignment,
 	}); err != nil {

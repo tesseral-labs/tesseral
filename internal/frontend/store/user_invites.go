@@ -172,7 +172,7 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *frontendv1.CreateUser
 		OrganizationID: ptr(authn.OrganizationID(ctx)),
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      auditlog.CreateUserInviteEventName,
+		EventName:      "tesseral.user_invites.create",
 		ResourceName:   "userInvite",
 		Resource:       pUserInvite,
 	}); err != nil {
@@ -224,7 +224,7 @@ func (s *Store) DeleteUserInvite(ctx context.Context, req *frontendv1.DeleteUser
 		OrganizationID: ptr(authn.OrganizationID(ctx)),
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      auditlog.DeleteUserInviteEventName,
+		EventName:      "tesseral.user_invites.delete",
 		ResourceName:   "userInvite",
 		Resource:       pUserInvite,
 	}); err != nil {

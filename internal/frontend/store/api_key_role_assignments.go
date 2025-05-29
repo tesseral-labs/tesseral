@@ -75,7 +75,7 @@ func (s *Store) CreateAPIKeyRoleAssignment(ctx context.Context, req *frontendv1.
 		OrganizationID: ptr(authn.OrganizationID(ctx)),
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      auditlog.CreateAPIKeyRoleAssignmentEventName,
+		EventName:      "tesseral.api_key_role_assignments.create",
 		ResourceName:   "apiKeyRoleAssignment",
 		Resource:       pAPIKeyRoleAssignment,
 	}); err != nil {
@@ -127,7 +127,7 @@ func (s *Store) DeleteAPIKeyRoleAssignment(ctx context.Context, req *frontendv1.
 		OrganizationID: ptr(authn.OrganizationID(ctx)),
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      auditlog.DeleteAPIKeyRoleAssignmentEventName,
+		EventName:      "tesseral.api_key_role_assignments.delete",
 		ResourceName:   "apiKeyRoleAssignment",
 		Resource:       pAPIKeyRoleAssignment,
 	}); err != nil {

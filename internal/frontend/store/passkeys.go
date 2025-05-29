@@ -97,7 +97,7 @@ func (s *Store) DeleteMyPasskey(ctx context.Context, req *frontendv1.DeleteMyPas
 		OrganizationID: ptr(authn.OrganizationID(ctx)),
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      auditlog.DeletePasskeyEventName,
+		EventName:      "tesseral.passkeys.delete",
 		ResourceName:   "passkey",
 		Resource:       pPasskey,
 	}); err != nil {
@@ -179,7 +179,7 @@ func (s *Store) RegisterPasskey(ctx context.Context, req *frontendv1.RegisterPas
 		OrganizationID: ptr(authn.OrganizationID(ctx)),
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      auditlog.CreatePasskeyEventName,
+		EventName:      "tesseral.passkeys.create",
 		ResourceName:   "passkey",
 		Resource:       pPasskey,
 	}); err != nil {

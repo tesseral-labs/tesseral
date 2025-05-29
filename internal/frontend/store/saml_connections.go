@@ -182,7 +182,7 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *frontendv1.Create
 		OrganizationID: ptr(authn.OrganizationID(ctx)),
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      auditlog.CreateSAMLConnectionEventName,
+		EventName:      "tesseral.saml_connections.create",
 		ResourceName:   "samlConnection",
 		Resource:       pSAMLConnection,
 	}); err != nil {
@@ -294,7 +294,7 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *frontendv1.Update
 		OrganizationID:   ptr(authn.OrganizationID(ctx)),
 		UserID:           ptr(authn.UserID(ctx)),
 		SessionID:        ptr(authn.SessionID(ctx)),
-		EventName:        auditlog.UpdateSAMLConnectionEventName,
+		EventName:        "tesseral.saml_connections.update",
 		ResourceName:     "samlConnection",
 		Resource:         pSAMLConnection,
 		PreviousResource: pPreviousSAMLConnection,
@@ -353,7 +353,7 @@ func (s *Store) DeleteSAMLConnection(ctx context.Context, req *frontendv1.Delete
 		OrganizationID: ptr(authn.OrganizationID(ctx)),
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      auditlog.DeleteSAMLConnectionEventName,
+		EventName:      "tesseral.saml_connections.delete",
 		ResourceName:   "samlConnection",
 		Resource:       pSAMLConnection,
 	}); err != nil {

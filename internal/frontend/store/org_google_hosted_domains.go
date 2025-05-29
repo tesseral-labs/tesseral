@@ -69,7 +69,7 @@ func (s *Store) UpdateOrganizationGoogleHostedDomains(ctx context.Context, req *
 		OrganizationID: ptr(authn.OrganizationID(ctx)),
 		UserID:         ptr(authn.UserID(ctx)),
 		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      auditlog.UpdateGoogleHostedDomainsEventName,
+		EventName:      "tesseral.google_hosted_domains.update",
 		ResourceName:   "googleHostedDomains",
 		Resource:       pGoogleHostedDomains,
 	}); err != nil {
