@@ -188,7 +188,7 @@ function EditSCIMAPIKeyButton() {
                 <FormItem>
                   <FormLabel>Display Name</FormLabel>
                   <FormDescription>
-                    The human-friendly name for this SCIM API Key.
+                    A human-friendly name for this SCIM API Key.
                   </FormDescription>
                   <FormControl>
                     <Input {...field} />

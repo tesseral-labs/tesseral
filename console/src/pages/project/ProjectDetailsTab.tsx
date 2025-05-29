@@ -321,13 +321,14 @@ const EditProjectRedirectURIsButton = () => {
               render={({ field }: { field: any }) => (
                 <FormItem>
                   <FormLabel>Default Redirect URI</FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://app.company.com/" {...field} />
-                  </FormControl>
                   <FormDescription>
                     Where users will be redirected after visiting your project's
                     Vault.
                   </FormDescription>
+                  <FormControl>
+                    <Input placeholder="https://app.company.com/" {...field} />
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -338,16 +339,17 @@ const EditProjectRedirectURIsButton = () => {
               render={({ field }: { field: any }) => (
                 <FormItem>
                   <FormLabel>After-Login Redirect URI</FormLabel>
+                  <FormDescription>
+                    Where users will be redirected after logging in. If blank,
+                    uses the default redirect URI.
+                  </FormDescription>
                   <FormControl>
                     <Input
                       placeholder="https://app.company.com/after-login"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Where users will be redirected after logging in. If blank,
-                    uses the default redirect URI.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -358,16 +360,17 @@ const EditProjectRedirectURIsButton = () => {
               render={({ field }: { field: any }) => (
                 <FormItem>
                   <FormLabel>After-Signup Redirect URI</FormLabel>
+                  <FormDescription>
+                    Where users will be redirected after signing up. If blank,
+                    uses the default redirect URI.
+                  </FormDescription>
                   <FormControl>
                     <Input
                       placeholder="https://app.company.com/after-signup"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Where users will be redirected after signing up. If blank,
-                    uses the default redirect URI.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -461,6 +464,11 @@ const EditProjectDomainSettingsButton = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Cookie Domain</FormLabel>
+                  <FormDescription>
+                    Client-side JavaScript on this domain and its subdomains
+                    will have access to User access tokens. You cannot modify
+                    this field until you have configured a custom Vault domain.
+                  </FormDescription>
                   <FormControl>
                     <Input
                       placeholder="app.company.com"
@@ -468,11 +476,7 @@ const EditProjectDomainSettingsButton = () => {
                       disabled={!getProjectResponse?.project?.vaultDomainCustom}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Client-side JavaScript on this domain and its subdomains
-                    will have access to User access tokens. You cannot modify
-                    this field until you have configured a custom Vault domain.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}

@@ -201,13 +201,14 @@ const EditPublishableKeyButton = () => {
               render={({ field }: { field: any }) => (
                 <FormItem>
                   <FormLabel>Display Name</FormLabel>
-                  <FormControl>
-                    <Input className="max-w-96" {...field} />
-                  </FormControl>
                   <FormDescription>
                     An internal human-friendly name for the Publishable Key. Not
                     shown to your customers.
                   </FormDescription>
+                  <FormControl>
+                    <Input className="max-w-96" {...field} />
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}

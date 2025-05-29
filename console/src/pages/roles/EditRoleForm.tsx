@@ -16,6 +16,7 @@ import {
   ConsoleCard,
   ConsoleCardContent,
   ConsoleCardDescription,
+  ConsoleCardDetails,
   ConsoleCardHeader,
   ConsoleCardTitle,
 } from '@/components/ui/console-card';
@@ -48,10 +49,12 @@ export function EditRoleForm({
       <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
         <ConsoleCard>
           <ConsoleCardHeader>
-            <ConsoleCardTitle>Role Details</ConsoleCardTitle>
-            <ConsoleCardDescription>
-              Basic information about the Role.
-            </ConsoleCardDescription>
+            <ConsoleCardDetails>
+              <ConsoleCardTitle>Role Details</ConsoleCardTitle>
+              <ConsoleCardDescription>
+                Basic information about the Role.
+              </ConsoleCardDescription>
+            </ConsoleCardDetails>
           </ConsoleCardHeader>
           <ConsoleCardContent className="space-y-4">
             <FormField
@@ -60,11 +63,13 @@ export function EditRoleForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Display Name</FormLabel>
-                  <Input placeholder="Engineering" {...field} />
                   <FormDescription>
                     The display name of the Role. This will be displayed to
                     users.
                   </FormDescription>
+                  <FormControl>
+                    <Input placeholder="Engineering" {...field} />
+                  </FormControl>
                 </FormItem>
               )}
             />
@@ -74,13 +79,15 @@ export function EditRoleForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Description</FormLabel>
-                  <Input
-                    placeholder="Grants read/write access to databases and logs."
-                    {...field}
-                  />
                   <FormDescription>
                     Description of the Role. This will be displayed to users.
                   </FormDescription>
+                  <FormControl>
+                    <Input
+                      placeholder="Grants read/write access to databases and logs."
+                      {...field}
+                    />
+                  </FormControl>
                 </FormItem>
               )}
             />
@@ -89,10 +96,12 @@ export function EditRoleForm({
 
         <ConsoleCard>
           <ConsoleCardHeader>
-            <ConsoleCardTitle>Actions</ConsoleCardTitle>
-            <ConsoleCardDescription>
-              Actions that this Role can perform.
-            </ConsoleCardDescription>
+            <ConsoleCardDetails>
+              <ConsoleCardTitle>Actions</ConsoleCardTitle>
+              <ConsoleCardDescription>
+                Actions that this Role can perform.
+              </ConsoleCardDescription>
+            </ConsoleCardDetails>
           </ConsoleCardHeader>
 
           <ConsoleCardContent className="space-y-4">

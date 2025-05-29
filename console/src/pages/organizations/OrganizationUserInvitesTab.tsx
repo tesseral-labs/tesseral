@@ -183,14 +183,15 @@ const CreateUserInviteButton = () => {
               render={({ field }: { field: any }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input className="max-w-96" {...field} />
-                  </FormControl>
                   <FormDescription>
                     The outside collaborator's email. The collaborator will need
                     to verify this email before being able to join the
                     organization.
                   </FormDescription>
+                  <FormControl>
+                    <Input className="max-w-96" {...field} />
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -201,6 +202,9 @@ const CreateUserInviteButton = () => {
               render={({ field }: { field: any }) => (
                 <FormItem>
                   <FormLabel>Invite as owner</FormLabel>
+                  <FormDescription>
+                    Whether the collaborator will join as an owner.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -208,9 +212,7 @@ const CreateUserInviteButton = () => {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Whether the collaborator will join as an owner.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -221,6 +223,9 @@ const CreateUserInviteButton = () => {
               render={({ field }: { field: any }) => (
                 <FormItem>
                   <FormLabel>Send email</FormLabel>
+                  <FormDescription>
+                    Send the collaborator an email to accept the invite.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -228,9 +233,7 @@ const CreateUserInviteButton = () => {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Send the collaborator an email to accept the invite.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}

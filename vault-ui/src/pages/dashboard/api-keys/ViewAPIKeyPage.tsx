@@ -29,6 +29,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -248,6 +249,9 @@ function EditAPIKeyButton() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Display Name</FormLabel>
+                  <FormDescription>
+                    A human-friendly name for this API Key.
+                  </FormDescription>
                   <FormControl>
                     <Input placeholder="Display Name" {...field} />
                   </FormControl>

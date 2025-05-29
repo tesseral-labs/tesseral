@@ -332,6 +332,10 @@ function EditAPIKeySettingsButton() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>API Keys Enabled</FormLabel>
+                  <FormDescription>
+                    Whether this Organization can use API keys to authenticate
+                    to your service.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -339,10 +343,6 @@ function EditAPIKeySettingsButton() {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Whether this Organization can use API keys to authenticate
-                    to your service.
-                  </FormDescription>
                 </FormItem>
               )}
             />

@@ -176,10 +176,12 @@ export function ViewRolePage() {
 
           <ConsoleCard>
             <ConsoleCardHeader>
-              <ConsoleCardTitle>Assigned Users</ConsoleCardTitle>
-              <ConsoleCardDescription>
-                Users assigned to this Role.
-              </ConsoleCardDescription>
+              <ConsoleCardDetails>
+                <ConsoleCardTitle>Assigned Users</ConsoleCardTitle>
+                <ConsoleCardDescription>
+                  Users assigned to this Role.
+                </ConsoleCardDescription>
+              </ConsoleCardDetails>
             </ConsoleCardHeader>
             <ConsoleCardTableContent>
               <Table>
@@ -303,7 +305,9 @@ function DangerZoneCard() {
   return (
     <ConsoleCard className="mt-8 border-destructive">
       <ConsoleCardHeader>
-        <ConsoleCardTitle>Danger Zone</ConsoleCardTitle>
+        <ConsoleCardDetails>
+          <ConsoleCardTitle>Danger Zone</ConsoleCardTitle>
+        </ConsoleCardDetails>
       </ConsoleCardHeader>
 
       <ConsoleCardContent>

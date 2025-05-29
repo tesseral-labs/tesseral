@@ -13,6 +13,7 @@ import {
 import {
   ConsoleCard,
   ConsoleCardContent,
+  ConsoleCardDetails,
   ConsoleCardHeader,
   ConsoleCardTitle,
 } from '@/components/ui/console-card';
@@ -86,7 +87,9 @@ export const ViewProjectSettingsPage = () => {
       <PageContent>
         <ConsoleCard className="my-8">
           <ConsoleCardHeader>
-            <ConsoleCardTitle>General configuration</ConsoleCardTitle>
+            <ConsoleCardDetails>
+              <ConsoleCardTitle>General configuration</ConsoleCardTitle>
+            </ConsoleCardDetails>
           </ConsoleCardHeader>
 
           <ConsoleCardContent>

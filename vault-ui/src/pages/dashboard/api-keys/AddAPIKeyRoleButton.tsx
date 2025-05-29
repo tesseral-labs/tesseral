@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -117,6 +118,9 @@ export function AddAPIKeyRoleButton() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Role</FormLabel>
+                    <FormDescription>
+                      A role to assign to this API key.
+                    </FormDescription>
                     <FormControl>
                       <Select
                         onValueChange={field.onChange}

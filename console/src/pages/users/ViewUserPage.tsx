@@ -199,11 +199,13 @@ export const ViewUserPage = () => {
 
         <ConsoleCard className="my-8">
           <ConsoleCardHeader>
-            <ConsoleCardTitle>Sessions</ConsoleCardTitle>
-            <ConsoleCardDescription>
-              Every time your Users log in or perform an action, that's
-              associated with a Session.
-            </ConsoleCardDescription>
+            <ConsoleCardDetails>
+              <ConsoleCardTitle>Sessions</ConsoleCardTitle>
+              <ConsoleCardDescription>
+                Every time your Users log in or perform an action, that's
+                associated with a Session.
+              </ConsoleCardDescription>
+            </ConsoleCardDetails>
           </ConsoleCardHeader>
           <ConsoleCardTableContent>
             <Table>
@@ -248,10 +250,12 @@ export const ViewUserPage = () => {
 
         <ConsoleCard>
           <ConsoleCardHeader>
-            <ConsoleCardTitle>Passkeys</ConsoleCardTitle>
-            <ConsoleCardDescription>
-              Passkeys associated with this User.
-            </ConsoleCardDescription>
+            <ConsoleCardDetails>
+              <ConsoleCardTitle>Passkeys</ConsoleCardTitle>
+              <ConsoleCardDescription>
+                Passkeys associated with this User.
+              </ConsoleCardDescription>
+            </ConsoleCardDetails>
           </ConsoleCardHeader>
           <ConsoleCardTableContent>
             <Table>
@@ -429,7 +433,9 @@ const DangerZoneCard = () => {
   return (
     <ConsoleCard className="mt-8 border-destructive">
       <ConsoleCardHeader>
-        <ConsoleCardTitle>Danger Zone</ConsoleCardTitle>
+        <ConsoleCardDetails>
+          <ConsoleCardTitle>Danger Zone</ConsoleCardTitle>
+        </ConsoleCardDetails>
       </ConsoleCardHeader>
 
       <ConsoleCardContent>
@@ -533,7 +539,7 @@ const EditUserSettingsButton: FC = () => {
       <AlertDialogTrigger asChild>
         <Button variant="outline">Edit</Button>
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent className="overflow-y-scroll max-h-[calc(100vh-6rem)]">
         <AlertDialogHeader>
           <AlertDialogTitle>Edit User Settings</AlertDialogTitle>
         </AlertDialogHeader>
@@ -548,6 +554,10 @@ const EditUserSettingsButton: FC = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
+                  <FormDescription>
+                    The User's email address. Must be unique within their
+                    Organization.
+                  </FormDescription>
                   <FormControl>
                     <Input
                       type="email"
@@ -555,10 +565,7 @@ const EditUserSettingsButton: FC = () => {
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    The User's email address. Must be unique within their
-                    Organization.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -570,13 +577,14 @@ const EditUserSettingsButton: FC = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Display Name</FormLabel>
-                  <FormControl>
-                    <Input type="text" placeholder="John Doe" {...field} />
-                  </FormControl>
                   <FormDescription>
                     The User's display name. This is typically their full
                     personal name. Optional.
                   </FormDescription>
+                  <FormControl>
+                    <Input type="text" placeholder="John Doe" {...field} />
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -588,12 +596,13 @@ const EditUserSettingsButton: FC = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Profile Picture URL</FormLabel>
-                  <FormControl>
-                    <Input type="text" placeholder="https://..." {...field} />
-                  </FormControl>
                   <FormDescription>
                     The URL of the User's profile picture. Optional.
                   </FormDescription>
+                  <FormControl>
+                    <Input type="text" placeholder="https://..." {...field} />
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -605,6 +614,9 @@ const EditUserSettingsButton: FC = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Google User ID</FormLabel>
+                  <FormDescription>
+                    The User's Google-assigned ID. Optional.
+                  </FormDescription>
                   <FormControl>
                     <Input
                       type="text"
@@ -612,9 +624,7 @@ const EditUserSettingsButton: FC = () => {
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    The User's Google-assigned ID. Optional.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -626,6 +636,9 @@ const EditUserSettingsButton: FC = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Microsoft User ID</FormLabel>
+                  <FormDescription>
+                    The User's Microsoft-assigned ID. Optional.
+                  </FormDescription>
                   <FormControl>
                     <Input
                       type="text"
@@ -633,9 +646,7 @@ const EditUserSettingsButton: FC = () => {
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    The User's Microsoft-assigned ID. Optional.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -647,6 +658,9 @@ const EditUserSettingsButton: FC = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>GitHub User ID</FormLabel>
+                  <FormDescription>
+                    The User's GitHub-assigned ID. Optional.
+                  </FormDescription>
                   <FormControl>
                     <Input
                       type="text"
@@ -654,9 +668,7 @@ const EditUserSettingsButton: FC = () => {
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    The User's GitHub-assigned ID. Optional.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -668,6 +680,10 @@ const EditUserSettingsButton: FC = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Owner</FormLabel>
+                  <FormDescription>
+                    Whether the User is an Owner of their Organization.
+                    Optional.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -675,10 +691,7 @@ const EditUserSettingsButton: FC = () => {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Whether the User is an Owner of their Organization.
-                    Optional.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}

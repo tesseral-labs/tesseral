@@ -351,6 +351,10 @@ const EditLoginMethodsButton = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Log in with Email</FormLabel>
+                  <FormDescription>
+                    Whether Users can log in with a Magic Link sent to their
+                    email address.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -358,10 +362,7 @@ const EditLoginMethodsButton = () => {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Whether Users can log in with a Magic Link sent to their
-                    email address.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -372,6 +373,9 @@ const EditLoginMethodsButton = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Log in with Password</FormLabel>
+                  <FormDescription>
+                    Whether Users can log in using a password.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -379,9 +383,7 @@ const EditLoginMethodsButton = () => {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Whether Users can log in using a password.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -392,6 +394,10 @@ const EditLoginMethodsButton = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Log in with Passkey</FormLabel>
+                  <FormDescription>
+                    Whether Users can register a passkey as a secondary
+                    authentication factor.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -399,10 +405,7 @@ const EditLoginMethodsButton = () => {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Whether Users can register a passkey as a secondary
-                    authentication factor.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -413,6 +416,10 @@ const EditLoginMethodsButton = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Log in with Authenticator App</FormLabel>
+                  <FormDescription>
+                    Whether Users can register an authenticator app as a
+                    secondary authentication factor.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -420,10 +427,7 @@ const EditLoginMethodsButton = () => {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Whether Users can register an authenticator app as a
-                    secondary authentication factor.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -434,6 +438,9 @@ const EditLoginMethodsButton = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Log in with SAML</FormLabel>
+                  <FormDescription>
+                    Whether Organizations in this Project can enable SAML.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -441,9 +448,7 @@ const EditLoginMethodsButton = () => {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Whether Organizations in this Project can enable SAML.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}

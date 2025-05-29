@@ -112,6 +112,9 @@ export function EditProjectGithubSettingsButton() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Log in with GitHub</FormLabel>
+                  <FormDescription>
+                    Whether Users can log in using their GitHub account.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -119,9 +122,7 @@ export function EditProjectGithubSettingsButton() {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Whether Users can log in using their GitHub account.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -133,12 +134,13 @@ export function EditProjectGithubSettingsButton() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>GitHub OAuth Client ID</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
                   <FormDescription>
                     Your company's GitHub OAuth Client ID.
                   </FormDescription>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -150,12 +152,13 @@ export function EditProjectGithubSettingsButton() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>GitHub OAuth Client Secret</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
                   <FormDescription>
                     Your company's GitHub OAuth Client Secret.
                   </FormDescription>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}

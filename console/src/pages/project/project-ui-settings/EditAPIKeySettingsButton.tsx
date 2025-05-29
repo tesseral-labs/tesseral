@@ -106,6 +106,10 @@ export function EditAPIKeySettingsButton() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>API Keys Enabled</FormLabel>
+                    <FormDescription>
+                      Whether or not Organizations are allowed to create API
+                      Keys.
+                    </FormDescription>
                     <FormControl className="block">
                       <Switch
                         id="apiKeysEnabled"
@@ -114,10 +118,6 @@ export function EditAPIKeySettingsButton() {
                       />
                     </FormControl>
                     <FormMessage />
-                    <FormDescription>
-                      Whether or not Organizations are allowed to create API
-                      Keys.
-                    </FormDescription>
                   </FormItem>
                 )}
               />
@@ -127,10 +127,6 @@ export function EditAPIKeySettingsButton() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>API Keys Prefix</FormLabel>
-                    <FormControl>
-                      <Input type="text" id="apiKeysPrefix" {...field} />
-                    </FormControl>
-                    <FormMessage />
                     <FormDescription>
                       Set a prefix for your API keys. We recommend ending your
                       prefix with an underscore. For example:{' '}
@@ -139,6 +135,10 @@ export function EditAPIKeySettingsButton() {
                       </span>
                       .
                     </FormDescription>
+                    <FormControl>
+                      <Input type="text" id="apiKeysPrefix" {...field} />
+                    </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />

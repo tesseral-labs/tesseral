@@ -106,6 +106,10 @@ export const EditOrganizationGoogleConfigurationButton = () => {
               render={({ field }: { field: any }) => (
                 <FormItem>
                   <FormLabel>Google Hosted Domains</FormLabel>
+                  <FormDescription>
+                    The set of Google workspaces associated with this
+                    organization, identified by their primary domain.
+                  </FormDescription>
                   <FormControl>
                     <InputTags
                       className="max-w-96"
@@ -113,10 +117,6 @@ export const EditOrganizationGoogleConfigurationButton = () => {
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    The set of Google workspaces associated with this
-                    organization, identified by their primary domain.
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

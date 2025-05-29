@@ -9,6 +9,7 @@ import {
   ConsoleCard,
   ConsoleCardContent,
   ConsoleCardDescription,
+  ConsoleCardDetails,
   ConsoleCardHeader,
   ConsoleCardTitle,
 } from '@/components/ui/console-card';
@@ -80,10 +81,12 @@ export const ViewPasskeyPage = () => {
       <PageContent>
         <ConsoleCard className="my-8">
           <ConsoleCardHeader>
-            <ConsoleCardTitle>General settings</ConsoleCardTitle>
-            <ConsoleCardDescription>
-              Basic settings for this passkey.
-            </ConsoleCardDescription>
+            <ConsoleCardDetails>
+              <ConsoleCardTitle>General settings</ConsoleCardTitle>
+              <ConsoleCardDescription>
+                Basic settings for this passkey.
+              </ConsoleCardDescription>
+            </ConsoleCardDetails>
           </ConsoleCardHeader>
           <ConsoleCardContent>
             <DetailsGrid>
@@ -233,7 +236,9 @@ const DangerZoneCard = () => {
 
       <ConsoleCard className="border-destructive">
         <ConsoleCardHeader>
-          <ConsoleCardTitle>Danger Zone</ConsoleCardTitle>
+          <ConsoleCardDetails>
+            <ConsoleCardTitle>Danger Zone</ConsoleCardTitle>
+          </ConsoleCardDetails>
         </ConsoleCardHeader>
 
         <ConsoleCardContent className="space-y-4">
