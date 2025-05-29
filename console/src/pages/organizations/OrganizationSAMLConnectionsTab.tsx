@@ -6,12 +6,14 @@ import {
   listSAMLConnections,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
-  ConsoleCard,
-  ConsoleCardDescription,
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
   ConsoleCardDetails,
-  ConsoleCardHeader,
   ConsoleCardTableContent,
-  ConsoleCardTitle,
 } from '@/components/ui/console-card';
 import {
   Table,
@@ -54,19 +56,19 @@ export const OrganizationSAMLConnectionsTab = () => {
   };
 
   return (
-    <ConsoleCard>
-      <ConsoleCardHeader className="flex-row justify-between items-center">
+    <Card>
+      <CardHeader className="flex-row justify-between items-center">
         <ConsoleCardDetails>
-          <ConsoleCardTitle>SAML Connections</ConsoleCardTitle>
-          <ConsoleCardDescription>
+          <CardTitle>SAML Connections</CardTitle>
+          <CardDescription>
             A SAML connection is a link between Tesseral and your customer's
             enterprise Identity Provider.
-          </ConsoleCardDescription>
+          </CardDescription>
         </ConsoleCardDetails>
         <Button variant="outline" onClick={handleCreateSAMLConnection}>
           Create
         </Button>
-      </ConsoleCardHeader>
+      </CardHeader>
       <ConsoleCardTableContent>
         <Table>
           <TableHeader>
@@ -112,6 +114,6 @@ export const OrganizationSAMLConnectionsTab = () => {
           </TableBody>
         </Table>
       </ConsoleCardTableContent>
-    </ConsoleCard>
+    </Card>
   );
 };

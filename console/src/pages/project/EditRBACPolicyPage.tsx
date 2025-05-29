@@ -9,7 +9,9 @@ import {
 import { Link } from 'react-router-dom';
 import {
   PageCodeSubtitle,
+  PageContent,
   PageDescription,
+  PageHeader,
   PageTitle,
 } from '@/components/page';
 import React, { ReactNode, useEffect, useState } from 'react';
@@ -59,6 +61,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router';
+import { ConsoleCardTableContent } from '@/components/ui/console-card';
 
 export function EditRBACPolicyPage() {
   const { data: getProjectResponse } = useQuery(getProject, {});
@@ -98,97 +101,81 @@ export function EditRBACPolicyPage() {
   }
 
   return (
-    <div>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/project-settings">Project settings</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/project-settings/rbac-settings">RBAC Settings</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Edit RBAC Policy</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+    <>
+      <PageHeader>
+        <PageTitle>Edit RBAC Policy</PageTitle>
+        <PageCodeSubtitle>{getProjectResponse?.project?.id}</PageCodeSubtitle>
+        <PageDescription>
+          Edit the Role-Based Access Control policy for your Project.
+        </PageDescription>
+      </PageHeader>
+      <PageContent>
+        <Card className="mt-8">
+          <CardHeader className="flex-row justify-between items-center gap-x-2">
+            <div className="flex flex-col space-y-1.5">
+              <CardTitle>Role-Based Access Control Policy</CardTitle>
+              <CardDescription>
+                A Role-Based Access Control Policy is the set of fine-grained
+                Actions in a Project.
+              </CardDescription>
+            </div>
 
-      <PageTitle>Edit RBAC Policy</PageTitle>
-      <PageCodeSubtitle>{getProjectResponse?.project?.id}</PageCodeSubtitle>
-      <PageDescription>
-        Edit the Role-Based Access Control policy for your Project.
-      </PageDescription>
+            <div className="shrink-0 space-x-4">
+              <Link to="/project-settings/rbac-settings">
+                <Button variant="outline">Cancel</Button>
+              </Link>
+              <Button onClick={handleSave}>Save</Button>
+            </div>
+          </CardHeader>
 
-      <Card className="mt-8">
-        <CardHeader className="flex-row justify-between items-center gap-x-2">
-          <div className="flex flex-col space-y-1.5">
-            <CardTitle>Role-Based Access Control Policy</CardTitle>
-            <CardDescription>
-              A Role-Based Access Control Policy is the set of fine-grained
-              Actions in a Project.
-            </CardDescription>
-          </div>
-
-          <div className="shrink-0 space-x-4">
-            <Link to="/project-settings/rbac-settings">
-              <Button variant="outline">Cancel</Button>
-            </Link>
-            <Button onClick={handleSave}>Save</Button>
-          </div>
-        </CardHeader>
-
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Action Name</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {actions.map((action, index) => (
-                <TableRow key={action.name}>
-                  <TableCell className="font-medium font-mono">
-                    {action.name}
-                  </TableCell>
-                  <TableCell>{action.description}</TableCell>
-                  <TableCell className="text-right">
-                    <Button onClick={() => deleteAction(index)} variant="link">Delete</Button>
-
-                    <EditActionButton
-                      action={action}
-                      onSubmit={(action) => updateAction(index, action)}
-                    >
-                      <Button variant="link">Edit</Button>
-                    </EditActionButton>
-                  </TableCell>
+          <ConsoleCardTableContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Action Name</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead></TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {actions.map((action, index) => (
+                  <TableRow key={action.name}>
+                    <TableCell className="font-medium font-mono">
+                      {action.name}
+                    </TableCell>
+                    <TableCell>{action.description}</TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        onClick={() => deleteAction(index)}
+                        variant="link"
+                      >
+                        Delete
+                      </Button>
 
-          <EditActionButton
-            action={{ name: '', description: '' }}
-            onSubmit={addAction}
-          >
-            <Button className="mt-4" variant="outline">Add Action</Button>
-          </EditActionButton>
-        </CardContent>
-      </Card>
-    </div>
+                      <EditActionButton
+                        action={action}
+                        onSubmit={(action) => updateAction(index, action)}
+                      >
+                        <Button variant="link">Edit</Button>
+                      </EditActionButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+
+            <EditActionButton
+              action={{ name: '', description: '' }}
+              onSubmit={addAction}
+            >
+              <Button className="mt-4 mb-6" variant="outline">
+                Add Action
+              </Button>
+            </EditActionButton>
+          </ConsoleCardTableContent>
+        </Card>
+      </PageContent>
+    </>
   );
 }
 

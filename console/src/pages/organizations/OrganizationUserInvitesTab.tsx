@@ -50,6 +50,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
+import {
+  ConsoleCardDetails,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 
 export const OrganizationUserInvitesTab = () => {
   const { organizationId } = useParams();
@@ -60,15 +64,15 @@ export const OrganizationUserInvitesTab = () => {
   return (
     <Card>
       <CardHeader className="flex-row justify-between items-center">
-        <div className="flex flex-col space-y-1 5">
+        <ConsoleCardDetails>
           <CardTitle>User Invites</CardTitle>
           <CardDescription>
             A User Invite lets outside collaborators join an Organization.
           </CardDescription>
-        </div>
+        </ConsoleCardDetails>
         <CreateUserInviteButton />
       </CardHeader>
-      <CardContent>
+      <ConsoleCardTableContent>
         <Table>
           <TableHeader>
             <TableRow>
@@ -112,7 +116,7 @@ export const OrganizationUserInvitesTab = () => {
             ))}
           </TableBody>
         </Table>
-      </CardContent>
+      </ConsoleCardTableContent>
     </Card>
   );
 };

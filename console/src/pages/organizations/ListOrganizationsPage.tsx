@@ -16,12 +16,14 @@ import { DateTime } from 'luxon';
 import { timestampDate } from '@bufbuild/protobuf/wkt';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  ConsoleCard,
-  ConsoleCardDescription,
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
   ConsoleCardDetails,
-  ConsoleCardHeader,
   ConsoleCardTableContent,
-  ConsoleCardTitle,
 } from '@/components/ui/console-card';
 import {
   PageContent,
@@ -88,17 +90,17 @@ export const ListOrganizationsPage = () => {
         </PageDescription>
       </PageHeader>
       <PageContent>
-        <ConsoleCard className="mt-8 overflow-hidden">
-          <ConsoleCardHeader className="flex-row justify-between items-center space-x-4">
+        <Card className="mt-8 overflow-hidden">
+          <CardHeader className="flex-row justify-between items-start space-x-4">
             <ConsoleCardDetails>
-              <ConsoleCardTitle>Organizations list</ConsoleCardTitle>
-              <ConsoleCardDescription>
+              <CardTitle>Organizations list</CardTitle>
+              <CardDescription>
                 This is a list of all Organizations in your project. You can
                 create and edit these Organizations manually.
-              </ConsoleCardDescription>
+              </CardDescription>
             </ConsoleCardDetails>
             <CreateOrganizationButton />
-          </ConsoleCardHeader>
+          </CardHeader>
           <ConsoleCardTableContent>
             <Table>
               <TableHeader className="bg-gray-50">
@@ -138,7 +140,7 @@ export const ListOrganizationsPage = () => {
               </TableBody>
             </Table>
           </ConsoleCardTableContent>
-        </ConsoleCard>
+        </Card>
 
         {hasNextPage && (
           <Button

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import {
-  ConsoleCard,
-  ConsoleCardContent,
-  ConsoleCardDescription,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
   ConsoleCardDetails,
-  ConsoleCardHeader,
   ConsoleCardTableContent,
-  ConsoleCardTitle,
 } from '@/components/ui/console-card';
 import { useParams } from 'react-router';
 import {
@@ -106,17 +108,17 @@ export const OrganizationAPIKeysTab = () => {
   return (
     <div className="space-y-8">
       {!getProjectEntitlementsResponse?.entitledBackendApiKeys ? (
-        <ConsoleCard>
-          <ConsoleCardHeader>
+        <Card>
+          <CardHeader>
             <ConsoleCardDetails>
-              <ConsoleCardTitle>API Key Management</ConsoleCardTitle>
-              <ConsoleCardDescription>
+              <CardTitle>API Key Management</CardTitle>
+              <CardDescription>
                 API keys are used to authenticate requests to your service. You
                 can create and manage API keys for this Organization.
-              </ConsoleCardDescription>
+              </CardDescription>
             </ConsoleCardDetails>
-          </ConsoleCardHeader>
-          <ConsoleCardContent>
+          </CardHeader>
+          <CardContent>
             <div className="text-sm my-8 w-full flex flex-col items-center justify-center space-y-6">
               <div className="font-medium">
                 API Keys are available on the Growth Tier.
@@ -136,22 +138,22 @@ export const OrganizationAPIKeysTab = () => {
                 </span>
               </div>
             </div>
-          </ConsoleCardContent>
-        </ConsoleCard>
+          </CardContent>
+        </Card>
       ) : (
         <>
-          <ConsoleCard>
-            <ConsoleCardHeader className="py-4 flex flex-row items-center justify-between">
+          <Card>
+            <CardHeader className="py-4 flex flex-row items-center justify-between">
               <div className="flex flex-col space-y-1 5">
-                <ConsoleCardTitle>API Key Management</ConsoleCardTitle>
-                <ConsoleCardDescription>
+                <CardTitle>API Key Management</CardTitle>
+                <CardDescription>
                   API keys are used to authenticate requests to your service.
                   You can create and manage API keys for this Organization.
-                </ConsoleCardDescription>
+                </CardDescription>
               </div>
               <EditAPIKeySettingsButton />
-            </ConsoleCardHeader>
-            <ConsoleCardContent>
+            </CardHeader>
+            <CardContent>
               <DetailsGrid>
                 <DetailsGridColumn>
                   <DetailsGridEntry>
@@ -164,18 +166,18 @@ export const OrganizationAPIKeysTab = () => {
                   </DetailsGridEntry>
                 </DetailsGridColumn>
               </DetailsGrid>
-            </ConsoleCardContent>
-          </ConsoleCard>
-          <ConsoleCard>
-            <ConsoleCardHeader className="py-4 flex flex-row items-center justify-between">
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="py-4 flex flex-row items-center justify-between">
               <div className="flex flex-col space-y-1 5">
-                <ConsoleCardTitle>API Keys</ConsoleCardTitle>
-                <ConsoleCardDescription>
+                <CardTitle>API Keys</CardTitle>
+                <CardDescription>
                   Manage the API keys for this organization.
-                </ConsoleCardDescription>
+                </CardDescription>
               </div>
               <CreateAPIKeyButton />
-            </ConsoleCardHeader>
+            </CardHeader>
             <ConsoleCardTableContent>
               <Table>
                 <TableHeader>
@@ -257,7 +259,7 @@ export const OrganizationAPIKeysTab = () => {
                 </div>
               )}
             </ConsoleCardTableContent>
-          </ConsoleCard>
+          </Card>
         </>
       )}
     </div>

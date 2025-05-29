@@ -35,12 +35,9 @@ import { toast } from 'sonner';
 import {
   getOrganization,
   getProject,
-  getUser,
   listOrganizations,
-  listUsers,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import { cn, titleCaseSlug } from '@/lib/utils';
-import { Input } from './ui/input';
 
 const ConsoleNavigation: FC = () => {
   const navigate = useNavigate();
@@ -88,9 +85,11 @@ const ConsoleNavigation: FC = () => {
                         ) : (
                           <div className="px-2 text-sm font-medium">
                             {index === pathname.split('/').length - 1 ||
-                            ['publishable-keys', 'backend-api-keys'].includes(
-                              slug,
-                            ) ? (
+                            [
+                              'publishable-keys',
+                              'backend-api-keys',
+                              'rbac-policy',
+                            ].includes(slug) ? (
                               <span className="text-muted-foreground">
                                 {titleCaseSlug(
                                   slug,

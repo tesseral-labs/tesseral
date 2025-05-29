@@ -12,7 +12,6 @@ import {
   getAPIKey,
   getRole,
   listAPIKeyRoleAssignments,
-  listRoles,
   revokeAPIKey,
   updateAPIKey,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
@@ -66,6 +65,10 @@ import {
 import { toast } from 'sonner';
 import { AddAPIKeyRoleButton } from './AddAPIKeyRoleButton';
 import { APIKeyRoleAssignment } from '@/gen/tesseral/backend/v1/models_pb';
+import {
+  ConsoleCardDetails,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 
 export const ViewAPIKeyPage = () => {
   const { apiKeyId } = useParams();
@@ -91,10 +94,10 @@ export const ViewAPIKeyPage = () => {
         <div className="space-y-8">
           <Card>
             <CardHeader className="py-4 flex flex-row items-center justify-between">
-              <div>
+              <ConsoleCardDetails>
                 <CardTitle>API Key Details</CardTitle>
                 <CardDescription></CardDescription>
-              </div>
+              </ConsoleCardDetails>
 
               <EditAPIKeyButton />
             </CardHeader>
@@ -156,16 +159,16 @@ export const ViewAPIKeyPage = () => {
 
           <Card>
             <CardHeader className="py-4 flex flex-row items-center justify-between">
-              <div>
+              <ConsoleCardDetails>
                 <CardTitle>API Key Roles</CardTitle>
                 <CardDescription>
                   Manage the roles associated with this API key.
                 </CardDescription>
-              </div>
+              </ConsoleCardDetails>
 
               <AddAPIKeyRoleButton />
             </CardHeader>
-            <CardContent>
+            <ConsoleCardTableContent>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -185,7 +188,7 @@ export const ViewAPIKeyPage = () => {
                   )}
                 </TableBody>
               </Table>
-            </CardContent>
+            </ConsoleCardTableContent>
           </Card>
 
           <DangerZoneCard />

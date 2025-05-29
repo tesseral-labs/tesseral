@@ -9,7 +9,9 @@ import {
 import { Link } from 'react-router-dom';
 import {
   PageCodeSubtitle,
+  PageContent,
   PageDescription,
+  PageHeader,
   PageTitle,
 } from '@/components/page';
 import {
@@ -49,6 +51,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import { TabBar } from '@/components/ui/tab-bar';
 
 export const ViewPasskeyPage = () => {
   const { organizationId, userId, passkeyId } = useParams();
@@ -73,131 +76,96 @@ export const ViewPasskeyPage = () => {
   }, [getPasskeyResponse?.passkey?.credentialId]);
 
   return (
-    <div>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/organizations">Organizations</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to={`/organizations/${organizationId}`}>
-                {getOrganizationResponse?.organization?.displayName}
-              </Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to={`/organizations/${organizationId}/users`}>Users</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to={`/organizations/${organizationId}/users/${userId}`}>
-                {getUserResponse?.user?.email}
-              </Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>{passkeyId}</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+    <>
+      <PageHeader>
+        <PageTitle>Passkey</PageTitle>
+        <PageCodeSubtitle>{passkeyId}</PageCodeSubtitle>
+        <PageDescription>
+          A Passkey is a secondary authentication method tied a User, such a
+          security key or Touch ID.
+        </PageDescription>
+      </PageHeader>
 
-      <PageTitle>Passkey</PageTitle>
-      <PageCodeSubtitle>{passkeyId}</PageCodeSubtitle>
-      <PageDescription>A Passkey is a secondary authentication method tied a User, such a security key or Touch ID.</PageDescription>
+      <PageContent>
+        <Card className="my-8">
+          <CardHeader>
+            <CardTitle>General settings</CardTitle>
+            <CardDescription>Basic settings for this passkey.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <DetailsGrid>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Status</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getPasskeyResponse?.passkey?.disabled
+                      ? 'Disabled'
+                      : 'Active'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Vendor</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getPasskeyResponse?.passkey?.aaguid &&
+                    AAGUIDS[getPasskeyResponse.passkey.aaguid]
+                      ? AAGUIDS[getPasskeyResponse.passkey.aaguid]
+                      : 'Other'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+                <DetailsGridEntry>
+                  <DetailsGridKey>AAGUID</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getPasskeyResponse?.passkey?.aaguid}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Public Key</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getPasskeyResponse?.passkey?.publicKeyPkix && (
+                      <a
+                        className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
+                        download={`Public Key ${passkeyId}.pem`}
+                        href={`data:text/plain;base64,${btoa(getPasskeyResponse.passkey.publicKeyPkix)}`}
+                      >
+                        Download (.pem)
+                      </a>
+                    )}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Credential ID</DetailsGridKey>
+                  <DetailsGridValue>{credentialId}</DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Created</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getPasskeyResponse?.passkey?.createTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(getPasskeyResponse.passkey.createTime),
+                      ).toRelative()}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Updated</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getPasskeyResponse?.passkey?.updateTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(getPasskeyResponse.passkey.updateTime),
+                      ).toRelative()}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+            </DetailsGrid>
+          </CardContent>
+        </Card>
 
-      <Card className="my-8">
-        <CardHeader>
-          <CardTitle>General settings</CardTitle>
-          <CardDescription>Basic settings for this passkey.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <DetailsGrid>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Status</DetailsGridKey>
-                <DetailsGridValue>
-                  {getPasskeyResponse?.passkey?.disabled
-                    ? 'Disabled'
-                    : 'Active'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>Vendor</DetailsGridKey>
-                <DetailsGridValue>
-                  {getPasskeyResponse?.passkey?.aaguid &&
-                  AAGUIDS[getPasskeyResponse.passkey.aaguid]
-                    ? AAGUIDS[getPasskeyResponse.passkey.aaguid]
-                    : 'Other'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>AAGUID</DetailsGridKey>
-                <DetailsGridValue>
-                  {getPasskeyResponse?.passkey?.aaguid}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Public Key</DetailsGridKey>
-                <DetailsGridValue>
-                  {getPasskeyResponse?.passkey?.publicKeyPkix && (
-                    <a
-                      className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
-                      download={`Public Key ${passkeyId}.pem`}
-                      href={`data:text/plain;base64,${btoa(getPasskeyResponse.passkey.publicKeyPkix)}`}
-                    >
-                      Download (.pem)
-                    </a>
-                  )}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>Credential ID</DetailsGridKey>
-                <DetailsGridValue>{credentialId}</DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Created</DetailsGridKey>
-                <DetailsGridValue>
-                  {getPasskeyResponse?.passkey?.createTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(getPasskeyResponse.passkey.createTime),
-                    ).toRelative()}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>Updated</DetailsGridKey>
-                <DetailsGridValue>
-                  {getPasskeyResponse?.passkey?.updateTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(getPasskeyResponse.passkey.updateTime),
-                    ).toRelative()}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-          </DetailsGrid>
-        </CardContent>
-      </Card>
-
-      <DangerZoneCard />
-    </div>
+        <DangerZoneCard />
+      </PageContent>
+    </>
   );
 };
 

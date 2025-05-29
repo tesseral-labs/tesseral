@@ -50,6 +50,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { Organization } from '@/gen/tesseral/backend/v1/models_pb';
 import { TabBar, TabBarLink } from '@/components/ui/tab-bar';
+import { ConsoleCardDetails } from '@/components/ui/console-card';
 
 export const ViewOrganizationPage = () => {
   const { organizationId } = useParams();
@@ -119,9 +120,9 @@ export const ViewOrganizationPage = () => {
         {currentTab?.root && (
           <Card className="my-8">
             <CardHeader className="py-4 flex flex-row items-center justify-between">
-              <div>
+              <ConsoleCardDetails>
                 <CardTitle className="text-xl">General configuration</CardTitle>
-              </div>
+              </ConsoleCardDetails>
               <EditOrganizationButton />
             </CardHeader>
             <CardContent>
