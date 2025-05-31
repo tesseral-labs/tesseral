@@ -385,6 +385,17 @@ service BackendService {
   rpc CreateStripeCheckoutLink(CreateStripeCheckoutLinkRequest) returns (CreateStripeCheckoutLinkResponse);
 
   rpc GetProjectWebhookManagementURL(GetProjectWebhookManagementURLRequest) returns (GetProjectWebhookManagementURLResponse);
+
+  // Creates an audit log event for an organization.
+  //
+  // Audit log events will be recorded in the event history and asynchronously delivered to any endpoints
+  // configured by the organization.
+  rpc CreateAuditLogEvent(CreateAuditLogEventRequest) returns (CreateAuditLogEventResponse) {
+    option (google.api.http) = {
+      post: "/v1/events"
+      body: "audit_log_event"
+    };
+  }
 }
 
 message GetProjectRequest {}
@@ -1182,4 +1193,14 @@ message AuthenticateAPIKeyResponse {
   string api_key_id = 1;
   string organization_id = 2;
   repeated string actions = 3;
+}
+
+message CreateAuditLogEventRequest {
+  // The event to publish.
+  AuditLogEvent audit_log_event = 1;
+}
+
+message CreateAuditLogEventResponse {
+  // The published event.
+  AuditLogEvent audit_log_event = 1;
 }

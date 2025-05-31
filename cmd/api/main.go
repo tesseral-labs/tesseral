@@ -201,6 +201,7 @@ func main() {
 		Stripe:                                stripeClient,
 		StripePriceIDGrowthTier:               config.StripePriceIDGrowthTier,
 		SvixClient:                            svixClient,
+		CommonStore:                           commonStore,
 	})
 	backendConnectPath, backendConnectHandler := backendv1connect.NewBackendServiceHandler(
 		&backendservice.Service{
@@ -230,6 +231,7 @@ func main() {
 		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
 		AuthenticatorAppSecretsKMSKeyID:       config.AuthenticatorAppSecretsKMSKeyID,
 		SvixClient:                            svixClient,
+		CommonStore:                           commonStore,
 	})
 	frontendConnectPath, frontendConnectHandler := frontendv1connect.NewFrontendServiceHandler(
 		&frontendservice.Service{

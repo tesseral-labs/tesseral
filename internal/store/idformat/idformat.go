@@ -46,6 +46,7 @@ var (
 	ProjectUISettings  = prettyuuid.MustNewFormat("project_ui_settings_", alphabet)
 
 	ProjectWebhookSettings = prettyuuid.MustNewFormat("project_webhook_settings_", alphabet)
+	AuditLogEvent          = prettyuuid.MustNewFormat("audit_log_event_", alphabet)
 )
 
 func MustNewFormat(prefix string) prettyuuid.Format {

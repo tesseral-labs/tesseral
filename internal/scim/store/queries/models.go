@@ -169,6 +169,18 @@ type ApiKeyRoleAssignment struct {
 	CreateTime *time.Time
 }
 
+type AuditLogEvent struct {
+	ID             uuid.UUID
+	ProjectID      uuid.UUID
+	OrganizationID *uuid.UUID
+	UserID         *uuid.UUID
+	SessionID      *uuid.UUID
+	ApiKeyID       *uuid.UUID
+	EventName      string
+	EventTime      *time.Time
+	EventDetails   []byte
+}
+
 type BackendApiKey struct {
 	ID                uuid.UUID
 	ProjectID         uuid.UUID

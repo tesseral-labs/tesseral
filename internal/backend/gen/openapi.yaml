@@ -264,6 +264,35 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /v1/events:
+        post:
+            tags:
+                - BackendService
+            description: |-
+                Creates an audit log event for an organization.
+
+                 Audit log events will be recorded in the event history and asynchronously delivered to any endpoints
+                 configured by the organization.
+            operationId: BackendService_CreateAuditLogEvent
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AuditLogEvent'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateAuditLogEventResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /v1/organizations:
         get:
             tags:
@@ -1581,6 +1610,38 @@ components:
                 roleId:
                     type: string
                     description: The Role ID.
+        AuditLogEvent:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: The Audit Log Event ID. Starts with `audit_log_event_...`.
+                organizationId:
+                    type: string
+                    description: The ID of the Organization associated with the event.
+                userId:
+                    type: string
+                    description: The ID of the User associated with the event, if any.
+                sessionId:
+                    type: string
+                    description: The ID of the Session associated with the event, if any.
+                apiKeyId:
+                    type: string
+                    description: The ID of the API Key associated with the event, if any.
+                eventTime:
+                    type: string
+                    description: |-
+                        The time the event occurred.
+
+                         This can optionally be provided on input when the event occurred at some point in the past.
+                         Otherwise, this will be returned on output and defaults to the time the event is published.
+                    format: date-time
+                eventName:
+                    type: string
+                    description: The name of the event.
+                eventDetails:
+                    type: object
+                    description: The event payload JSON.
         AuthenticateAPIKeyRequest:
             type: object
             properties:
@@ -1617,6 +1678,13 @@ components:
             properties:
                 apiKeyRoleAssignment:
                     $ref: '#/components/schemas/APIKeyRoleAssignment'
+        CreateAuditLogEventResponse:
+            type: object
+            properties:
+                auditLogEvent:
+                    allOf:
+                        - $ref: '#/components/schemas/AuditLogEvent'
+                    description: The published event.
         CreateOrganizationResponse:
             type: object
             properties:

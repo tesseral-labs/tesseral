@@ -317,3 +317,8 @@ export const deleteAPIKeyRoleAssignment = FrontendService.method.deleteAPIKeyRol
  * @generated from rpc tesseral.frontend.v1.FrontendService.ListAPIKeyRoleAssignments
  */
 export const listAPIKeyRoleAssignments = FrontendService.method.listAPIKeyRoleAssignments;
+
+/**
+ * @generated from rpc tesseral.frontend.v1.FrontendService.ListAuditLogEvents
+ */
+export const listAuditLogEvents = FrontendService.method.listAuditLogEvents;

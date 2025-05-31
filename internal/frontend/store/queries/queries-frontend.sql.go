@@ -1986,7 +1986,7 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 	return items, nil
 }
 
-const revokeAPIKey = `-- name: RevokeAPIKey :exec
+const revokeAPIKey = `-- name: RevokeAPIKey :one
 UPDATE
     api_keys
 SET
@@ -1996,6 +1996,8 @@ SET
 WHERE
     id = $1
     AND organization_id = $2
+RETURNING
+    id, organization_id, display_name, secret_token_sha256, secret_token_suffix, expire_time, create_time, update_time
 `
 
 type RevokeAPIKeyParams struct {
@@ -2003,9 +2005,20 @@ type RevokeAPIKeyParams struct {
 	OrganizationID uuid.UUID
 }
 
-func (q *Queries) RevokeAPIKey(ctx context.Context, arg RevokeAPIKeyParams) error {
-	_, err := q.db.Exec(ctx, revokeAPIKey, arg.ID, arg.OrganizationID)
-	return err
+func (q *Queries) RevokeAPIKey(ctx context.Context, arg RevokeAPIKeyParams) (ApiKey, error) {
+	row := q.db.QueryRow(ctx, revokeAPIKey, arg.ID, arg.OrganizationID)
+	var i ApiKey
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.DisplayName,
+		&i.SecretTokenSha256,
+		&i.SecretTokenSuffix,
+		&i.ExpireTime,
+		&i.CreateTime,
+		&i.UpdateTime,
+	)
+	return i, err
 }
 
 const revokeSCIMAPIKey = `-- name: RevokeSCIMAPIKey :one
