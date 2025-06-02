@@ -118,7 +118,7 @@ export const ViewProjectSettingsPage = () => {
             <ConsoleCardDetails>
               <ConsoleCardTitle>General configuration</ConsoleCardTitle>
             </ConsoleCardDetails>
-            <EditGeneralConfigurationButton />
+            <EditButton />
           </ConsoleCardHeader>
 
           <ConsoleCardContent>
@@ -165,13 +165,13 @@ export const ViewProjectSettingsPage = () => {
   );
 };
 
-const generalConfigurationSchema = z.object({
+const schema = z.object({
   displayName: z.string(),
 });
 
-const EditGeneralConfigurationButton = () => {
-  const form = useForm<z.infer<typeof generalConfigurationSchema>>({
-    resolver: zodResolver(generalConfigurationSchema),
+const EditButton = () => {
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
   });
 
   const { data: getProjectResponse, refetch } = useQuery(getProject);
@@ -185,9 +185,7 @@ const EditGeneralConfigurationButton = () => {
 
   const updateProjectMutation = useMutation(updateProject);
   const [open, setOpen] = useState(false);
-  const handleSubmit = async (
-    values: z.infer<typeof generalConfigurationSchema>,
-  ) => {
+  const handleSubmit = async (values: z.infer<typeof schema>) => {
     await updateProjectMutation.mutateAsync({
       project: {
         displayName: values.displayName,
@@ -206,10 +204,6 @@ const EditGeneralConfigurationButton = () => {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Edit Project</AlertDialogTitle>
-          <AlertDialogDescription>
-            Update the display name of your project. This name is used to
-            identify your project in the Tesseral console.
-          </AlertDialogDescription>
         </AlertDialogHeader>
         <Form {...form}>
           <form
@@ -223,7 +217,7 @@ const EditGeneralConfigurationButton = () => {
                 <FormItem>
                   <FormLabel>Display name</FormLabel>
                   <FormDescription>
-                    A human-readable display name for your project.
+                    A user-facing, human-readable display name for your project.
                   </FormDescription>
                   <FormControl>
                     <Input {...field} />
