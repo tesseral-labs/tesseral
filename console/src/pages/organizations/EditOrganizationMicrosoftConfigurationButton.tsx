@@ -108,6 +108,10 @@ export const EditOrganizationMicrosoftConfigurationButton = () => {
               render={({ field }: { field: any }) => (
                 <FormItem>
                   <FormLabel>Microsoft Tenant IDs</FormLabel>
+                  <FormDescription>
+                    The set of Microsoft Tenant IDs associated with this
+                    organization.
+                  </FormDescription>
                   <FormControl>
                     <InputTags
                       className="max-w-96"
@@ -115,10 +119,7 @@ export const EditOrganizationMicrosoftConfigurationButton = () => {
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    The set of Microsoft Tenant IDs associated with this
-                    organization.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}

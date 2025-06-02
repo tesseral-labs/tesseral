@@ -511,6 +511,10 @@ function ConfigureSAMLConnectionButton({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Primary</FormLabel>
+                  <FormDescription>
+                    The primary SAML connection will be used for SP-initiated
+                    flows. All SAML connection support IDP-initiated flows.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -518,10 +522,7 @@ function ConfigureSAMLConnectionButton({
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    The primary SAML connection will be used for SP-initiated
-                    flows. All SAML connection support IDP-initiated flows.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -533,10 +534,11 @@ function ConfigureSAMLConnectionButton({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>IDP Entity ID</FormLabel>
+                  <FormDescription>Also called an "Issuer".</FormDescription>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
-                  <FormDescription>Also called an "Issuer".</FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -547,12 +549,13 @@ function ConfigureSAMLConnectionButton({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>IDP Redirect URL</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
                   <FormDescription>
                     Also called a "Sign On URL".
                   </FormDescription>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -567,6 +570,13 @@ function ConfigureSAMLConnectionButton({
               }) => (
                 <FormItem>
                   <FormLabel>IDP Certificate</FormLabel>
+                  <FormDescription>
+                    IDP Certificate. This file begins with{" "}
+                    <span className="font-mono">
+                      -----BEGIN CERTIFICATE-----
+                    </span>
+                    .
+                  </FormDescription>
                   <FormControl>
                     <Input
                       type="file"
@@ -581,13 +591,7 @@ function ConfigureSAMLConnectionButton({
                       }}
                     />
                   </FormControl>
-                  <FormDescription>
-                    IDP Certificate. This file begins with{" "}
-                    <span className="font-mono">
-                      -----BEGIN CERTIFICATE-----
-                    </span>
-                    .
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}

@@ -14,6 +14,7 @@ import { Calendar } from '@/components/ui/calendar';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -203,6 +204,9 @@ export function CreateAPIKeyButton() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Display Name</FormLabel>
+                    <FormDescription>
+                      A human-friendly name for the API Key.
+                    </FormDescription>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -216,6 +220,10 @@ export function CreateAPIKeyButton() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Expire time</FormLabel>
+                    <FormDescription>
+                      The expiration time for the API Key. After this time, the
+                      API Key will no longer be valid.
+                    </FormDescription>
                     <FormControl>
                       <div className="flex flex-row gap-2">
                         <Select

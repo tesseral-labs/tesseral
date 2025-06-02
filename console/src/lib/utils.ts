@@ -126,5 +126,6 @@ export const titleCaseSlug = (str: string, lastId: boolean = false) => {
     .replace(/(oidc)/gi, 'OIDC')
     .replace(/(saml)/gi, 'SAML')
     .replace(/(scim)/gi, 'SCIM')
-    .replace(/(ui)/gi, 'UI');
+    .replace(/(ui)/gi, 'UI')
+    .replace(/(rbac)/gi, 'RBAC');
 };

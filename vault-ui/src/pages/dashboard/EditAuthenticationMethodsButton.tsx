@@ -115,6 +115,10 @@ export function EditAuthenticationMethodsButton() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Log in with Google</FormLabel>
+                    <FormDescription>
+                      Users authenticate by signing in with their Google
+                      account.
+                    </FormDescription>
                     <FormControl>
                       <Switch
                         className="block"
@@ -122,10 +126,7 @@ export function EditAuthenticationMethodsButton() {
                         onCheckedChange={field.onChange}
                       />
                     </FormControl>
-                    <FormDescription>
-                      Users authenticate by signing in with their Google
-                      account.
-                    </FormDescription>
+
                     <FormMessage />
                   </FormItem>
                 )}
@@ -139,6 +140,10 @@ export function EditAuthenticationMethodsButton() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Log in with Microsoft</FormLabel>
+                    <FormDescription>
+                      Users authenticate by signing in with their Microsoft
+                      account.
+                    </FormDescription>
                     <FormControl>
                       <Switch
                         className="block"
@@ -146,10 +151,7 @@ export function EditAuthenticationMethodsButton() {
                         onCheckedChange={field.onChange}
                       />
                     </FormControl>
-                    <FormDescription>
-                      Users authenticate by signing in with their Microsoft
-                      account.
-                    </FormDescription>
+
                     <FormMessage />
                   </FormItem>
                 )}
@@ -163,6 +165,10 @@ export function EditAuthenticationMethodsButton() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Log in with GitHub</FormLabel>
+                    <FormDescription>
+                      Users authenticate by signing in with their GitHub
+                      account.
+                    </FormDescription>
                     <FormControl>
                       <Switch
                         className="block"
@@ -170,10 +176,7 @@ export function EditAuthenticationMethodsButton() {
                         onCheckedChange={field.onChange}
                       />
                     </FormControl>
-                    <FormDescription>
-                      Users authenticate by signing in with their GitHub
-                      account.
-                    </FormDescription>
+
                     <FormMessage />
                   </FormItem>
                 )}
@@ -187,6 +190,10 @@ export function EditAuthenticationMethodsButton() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Log in with Email (Magic Links)</FormLabel>
+                    <FormDescription>
+                      Users authenticate by visiting a magic link sent to their
+                      email address.
+                    </FormDescription>
                     <FormControl>
                       <Switch
                         className="block"
@@ -194,10 +201,7 @@ export function EditAuthenticationMethodsButton() {
                         onCheckedChange={field.onChange}
                       />
                     </FormControl>
-                    <FormDescription>
-                      Users authenticate by visiting a magic link sent to their
-                      email address.
-                    </FormDescription>
+
                     <FormMessage />
                   </FormItem>
                 )}

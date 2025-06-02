@@ -5,12 +5,13 @@ import {
   listUserInvites,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDetails,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 import {
   Table,
   TableBody,
@@ -58,17 +59,17 @@ export const OrganizationUserInvitesTab = () => {
   });
 
   return (
-    <Card>
-      <CardHeader className="flex-row justify-between items-center">
-        <div className="flex flex-col space-y-1 5">
-          <CardTitle>User Invites</CardTitle>
-          <CardDescription>
+    <ConsoleCard>
+      <ConsoleCardHeader>
+        <ConsoleCardDetails>
+          <ConsoleCardTitle>User Invites</ConsoleCardTitle>
+          <ConsoleCardDescription>
             A User Invite lets outside collaborators join an Organization.
-          </CardDescription>
-        </div>
+          </ConsoleCardDescription>
+        </ConsoleCardDetails>
         <CreateUserInviteButton />
-      </CardHeader>
-      <CardContent>
+      </ConsoleCardHeader>
+      <ConsoleCardTableContent>
         <Table>
           <TableHeader>
             <TableRow>
@@ -112,8 +113,8 @@ export const OrganizationUserInvitesTab = () => {
             ))}
           </TableBody>
         </Table>
-      </CardContent>
-    </Card>
+      </ConsoleCardTableContent>
+    </ConsoleCard>
   );
 };
 
@@ -182,14 +183,15 @@ const CreateUserInviteButton = () => {
               render={({ field }: { field: any }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input className="max-w-96" {...field} />
-                  </FormControl>
                   <FormDescription>
                     The outside collaborator's email. The collaborator will need
                     to verify this email before being able to join the
                     organization.
                   </FormDescription>
+                  <FormControl>
+                    <Input className="max-w-96" {...field} />
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -200,6 +202,9 @@ const CreateUserInviteButton = () => {
               render={({ field }: { field: any }) => (
                 <FormItem>
                   <FormLabel>Invite as owner</FormLabel>
+                  <FormDescription>
+                    Whether the collaborator will join as an owner.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -207,9 +212,7 @@ const CreateUserInviteButton = () => {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Whether the collaborator will join as an owner.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -220,6 +223,9 @@ const CreateUserInviteButton = () => {
               render={({ field }: { field: any }) => (
                 <FormItem>
                   <FormLabel>Send email</FormLabel>
+                  <FormDescription>
+                    Send the collaborator an email to accept the invite.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -227,9 +233,7 @@ const CreateUserInviteButton = () => {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Send the collaborator an email to accept the invite.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}

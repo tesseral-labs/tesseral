@@ -114,6 +114,10 @@ export function RegisterAuthenticatorAppButton() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>One-Time Password</FormLabel>
+                    <FormDescription>
+                      After you've scanned the QR Code, enter a six-digit code
+                      from your authenticator app.
+                    </FormDescription>
                     <FormControl>
                       <InputOTP
                         pattern={REGEXP_ONLY_DIGITS}
@@ -130,10 +134,7 @@ export function RegisterAuthenticatorAppButton() {
                         </InputOTPGroup>
                       </InputOTP>
                     </FormControl>
-                    <FormDescription>
-                      After you've scanned the QR Code, enter a six-digit code
-                      from your authenticator app.
-                    </FormDescription>
+
                     <FormMessage />
                   </FormItem>
                 )}

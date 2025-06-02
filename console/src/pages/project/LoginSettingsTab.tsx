@@ -12,12 +12,13 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDetails,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+} from '@/components/ui/console-card';
 import {
   getProject,
   updateProject,
@@ -54,19 +55,19 @@ export function LoginSettingsTab() {
 
   return (
     <div className="space-y-8">
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
-            <CardTitle>Login Methods</CardTitle>
-            <CardDescription>
+      <ConsoleCard>
+        <ConsoleCardHeader>
+          <ConsoleCardDetails>
+            <ConsoleCardTitle>Login Methods</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Primary and secondary authentication methods your users can use.
               Organizations can take this list and restrict it further, but they
               can't add to it.
-            </CardDescription>
-          </div>
+            </ConsoleCardDescription>
+          </ConsoleCardDetails>
           <EditLoginMethodsButton />
-        </CardHeader>
-        <CardContent>
+        </ConsoleCardHeader>
+        <ConsoleCardContent>
           <DetailsGrid>
             <DetailsGridColumn>
               <DetailsGridEntry>
@@ -119,20 +120,20 @@ export function LoginSettingsTab() {
               </DetailsGridEntry>
             </DetailsGridColumn>
           </DetailsGrid>
-        </CardContent>
-      </Card>
+        </ConsoleCardContent>
+      </ConsoleCard>
 
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
-            <CardTitle>Google settings</CardTitle>
-            <CardDescription>
+      <ConsoleCard>
+        <ConsoleCardHeader>
+          <ConsoleCardDetails>
+            <ConsoleCardTitle>Google settings</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Settings for "Log in with Google" in your project.
-            </CardDescription>
-          </div>
+            </ConsoleCardDescription>
+          </ConsoleCardDetails>
           <EditProjectGoogleSettingsButton />
-        </CardHeader>
-        <CardContent>
+        </ConsoleCardHeader>
+        <ConsoleCardContent>
           <DetailsGrid>
             <DetailsGridColumn>
               <DetailsGridEntry>
@@ -165,19 +166,19 @@ export function LoginSettingsTab() {
               </DetailsGridEntry>
             </DetailsGridColumn>
           </DetailsGrid>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
-            <CardTitle>Microsoft settings</CardTitle>
-            <CardDescription>
+        </ConsoleCardContent>
+      </ConsoleCard>
+      <ConsoleCard>
+        <ConsoleCardHeader>
+          <ConsoleCardDetails>
+            <ConsoleCardTitle>Microsoft settings</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Settings for "Log in with Microsoft" in your project.
-            </CardDescription>
-          </div>
+            </ConsoleCardDescription>
+          </ConsoleCardDetails>
           <EditProjectMicrosoftSettingsButton />
-        </CardHeader>
-        <CardContent>
+        </ConsoleCardHeader>
+        <ConsoleCardContent>
           <DetailsGrid>
             <DetailsGridColumn>
               <DetailsGridEntry>
@@ -210,20 +211,20 @@ export function LoginSettingsTab() {
               </DetailsGridEntry>
             </DetailsGridColumn>
           </DetailsGrid>
-        </CardContent>
-      </Card>
+        </ConsoleCardContent>
+      </ConsoleCard>
 
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
-            <CardTitle>GitHub settings</CardTitle>
-            <CardDescription>
+      <ConsoleCard>
+        <ConsoleCardHeader>
+          <ConsoleCardDetails>
+            <ConsoleCardTitle>GitHub settings</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Settings for "Log in with GitHub" in your project.
-            </CardDescription>
-          </div>
+            </ConsoleCardDescription>
+          </ConsoleCardDetails>
           <EditProjectGithubSettingsButton />
-        </CardHeader>
-        <CardContent>
+        </ConsoleCardHeader>
+        <ConsoleCardContent>
           <DetailsGrid>
             <DetailsGridColumn>
               <DetailsGridEntry>
@@ -256,8 +257,8 @@ export function LoginSettingsTab() {
               </DetailsGridEntry>
             </DetailsGridColumn>
           </DetailsGrid>
-        </CardContent>
-      </Card>
+        </ConsoleCardContent>
+      </ConsoleCard>
     </div>
   );
 }
@@ -350,6 +351,10 @@ const EditLoginMethodsButton = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Log in with Email</FormLabel>
+                  <FormDescription>
+                    Whether Users can log in with a Magic Link sent to their
+                    email address.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -357,10 +362,7 @@ const EditLoginMethodsButton = () => {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Whether Users can log in with a Magic Link sent to their
-                    email address.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -371,6 +373,9 @@ const EditLoginMethodsButton = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Log in with Password</FormLabel>
+                  <FormDescription>
+                    Whether Users can log in using a password.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -378,9 +383,7 @@ const EditLoginMethodsButton = () => {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Whether Users can log in using a password.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -391,6 +394,10 @@ const EditLoginMethodsButton = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Log in with Passkey</FormLabel>
+                  <FormDescription>
+                    Whether Users can register a passkey as a secondary
+                    authentication factor.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -398,10 +405,7 @@ const EditLoginMethodsButton = () => {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Whether Users can register a passkey as a secondary
-                    authentication factor.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -412,6 +416,10 @@ const EditLoginMethodsButton = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Log in with Authenticator App</FormLabel>
+                  <FormDescription>
+                    Whether Users can register an authenticator app as a
+                    secondary authentication factor.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -419,10 +427,7 @@ const EditLoginMethodsButton = () => {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Whether Users can register an authenticator app as a
-                    secondary authentication factor.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -433,6 +438,9 @@ const EditLoginMethodsButton = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Log in with SAML</FormLabel>
+                  <FormDescription>
+                    Whether Organizations in this Project can enable SAML.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -440,9 +448,7 @@ const EditLoginMethodsButton = () => {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Whether Organizations in this Project can enable SAML.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}

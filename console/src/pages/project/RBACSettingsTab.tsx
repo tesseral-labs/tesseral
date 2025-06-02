@@ -1,12 +1,14 @@
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDetails,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 import React from 'react';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 import { useInfiniteQuery, useQuery } from '@connectrpc/connect-query';
 import {
   getRBACPolicy,
@@ -37,15 +39,15 @@ function RBACPolicyCard() {
   const { data: getRBACPolicyResponse } = useQuery(getRBACPolicy, {});
 
   return (
-    <Card>
-      <CardHeader className="flex-row justify-between items-center gap-x-2">
-        <div className="flex flex-col space-y-1.5">
-          <CardTitle>Role-Based Access Control Policy</CardTitle>
-          <CardDescription>
+    <ConsoleCard>
+      <ConsoleCardHeader>
+        <ConsoleCardDetails>
+          <ConsoleCardTitle>Role-Based Access Control Policy</ConsoleCardTitle>
+          <ConsoleCardDescription>
             A Role-Based Access Control Policy is the set of fine-grained
             Actions in a Project.
-          </CardDescription>
-        </div>
+          </ConsoleCardDescription>
+        </ConsoleCardDetails>
 
         <div className="shrink-0 space-x-4">
           <Link
@@ -55,9 +57,9 @@ function RBACPolicyCard() {
             Edit
           </Link>
         </div>
-      </CardHeader>
+      </ConsoleCardHeader>
 
-      <CardContent>
+      <ConsoleCardContent>
         <Table>
           <TableHeader>
             <TableRow>
@@ -76,8 +78,8 @@ function RBACPolicyCard() {
             ))}
           </TableBody>
         </Table>
-      </CardContent>
-    </Card>
+      </ConsoleCardContent>
+    </ConsoleCard>
   );
 }
 
@@ -102,16 +104,16 @@ function RolesCard() {
   const roles = listRolesResponses?.pages?.flatMap((page) => page.roles);
 
   return (
-    <Card>
-      <CardHeader className="flex-row justify-between items-center gap-x-2">
-        <div className="flex flex-col space-y-1.5">
-          <CardTitle>Roles</CardTitle>
-          <CardDescription>
+    <ConsoleCard>
+      <ConsoleCardHeader>
+        <ConsoleCardDetails>
+          <ConsoleCardTitle>Roles</ConsoleCardTitle>
+          <ConsoleCardDescription>
             Roles are a named collection of Actions, and can be assigned to
             Users. These are the Roles available to all Organizations in this
             Project.
-          </CardDescription>
-        </div>
+          </ConsoleCardDescription>
+        </ConsoleCardDetails>
 
         <div className="shrink-0 space-x-4">
           <Link
@@ -121,9 +123,9 @@ function RolesCard() {
             Create Role
           </Link>
         </div>
-      </CardHeader>
+      </ConsoleCardHeader>
 
-      <CardContent>
+      <ConsoleCardTableContent>
         <Table>
           <TableHeader>
             <TableRow>
@@ -163,7 +165,7 @@ function RolesCard() {
             ))}
           </TableBody>
         </Table>
-      </CardContent>
-    </Card>
+      </ConsoleCardTableContent>
+    </ConsoleCard>
   );
 }

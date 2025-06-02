@@ -12,19 +12,20 @@ import {
   getAPIKey,
   getRole,
   listAPIKeyRoleAssignments,
-  listRoles,
   revokeAPIKey,
   updateAPIKey,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import { useMutation, useQuery } from '@connectrpc/connect-query';
 import { useNavigate, useParams } from 'react-router';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDetails,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -36,10 +37,12 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { Form, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import {
+  Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -66,6 +69,7 @@ import {
 import { toast } from 'sonner';
 import { AddAPIKeyRoleButton } from './AddAPIKeyRoleButton';
 import { APIKeyRoleAssignment } from '@/gen/tesseral/backend/v1/models_pb';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 export const ViewAPIKeyPage = () => {
   const { apiKeyId } = useParams();
@@ -89,16 +93,16 @@ export const ViewAPIKeyPage = () => {
       </PageHeader>
       <PageContent>
         <div className="space-y-8">
-          <Card>
-            <CardHeader className="py-4 flex flex-row items-center justify-between">
-              <div>
-                <CardTitle>API Key Details</CardTitle>
-                <CardDescription></CardDescription>
-              </div>
+          <ConsoleCard>
+            <ConsoleCardHeader>
+              <ConsoleCardDetails>
+                <ConsoleCardTitle>API Key Details</ConsoleCardTitle>
+                <ConsoleCardDescription></ConsoleCardDescription>
+              </ConsoleCardDetails>
 
               <EditAPIKeyButton />
-            </CardHeader>
-            <CardContent>
+            </ConsoleCardHeader>
+            <ConsoleCardContent>
               <DetailsGrid>
                 <DetailsGridColumn>
                   <DetailsGridEntry>
@@ -151,21 +155,21 @@ export const ViewAPIKeyPage = () => {
                   </DetailsGridEntry>
                 </DetailsGridColumn>
               </DetailsGrid>
-            </CardContent>
-          </Card>
+            </ConsoleCardContent>
+          </ConsoleCard>
 
-          <Card>
-            <CardHeader className="py-4 flex flex-row items-center justify-between">
-              <div>
-                <CardTitle>API Key Roles</CardTitle>
-                <CardDescription>
+          <ConsoleCard>
+            <ConsoleCardHeader>
+              <ConsoleCardDetails>
+                <ConsoleCardTitle>API Key Roles</ConsoleCardTitle>
+                <ConsoleCardDescription>
                   Manage the roles associated with this API key.
-                </CardDescription>
-              </div>
+                </ConsoleCardDescription>
+              </ConsoleCardDetails>
 
               <AddAPIKeyRoleButton />
-            </CardHeader>
-            <CardContent>
+            </ConsoleCardHeader>
+            <ConsoleCardTableContent>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -185,8 +189,8 @@ export const ViewAPIKeyPage = () => {
                   )}
                 </TableBody>
               </Table>
-            </CardContent>
-          </Card>
+            </ConsoleCardTableContent>
+          </ConsoleCard>
 
           <DangerZoneCard />
         </div>
@@ -236,6 +240,7 @@ const EditAPIKeyButton = () => {
   const updateAPIKeyMutation = useMutation(updateAPIKey);
 
   const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
     defaultValues: {
       displayName: '',
     },
@@ -278,15 +283,19 @@ const EditAPIKeyButton = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Display Name</FormLabel>
+                  <FormDescription>
+                    A human-friendly name for this API Key.
+                  </FormDescription>
                   <FormControl>
                     <Input placeholder="Display Name" {...field} />
                   </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <AlertDialogFooter>
+            <AlertDialogFooter className="mt-8">
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <Button type="submit">Save</Button>
             </AlertDialogFooter>
@@ -374,14 +383,17 @@ const DangerZoneCard = () => {
   };
 
   return (
-    <Card className="border-destructive">
-      <CardHeader>
-        <CardTitle>Danger Zone</CardTitle>
-        <CardDescription>
-          Actions in this section cannot be undone. Please proceed with caution.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+    <ConsoleCard className="border-destructive">
+      <ConsoleCardHeader>
+        <ConsoleCardDetails>
+          <ConsoleCardTitle>Danger Zone</ConsoleCardTitle>
+          <ConsoleCardDescription>
+            Actions in this section cannot be undone. Please proceed with
+            caution.
+          </ConsoleCardDescription>
+        </ConsoleCardDetails>
+      </ConsoleCardHeader>
+      <ConsoleCardContent>
         <div className="space-y-8">
           {!getAPIKeyResponse?.apiKey?.revoked ? (
             <div className="flex justify-between items-center space-y-2">
@@ -449,7 +461,7 @@ const DangerZoneCard = () => {
             </div>
           )}
         </div>
-      </CardContent>
-    </Card>
+      </ConsoleCardContent>
+    </ConsoleCard>
   );
 };

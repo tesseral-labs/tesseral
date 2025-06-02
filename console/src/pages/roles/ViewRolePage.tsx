@@ -33,12 +33,14 @@ import {
   DetailsGridValue,
 } from '@/components/details-grid';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDetails,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 import { DateTime } from 'luxon';
 import { timestampDate } from '@bufbuild/protobuf/wkt';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -89,17 +91,19 @@ export function ViewRolePage() {
 
       <PageContent>
         <div className="space-y-8">
-          <Card>
-            <CardHeader className="flex-row justify-between items-center gap-x-2">
-              <div className="flex flex-col space-y-1.5">
-                <CardTitle>General settings</CardTitle>
-                <CardDescription>Basic settings for this Role.</CardDescription>
-              </div>
+          <ConsoleCard>
+            <ConsoleCardHeader>
+              <ConsoleCardDetails>
+                <ConsoleCardTitle>General settings</ConsoleCardTitle>
+                <ConsoleCardDescription>
+                  Basic settings for this Role.
+                </ConsoleCardDescription>
+              </ConsoleCardDetails>
               <Link to={`/roles/${roleId}/edit`}>
                 <Button variant="outline">Edit</Button>
               </Link>
-            </CardHeader>
-            <CardContent>
+            </ConsoleCardHeader>
+            <ConsoleCardContent>
               <DetailsGrid>
                 <DetailsGridColumn>
                   <DetailsGridEntry>
@@ -167,15 +171,19 @@ export function ViewRolePage() {
                   </DetailsGridEntry>
                 </DetailsGridColumn>
               </DetailsGrid>
-            </CardContent>
-          </Card>
+            </ConsoleCardContent>
+          </ConsoleCard>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Assigned Users</CardTitle>
-              <CardDescription>Users assigned to this Role.</CardDescription>
-            </CardHeader>
-            <CardContent>
+          <ConsoleCard>
+            <ConsoleCardHeader>
+              <ConsoleCardDetails>
+                <ConsoleCardTitle>Assigned Users</ConsoleCardTitle>
+                <ConsoleCardDescription>
+                  Users assigned to this Role.
+                </ConsoleCardDescription>
+              </ConsoleCardDetails>
+            </ConsoleCardHeader>
+            <ConsoleCardTableContent>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -195,8 +203,8 @@ export function ViewRolePage() {
                   )}
                 </TableBody>
               </Table>
-            </CardContent>
-          </Card>
+            </ConsoleCardTableContent>
+          </ConsoleCard>
         </div>
         <DangerZoneCard />
       </PageContent>
@@ -295,12 +303,14 @@ function UserRoleAssignmentRow({
 
 function DangerZoneCard() {
   return (
-    <Card className="mt-8 border-destructive">
-      <CardHeader>
-        <CardTitle>Danger Zone</CardTitle>
-      </CardHeader>
+    <ConsoleCard className="mt-8 border-destructive">
+      <ConsoleCardHeader>
+        <ConsoleCardDetails>
+          <ConsoleCardTitle>Danger Zone</ConsoleCardTitle>
+        </ConsoleCardDetails>
+      </ConsoleCardHeader>
 
-      <CardContent>
+      <ConsoleCardContent>
         <div className="flex justify-between items-center">
           <div>
             <div className="text-sm font-semibold">Delete Role</div>
@@ -312,8 +322,8 @@ function DangerZoneCard() {
 
           <DeleteRoleButton />
         </div>
-      </CardContent>
-    </Card>
+      </ConsoleCardContent>
+    </ConsoleCard>
   );
 }
 

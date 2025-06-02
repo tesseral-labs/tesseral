@@ -37,12 +37,14 @@ import {
   DetailsGridValue,
 } from '@/components/details-grid';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDetails,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 import { DateTime } from 'luxon';
 import { timestampDate } from '@bufbuild/protobuf/wkt';
 import { Button } from '@/components/ui/button';
@@ -105,15 +107,17 @@ export const ViewUserPage = () => {
         </PageDescription>
       </PageHeader>
       <PageContent>
-        <Card className="my-8">
-          <CardHeader className="flex flex-row items-center justify-between space-y-4">
-            <div>
-              <CardTitle>General settings</CardTitle>
-              <CardDescription>Basic settings for this User.</CardDescription>
-            </div>
+        <ConsoleCard className="my-8">
+          <ConsoleCardHeader>
+            <ConsoleCardDetails>
+              <ConsoleCardTitle>General settings</ConsoleCardTitle>
+              <ConsoleCardDescription>
+                Basic settings for this User.
+              </ConsoleCardDescription>
+            </ConsoleCardDetails>
             <EditUserSettingsButton />
-          </CardHeader>
-          <CardContent>
+          </ConsoleCardHeader>
+          <ConsoleCardContent>
             <DetailsGrid>
               <DetailsGridColumn>
                 <DetailsGridEntry>
@@ -190,18 +194,20 @@ export const ViewUserPage = () => {
                 </DetailsGridEntry>
               </DetailsGridColumn>
             </DetailsGrid>
-          </CardContent>
-        </Card>
+          </ConsoleCardContent>
+        </ConsoleCard>
 
-        <Card className="my-8">
-          <CardHeader>
-            <CardTitle>Sessions</CardTitle>
-            <CardDescription>
-              Every time your Users log in or perform an action, that's
-              associated with a Session.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+        <ConsoleCard className="my-8">
+          <ConsoleCardHeader>
+            <ConsoleCardDetails>
+              <ConsoleCardTitle>Sessions</ConsoleCardTitle>
+              <ConsoleCardDescription>
+                Every time your Users log in or perform an action, that's
+                associated with a Session.
+              </ConsoleCardDescription>
+            </ConsoleCardDetails>
+          </ConsoleCardHeader>
+          <ConsoleCardTableContent>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -239,17 +245,19 @@ export const ViewUserPage = () => {
                 ))}
               </TableBody>
             </Table>
-          </CardContent>
-        </Card>
+          </ConsoleCardTableContent>
+        </ConsoleCard>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Passkeys</CardTitle>
-            <CardDescription>
-              Passkeys associated with this User.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+        <ConsoleCard>
+          <ConsoleCardHeader>
+            <ConsoleCardDetails>
+              <ConsoleCardTitle>Passkeys</ConsoleCardTitle>
+              <ConsoleCardDescription>
+                Passkeys associated with this User.
+              </ConsoleCardDescription>
+            </ConsoleCardDetails>
+          </ConsoleCardHeader>
+          <ConsoleCardTableContent>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -285,23 +293,23 @@ export const ViewUserPage = () => {
                 ))}
               </TableBody>
             </Table>
-          </CardContent>
-        </Card>
+          </ConsoleCardTableContent>
+        </ConsoleCard>
 
-        <Card className="mt-8">
-          <CardHeader className="flex-row justify-between items-center gap-x-2">
-            <div className="flex flex-col space-y-1.5">
-              <CardTitle>Assigned Roles</CardTitle>
-              <CardDescription>
+        <ConsoleCard className="mt-8">
+          <ConsoleCardHeader>
+            <ConsoleCardDetails>
+              <ConsoleCardTitle>Assigned Roles</ConsoleCardTitle>
+              <ConsoleCardDescription>
                 Roles this User has been assigned.
-              </CardDescription>
-            </div>
+              </ConsoleCardDescription>
+            </ConsoleCardDetails>
 
             <div className="shrink-0 space-x-4">
               <AssignUserRolesButton />
             </div>
-          </CardHeader>
-          <CardContent>
+          </ConsoleCardHeader>
+          <ConsoleCardTableContent>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -321,8 +329,8 @@ export const ViewUserPage = () => {
                 )}
               </TableBody>
             </Table>
-          </CardContent>
-        </Card>
+          </ConsoleCardTableContent>
+        </ConsoleCard>
 
         <DangerZoneCard />
       </PageContent>
@@ -423,12 +431,14 @@ const DangerZoneCard = () => {
   };
 
   return (
-    <Card className="mt-8 border-destructive">
-      <CardHeader>
-        <CardTitle>Danger Zone</CardTitle>
-      </CardHeader>
+    <ConsoleCard className="mt-8 border-destructive">
+      <ConsoleCardHeader>
+        <ConsoleCardDetails>
+          <ConsoleCardTitle>Danger Zone</ConsoleCardTitle>
+        </ConsoleCardDetails>
+      </ConsoleCardHeader>
 
-      <CardContent>
+      <ConsoleCardContent>
         <div className="flex justify-between items-center">
           <div>
             <div className="text-sm font-semibold">Impersonate User</div>
@@ -442,8 +452,8 @@ const DangerZoneCard = () => {
             Impersonate User
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </ConsoleCardContent>
+    </ConsoleCard>
   );
 };
 
@@ -529,7 +539,7 @@ const EditUserSettingsButton: FC = () => {
       <AlertDialogTrigger asChild>
         <Button variant="outline">Edit</Button>
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent className="overflow-y-scroll max-h-[calc(100vh-6rem)]">
         <AlertDialogHeader>
           <AlertDialogTitle>Edit User Settings</AlertDialogTitle>
         </AlertDialogHeader>
@@ -544,6 +554,10 @@ const EditUserSettingsButton: FC = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
+                  <FormDescription>
+                    The User's email address. Must be unique within their
+                    Organization.
+                  </FormDescription>
                   <FormControl>
                     <Input
                       type="email"
@@ -551,10 +565,7 @@ const EditUserSettingsButton: FC = () => {
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    The User's email address. Must be unique within their
-                    Organization.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -566,13 +577,14 @@ const EditUserSettingsButton: FC = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Display Name</FormLabel>
-                  <FormControl>
-                    <Input type="text" placeholder="John Doe" {...field} />
-                  </FormControl>
                   <FormDescription>
                     The User's display name. This is typically their full
                     personal name. Optional.
                   </FormDescription>
+                  <FormControl>
+                    <Input type="text" placeholder="John Doe" {...field} />
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -584,12 +596,13 @@ const EditUserSettingsButton: FC = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Profile Picture URL</FormLabel>
-                  <FormControl>
-                    <Input type="text" placeholder="https://..." {...field} />
-                  </FormControl>
                   <FormDescription>
                     The URL of the User's profile picture. Optional.
                   </FormDescription>
+                  <FormControl>
+                    <Input type="text" placeholder="https://..." {...field} />
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -601,6 +614,9 @@ const EditUserSettingsButton: FC = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Google User ID</FormLabel>
+                  <FormDescription>
+                    The User's Google-assigned ID. Optional.
+                  </FormDescription>
                   <FormControl>
                     <Input
                       type="text"
@@ -608,9 +624,7 @@ const EditUserSettingsButton: FC = () => {
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    The User's Google-assigned ID. Optional.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -622,6 +636,9 @@ const EditUserSettingsButton: FC = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Microsoft User ID</FormLabel>
+                  <FormDescription>
+                    The User's Microsoft-assigned ID. Optional.
+                  </FormDescription>
                   <FormControl>
                     <Input
                       type="text"
@@ -629,9 +646,7 @@ const EditUserSettingsButton: FC = () => {
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    The User's Microsoft-assigned ID. Optional.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -643,6 +658,9 @@ const EditUserSettingsButton: FC = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>GitHub User ID</FormLabel>
+                  <FormDescription>
+                    The User's GitHub-assigned ID. Optional.
+                  </FormDescription>
                   <FormControl>
                     <Input
                       type="text"
@@ -650,9 +668,7 @@ const EditUserSettingsButton: FC = () => {
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    The User's GitHub-assigned ID. Optional.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -664,6 +680,10 @@ const EditUserSettingsButton: FC = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Owner</FormLabel>
+                  <FormDescription>
+                    Whether the User is an Owner of their Organization.
+                    Optional.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -671,10 +691,7 @@ const EditUserSettingsButton: FC = () => {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Whether the User is an Owner of their Organization.
-                    Optional.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}

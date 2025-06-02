@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+} from '@/components/ui/console-card';
 import {
   DetailsGrid,
   DetailsGridColumn,
@@ -48,6 +48,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { InputTags } from '@/components/input-tags';
 import { EditAPIKeySettingsButton } from './project-ui-settings/EditAPIKeySettingsButton';
+import { ConsoleCardDetails } from '@/components/ui/console-card';
 
 export const ProjectDetailsTab = () => {
   const { data: getProjectResponse } = useQuery(getProject, {});
@@ -69,19 +70,19 @@ export const ProjectDetailsTab = () => {
 
   return (
     <div className="space-y-8">
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
-            <CardTitle>Redirect Settings</CardTitle>
-            <CardDescription>
+      <ConsoleCard>
+        <ConsoleCardHeader>
+          <ConsoleCardDetails>
+            <ConsoleCardTitle>Redirect Settings</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Where Tesseral will redirect your users whenever they return from
               your project's Vault. You can special-case where they go after
               logging in or signing up.
-            </CardDescription>
-          </div>
+            </ConsoleCardDescription>
+          </ConsoleCardDetails>
           <EditProjectRedirectURIsButton />
-        </CardHeader>
-        <CardContent>
+        </ConsoleCardHeader>
+        <ConsoleCardContent>
           <DetailsGrid>
             <DetailsGridColumn>
               <DetailsGridEntry>
@@ -114,20 +115,20 @@ export const ProjectDetailsTab = () => {
               </DetailsGridEntry>
             </DetailsGridColumn>
           </DetailsGrid>
-        </CardContent>
-      </Card>
+        </ConsoleCardContent>
+      </ConsoleCard>
 
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
-            <CardTitle>Domains settings</CardTitle>
-            <CardDescription>
+      <ConsoleCard>
+        <ConsoleCardHeader>
+          <ConsoleCardDetails>
+            <ConsoleCardTitle>Domains settings</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Settings related to domains that your project runs on.
-            </CardDescription>
-          </div>
+            </ConsoleCardDescription>
+          </ConsoleCardDetails>
           <EditProjectDomainSettingsButton />
-        </CardHeader>
-        <CardContent>
+        </ConsoleCardHeader>
+        <ConsoleCardContent>
           <DetailsGrid>
             <DetailsGridColumn>
               <DetailsGridEntry>
@@ -148,22 +149,22 @@ export const ProjectDetailsTab = () => {
               </DetailsGridEntry>
             </DetailsGridColumn>
           </DetailsGrid>
-        </CardContent>
-      </Card>
+        </ConsoleCardContent>
+      </ConsoleCard>
 
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
-            <CardTitle>API key settings</CardTitle>
-            <CardDescription>
+      <ConsoleCard>
+        <ConsoleCardHeader>
+          <ConsoleCardDetails>
+            <ConsoleCardTitle>API key settings</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Settings for API keys used by your customers with your product.
-            </CardDescription>
-          </div>
+            </ConsoleCardDescription>
+          </ConsoleCardDetails>
           {getProjectEntitlementsResponse?.entitledBackendApiKeys && (
             <EditAPIKeySettingsButton />
           )}
-        </CardHeader>
-        <CardContent>
+        </ConsoleCardHeader>
+        <ConsoleCardContent>
           {!getProjectEntitlementsResponse?.entitledBackendApiKeys ? (
             <div className="text-sm my-8 w-full flex flex-col items-center justify-center space-y-6">
               <div className="font-medium">
@@ -207,24 +208,24 @@ export const ProjectDetailsTab = () => {
               </DetailsGridColumn>
             </DetailsGrid>
           )}
-        </CardContent>
-      </Card>
+        </ConsoleCardContent>
+      </ConsoleCard>
 
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
-            <CardTitle>Webhook settings</CardTitle>
-            <CardDescription>
+      <ConsoleCard>
+        <ConsoleCardHeader>
+          <ConsoleCardDetails>
+            <ConsoleCardTitle>Webhook settings</ConsoleCardTitle>
+            <ConsoleCardDescription>
               Settings for webhooks sent from Tesseral to your application about
               your project.
-            </CardDescription>
-          </div>
+            </ConsoleCardDescription>
+          </ConsoleCardDetails>
           <a href={getProjectWebhookManagementUrlResponse?.url} target="_blank">
             <Button variant="outline">Edit</Button>
           </a>
-        </CardHeader>
-        <CardContent></CardContent>
-      </Card>
+        </ConsoleCardHeader>
+        <ConsoleCardContent></ConsoleCardContent>
+      </ConsoleCard>
     </div>
   );
 };
@@ -320,13 +321,14 @@ const EditProjectRedirectURIsButton = () => {
               render={({ field }: { field: any }) => (
                 <FormItem>
                   <FormLabel>Default Redirect URI</FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://app.company.com/" {...field} />
-                  </FormControl>
                   <FormDescription>
                     Where users will be redirected after visiting your project's
                     Vault.
                   </FormDescription>
+                  <FormControl>
+                    <Input placeholder="https://app.company.com/" {...field} />
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -337,16 +339,17 @@ const EditProjectRedirectURIsButton = () => {
               render={({ field }: { field: any }) => (
                 <FormItem>
                   <FormLabel>After-Login Redirect URI</FormLabel>
+                  <FormDescription>
+                    Where users will be redirected after logging in. If blank,
+                    uses the default redirect URI.
+                  </FormDescription>
                   <FormControl>
                     <Input
                       placeholder="https://app.company.com/after-login"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Where users will be redirected after logging in. If blank,
-                    uses the default redirect URI.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -357,16 +360,17 @@ const EditProjectRedirectURIsButton = () => {
               render={({ field }: { field: any }) => (
                 <FormItem>
                   <FormLabel>After-Signup Redirect URI</FormLabel>
+                  <FormDescription>
+                    Where users will be redirected after signing up. If blank,
+                    uses the default redirect URI.
+                  </FormDescription>
                   <FormControl>
                     <Input
                       placeholder="https://app.company.com/after-signup"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Where users will be redirected after signing up. If blank,
-                    uses the default redirect URI.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -460,6 +464,11 @@ const EditProjectDomainSettingsButton = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Cookie Domain</FormLabel>
+                  <FormDescription>
+                    Client-side JavaScript on this domain and its subdomains
+                    will have access to User access tokens. You cannot modify
+                    this field until you have configured a custom Vault domain.
+                  </FormDescription>
                   <FormControl>
                     <Input
                       placeholder="app.company.com"
@@ -467,11 +476,7 @@ const EditProjectDomainSettingsButton = () => {
                       disabled={!getProjectResponse?.project?.vaultDomainCustom}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Client-side JavaScript on this domain and its subdomains
-                    will have access to User access tokens. You cannot modify
-                    this field until you have configured a custom Vault domain.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}

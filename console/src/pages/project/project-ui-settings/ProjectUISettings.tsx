@@ -1,10 +1,11 @@
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardDetails,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+} from '@/components/ui/console-card';
 import AuthCardPreview from '@/components/vault-preview/auth-card-preview';
 import React, {
   ChangeEvent,
@@ -35,7 +36,6 @@ import { ColorPicker } from '@/components/ui/color-picker';
 import { Switch } from '@/components/ui/switch';
 import { parseErrorMessage } from '@/lib/errors';
 import { toast } from 'sonner';
-import { z } from 'zod';
 import {
   DetailsGrid,
   DetailsGridColumn,
@@ -290,15 +290,15 @@ const settingsPage: FC = () => {
         <BehaviorSettingsCard />
 
         <form onSubmit={handleSubmit}>
-          <Card className="mt-8">
-            <CardHeader>
+          <ConsoleCard className="mt-8">
+            <ConsoleCardHeader>
               <div className="grid grid-cols-2 gap-8">
                 <div>
-                  <CardTitle>Vault UI Settings</CardTitle>
-                  <CardDescription>
+                  <ConsoleCardTitle>Vault UI Settings</ConsoleCardTitle>
+                  <ConsoleCardDescription>
                     This controls the layout, logo, and colors for your vault
                     login pages.
-                  </CardDescription>
+                  </ConsoleCardDescription>
                 </div>
                 <div className="text-right">
                   <Button
@@ -330,8 +330,8 @@ const settingsPage: FC = () => {
                   </Button>
                 </div>
               </div>
-            </CardHeader>
-            <CardContent>
+            </ConsoleCardHeader>
+            <ConsoleCardContent>
               <div className="grid grid-cols-3 gap-8 max-h-[650px]">
                 <div className="relative">
                   <div className="overflow-y-scroll pr-8 pb-24 h-[630px]">
@@ -524,33 +524,35 @@ const settingsPage: FC = () => {
                 </div>
 
                 <div className="col-span-2">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="grid grid-cols-2">
-                        <div className="text-lg">Preview</div>
-                        {detectDarkModeEnabled && (
-                          <div className="relative text-right">
-                            <Switch
-                              checked={darkMode}
-                              onCheckedChange={setDarkMode}
-                            />
-                            {darkMode ? (
-                              <div className="absolute top-1 right-5 text-white">
-                                <Moon size={12} />
-                              </div>
-                            ) : (
-                              <div className="absolute top-1 right-1 text-muted-foreground">
-                                <Sun size={12} />
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </CardTitle>
-                      <CardDescription>
-                        A preview of how your vault login page will look.
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
+                  <ConsoleCard>
+                    <ConsoleCardHeader>
+                      <ConsoleCardDetails>
+                        <ConsoleCardTitle className="grid grid-cols-2">
+                          <div className="text-lg">Preview</div>
+                          {detectDarkModeEnabled && (
+                            <div className="relative text-right">
+                              <Switch
+                                checked={darkMode}
+                                onCheckedChange={setDarkMode}
+                              />
+                              {darkMode ? (
+                                <div className="absolute top-1 right-5 text-white">
+                                  <Moon size={12} />
+                                </div>
+                              ) : (
+                                <div className="absolute top-1 right-1 text-muted-foreground">
+                                  <Sun size={12} />
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </ConsoleCardTitle>
+                        <ConsoleCardDescription>
+                          A preview of how your vault login page will look.
+                        </ConsoleCardDescription>
+                      </ConsoleCardDetails>
+                    </ConsoleCardHeader>
+                    <ConsoleCardContent>
                       <div
                         className={cn('rounded border', darkMode ? 'dark' : '')}
                         ref={previewRef}
@@ -572,12 +574,12 @@ const settingsPage: FC = () => {
                           </CenterLayout>
                         )}
                       </div>
-                    </CardContent>
-                  </Card>
+                    </ConsoleCardContent>
+                  </ConsoleCard>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </ConsoleCardContent>
+          </ConsoleCard>
         </form>
       </div>
     </div>
@@ -588,17 +590,17 @@ function BehaviorSettingsCard() {
   const { data: getProjectUISettingsResponse } = useQuery(getProjectUISettings);
 
   return (
-    <Card className="mt-8">
-      <CardHeader className="flex-row justify-between items-center">
+    <ConsoleCard className="mt-8">
+      <ConsoleCardHeader>
         <div className="flex flex-col space-y-1 5">
-          <CardTitle>Behavior settings</CardTitle>
-          <CardDescription>
+          <ConsoleCardTitle>Behavior settings</ConsoleCardTitle>
+          <ConsoleCardDescription>
             Settings for the login flow your Users will see.
-          </CardDescription>
+          </ConsoleCardDescription>
         </div>
         <EditBehaviorSettingsButton />
-      </CardHeader>
-      <CardContent>
+      </ConsoleCardHeader>
+      <ConsoleCardContent>
         <DetailsGrid>
           <DetailsGridColumn>
             <DetailsGridEntry>
@@ -612,8 +614,8 @@ function BehaviorSettingsCard() {
             </DetailsGridEntry>
           </DetailsGridColumn>
         </DetailsGrid>
-      </CardContent>
-    </Card>
+      </ConsoleCardContent>
+    </ConsoleCard>
   );
 }
 

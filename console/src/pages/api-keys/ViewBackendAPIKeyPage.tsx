@@ -57,6 +57,7 @@ import {
   PageHeader,
   PageTitle,
 } from '@/components/page';
+import { ConsoleCardDetails } from '@/components/ui/console-card';
 
 export const ViewBackendAPIKeyPage = () => {
   const { backendApiKeyId } = useParams();
@@ -79,10 +80,10 @@ export const ViewBackendAPIKeyPage = () => {
       <PageContent>
         <Card className="my-8">
           <CardHeader className="flex-row justify-between items-center">
-            <div className="flex flex-col space-y-1 5">
+            <ConsoleCardDetails>
               <CardTitle>Configuration</CardTitle>
               <CardDescription>Details about your Backend API.</CardDescription>
-            </div>
+            </ConsoleCardDetails>
             <EditBackendAPIKeyButton />
           </CardHeader>
           <CardContent>
@@ -206,12 +207,13 @@ const EditBackendAPIKeyButton = () => {
               render={({ field }: { field: any }) => (
                 <FormItem>
                   <FormLabel>Display Name</FormLabel>
-                  <FormControl>
-                    <Input className="max-w-96" {...field} />
-                  </FormControl>
                   <FormDescription>
                     A human-friendly name for the Backend API Key.
                   </FormDescription>
+                  <FormControl>
+                    <Input className="max-w-96" {...field} />
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}

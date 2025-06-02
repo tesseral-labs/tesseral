@@ -1,12 +1,3 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import { Link } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useMutation, useQuery } from '@connectrpc/connect-query';
@@ -56,6 +47,7 @@ import {
   PageHeader,
   PageTitle,
 } from '@/components/page';
+import { ConsoleCardDetails } from '@/components/ui/console-card';
 
 export const ViewPublishableKeyPage = () => {
   const { publishableKeyId } = useParams();
@@ -80,12 +72,12 @@ export const ViewPublishableKeyPage = () => {
       <PageContent>
         <Card className="my-8">
           <CardHeader className="flex-row justify-between items-center">
-            <div className="flex flex-col space-y-1 5">
+            <ConsoleCardDetails>
               <CardTitle>Configuration</CardTitle>
               <CardDescription>
                 Details about this Publishable Key.
               </CardDescription>
-            </div>
+            </ConsoleCardDetails>
             <EditPublishableKeyButton />
           </CardHeader>
           <CardContent>
@@ -209,13 +201,14 @@ const EditPublishableKeyButton = () => {
               render={({ field }: { field: any }) => (
                 <FormItem>
                   <FormLabel>Display Name</FormLabel>
-                  <FormControl>
-                    <Input className="max-w-96" {...field} />
-                  </FormControl>
                   <FormDescription>
                     An internal human-friendly name for the Publishable Key. Not
                     shown to your customers.
                   </FormDescription>
+                  <FormControl>
+                    <Input className="max-w-96" {...field} />
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}

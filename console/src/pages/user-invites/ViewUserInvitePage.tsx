@@ -6,18 +6,11 @@ import {
   getUserInvite,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import React from 'react';
-import { Link } from 'react-router-dom';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
 import {
   PageCodeSubtitle,
+  PageContent,
   PageDescription,
+  PageHeader,
   PageTitle,
 } from '@/components/page';
 import {
@@ -28,12 +21,14 @@ import {
   DetailsGridValue,
 } from '@/components/details-grid';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDetails,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 import { DateTime } from 'luxon';
 import { timestampDate } from '@bufbuild/protobuf/wkt';
 import { Button } from '@/components/ui/button';
@@ -49,70 +44,76 @@ export const ViewUserInvitePage = () => {
   });
 
   return (
-    <div className="container p-4 m-auto">
-      <PageTitle>
-        User Invite for {getUserInviteResponse?.userInvite?.email}
-      </PageTitle>
-      <PageCodeSubtitle>{userInviteId}</PageCodeSubtitle>
-      <PageDescription>
-        A User Invite lets outside collaborators join an organization.
-      </PageDescription>
+    <>
+      <PageHeader>
+        <PageTitle>
+          User Invite for {getUserInviteResponse?.userInvite?.email}
+        </PageTitle>
+        <PageCodeSubtitle>{userInviteId}</PageCodeSubtitle>
+        <PageDescription>
+          A User Invite lets outside collaborators join an organization.
+        </PageDescription>
+      </PageHeader>
 
-      <Card className="my-8">
-        <CardHeader>
-          <CardTitle>General settings</CardTitle>
-          <CardDescription>
-            Basic settings for this user invite.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <DetailsGrid>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Email</DetailsGridKey>
-                <DetailsGridValue>
-                  {getUserInviteResponse?.userInvite?.email}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>Owner</DetailsGridKey>
-                <DetailsGridValue>
-                  {getUserInviteResponse?.userInvite?.owner ? 'Yes' : 'No'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Created</DetailsGridKey>
-                <DetailsGridValue>
-                  {getUserInviteResponse?.userInvite?.createTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(
-                        getUserInviteResponse?.userInvite?.createTime,
-                      ),
-                    ).toRelative()}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Updated</DetailsGridKey>
-                <DetailsGridValue>
-                  {getUserInviteResponse?.userInvite?.updateTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(
-                        getUserInviteResponse?.userInvite?.updateTime,
-                      ),
-                    ).toRelative()}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-          </DetailsGrid>
-        </CardContent>
-      </Card>
+      <PageContent>
+        <ConsoleCard className="my-8">
+          <ConsoleCardHeader>
+            <ConsoleCardDetails>
+              <ConsoleCardTitle>General settings</ConsoleCardTitle>
+              <ConsoleCardDescription>
+                Basic settings for this user invite.
+              </ConsoleCardDescription>
+            </ConsoleCardDetails>
+          </ConsoleCardHeader>
+          <ConsoleCardContent>
+            <DetailsGrid>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Email</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getUserInviteResponse?.userInvite?.email}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Owner</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getUserInviteResponse?.userInvite?.owner ? 'Yes' : 'No'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Created</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getUserInviteResponse?.userInvite?.createTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(
+                          getUserInviteResponse?.userInvite?.createTime,
+                        ),
+                      ).toRelative()}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Updated</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getUserInviteResponse?.userInvite?.updateTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(
+                          getUserInviteResponse?.userInvite?.updateTime,
+                        ),
+                      ).toRelative()}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+            </DetailsGrid>
+          </ConsoleCardContent>
+        </ConsoleCard>
 
-      <DangerZoneCard />
-    </div>
+        <DangerZoneCard />
+      </PageContent>
+    </>
   );
 };
 
@@ -132,12 +133,14 @@ const DangerZoneCard = () => {
 
   return (
     <>
-      <Card className="border-destructive">
-        <CardHeader>
-          <CardTitle>Danger Zone</CardTitle>
-        </CardHeader>
+      <ConsoleCard className="border-destructive">
+        <ConsoleCardHeader>
+          <ConsoleCardDetails>
+            <ConsoleCardTitle>Danger Zone</ConsoleCardTitle>
+          </ConsoleCardDetails>
+        </ConsoleCardHeader>
 
-        <CardContent>
+        <ConsoleCardContent>
           <div className="flex justify-between items-center">
             <div>
               <div className="text-sm font-semibold">Delete User Invite</div>
@@ -151,8 +154,8 @@ const DangerZoneCard = () => {
               Delete User Invite
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </ConsoleCardContent>
+      </ConsoleCard>
     </>
   );
 };

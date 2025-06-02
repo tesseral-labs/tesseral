@@ -16,20 +16,14 @@ import { DateTime } from 'luxon';
 import { timestampDate } from '@bufbuild/protobuf/wkt';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
+  ConsoleCard,
+  ConsoleCardDetails,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 import {
   PageContent,
   PageDescription,
@@ -43,10 +37,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
+  FormControl,
   FormDescription,
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
@@ -95,18 +91,18 @@ export const ListOrganizationsPage = () => {
         </PageDescription>
       </PageHeader>
       <PageContent>
-        <Card className="mt-8 overflow-hidden">
-          <CardHeader className="flex-row justify-between items-center space-x-4">
-            <div className="flex flex-col space-y-1 5">
-              <CardTitle>Organizations list</CardTitle>
-              <CardDescription>
+        <ConsoleCard className="mt-8 overflow-hidden">
+          <ConsoleCardHeader>
+            <ConsoleCardDetails>
+              <ConsoleCardTitle>Organizations list</ConsoleCardTitle>
+              <ConsoleCardDescription>
                 This is a list of all Organizations in your project. You can
                 create and edit these Organizations manually.
-              </CardDescription>
-            </div>
+              </ConsoleCardDescription>
+            </ConsoleCardDetails>
             <CreateOrganizationButton />
-          </CardHeader>
-          <CardContent>
+          </ConsoleCardHeader>
+          <ConsoleCardTableContent>
             <Table>
               <TableHeader className="bg-gray-50">
                 <TableRow>
@@ -144,12 +140,12 @@ export const ListOrganizationsPage = () => {
                 ))}
               </TableBody>
             </Table>
-          </CardContent>
-        </Card>
+          </ConsoleCardTableContent>
+        </ConsoleCard>
 
         {hasNextPage && (
           <Button
-            className="mt-4"
+            className="mt-4 mb-6"
             variant="outline"
             onClick={() => fetchNextPage()}
           >
@@ -165,7 +161,7 @@ export const ListOrganizationsPage = () => {
 };
 
 const schema = z.object({
-  displayName: z.string(),
+  displayName: z.string().min(1, 'Display name is required'),
 });
 
 const CreateOrganizationButton: FC = () => {
@@ -223,11 +219,15 @@ const CreateOrganizationButton: FC = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Display Name</FormLabel>
-                  <Input placeholder="ACME Corp" {...field} />
                   <FormDescription>
                     The display name of the Organization. This will be displayed
                     to users during the login process.
                   </FormDescription>
+                  <FormControl>
+                    <Input placeholder="ACME Corp" {...field} />
+                  </FormControl>
+
+                  <FormMessage />
                 </FormItem>
               )}
             />

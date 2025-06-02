@@ -6,12 +6,14 @@ import {
   listSCIMAPIKeys,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardDetails,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+  ConsoleCardTableContent,
+} from '@/components/ui/console-card';
 import {
   Table,
   TableBody,
@@ -56,17 +58,17 @@ export const OrganizationSCIMAPIKeysTab = () => {
   });
 
   return (
-    <Card>
-      <CardHeader className="flex-row justify-between items-center">
-        <div className="flex flex-col space-y-1 5">
-          <CardTitle>SCIM API Keys</CardTitle>
-          <CardDescription>
+    <ConsoleCard>
+      <ConsoleCardHeader>
+        <ConsoleCardDetails>
+          <ConsoleCardTitle>SCIM API Keys</ConsoleCardTitle>
+          <ConsoleCardDescription>
             A SCIM API key lets your customer do enterprise directory syncing.
-          </CardDescription>
-        </div>
+          </ConsoleCardDescription>
+        </ConsoleCardDetails>
         <CreateSCIMAPIKeyButton />
-      </CardHeader>
-      <CardContent>
+      </ConsoleCardHeader>
+      <ConsoleCardTableContent>
         <Table>
           <TableHeader>
             <TableRow>
@@ -104,8 +106,8 @@ export const OrganizationSCIMAPIKeysTab = () => {
             ))}
           </TableBody>
         </Table>
-      </CardContent>
-    </Card>
+      </ConsoleCardTableContent>
+    </ConsoleCard>
   );
 };
 
@@ -211,12 +213,13 @@ const CreateSCIMAPIKeyButton = () => {
                 render={({ field }: { field: any }) => (
                   <FormItem>
                     <FormLabel>Display Name</FormLabel>
-                    <FormControl>
-                      <Input className="max-w-96" {...field} />
-                    </FormControl>
                     <FormDescription>
                       A human-friendly name for the SCIM API Key.
                     </FormDescription>
+                    <FormControl>
+                      <Input className="max-w-96" {...field} />
+                    </FormControl>
+
                     <FormMessage />
                   </FormItem>
                 )}

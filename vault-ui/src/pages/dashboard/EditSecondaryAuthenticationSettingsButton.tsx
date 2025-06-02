@@ -117,6 +117,9 @@ export function EditSecondaryAuthenticationSettingsButton() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Require MFA</FormLabel>
+                  <FormDescription>
+                    Require that users configure multi-factor authentication.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -124,9 +127,7 @@ export function EditSecondaryAuthenticationSettingsButton() {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Require that users configure multi-factor authentication.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -139,6 +140,9 @@ export function EditSecondaryAuthenticationSettingsButton() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Log in with Authenticator App</FormLabel>
+                    <FormDescription>
+                      Users can configure an authenticator app.
+                    </FormDescription>
                     <FormControl>
                       <Switch
                         className="block"
@@ -146,9 +150,7 @@ export function EditSecondaryAuthenticationSettingsButton() {
                         onCheckedChange={field.onChange}
                       />
                     </FormControl>
-                    <FormDescription>
-                      Users can configure an authenticator app.
-                    </FormDescription>
+
                     <FormMessage />
                   </FormItem>
                 )}
@@ -162,6 +164,9 @@ export function EditSecondaryAuthenticationSettingsButton() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Log in with Passkey</FormLabel>
+                    <FormDescription>
+                      Users can configure passkeys.
+                    </FormDescription>
                     <FormControl>
                       <Switch
                         className="block"
@@ -169,9 +174,7 @@ export function EditSecondaryAuthenticationSettingsButton() {
                         onCheckedChange={field.onChange}
                       />
                     </FormControl>
-                    <FormDescription>
-                      Users can configure passkeys.
-                    </FormDescription>
+
                     <FormMessage />
                   </FormItem>
                 )}

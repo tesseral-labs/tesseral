@@ -3,27 +3,24 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  Form, FormControl,
+  Form,
+  FormControl,
   FormDescription,
   FormField,
   FormItem,
   FormLabel,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  AlertDialogCancel,
-  AlertDialogFooter,
-} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription, CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
-  getRBACPolicy
-} from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
+  ConsoleCard,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardDetails,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+} from '@/components/ui/console-card';
+import { getRBACPolicy } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import { useQuery } from '@connectrpc/connect-query';
 import { Checkbox } from '@/components/ui/checkbox';
 
@@ -50,23 +47,29 @@ export function EditRoleForm({
   return (
     <Form {...form}>
       <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-        <Card>
-          <CardHeader>
-            <CardTitle>Role Details</CardTitle>
-            <CardDescription>Basic information about the Role.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <ConsoleCard>
+          <ConsoleCardHeader>
+            <ConsoleCardDetails>
+              <ConsoleCardTitle>Role Details</ConsoleCardTitle>
+              <ConsoleCardDescription>
+                Basic information about the Role.
+              </ConsoleCardDescription>
+            </ConsoleCardDetails>
+          </ConsoleCardHeader>
+          <ConsoleCardContent className="space-y-4">
             <FormField
               control={form.control}
               name="displayName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Display Name</FormLabel>
-                  <Input placeholder="Engineering" {...field} />
                   <FormDescription>
                     The display name of the Role. This will be displayed to
                     users.
                   </FormDescription>
+                  <FormControl>
+                    <Input placeholder="Engineering" {...field} />
+                  </FormControl>
                 </FormItem>
               )}
             />
@@ -76,28 +79,32 @@ export function EditRoleForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Description</FormLabel>
-                  <Input
-                    placeholder="Grants read/write access to databases and logs."
-                    {...field}
-                  />
                   <FormDescription>
                     Description of the Role. This will be displayed to users.
                   </FormDescription>
+                  <FormControl>
+                    <Input
+                      placeholder="Grants read/write access to databases and logs."
+                      {...field}
+                    />
+                  </FormControl>
                 </FormItem>
               )}
             />
-          </CardContent>
-        </Card>
+          </ConsoleCardContent>
+        </ConsoleCard>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Actions</CardTitle>
-            <CardDescription>
-              Actions that this Role can perform.
-            </CardDescription>
-          </CardHeader>
+        <ConsoleCard>
+          <ConsoleCardHeader>
+            <ConsoleCardDetails>
+              <ConsoleCardTitle>Actions</ConsoleCardTitle>
+              <ConsoleCardDescription>
+                Actions that this Role can perform.
+              </ConsoleCardDescription>
+            </ConsoleCardDetails>
+          </ConsoleCardHeader>
 
-          <CardContent className="space-y-4">
+          <ConsoleCardContent className="space-y-4">
             {getRBACPolicyResponse?.rbacPolicy?.actions?.map((action) => (
               <FormField
                 key={action.name}
@@ -127,17 +134,15 @@ export function EditRoleForm({
                         <FormLabel className="font-normal">
                           {action.name}
                         </FormLabel>
-                        <FormDescription>
-                          {action.description}
-                        </FormDescription>
+                        <FormDescription>{action.description}</FormDescription>
                       </div>
                     </FormItem>
                   );
                 }}
               />
             ))}
-          </CardContent>
-        </Card>
+          </ConsoleCardContent>
+        </ConsoleCard>
 
         <Button type="submit">Save</Button>
       </form>

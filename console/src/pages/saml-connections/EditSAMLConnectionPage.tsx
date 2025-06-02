@@ -22,20 +22,13 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Link } from 'react-router-dom';
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  ConsoleCard,
+  ConsoleCardContent,
+  ConsoleCardDescription,
+  ConsoleCardDetails,
+  ConsoleCardHeader,
+  ConsoleCardTitle,
+} from '@/components/ui/console-card';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { PageContent, PageHeader, PageTitle } from '@/components/page';
@@ -115,20 +108,26 @@ export const EditSAMLConnectionPage = () => {
         preventing the compiler from inferring the correct types.*/}
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             {/* eslint-enable @typescript-eslint/no-unsafe-call */}
-            <Card>
-              <CardHeader>
-                <CardTitle>SAML connection settings</CardTitle>
-                <CardDescription>
-                  Configure basic settings on this SAML connection.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-8">
+            <ConsoleCard>
+              <ConsoleCardHeader>
+                <ConsoleCardDetails>
+                  <ConsoleCardTitle>SAML connection settings</ConsoleCardTitle>
+                  <ConsoleCardDescription>
+                    Configure basic settings on this SAML connection.
+                  </ConsoleCardDescription>
+                </ConsoleCardDetails>
+              </ConsoleCardHeader>
+              <ConsoleCardContent className="space-y-8">
                 <FormField
                   control={form.control}
                   name="primary"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Primary</FormLabel>
+                      <FormDescription>
+                        A primary SAML connection gets used by default within
+                        its organization.
+                      </FormDescription>
                       <FormControl>
                         <Switch
                           className="block"
@@ -136,27 +135,26 @@ export const EditSAMLConnectionPage = () => {
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>
-                      <FormDescription>
-                        A primary SAML connection gets used by default within
-                        its organization.
-                      </FormDescription>
+
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              </CardContent>
-            </Card>
+              </ConsoleCardContent>
+            </ConsoleCard>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Service Provider settings</CardTitle>
-                <CardDescription>
-                  The configuration here is assigned automatically by Tesseral,
-                  and needs to be inputted into your customer's Identity
-                  Provider by their IT admin.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-8">
+            <ConsoleCard>
+              <ConsoleCardHeader>
+                <ConsoleCardDetails>
+                  <ConsoleCardTitle>Service Provider settings</ConsoleCardTitle>
+                  <ConsoleCardDescription>
+                    The configuration here is assigned automatically by
+                    Tesseral, and needs to be inputted into your customer's
+                    Identity Provider by their IT admin.
+                  </ConsoleCardDescription>
+                </ConsoleCardDetails>
+              </ConsoleCardHeader>
+              <ConsoleCardContent className="space-y-8">
                 <div>
                   <div className="text-sm font-medium leading-none">
                     Assertion Consumer Service (ACS) URL
@@ -173,26 +171,35 @@ export const EditSAMLConnectionPage = () => {
                     {getSAMLConnectionResponse?.samlConnection?.spEntityId}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Identity Provider settings</CardTitle>
-                <CardDescription>
-                  The configuration here needs to be copied over from the
-                  customer's Identity Provider ("IDP").
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-8">
+              </ConsoleCardContent>
+            </ConsoleCard>
+            <ConsoleCard>
+              <ConsoleCardHeader>
+                <ConsoleCardDetails>
+                  <ConsoleCardTitle>
+                    Identity Provider settings
+                  </ConsoleCardTitle>
+                  <ConsoleCardDescription>
+                    The configuration here needs to be copied over from the
+                    customer's Identity Provider ("IDP").
+                  </ConsoleCardDescription>
+                </ConsoleCardDetails>
+              </ConsoleCardHeader>
+              <ConsoleCardContent className="space-y-8">
                 <FormField
                   control={form.control}
                   name="idpEntityId"
                   render={({ field }: { field: any }) => (
                     <FormItem>
                       <FormLabel>IDP Entity ID</FormLabel>
+                      <FormDescription>
+                        The IDP Entity ID, as configured in the customer's
+                        Identity Provider.
+                      </FormDescription>
                       <FormControl>
                         <Input className="max-w-96" {...field} />
                       </FormControl>
+
                       <FormMessage />
                     </FormItem>
                   )}
@@ -203,9 +210,14 @@ export const EditSAMLConnectionPage = () => {
                   render={({ field }: { field: any }) => (
                     <FormItem>
                       <FormLabel>IDP Redirect URL</FormLabel>
+                      <FormDescription>
+                        The IDP Redirect URL, as configured in the customer's
+                        Identity Provider.
+                      </FormDescription>
                       <FormControl>
                         <Input className="max-w-96" {...field} />
                       </FormControl>
+
                       <FormMessage />
                     </FormItem>
                   )}
@@ -220,6 +232,11 @@ export const EditSAMLConnectionPage = () => {
                   }) => (
                     <FormItem>
                       <FormLabel>IDP Certificate</FormLabel>
+                      <FormDescription>
+                        IDP Certificate, as a PEM-encoded X.509 certificate.
+                        These start with '-----BEGIN CERTIFICATE-----' and end
+                        with '-----END CERTIFICATE-----'.
+                      </FormDescription>
                       <FormControl>
                         <Input
                           className="max-w-96"
@@ -233,17 +250,13 @@ export const EditSAMLConnectionPage = () => {
                           }}
                         />
                       </FormControl>
-                      <FormDescription>
-                        IDP Certificate, as a PEM-encoded X.509 certificate.
-                        These start with '-----BEGIN CERTIFICATE-----' and end
-                        with '-----END CERTIFICATE-----'.
-                      </FormDescription>
+
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              </CardContent>
-            </Card>
+              </ConsoleCardContent>
+            </ConsoleCard>
 
             <div className="flex justify-end gap-x-4 pb-8">
               <Button variant="outline" asChild>

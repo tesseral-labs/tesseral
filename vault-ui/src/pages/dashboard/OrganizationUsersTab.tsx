@@ -182,12 +182,13 @@ function CreateUserInviteButton() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="alice@example.com" {...field} />
-                  </FormControl>
                   <FormDescription>
                     The email address of the user you want to invite.
                   </FormDescription>
+                  <FormControl>
+                    <Input placeholder="alice@example.com" {...field} />
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -198,6 +199,9 @@ function CreateUserInviteButton() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Invite as owner</FormLabel>
+                  <FormDescription>
+                    Whether the new user will join as an owner.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -205,9 +209,7 @@ function CreateUserInviteButton() {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Whether the new user will join as an owner.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -218,6 +220,9 @@ function CreateUserInviteButton() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Send email</FormLabel>
+                  <FormDescription>
+                    Send the new user an email notifying them of their invite.
+                  </FormDescription>
                   <FormControl>
                     <Switch
                       className="block"
@@ -225,9 +230,7 @@ function CreateUserInviteButton() {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Send the new user an email notifying them of their invite.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
