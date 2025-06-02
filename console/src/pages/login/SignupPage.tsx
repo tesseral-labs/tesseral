@@ -53,10 +53,7 @@ export function SignupPage() {
 
 function CenteredSignupPage({ children }: { children?: React.ReactNode }) {
   return (
-    <div className="bg-zinc-950 w-full min-h-screen mx-auto flex flex-col justify-center items-center py-8 relative">
-      <div className="absolute flex justify-center items-center blur-3xl w-full z-5">
-        <div className="relative rounded-full w-[750px] h-[750px] bg-indigo-600/30 blur-3xl m-auto" />
-      </div>
+    <div className="bg-gray-100 w-full min-h-screen mx-auto flex flex-col justify-center items-center py-8 relative">
       <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 flex justify-center z-10">
         <div className="mb-8">
           <img
