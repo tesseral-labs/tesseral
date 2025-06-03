@@ -1,5 +1,6 @@
 import { API_URL, DOGFOOD_PROJECT_ID } from '@/config';
 import React, { createContext, useEffect, useMemo, useState } from 'react';
+import { parseAccessToken } from './parse-access-token';
 
 const Context = createContext<string | undefined>(undefined);
 
@@ -81,14 +82,6 @@ function useAccessTokenLikelyValid(accessToken: string): boolean {
       parsedAccessToken.exp! * 1000 > now + ACCESS_TOKEN_EXPIRY_BUFFER_MILLIS
     );
   }, [accessToken, now]);
-}
-
-function parseAccessToken(accessToken: string): any {
-  const claimsPart = accessToken.split('.')[1];
-  const decodedClaims = new TextDecoder().decode(
-    Uint8Array.from(atob(claimsPart), (c) => c.charCodeAt(0)),
-  );
-  return JSON.parse(decodedClaims);
 }
 
 function useDebouncedNow(updatePeriodMillis: number): number {
