@@ -7,3 +7,6 @@ node_modules
 /console/public/index.css
 /console/public/index.js
 /console/public/index.js.map
+
+# Editor settings
+.vscode/

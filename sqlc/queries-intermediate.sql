@@ -744,7 +744,7 @@ SET
     display_name = coalesce(sqlc.narg (display_name), display_name),
     profile_picture_url = coalesce(sqlc.narg (profile_picture_url), profile_picture_url)
 WHERE
-    id = @user_id
+    id = $1
 RETURNING
     *;
 

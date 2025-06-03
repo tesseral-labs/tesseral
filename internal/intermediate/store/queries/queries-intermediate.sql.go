@@ -3339,34 +3339,34 @@ UPDATE
     users
 SET
     update_time = now(),
-    github_user_id = coalesce($1, github_user_id),
-    google_user_id = coalesce($2, google_user_id),
-    microsoft_user_id = coalesce($3, microsoft_user_id),
-    display_name = coalesce($4, display_name),
-    profile_picture_url = coalesce($5, profile_picture_url)
+    github_user_id = coalesce($2, github_user_id),
+    google_user_id = coalesce($3, google_user_id),
+    microsoft_user_id = coalesce($4, microsoft_user_id),
+    display_name = coalesce($5, display_name),
+    profile_picture_url = coalesce($6, profile_picture_url)
 WHERE
-    id = $6
+    id = $1
 RETURNING
     id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 `
 
 type UpdateUserDetailsParams struct {
+	ID                uuid.UUID
 	GithubUserID      *string
 	GoogleUserID      *string
 	MicrosoftUserID   *string
 	DisplayName       *string
 	ProfilePictureUrl *string
-	UserID            uuid.UUID
 }
 
 func (q *Queries) UpdateUserDetails(ctx context.Context, arg UpdateUserDetailsParams) (User, error) {
 	row := q.db.QueryRow(ctx, updateUserDetails,
+		arg.ID,
 		arg.GithubUserID,
 		arg.GoogleUserID,
 		arg.MicrosoftUserID,
 		arg.DisplayName,
 		arg.ProfilePictureUrl,
-		arg.UserID,
 	)
 	var i User
 	err := row.Scan(

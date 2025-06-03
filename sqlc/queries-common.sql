@@ -111,7 +111,7 @@ WHERE
 
 -- name: CreateAuditLogEvent :one
 INSERT INTO audit_log_events (id, project_id, organization_id, user_id, session_id, api_key_id, event_name, event_time, event_details)
-    VALUES (@id, @project_id, @organization_id, @user_id, @session_id, @api_key_id, @event_name, @event_time, coalesce(@event_details, '{}'::jsonb))
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, coalesce(@event_details, '{}'::jsonb))
 RETURNING
     *;
 
@@ -122,8 +122,8 @@ FROM
     users
     JOIN organizations ON users.organization_id = organizations.id
 WHERE
-    users.id = @id
-    AND organizations.project_id = @project_id;
+    users.id = $1
+    AND organizations.project_id = $2;
 
 -- name: GetSession :one
 SELECT
@@ -133,8 +133,8 @@ FROM
     JOIN users ON sessions.user_id = users.id
     JOIN organizations ON users.organization_id = organizations.id
 WHERE
-    sessions.id = @id
-    AND organizations.project_id = @project_id;
+    sessions.id = $1
+    AND organizations.project_id = $2;
 
 -- name: GetAPIKeyByID :one
 SELECT
@@ -143,8 +143,8 @@ FROM
     api_keys
     JOIN organizations ON api_keys.organization_id = organization.id
 WHERE
-    api_keys.id = @id
-    AND organizations.project_id = @project_id;
+    api_keys.id = $1
+    AND organizations.project_id = $2;
 
 -- name: GetOrganizationByProjectIDAndID :one
 SELECT
@@ -152,6 +152,6 @@ SELECT
 FROM
     organizations
 WHERE
-    id = @id
-    AND project_id = @project_id;
+    id = $1
+    AND project_id = $2;
 
