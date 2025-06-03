@@ -12,8 +12,8 @@ export function base64Decode(s: string): string {
   return new TextDecoder().decode(bytes);
 }
 
-export function base64UrlDecode(encoded: string): string {
-  // Normalize to standard
+export function base64urlDecode(encoded: string): string {
+  // Normalize to standard base64
   encoded = encoded.replace(/-/g, "+").replace(/_/g, "/");
 
   // Add padding if necessary
@@ -22,7 +22,13 @@ export function base64UrlDecode(encoded: string): string {
     encoded += "=".repeat(4 - padding);
   }
 
-  return base64Decode(encoded);
+  encoded = atob(encoded);
+
+  const bytes = new Uint8Array(encoded.length);
+  for (let i = 0; i < encoded.length; i++) {
+    bytes[i] = encoded.charCodeAt(i);
+  }
+  return new TextDecoder().decode(bytes);
 }
 
 export function base64urlEncode(buffer: ArrayBuffer): string {
