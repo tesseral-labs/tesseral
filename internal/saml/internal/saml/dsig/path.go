@@ -59,9 +59,7 @@ func onlyPathHoistNamesInternal(p path, s stack.Stack, n uxml.Node) (uxml.Node, 
 
 	if len(p) == 1 {
 		var attrs []uxml.Attr
-		for _, a := range n.Element.Attrs {
-			attrs = append(attrs, a)
-		}
+		attrs = append(attrs, n.Element.Attrs...)
 		for k, v := range s.GetAll() {
 			if k == "" {
 				attrs = append(attrs, uxml.Attr{
