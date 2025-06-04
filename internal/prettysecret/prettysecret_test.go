@@ -10,7 +10,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/prettysecret"
 )
 
-func TestFormat_Parse_Errors(t *testing.T) {
+func TestFormatParseErrors(t *testing.T) {
 	format := func() (string, int) {
 		prefix := "test_"
 		length := prettysecret.SecretLen(prefix)
@@ -57,7 +57,7 @@ func TestFormat_Parse_Errors(t *testing.T) {
 	}
 }
 
-func TestFormat_Parse_RoundTrip(t *testing.T) {
+func TestFormatParseRoundTrip(t *testing.T) {
 	testCases := []struct {
 		Name   string
 		Secret [35]byte

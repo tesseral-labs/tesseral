@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-func ExampleClient_Pwned() {
+func TestExampleClientPwned(t *testing.T) {
 	c := Client{HTTPClient: http.DefaultClient}
 	randomPassword := strconv.FormatFloat(rand.Float64(), 'f', -1, 64)
 	fmt.Println(c.Pwned(context.Background(), "letmein"))
@@ -66,6 +66,7 @@ func TestCheckLineMatch(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			got, err := checkLineMatch(tt.sha1HexSuffix, tt.line)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("checkLineMatch() error = %v, wantErr %v", err, tt.wantErr)

@@ -133,7 +133,7 @@ func TestClaims(t *testing.T) {
 	}
 }
 
-func TestClaims_invalid(t *testing.T) {
+func TestClaimsInvalid(t *testing.T) {
 	tests := []struct {
 		name  string
 		token string

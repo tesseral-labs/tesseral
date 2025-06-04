@@ -9,7 +9,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/totp"
 )
 
-func TestKey_Validate(t *testing.T) {
+func TestKeyValidate(t *testing.T) {
 	// https://datatracker.ietf.org/doc/html/rfc6238#appendix-B
 	k := totp.Key{Secret: []byte("12345678901234567890")}
 

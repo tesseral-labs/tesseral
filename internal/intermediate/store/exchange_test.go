@@ -8,7 +8,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/intermediate/store/queries"
 )
 
-func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
+func TestStoreValidateAuthRequirementsSatisfiedInner(t *testing.T) {
 	testCases := []struct {
 		name                 string
 		qIntermediateSession queries.IntermediateSession

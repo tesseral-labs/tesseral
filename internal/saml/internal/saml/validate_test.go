@@ -14,7 +14,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/saml/internal/saml"
 )
 
-func TestValidate_KnownGoodAssertions(t *testing.T) {
+func TestValidateKnownGoodAssertions(t *testing.T) {
 	entries, err := os.ReadDir("testdata/assertions")
 	assert.NoError(t, err)
 
@@ -26,7 +26,7 @@ func TestValidate_KnownGoodAssertions(t *testing.T) {
 	}
 }
 
-func TestValidate_GoodAssertionData(t *testing.T) {
+func TestValidateGoodAssertionData(t *testing.T) {
 	res, err := validateFromDir("testdata/assertions/okta")
 	require.NoError(t, err)
 
@@ -37,7 +37,7 @@ func TestValidate_GoodAssertionData(t *testing.T) {
 	assert.Equal(t, map[string]string{}, res.SubjectAttributes)
 }
 
-func TestValidate_UnsignedAssertion(t *testing.T) {
+func TestValidateUnsignedAssertion(t *testing.T) {
 	// modified from okta, but assertion.xml has the signature stripped
 	_, err := validateFromDir("testdata/bad-assertions/unsigned-assertion")
 	var validateError *saml.ValidateError
@@ -48,7 +48,7 @@ func TestValidate_UnsignedAssertion(t *testing.T) {
 	require.True(t, validateError.UnsignedAssertion)
 }
 
-func TestValidate_BadIDPEntityID(t *testing.T) {
+func TestValidateBadIDPEntityID(t *testing.T) {
 	// modified from okta, but metadata.xml has a different idp entity id
 	_, err := validateFromDir("testdata/bad-assertions/bad-idp-entity-id")
 	var validateError *saml.ValidateError
@@ -60,7 +60,7 @@ func TestValidate_BadIDPEntityID(t *testing.T) {
 	assert.Equal(t, "http://www.okta.com/exkdoocxa1VmjpXmX697", *validateError.BadIDPEntityID)
 }
 
-func TestValidate_BadSPEntityID(t *testing.T) {
+func TestValidateBadSPEntityID(t *testing.T) {
 	// modified from okta, but params.json has a different sp entity id
 	_, err := validateFromDir("testdata/bad-assertions/bad-sp-entity-id")
 	var validateError *saml.ValidateError
@@ -72,7 +72,7 @@ func TestValidate_BadSPEntityID(t *testing.T) {
 	assert.Equal(t, "http://localhost:8080", *validateError.BadSPEntityID)
 }
 
-func TestValidate_BadSignatureAlgorithm(t *testing.T) {
+func TestValidateBadSignatureAlgorithm(t *testing.T) {
 	// modified from okta, but assertion.xml has a modified signature algorithm
 	_, err := validateFromDir("testdata/bad-assertions/bad-signature-algorithm")
 	var validateError *saml.ValidateError
@@ -84,7 +84,7 @@ func TestValidate_BadSignatureAlgorithm(t *testing.T) {
 	assert.Equal(t, "BAD_SIGNATURE_ALGORITHM", *validateError.BadSignatureAlgorithm)
 }
 
-func TestValidate_BadDigestAlgorithm(t *testing.T) {
+func TestValidateBadDigestAlgorithm(t *testing.T) {
 	// modified from okta, but assertion.xml has a modified digest algorithm
 	_, err := validateFromDir("testdata/bad-assertions/bad-digest-algorithm")
 	var validateError *saml.ValidateError
@@ -96,7 +96,7 @@ func TestValidate_BadDigestAlgorithm(t *testing.T) {
 	assert.Equal(t, "BAD_DIGEST_ALGORITHM", *validateError.BadDigestAlgorithm)
 }
 
-func TestValidate_BadCertificate(t *testing.T) {
+func TestValidateBadCertificate(t *testing.T) {
 	// modified from okta, but metadata.xml has a modified certificate
 	_, err := validateFromDir("testdata/bad-assertions/bad-certificate")
 	var validateError *saml.ValidateError
@@ -107,7 +107,7 @@ func TestValidate_BadCertificate(t *testing.T) {
 	require.NotEmpty(t, validateError.BadCertificate)
 }
 
-func TestValidate_NoCertificate(t *testing.T) {
+func TestValidateNoCertificate(t *testing.T) {
 	// modified from okta, but no KeyInfo
 	_, err := validateFromDir("testdata/bad-assertions/no-certificate")
 	var validateError *saml.ValidateError
@@ -118,7 +118,7 @@ func TestValidate_NoCertificate(t *testing.T) {
 	require.NotEmpty(t, validateError.UnsignedAssertion)
 }
 
-func TestValidate_BadAssertionUTF8(t *testing.T) {
+func TestValidateBadAssertionUTF8(t *testing.T) {
 	// modified from okta, but assertion.xml is just \x00 (and a newline)
 	_, err := validateFromDir("testdata/bad-assertions/bad-assertion-utf8")
 	var validateError *saml.ValidateError
