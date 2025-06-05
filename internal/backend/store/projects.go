@@ -21,10 +21,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-var (
-	// apiKeySecretTokenPrefixRegex is a regex that matches valid API key secret token prefixes:
-	apiKeySecretTokenPrefixRegex = regexp.MustCompile(`^[a-z0-9_]+$`)
-)
+var apiKeySecretTokenPrefixRegex = regexp.MustCompile(`^[a-z0-9_]+$`)
 
 func (s *Store) GetProject(ctx context.Context, req *backendv1.GetProjectRequest) (*backendv1.GetProjectResponse, error) {
 	_, q, _, rollback, err := s.tx(ctx)
