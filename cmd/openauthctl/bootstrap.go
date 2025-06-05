@@ -21,11 +21,11 @@ type bootstrapArgs struct {
 	VaultDomain            string `cli:"--vault-domain"`
 }
 
-func (_ bootstrapArgs) Description() string {
+func (bootstrapArgs) Description() string {
 	return "Bootstrap a Tesseral database"
 }
 
-func (_ bootstrapArgs) ExtendedDescription() string {
+func (bootstrapArgs) ExtendedDescription() string {
 	return strings.TrimSpace(`
 Bootstrap a Tesseral database.
 

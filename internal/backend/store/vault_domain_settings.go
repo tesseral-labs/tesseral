@@ -328,22 +328,6 @@ func (s *Store) upsertCloudflareCustomHostname(ctx context.Context, hostname str
 	}, nil
 }
 
-func (s *Store) getProjectVerificationRecordConfigured(ctx context.Context, pendingDomain string, projectID uuid.UUID) (bool, error) {
-	res, err := s.cloudflareDOH.DNSQuery(ctx, &cloudflaredoh.DNSQueryRequest{
-		Name: fmt.Sprintf("_tesseral_project_verification.%s", pendingDomain),
-		Type: "TXT",
-	})
-	if err != nil {
-		return false, fmt.Errorf("get project verification record configured: %w", err)
-	}
-
-	if len(res.Answer) != 1 {
-		return false, nil
-	}
-
-	return res.Answer[0].Data == idformat.Project.Format(projectID), nil
-}
-
 // cloudflareCustomHostname exists to unify Cloudflare's SDK return types for
 // List/New on custom hostnames.
 type cloudflareCustomHostname struct {
