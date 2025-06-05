@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"html/template"
 	"log/slog"
+	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2"
@@ -131,7 +132,7 @@ func (s *Store) VerifyEmailChallenge(ctx context.Context, req *intermediatev1.Ve
 		return nil, fmt.Errorf("enforce project login enabled: %w", err)
 	}
 
-	emailVerificationChallengeCodeUUID, err := idformat.EmailVerificationChallengeCode.Parse(req.Code)
+	emailVerificationChallengeCodeUUID, err := idformat.EmailVerificationChallengeCode.Parse(strings.TrimSpace(req.Code))
 	if err != nil {
 		return nil, apierror.NewInvalidArgumentError("invalid email verification code", fmt.Errorf("invalid email verification code"))
 	}
