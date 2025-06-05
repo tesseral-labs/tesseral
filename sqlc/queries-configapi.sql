@@ -2,6 +2,7 @@
 SELECT
     projects.id AS project_id,
     projects.vault_domain,
+    projects.cookie_domain,
     publishable_keys.dev_mode
 FROM
     publishable_keys
