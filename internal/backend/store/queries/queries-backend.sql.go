@@ -107,29 +107,28 @@ func (q *Queries) CreateAPIKeyRoleAssignment(ctx context.Context, arg CreateAPIK
 }
 
 const createAuditLogEvent = `-- name: CreateAuditLogEvent :one
-INSERT INTO audit_log_events (id, project_id, organization_id, user_id, session_id, api_key_id, dogfood_user_id, dogfood_session_id, backend_api_key_id, intermediate_session_id, resource_type, resource_organization_id, resource_id, event_name, event_time, event_details)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, coalesce($16, '{}'::jsonb))
+INSERT INTO audit_log_events (id, project_id, organization_id, user_id, session_id, api_key_id, dogfood_user_id, dogfood_session_id, backend_api_key_id, intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, coalesce($15, '{}'::jsonb))
 RETURNING
-    id, project_id, organization_id, user_id, session_id, api_key_id, dogfood_user_id, dogfood_session_id, backend_api_key_id, intermediate_session_id, resource_type, resource_organization_id, resource_id, event_name, event_time, event_details
+    id, project_id, organization_id, user_id, session_id, api_key_id, dogfood_user_id, dogfood_session_id, backend_api_key_id, intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details
 `
 
 type CreateAuditLogEventParams struct {
-	ID                     uuid.UUID
-	ProjectID              uuid.UUID
-	OrganizationID         *uuid.UUID
-	UserID                 *uuid.UUID
-	SessionID              *uuid.UUID
-	ApiKeyID               *uuid.UUID
-	DogfoodUserID          *uuid.UUID
-	DogfoodSessionID       *uuid.UUID
-	BackendApiKeyID        *uuid.UUID
-	IntermediateSessionID  *uuid.UUID
-	ResourceType           NullAuditLogEventResourceType
-	ResourceOrganizationID *uuid.UUID
-	ResourceID             *uuid.UUID
-	EventName              string
-	EventTime              *time.Time
-	EventDetails           interface{}
+	ID                    uuid.UUID
+	ProjectID             uuid.UUID
+	OrganizationID        *uuid.UUID
+	UserID                *uuid.UUID
+	SessionID             *uuid.UUID
+	ApiKeyID              *uuid.UUID
+	DogfoodUserID         *uuid.UUID
+	DogfoodSessionID      *uuid.UUID
+	BackendApiKeyID       *uuid.UUID
+	IntermediateSessionID *uuid.UUID
+	ResourceType          *AuditLogEventResourceType
+	ResourceID            *uuid.UUID
+	EventName             string
+	EventTime             *time.Time
+	EventDetails          interface{}
 }
 
 func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEventParams) (AuditLogEvent, error) {
@@ -145,7 +144,6 @@ func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEve
 		arg.BackendApiKeyID,
 		arg.IntermediateSessionID,
 		arg.ResourceType,
-		arg.ResourceOrganizationID,
 		arg.ResourceID,
 		arg.EventName,
 		arg.EventTime,
@@ -164,7 +162,6 @@ func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEve
 		&i.BackendApiKeyID,
 		&i.IntermediateSessionID,
 		&i.ResourceType,
-		&i.ResourceOrganizationID,
 		&i.ResourceID,
 		&i.EventName,
 		&i.EventTime,

@@ -199,11 +199,11 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *backendv1.CreateS
 
 	pSAMLConnection := parseSAMLConnection(qProject, qSAMLConnection)
 	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
-		ResourceType:           queries.AuditLogEventResourceTypeSamlConnection,
-		ResourceOrganizationID: &qSAMLConnection.OrganizationID,
-		ResourceID:             qSAMLConnection.ID,
-		EventType:              "create",
-		Resource:               pSAMLConnection,
+		ResourceType:   queries.AuditLogEventResourceTypeSamlConnection,
+		OrganizationID: &qSAMLConnection.OrganizationID,
+		ResourceID:     qSAMLConnection.ID,
+		EventType:      "create",
+		Resource:       pSAMLConnection,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}
@@ -305,12 +305,12 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *backendv1.UpdateS
 	pSAMLConnection := parseSAMLConnection(qProject, qUpdatedSAMLConnection)
 	pPreviousSAMLConnection := parseSAMLConnection(qProject, qSAMLConnection)
 	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
-		ResourceType:           queries.AuditLogEventResourceTypeSamlConnection,
-		ResourceOrganizationID: &qSAMLConnection.OrganizationID,
-		ResourceID:             qSAMLConnection.ID,
-		EventType:              "update",
-		Resource:               pSAMLConnection,
-		PreviousResource:       pPreviousSAMLConnection,
+		ResourceType:     queries.AuditLogEventResourceTypeSamlConnection,
+		OrganizationID:   &qSAMLConnection.OrganizationID,
+		ResourceID:       qSAMLConnection.ID,
+		EventType:        "update",
+		Resource:         pSAMLConnection,
+		PreviousResource: pPreviousSAMLConnection,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}
@@ -358,11 +358,11 @@ func (s *Store) DeleteSAMLConnection(ctx context.Context, req *backendv1.DeleteS
 
 	pSAMLConnection := parseSAMLConnection(qProject, qSAMLConnection)
 	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
-		ResourceType:           queries.AuditLogEventResourceTypeSamlConnection,
-		ResourceOrganizationID: &qSAMLConnection.OrganizationID,
-		ResourceID:             qSAMLConnection.ID,
-		EventType:              "delete",
-		Resource:               pSAMLConnection,
+		ResourceType:   queries.AuditLogEventResourceTypeSamlConnection,
+		OrganizationID: &qSAMLConnection.OrganizationID,
+		ResourceID:     qSAMLConnection.ID,
+		EventType:      "delete",
+		Resource:       pSAMLConnection,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}

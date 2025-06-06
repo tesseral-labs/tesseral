@@ -166,11 +166,12 @@ func (s *Store) CreateCustomAuditLogEvent(ctx context.Context, req *backendv1.Cr
 }
 
 type AuditLogEventData struct {
-	ResourceType           queries.AuditLogEventResourceType
-	ResourceOrganizationID *uuid.UUID // Optional, used for system-level events
-	ResourceID             uuid.UUID
-	Resource               proto.Message
-	PreviousResource       proto.Message
+	OrganizationID *uuid.UUID
+
+	ResourceType     queries.AuditLogEventResourceType
+	ResourceID       uuid.UUID
+	Resource         proto.Message
+	PreviousResource proto.Message
 
 	// For example, `create`, `update`, `delete`, etc.
 	EventType string
@@ -249,19 +250,15 @@ func (s *Store) CreateTesseralAuditLogEvent(ctx context.Context, data AuditLogEv
 	qEventParams := queries.CreateAuditLogEventParams{
 		ID:               eventID,
 		ProjectID:        authn.ProjectID(ctx),
-		OrganizationID:   nil, // OrgID is nil for system-level events
+		OrganizationID:   data.OrganizationID,
 		DogfoodUserID:    dogfoodUserID,
 		DogfoodSessionID: dogfoodSessionID,
 		BackendApiKeyID:  backendApiKeyID,
-		ResourceType: queries.NullAuditLogEventResourceType{
-			AuditLogEventResourceType: data.ResourceType,
-			Valid:                     true,
-		},
-		ResourceOrganizationID: data.ResourceOrganizationID,
-		ResourceID:             &data.ResourceID,
-		EventName:              eventName,
-		EventTime:              &eventTime,
-		EventDetails:           detailsBytes,
+		ResourceType:     refOrNil(data.ResourceType),
+		ResourceID:       &data.ResourceID,
+		EventName:        eventName,
+		EventTime:        &eventTime,
+		EventDetails:     detailsBytes,
 	}
 
 	qEvent, err := q.CreateAuditLogEvent(ctx, qEventParams)
@@ -320,11 +317,11 @@ func parseAuditLogEvent(qEvent queries.AuditLogEvent) (*backendv1.AuditLogEvent,
 	if intermediateSessionUUID := qEvent.IntermediateSessionID; intermediateSessionUUID != nil {
 		intermediateSessionID = refOrNil(idformat.IntermediateSession.Format(*intermediateSessionUUID))
 	}
-	if resourceTypeDto := qEvent.ResourceType; resourceTypeDto.Valid {
-		resourceType = refOrNil(string(resourceTypeDto.AuditLogEventResourceType))
+	if resourceTypeDto := qEvent.ResourceType; resourceTypeDto != nil {
+		resourceType = (*string)(resourceTypeDto)
 	}
 	if resourceUUID := qEvent.ResourceID; resourceUUID != nil {
-		switch qEvent.ResourceType.AuditLogEventResourceType {
+		switch *qEvent.ResourceType {
 		case queries.AuditLogEventResourceTypeAction:
 			resourceID = refOrNil(resourceUUID.String()) // TODO: Actions don't have an ID format
 		case queries.AuditLogEventResourceTypeApiKey:

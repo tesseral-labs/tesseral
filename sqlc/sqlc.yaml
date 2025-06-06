@@ -48,6 +48,10 @@ sql:
             nullable: true
             go_type:
               type: "*PrimaryAuthFactor"
+          - db_type: "audit_log_event_resource_type"
+            nullable: true
+            go_type:
+              type: "*AuditLogEventResourceType"
   - engine: "postgresql"
     queries: "queries-backend.sql"
     schema: "../cmd/openauthctl/migrations"

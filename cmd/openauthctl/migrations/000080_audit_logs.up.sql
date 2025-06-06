@@ -90,13 +90,6 @@ create table audit_log_events (
     -- For custom audit log events, this will be `null`.
     resource_type audit_log_event_resource_type,
 
-    -- The organization ID of the Tesseral resource that was acted upon, if any.
-    --
-    -- We store this separately from the organization ID of the actor, which may be `null` for "system events" at the project level.
-    --
-    -- For custom audit log events, this will be `null`.
-    resource_organization_id uuid,
-
     -- The resource ID of the Tesseral resource that was acted upon, if any.
     --
     -- For custom audit log events, this will be `null`.
@@ -131,11 +124,11 @@ create table audit_log_events (
 -- These queries are also supported by the backend audit log UI (presented in the Console to project owners),
 -- additionally allowing filtering by organization_id (unlike the frontend where this is always singular).
 create index on audit_log_events (project_id, id desc);
-create index on audit_log_events (project_id, organization_id, resource_organization_id, id desc) where organization_id is not null or resource_organization_id is not null;
-create index on audit_log_events (project_id, organization_id, resource_organization_id, user_id, id desc) where (organization_id is not null or resource_organization_id is not null) and user_id is not null;
-create index on audit_log_events (project_id, organization_id, resource_organization_id, session_id, id desc) where (organization_id is not null or resource_organization_id is not null) and session_id is not null;
-create index on audit_log_events (project_id, organization_id, resource_organization_id, api_key_id, id desc) where (organization_id is not null or resource_organization_id is not null) and api_key_id is not null;
-create index on audit_log_events (project_id, organization_id, resource_organization_id, event_name, id desc);
+create index on audit_log_events (project_id, organization_id, id desc) where organization_id is not null;
+create index on audit_log_events (project_id, organization_id, user_id, id desc) where organization_id is not null and user_id is not null;
+create index on audit_log_events (project_id, organization_id, session_id, id desc) where organization_id is not null and session_id is not null;
+create index on audit_log_events (project_id, organization_id, api_key_id, id desc) where organization_id is not null and api_key_id is not null;
+create index on audit_log_events (project_id, organization_id, event_name, id desc);
 
 -- The backend audit log UI further allows filtering by resource since the set of all Tesseral resources is fixed.
 -- We don't support this on the frontend since the set of resources is dynamic on a per-organization basis and can change over time.

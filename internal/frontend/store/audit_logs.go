@@ -87,15 +87,11 @@ func (s *Store) CreateTesseralAuditLogEvent(ctx context.Context, data AuditLogEv
 		OrganizationID: refOrNil(authn.OrganizationID(ctx)),
 		UserID:         refOrNil(authn.UserID(ctx)),
 		SessionID:      refOrNil(authn.SessionID(ctx)),
-		ResourceType: queries.NullAuditLogEventResourceType{
-			AuditLogEventResourceType: queries.AuditLogEventResourceType(data.ResourceType),
-			Valid:                     true,
-		},
-		ResourceOrganizationID: refOrNil(authn.OrganizationID(ctx)),
-		ResourceID:             &data.ResourceID,
-		EventName:              eventName,
-		EventTime:              &eventTime,
-		EventDetails:           detailsBytes,
+		ResourceType:   refOrNil(data.ResourceType),
+		ResourceID:     &data.ResourceID,
+		EventName:      eventName,
+		EventTime:      &eventTime,
+		EventDetails:   detailsBytes,
 	}
 
 	qEvent, err := q.CreateAuditLogEvent(ctx, qEventParams)
@@ -152,10 +148,7 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 
 	wheres := []sq.Sqlizer{
 		sq.Eq{"project_id": projectID[:]},
-		sq.Or{
-			sq.Eq{"resource_organization_id": orgID[:]},
-			sq.Eq{"organization_id": orgID[:]},
-		},
+		sq.Eq{"organization_id": orgID[:]},
 		sq.Lt{"id": endID},
 	}
 	if !startTime.IsZero() {
@@ -218,7 +211,6 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 			&dto.BackendApiKeyID,
 			&dto.IntermediateSessionID,
 			&dto.ResourceType,
-			&dto.ResourceOrganizationID,
 			&dto.ResourceID,
 			&dto.EventName,
 			&dto.EventTime,

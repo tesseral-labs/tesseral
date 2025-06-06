@@ -1132,8 +1132,8 @@ WHERE api_key_role_assignments.api_key_id = api_keys.id
     AND organizations.project_id = $2;
 
 -- name: CreateAuditLogEvent :one
-INSERT INTO audit_log_events (id, project_id, organization_id, user_id, session_id, api_key_id, dogfood_user_id, dogfood_session_id, backend_api_key_id, intermediate_session_id, resource_type, resource_organization_id, resource_id, event_name, event_time, event_details)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, coalesce(@event_details, '{}'::jsonb))
+INSERT INTO audit_log_events (id, project_id, organization_id, user_id, session_id, api_key_id, dogfood_user_id, dogfood_session_id, backend_api_key_id, intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, coalesce(@event_details, '{}'::jsonb))
 RETURNING
     *;
 
