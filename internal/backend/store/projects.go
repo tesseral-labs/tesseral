@@ -21,6 +21,8 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
+var apiKeySecretTokenPrefixRegex = regexp.MustCompile(`^[a-z0-9_]+$`)
+
 func (s *Store) GetProject(ctx context.Context, req *backendv1.GetProjectRequest) (*backendv1.GetProjectResponse, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
@@ -244,7 +246,7 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 			return nil, apierror.NewFailedPreconditionError("api key secret token prefix must be no longer than 64 characters", fmt.Errorf("api key secret token prefix too long: %s", *req.Project.ApiKeySecretTokenPrefix))
 		}
 
-		if !regexp.MustCompile(`^[a-z0-9_]+$`).MatchString(*req.Project.ApiKeySecretTokenPrefix) {
+		if !apiKeySecretTokenPrefixRegex.MatchString(*req.Project.ApiKeySecretTokenPrefix) {
 			return nil, apierror.NewFailedPreconditionError("api key secret token prefix must contain only lowercase letters, numbers, and underscores", fmt.Errorf("api key secret token prefix contains invalid characters: %s", *req.Project.ApiKeySecretTokenPrefix))
 		}
 
