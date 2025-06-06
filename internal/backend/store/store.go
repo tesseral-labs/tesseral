@@ -18,7 +18,6 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/cloudflaredoh"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
-	common "github.com/tesseral-labs/tesseral/internal/common/store"
 	"github.com/tesseral-labs/tesseral/internal/pagetoken"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -49,7 +48,6 @@ type Store struct {
 	stripe                                *stripeclient.API
 	stripePriceIDGrowthTier               string
 	svixClient                            *svix.Svix
-	common                                *common.Store
 }
 
 type NewStoreParams struct {
@@ -76,7 +74,6 @@ type NewStoreParams struct {
 	Stripe                                *stripeclient.API
 	StripePriceIDGrowthTier               string
 	SvixClient                            *svix.Svix
-	CommonStore                           *common.Store
 }
 
 func New(p NewStoreParams) *Store {
@@ -106,7 +103,6 @@ func New(p NewStoreParams) *Store {
 		stripe:                                p.Stripe,
 		stripePriceIDGrowthTier:               p.StripePriceIDGrowthTier,
 		svixClient:                            p.SvixClient,
-		common:                                p.CommonStore,
 	}
 
 	return store
