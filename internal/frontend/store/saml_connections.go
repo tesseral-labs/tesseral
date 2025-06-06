@@ -6,6 +6,7 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/url"
 
 	"github.com/google/uuid"
@@ -174,7 +175,17 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *frontendv1.Create
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &frontendv1.CreateSAMLConnectionResponse{SamlConnection: parseSAMLConnection(qProject, qSAMLConnection)}, nil
+	pSAMLConnection := parseSAMLConnection(qProject, qSAMLConnection)
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType: queries.AuditLogEventResourceTypeSamlConnection,
+		ResourceID:   qSAMLConnection.ID,
+		EventType:    "create",
+		Resource:     pSAMLConnection,
+	}); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+	}
+
+	return &frontendv1.CreateSAMLConnectionResponse{SamlConnection: pSAMLConnection}, nil
 }
 
 func (s *Store) UpdateSAMLConnection(ctx context.Context, req *frontendv1.UpdateSAMLConnectionRequest) (*frontendv1.UpdateSAMLConnectionResponse, error) {
@@ -272,7 +283,19 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *frontendv1.Update
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &frontendv1.UpdateSAMLConnectionResponse{SamlConnection: parseSAMLConnection(qProject, qUpdatedSAMLConnection)}, nil
+	pPreviousSAMLConnection := parseSAMLConnection(qProject, qSAMLConnection)
+	pSAMLConnection := parseSAMLConnection(qProject, qUpdatedSAMLConnection)
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType:     queries.AuditLogEventResourceTypeSamlConnection,
+		ResourceID:       qSAMLConnection.ID,
+		EventType:        "update",
+		Resource:         pSAMLConnection,
+		PreviousResource: pPreviousSAMLConnection,
+	}); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+	}
+
+	return &frontendv1.UpdateSAMLConnectionResponse{SamlConnection: pSAMLConnection}, nil
 }
 
 func (s *Store) DeleteSAMLConnection(ctx context.Context, req *frontendv1.DeleteSAMLConnectionRequest) (*frontendv1.DeleteSAMLConnectionResponse, error) {
@@ -286,16 +309,22 @@ func (s *Store) DeleteSAMLConnection(ctx context.Context, req *frontendv1.Delete
 	}
 	defer rollback()
 
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
 	samlConnectionID, err := idformat.SAMLConnection.Parse(req.Id)
 	if err != nil {
 		return nil, apierror.NewInvalidArgumentError("invalid saml connection id", fmt.Errorf("parse saml connection id: %w", err))
 	}
 
 	// authz
-	if _, err := q.GetSAMLConnection(ctx, queries.GetSAMLConnectionParams{
+	qSAMLConnection, err := q.GetSAMLConnection(ctx, queries.GetSAMLConnectionParams{
 		OrganizationID: authn.OrganizationID(ctx),
 		ID:             samlConnectionID,
-	}); err != nil {
+	})
+	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("saml connection not found", fmt.Errorf("get saml connection: %w", err))
 		}
@@ -309,6 +338,16 @@ func (s *Store) DeleteSAMLConnection(ctx context.Context, req *frontendv1.Delete
 
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	pSAMLConnection := parseSAMLConnection(qProject, qSAMLConnection)
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType: queries.AuditLogEventResourceTypeSamlConnection,
+		ResourceID:   qSAMLConnection.ID,
+		EventType:    "delete",
+		Resource:     pSAMLConnection,
+	}); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}
 
 	return &frontendv1.DeleteSAMLConnectionResponse{}, nil

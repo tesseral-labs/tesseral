@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
 	"github.com/google/uuid"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
@@ -61,8 +62,18 @@ func (s *Store) UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, req *f
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
+	pMicrosoftTenantIDs := parseOrganizationMicrosoftTenantIDs(qMicrosoftTenantIDs)
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType: queries.AuditLogEventResourceTypeOrganizationMicrosoftTenantIds,
+		ResourceID:   uuid.Nil,
+		EventType:    "update",
+		Resource:     pMicrosoftTenantIDs,
+	}); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+	}
+
 	return &frontendv1.UpdateOrganizationMicrosoftTenantIDsResponse{
-		OrganizationMicrosoftTenantIds: parseOrganizationMicrosoftTenantIDs(qMicrosoftTenantIDs),
+		OrganizationMicrosoftTenantIds: pMicrosoftTenantIDs,
 	}, nil
 }
 

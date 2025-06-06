@@ -39,6 +39,7 @@ import { VerifyPasswordPage } from "@/pages/login/VerifyPasswordPage";
 import { VerifySecondaryFactorPage } from "@/pages/login/VerifySecondaryFactorPage";
 
 import { APIKeysTab } from "./pages/dashboard/APIKeysTab";
+import { AuditLogEventsPage } from "./pages/dashboard/AuditLogEventsPage";
 import { DashboardLayout } from "./pages/dashboard/DashboardLayout";
 import { OrganizationLoginSettingsTab } from "./pages/dashboard/OrganizationLoginSettingsTab";
 import { OrganizationSAMLConnectionsTab } from "./pages/dashboard/OrganizationSAMLConnectionsTab";
@@ -188,6 +189,8 @@ function AppWithRoutes() {
                   path="organization-settings/roles/:roleId/edit"
                   element={<EditRolePage />}
                 />
+
+                <Route path="audit-logs" element={<AuditLogEventsPage />} />
               </Route>
             </Route>
 

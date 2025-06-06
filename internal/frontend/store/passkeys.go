@@ -6,6 +6,7 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -69,10 +70,11 @@ func (s *Store) DeleteMyPasskey(ctx context.Context, req *frontendv1.DeleteMyPas
 		return nil, fmt.Errorf("parse passkey id: %w", err)
 	}
 
-	if _, err := q.GetUserPasskey(ctx, queries.GetUserPasskeyParams{
+	qPasskey, err := q.GetUserPasskey(ctx, queries.GetUserPasskeyParams{
 		UserID: authn.UserID(ctx),
 		ID:     passkeyID,
-	}); err != nil {
+	})
+	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("passkey not found", fmt.Errorf("get user passkey: %w", err))
 		}
@@ -86,6 +88,16 @@ func (s *Store) DeleteMyPasskey(ctx context.Context, req *frontendv1.DeleteMyPas
 
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	pPasskey := parsePasskey(qPasskey)
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType: queries.AuditLogEventResourceTypePasskey,
+		ResourceID:   qPasskey.ID,
+		EventType:    "delete",
+		Resource:     pPasskey,
+	}); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}
 
 	return &frontendv1.DeleteMyPasskeyResponse{}, nil
@@ -157,8 +169,18 @@ func (s *Store) RegisterPasskey(ctx context.Context, req *frontendv1.RegisterPas
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
+	pPasskey := parsePasskey(qPasskey)
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType: queries.AuditLogEventResourceTypePasskey,
+		ResourceID:   qPasskey.ID,
+		EventType:    "create",
+		Resource:     pPasskey,
+	}); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+	}
+
 	return &frontendv1.RegisterPasskeyResponse{
-		Passkey: parsePasskey(qPasskey),
+		Passkey: pPasskey,
 	}, nil
 }
 

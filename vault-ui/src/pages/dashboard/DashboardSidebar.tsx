@@ -4,6 +4,7 @@ import {
   ChevronsUpDownIcon,
   LayoutGridIcon,
   LogOutIcon,
+  ShieldIcon,
   UserIcon,
 } from "lucide-react";
 import React from "react";
@@ -28,6 +29,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  SidebarSeparator,
 } from "@/components/ui/sidebar";
 import {
   getOrganization,
@@ -130,6 +132,21 @@ export function DashboardSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
+
+            <SidebarSeparator />
+
+            {whoamiResponse?.user?.owner && (
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link to="/audit-logs">
+                      <ShieldIcon />
+                      Audit Logs
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            )}
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

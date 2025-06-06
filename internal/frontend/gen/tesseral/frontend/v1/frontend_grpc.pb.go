@@ -75,6 +75,7 @@ const (
 	FrontendService_CreateAPIKeyRoleAssignment_FullMethodName            = "/tesseral.frontend.v1.FrontendService/CreateAPIKeyRoleAssignment"
 	FrontendService_DeleteAPIKeyRoleAssignment_FullMethodName            = "/tesseral.frontend.v1.FrontendService/DeleteAPIKeyRoleAssignment"
 	FrontendService_ListAPIKeyRoleAssignments_FullMethodName             = "/tesseral.frontend.v1.FrontendService/ListAPIKeyRoleAssignments"
+	FrontendService_ListAuditLogEvents_FullMethodName                    = "/tesseral.frontend.v1.FrontendService/ListAuditLogEvents"
 )
 
 // FrontendServiceClient is the client API for FrontendService service.
@@ -154,6 +155,7 @@ type FrontendServiceClient interface {
 	CreateAPIKeyRoleAssignment(ctx context.Context, in *CreateAPIKeyRoleAssignmentRequest, opts ...grpc.CallOption) (*CreateAPIKeyRoleAssignmentResponse, error)
 	DeleteAPIKeyRoleAssignment(ctx context.Context, in *DeleteAPIKeyRoleAssignmentRequest, opts ...grpc.CallOption) (*DeleteAPIKeyRoleAssignmentResponse, error)
 	ListAPIKeyRoleAssignments(ctx context.Context, in *ListAPIKeyRoleAssignmentsRequest, opts ...grpc.CallOption) (*ListAPIKeyRoleAssignmentsResponse, error)
+	ListAuditLogEvents(ctx context.Context, in *ListAuditLogEventsRequest, opts ...grpc.CallOption) (*ListAuditLogEventsResponse, error)
 }
 
 type frontendServiceClient struct {
@@ -724,6 +726,16 @@ func (c *frontendServiceClient) ListAPIKeyRoleAssignments(ctx context.Context, i
 	return out, nil
 }
 
+func (c *frontendServiceClient) ListAuditLogEvents(ctx context.Context, in *ListAuditLogEventsRequest, opts ...grpc.CallOption) (*ListAuditLogEventsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListAuditLogEventsResponse)
+	err := c.cc.Invoke(ctx, FrontendService_ListAuditLogEvents_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FrontendServiceServer is the server API for FrontendService service.
 // All implementations must embed UnimplementedFrontendServiceServer
 // for forward compatibility.
@@ -801,6 +813,7 @@ type FrontendServiceServer interface {
 	CreateAPIKeyRoleAssignment(context.Context, *CreateAPIKeyRoleAssignmentRequest) (*CreateAPIKeyRoleAssignmentResponse, error)
 	DeleteAPIKeyRoleAssignment(context.Context, *DeleteAPIKeyRoleAssignmentRequest) (*DeleteAPIKeyRoleAssignmentResponse, error)
 	ListAPIKeyRoleAssignments(context.Context, *ListAPIKeyRoleAssignmentsRequest) (*ListAPIKeyRoleAssignmentsResponse, error)
+	ListAuditLogEvents(context.Context, *ListAuditLogEventsRequest) (*ListAuditLogEventsResponse, error)
 	mustEmbedUnimplementedFrontendServiceServer()
 }
 
@@ -978,6 +991,9 @@ func (UnimplementedFrontendServiceServer) DeleteAPIKeyRoleAssignment(context.Con
 }
 func (UnimplementedFrontendServiceServer) ListAPIKeyRoleAssignments(context.Context, *ListAPIKeyRoleAssignmentsRequest) (*ListAPIKeyRoleAssignmentsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListAPIKeyRoleAssignments not implemented")
+}
+func (UnimplementedFrontendServiceServer) ListAuditLogEvents(context.Context, *ListAuditLogEventsRequest) (*ListAuditLogEventsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListAuditLogEvents not implemented")
 }
 func (UnimplementedFrontendServiceServer) mustEmbedUnimplementedFrontendServiceServer() {}
 func (UnimplementedFrontendServiceServer) testEmbeddedByValue()                         {}
@@ -2008,6 +2024,24 @@ func _FrontendService_ListAPIKeyRoleAssignments_Handler(srv interface{}, ctx con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FrontendService_ListAuditLogEvents_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListAuditLogEventsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).ListAuditLogEvents(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_ListAuditLogEvents_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).ListAuditLogEvents(ctx, req.(*ListAuditLogEventsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // FrontendService_ServiceDesc is the grpc.ServiceDesc for FrontendService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -2238,6 +2272,10 @@ var FrontendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListAPIKeyRoleAssignments",
 			Handler:    _FrontendService_ListAPIKeyRoleAssignments_Handler,
+		},
+		{
+			MethodName: "ListAuditLogEvents",
+			Handler:    _FrontendService_ListAuditLogEvents_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

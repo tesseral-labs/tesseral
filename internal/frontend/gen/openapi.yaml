@@ -240,6 +240,64 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /frontend/v1/audit-log-events:
+        get:
+            tags:
+                - FrontendService
+            operationId: FrontendService_ListAuditLogEvents
+            parameters:
+                - name: pageToken
+                  in: query
+                  description: A pagination token. Leave empty to get the first page of results.
+                  schema:
+                    type: string
+                - name: filterStartTime
+                  in: query
+                  description: The start time to filter by, if any.
+                  schema:
+                    type: string
+                    format: date-time
+                - name: filterEndTime
+                  in: query
+                  description: The end time to filter by, if any.
+                  schema:
+                    type: string
+                    format: date-time
+                - name: filterEventName
+                  in: query
+                  description: The event names to filter by, if any.
+                  schema:
+                    type: array
+                    items:
+                        type: string
+                - name: filterUserId
+                  in: query
+                  description: The user ID to filter by, if any.
+                  schema:
+                    type: string
+                - name: filterSessionId
+                  in: query
+                  description: The session ID to filter by, if any.
+                  schema:
+                    type: string
+                - name: filterApiKeyId
+                  in: query
+                  description: The API key ID to filter by, if any.
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListAuditLogEventsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/google-hosted-domains:
         get:
             tags:
@@ -1393,6 +1451,35 @@ components:
                 roleId:
                     type: string
                     description: The Role
+        AuditLogEvent:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: The Audit Log Event ID. Starts with `audit_log_event_...`.
+                userId:
+                    type: string
+                    description: The ID of the User associated with the event, if any.
+                sessionId:
+                    type: string
+                    description: The ID of the Session associated with the event, if any.
+                apiKeyId:
+                    type: string
+                    description: The ID of the API Key associated with the event, if any.
+                eventTime:
+                    type: string
+                    description: |-
+                        The time the event occurred.
+
+                         This can optionally be provided on input when the event occurred at some point in the past.
+                         Otherwise, this will be returned on output and defaults to the time the event is published.
+                    format: date-time
+                eventName:
+                    type: string
+                    description: The name of the event.
+                eventDetails:
+                    type: object
+                    description: The event payload JSON.
         CreateAPIKeyRequest:
             type: object
             properties:
@@ -1562,6 +1649,17 @@ components:
                         $ref: '#/components/schemas/APIKey'
                 nextPageToken:
                     type: string
+        ListAuditLogEventsResponse:
+            type: object
+            properties:
+                auditLogEvents:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/AuditLogEvent'
+                    description: The audit log events.
+                nextPageToken:
+                    type: string
+                    description: The pagination token for the next page of results. Empty if there is no next page.
         ListMyPasskeysResponse:
             type: object
             properties:

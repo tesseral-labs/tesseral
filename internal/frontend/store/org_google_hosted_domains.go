@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
 	"github.com/google/uuid"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
@@ -61,8 +62,18 @@ func (s *Store) UpdateOrganizationGoogleHostedDomains(ctx context.Context, req *
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
+	pGoogleHostedDomains := parseOrganizationGoogleHostedDomains(qGoogleHostedDomains)
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType: queries.AuditLogEventResourceTypeOrganizationGoogleHostedDomains,
+		ResourceID:   uuid.Nil,
+		EventType:    "update",
+		Resource:     pGoogleHostedDomains,
+	}); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+	}
+
 	return &frontendv1.UpdateOrganizationGoogleHostedDomainsResponse{
-		OrganizationGoogleHostedDomains: parseOrganizationGoogleHostedDomains(qGoogleHostedDomains),
+		OrganizationGoogleHostedDomains: pGoogleHostedDomains,
 	}, nil
 }
 

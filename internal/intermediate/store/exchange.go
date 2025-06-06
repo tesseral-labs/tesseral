@@ -103,7 +103,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		if detailsUpdated {
 			slog.InfoContext(ctx, "update_user")
 			qUpdatedUser, err := q.UpdateUserDetails(ctx, queries.UpdateUserDetailsParams{
-				UserID:            qUser.ID,
+				ID:                qUser.ID,
 				GithubUserID:      qIntermediateSession.GithubUserID,
 				GoogleUserID:      qIntermediateSession.GoogleUserID,
 				MicrosoftUserID:   qIntermediateSession.MicrosoftUserID,
