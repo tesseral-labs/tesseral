@@ -41,7 +41,7 @@ type BadCertificateError struct {
 }
 
 func (e BadCertificateError) Error() string {
-	return fmt.Sprintf("dsig: bad certificate on response")
+	return "dsig: bad certificate on response"
 }
 
 func Verify(cert *x509.Certificate, data []byte) ([]byte, error) {

@@ -19,7 +19,7 @@ type migrateArgs struct {
 	Verbose  bool   `cli:"-v,--verbose"`
 }
 
-func (_ migrateArgs) ExtendedDescription() string {
+func (migrateArgs) ExtendedDescription() string {
 	return "Run openauth database migrations"
 }
 
