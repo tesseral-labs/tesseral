@@ -6,7 +6,6 @@ import (
 	"log/slog"
 
 	"github.com/google/uuid"
-	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
@@ -64,14 +63,11 @@ func (s *Store) UpdateOrganizationGoogleHostedDomains(ctx context.Context, req *
 	}
 
 	pGoogleHostedDomains := parseOrganizationGoogleHostedDomains(qGoogleHostedDomains)
-	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
-		ProjectID:      authn.ProjectID(ctx),
-		OrganizationID: ptr(authn.OrganizationID(ctx)),
-		UserID:         ptr(authn.UserID(ctx)),
-		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      "tesseral.google_hosted_domains.update",
-		ResourceName:   "googleHostedDomains",
-		Resource:       pGoogleHostedDomains,
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType: queries.AuditLogEventResourceTypeOrganizationGoogleHostedDomains,
+		ResourceID:   uuid.Nil,
+		EventType:    "update",
+		Resource:     pGoogleHostedDomains,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}

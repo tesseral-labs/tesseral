@@ -701,3 +701,9 @@ WHERE api_key_role_assignments.api_key_id = api_keys.id
     AND api_key_role_assignments.id = $1
     AND api_keys.organization_id = $2;
 
+-- name: CreateAuditLogEvent :one
+INSERT INTO audit_log_events (id, project_id, organization_id, user_id, session_id, resource_type, resource_organization_id, resource_id, event_name, event_time, event_details)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, coalesce(@event_details, '{}'::jsonb))
+RETURNING
+    *;
+

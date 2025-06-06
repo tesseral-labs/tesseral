@@ -135,17 +135,18 @@ export function DashboardSidebar() {
 
             <SidebarSeparator />
 
-            {/* TODO: Make these items owner-only */}
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link to="/audit-logs">
-                    <ShieldIcon />
-                    Audit Logs
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
+            {whoamiResponse?.user?.owner && (
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link to="/audit-logs">
+                      <ShieldIcon />
+                      Audit Logs
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            )}
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

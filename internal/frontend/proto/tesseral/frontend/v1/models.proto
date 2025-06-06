@@ -222,27 +222,24 @@ message AuditLogEvent {
   // The Audit Log Event ID. Starts with `audit_log_event_...`.
   string id = 1;
 
-  // The ID of the Organization associated with the event.
-  string organization_id = 2;
-
   // The ID of the User associated with the event, if any.
-  optional string user_id = 3;
+  optional string user_id = 2;
 
   // The ID of the Session associated with the event, if any.
-  optional string session_id = 4;
+  optional string session_id = 3;
 
   // The ID of the API Key associated with the event, if any.
-  optional string api_key_id = 5;
+  optional string api_key_id = 4;
 
   // The time the event occurred.
   //
   // This can optionally be provided on input when the event occurred at some point in the past.
   // Otherwise, this will be returned on output and defaults to the time the event is published.
-  google.protobuf.Timestamp event_time = 6;
+  google.protobuf.Timestamp event_time = 5;
 
   // The name of the event.
-  string event_name = 7;
+  string event_name = 6;
 
   // The event payload JSON.
-  google.protobuf.Struct event_details = 8;
+  google.protobuf.Struct event_details = 7;
 }

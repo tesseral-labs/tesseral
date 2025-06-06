@@ -9,7 +9,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
-	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
@@ -187,14 +186,11 @@ func (s *Store) CreateRole(ctx context.Context, req *frontendv1.CreateRoleReques
 	}
 
 	pRole := parseRole(qRole, qRoleActions, qActions)
-	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
-		ProjectID:      authn.ProjectID(ctx),
-		OrganizationID: ptr(authn.OrganizationID(ctx)),
-		UserID:         ptr(authn.UserID(ctx)),
-		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      "tesseral.roles.create",
-		ResourceName:   "role",
-		Resource:       pRole,
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType: queries.AuditLogEventResourceTypeRole,
+		ResourceID:   qRole.ID,
+		EventType:    "create",
+		Resource:     pRole,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}
@@ -314,13 +310,10 @@ func (s *Store) UpdateRole(ctx context.Context, req *frontendv1.UpdateRoleReques
 
 	pRole := parseRole(qUpdatedRole, qUpdatedRoleActions, qActions)
 	pPreviousRole := parseRole(qRole, qRoleActions, qActions)
-	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
-		ProjectID:        authn.ProjectID(ctx),
-		OrganizationID:   ptr(authn.OrganizationID(ctx)),
-		UserID:           ptr(authn.UserID(ctx)),
-		SessionID:        ptr(authn.SessionID(ctx)),
-		EventName:        "tesseral.roles.update",
-		ResourceName:     "role",
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType:     queries.AuditLogEventResourceTypeRole,
+		ResourceID:       qRole.ID,
+		EventType:        "update",
 		Resource:         pRole,
 		PreviousResource: pPreviousRole,
 	}); err != nil {
@@ -379,14 +372,11 @@ func (s *Store) DeleteRole(ctx context.Context, req *frontendv1.DeleteRoleReques
 	}
 
 	pRole := parseRole(qRole, qRoleActions, qActions)
-	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
-		ProjectID:      authn.ProjectID(ctx),
-		OrganizationID: ptr(authn.OrganizationID(ctx)),
-		UserID:         ptr(authn.UserID(ctx)),
-		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      "tesseral.roles.delete",
-		ResourceName:   "role",
-		Resource:       pRole,
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType: queries.AuditLogEventResourceTypeRole,
+		ResourceID:   qRole.ID,
+		EventType:    "delete",
+		Resource:     pRole,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}

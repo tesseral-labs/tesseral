@@ -1628,6 +1628,24 @@ components:
                 apiKeyId:
                     type: string
                     description: The ID of the API Key associated with the event, if any.
+                dogfoodUserId:
+                    type: string
+                    description: The dogfood user ID associated with the event, if any.
+                dogfoodSessionId:
+                    type: string
+                    description: The dogfood session ID associated with the event, if any.
+                backendApiKeyId:
+                    type: string
+                    description: The backend API key associated with the event, if any.
+                intermediateSessionId:
+                    type: string
+                    description: The intermediate session ID associated with the event, if any.
+                resourceType:
+                    type: string
+                    description: The resource type associated with the event, if any.
+                resourceId:
+                    type: string
+                    description: The resource ID associated with the event, if any.
                 eventTime:
                     type: string
                     description: |-

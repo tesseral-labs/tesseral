@@ -12,7 +12,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
-	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
@@ -177,14 +176,11 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *frontendv1.Create
 	}
 
 	pSAMLConnection := parseSAMLConnection(qProject, qSAMLConnection)
-	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
-		ProjectID:      qProject.ID,
-		OrganizationID: ptr(authn.OrganizationID(ctx)),
-		UserID:         ptr(authn.UserID(ctx)),
-		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      "tesseral.saml_connections.create",
-		ResourceName:   "samlConnection",
-		Resource:       pSAMLConnection,
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType: queries.AuditLogEventResourceTypeSamlConnection,
+		ResourceID:   qSAMLConnection.ID,
+		EventType:    "create",
+		Resource:     pSAMLConnection,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}
@@ -289,13 +285,10 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *frontendv1.Update
 
 	pPreviousSAMLConnection := parseSAMLConnection(qProject, qSAMLConnection)
 	pSAMLConnection := parseSAMLConnection(qProject, qUpdatedSAMLConnection)
-	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
-		ProjectID:        qProject.ID,
-		OrganizationID:   ptr(authn.OrganizationID(ctx)),
-		UserID:           ptr(authn.UserID(ctx)),
-		SessionID:        ptr(authn.SessionID(ctx)),
-		EventName:        "tesseral.saml_connections.update",
-		ResourceName:     "samlConnection",
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType:     queries.AuditLogEventResourceTypeSamlConnection,
+		ResourceID:       qSAMLConnection.ID,
+		EventType:        "update",
 		Resource:         pSAMLConnection,
 		PreviousResource: pPreviousSAMLConnection,
 	}); err != nil {
@@ -348,14 +341,11 @@ func (s *Store) DeleteSAMLConnection(ctx context.Context, req *frontendv1.Delete
 	}
 
 	pSAMLConnection := parseSAMLConnection(qProject, qSAMLConnection)
-	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
-		ProjectID:      qProject.ID,
-		OrganizationID: ptr(authn.OrganizationID(ctx)),
-		UserID:         ptr(authn.UserID(ctx)),
-		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      "tesseral.saml_connections.delete",
-		ResourceName:   "samlConnection",
-		Resource:       pSAMLConnection,
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType: queries.AuditLogEventResourceTypeSamlConnection,
+		ResourceID:   qSAMLConnection.ID,
+		EventType:    "delete",
+		Resource:     pSAMLConnection,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}

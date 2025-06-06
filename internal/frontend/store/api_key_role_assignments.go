@@ -8,7 +8,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
-	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
@@ -70,14 +69,11 @@ func (s *Store) CreateAPIKeyRoleAssignment(ctx context.Context, req *frontendv1.
 	}
 
 	pAPIKeyRoleAssignment := parseAPIKeyRoleAssignment(qAPIKeyRoleAssignment)
-	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
-		ProjectID:      authn.ProjectID(ctx),
-		OrganizationID: ptr(authn.OrganizationID(ctx)),
-		UserID:         ptr(authn.UserID(ctx)),
-		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      "tesseral.api_key_role_assignments.create",
-		ResourceName:   "apiKeyRoleAssignment",
-		Resource:       pAPIKeyRoleAssignment,
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType: queries.AuditLogEventResourceTypeApiKeyRoleAssignment,
+		ResourceID:   qAPIKeyRoleAssignment.ID,
+		EventType:    "create",
+		Resource:     pAPIKeyRoleAssignment,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}
@@ -122,14 +118,11 @@ func (s *Store) DeleteAPIKeyRoleAssignment(ctx context.Context, req *frontendv1.
 	}
 
 	pAPIKeyRoleAssignment := parseAPIKeyRoleAssignment(qAPIKeyRoleAssignment)
-	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
-		ProjectID:      authn.ProjectID(ctx),
-		OrganizationID: ptr(authn.OrganizationID(ctx)),
-		UserID:         ptr(authn.UserID(ctx)),
-		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      "tesseral.api_key_role_assignments.delete",
-		ResourceName:   "apiKeyRoleAssignment",
-		Resource:       pAPIKeyRoleAssignment,
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType: queries.AuditLogEventResourceTypeApiKeyRoleAssignment,
+		ResourceID:   qAPIKeyRoleAssignment.ID,
+		EventType:    "delete",
+		Resource:     pAPIKeyRoleAssignment,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}

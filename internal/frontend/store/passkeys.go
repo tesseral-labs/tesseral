@@ -11,7 +11,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
-	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
@@ -92,14 +91,11 @@ func (s *Store) DeleteMyPasskey(ctx context.Context, req *frontendv1.DeleteMyPas
 	}
 
 	pPasskey := parsePasskey(qPasskey)
-	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
-		ProjectID:      authn.ProjectID(ctx),
-		OrganizationID: ptr(authn.OrganizationID(ctx)),
-		UserID:         ptr(authn.UserID(ctx)),
-		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      "tesseral.passkeys.delete",
-		ResourceName:   "passkey",
-		Resource:       pPasskey,
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType: queries.AuditLogEventResourceTypePasskey,
+		ResourceID:   qPasskey.ID,
+		EventType:    "delete",
+		Resource:     pPasskey,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}
@@ -174,14 +170,11 @@ func (s *Store) RegisterPasskey(ctx context.Context, req *frontendv1.RegisterPas
 	}
 
 	pPasskey := parsePasskey(qPasskey)
-	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
-		ProjectID:      authn.ProjectID(ctx),
-		OrganizationID: ptr(authn.OrganizationID(ctx)),
-		UserID:         ptr(authn.UserID(ctx)),
-		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      "tesseral.passkeys.create",
-		ResourceName:   "passkey",
-		Resource:       pPasskey,
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType: queries.AuditLogEventResourceTypePasskey,
+		ResourceID:   qPasskey.ID,
+		EventType:    "create",
+		Resource:     pPasskey,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}

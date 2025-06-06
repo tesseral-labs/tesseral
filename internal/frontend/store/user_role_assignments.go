@@ -9,7 +9,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
-	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
@@ -233,14 +232,11 @@ func (s *Store) CreateUserRoleAssignment(ctx context.Context, req *frontendv1.Cr
 	}
 
 	pUserRoleAssignment := parseUserRoleAssignment(qUserRoleAssignment)
-	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
-		ProjectID:      authn.ProjectID(ctx),
-		OrganizationID: ptr(authn.OrganizationID(ctx)),
-		UserID:         ptr(authn.UserID(ctx)),
-		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      "tesseral.user_role_assignments.create",
-		ResourceName:   "userRoleAssignment",
-		Resource:       pUserRoleAssignment,
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType: queries.AuditLogEventResourceTypeUserRoleAssignment,
+		ResourceID:   qUserRoleAssignment.ID,
+		EventType:    "create",
+		Resource:     pUserRoleAssignment,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}
@@ -286,14 +282,11 @@ func (s *Store) DeleteUserRoleAssignment(ctx context.Context, req *frontendv1.De
 	}
 
 	pUserRoleAssignment := parseUserRoleAssignment(qUserRoleAssignment)
-	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
-		ProjectID:      authn.ProjectID(ctx),
-		OrganizationID: ptr(authn.OrganizationID(ctx)),
-		UserID:         ptr(authn.UserID(ctx)),
-		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      "tesseral.user_role_assignments.delete",
-		ResourceName:   "userRoleAssignment",
-		Resource:       pUserRoleAssignment,
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType: queries.AuditLogEventResourceTypeUserRoleAssignment,
+		ResourceID:   qUserRoleAssignment.ID,
+		EventType:    "delete",
+		Resource:     pUserRoleAssignment,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}

@@ -110,6 +110,7 @@ func authenticateAccessToken(ctx context.Context, s *store.Store, dogfoodProject
 	}
 
 	userID := claims["user"].(map[string]any)["id"].(string)
+	sessionID := claims["session"].(map[string]any)["id"].(string)
 	organizationID := claims["organization"].(map[string]any)["id"].(string)
 
 	projectID, err := s.GetProjectIDOrganizationBacks(ctx, organizationID)
@@ -119,6 +120,7 @@ func authenticateAccessToken(ctx context.Context, s *store.Store, dogfoodProject
 
 	return &authn.DogfoodSessionContextData{
 		UserID:    userID,
+		SessionID: sessionID,
 		ProjectID: projectID,
 	}, nil
 }

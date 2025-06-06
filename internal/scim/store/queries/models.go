@@ -13,6 +13,70 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type AuditLogEventResourceType string
+
+const (
+	AuditLogEventResourceTypeAction                          AuditLogEventResourceType = "action"
+	AuditLogEventResourceTypeApiKey                          AuditLogEventResourceType = "api_key"
+	AuditLogEventResourceTypeApiKeyRoleAssignment            AuditLogEventResourceType = "api_key_role_assignment"
+	AuditLogEventResourceTypeAuditLogEvent                   AuditLogEventResourceType = "audit_log_event"
+	AuditLogEventResourceTypeBackendApiKey                   AuditLogEventResourceType = "backend_api_key"
+	AuditLogEventResourceTypeEmailVerificationChallenge      AuditLogEventResourceType = "email_verification_challenge"
+	AuditLogEventResourceTypeIntermediateSession             AuditLogEventResourceType = "intermediate_session"
+	AuditLogEventResourceTypeOrganization                    AuditLogEventResourceType = "organization"
+	AuditLogEventResourceTypeOrganizationGoogleHostedDomains AuditLogEventResourceType = "organization_google_hosted_domains"
+	AuditLogEventResourceTypeOrganizationMicrosoftTenantIds  AuditLogEventResourceType = "organization_microsoft_tenant_ids"
+	AuditLogEventResourceTypePasskey                         AuditLogEventResourceType = "passkey"
+	AuditLogEventResourceTypePasswordResetCode               AuditLogEventResourceType = "password_reset_code"
+	AuditLogEventResourceTypeProject                         AuditLogEventResourceType = "project"
+	AuditLogEventResourceTypeProjectUiSettings               AuditLogEventResourceType = "project_ui_settings"
+	AuditLogEventResourceTypeProjectWebhookSettings          AuditLogEventResourceType = "project_webhook_settings"
+	AuditLogEventResourceTypePublishableKey                  AuditLogEventResourceType = "publishable_key"
+	AuditLogEventResourceTypeRole                            AuditLogEventResourceType = "role"
+	AuditLogEventResourceTypeSamlConnection                  AuditLogEventResourceType = "saml_connection"
+	AuditLogEventResourceTypeScimApiKey                      AuditLogEventResourceType = "scim_api_key"
+	AuditLogEventResourceTypeUser                            AuditLogEventResourceType = "user"
+	AuditLogEventResourceTypeUserAuthenticatorAppChallenge   AuditLogEventResourceType = "user_authenticator_app_challenge"
+	AuditLogEventResourceTypeUserImpersonationToken          AuditLogEventResourceType = "user_impersonation_token"
+	AuditLogEventResourceTypeUserInvite                      AuditLogEventResourceType = "user_invite"
+	AuditLogEventResourceTypeUserRoleAssignment              AuditLogEventResourceType = "user_role_assignment"
+)
+
+func (e *AuditLogEventResourceType) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = AuditLogEventResourceType(s)
+	case string:
+		*e = AuditLogEventResourceType(s)
+	default:
+		return fmt.Errorf("unsupported scan type for AuditLogEventResourceType: %T", src)
+	}
+	return nil
+}
+
+type NullAuditLogEventResourceType struct {
+	AuditLogEventResourceType AuditLogEventResourceType
+	Valid                     bool // Valid is true if AuditLogEventResourceType is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullAuditLogEventResourceType) Scan(value interface{}) error {
+	if value == nil {
+		ns.AuditLogEventResourceType, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.AuditLogEventResourceType.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullAuditLogEventResourceType) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.AuditLogEventResourceType), nil
+}
+
 type AuthMethod string
 
 const (
@@ -170,15 +234,22 @@ type ApiKeyRoleAssignment struct {
 }
 
 type AuditLogEvent struct {
-	ID             uuid.UUID
-	ProjectID      uuid.UUID
-	OrganizationID *uuid.UUID
-	UserID         *uuid.UUID
-	SessionID      *uuid.UUID
-	ApiKeyID       *uuid.UUID
-	EventName      string
-	EventTime      *time.Time
-	EventDetails   []byte
+	ID                     uuid.UUID
+	ProjectID              uuid.UUID
+	OrganizationID         *uuid.UUID
+	UserID                 *uuid.UUID
+	SessionID              *uuid.UUID
+	ApiKeyID               *uuid.UUID
+	DogfoodUserID          *uuid.UUID
+	DogfoodSessionID       *uuid.UUID
+	BackendApiKeyID        *uuid.UUID
+	IntermediateSessionID  *uuid.UUID
+	ResourceType           NullAuditLogEventResourceType
+	ResourceOrganizationID *uuid.UUID
+	ResourceID             *uuid.UUID
+	EventName              string
+	EventTime              *time.Time
+	EventDetails           []byte
 }
 
 type BackendApiKey struct {

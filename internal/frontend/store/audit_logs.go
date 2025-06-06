@@ -2,19 +2,113 @@ package store
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
-	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
+	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/uuidv7"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/structpb"
 )
+
+var (
+	titleCaser = cases.Title(language.English)
+)
+
+type AuditLogEventData struct {
+	ResourceType     queries.AuditLogEventResourceType
+	ResourceID       uuid.UUID
+	Resource         proto.Message
+	PreviousResource proto.Message
+
+	// For example, `create`, `update`, `delete`, etc.
+	EventType string
+}
+
+func (s *Store) CreateTesseralAuditLogEvent(ctx context.Context, data AuditLogEventData) (queries.AuditLogEvent, error) {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return queries.AuditLogEvent{}, err
+	}
+	defer rollback()
+
+	resourceType := string(data.ResourceType)
+	jsonResourceType := snakeToCamelCase(resourceType)
+
+	pluralResourceType := resourceType
+	if !strings.HasSuffix(resourceType, "s") {
+		pluralResourceType += "s"
+	}
+	// e.g. "tesseral.projects.create"
+	eventName := fmt.Sprintf("tesseral.%s.%s", pluralResourceType, data.EventType)
+
+	details := make(map[string]any)
+	if data.PreviousResource != nil {
+		previousResourceBytes, err := protojson.Marshal(data.PreviousResource)
+		if err != nil {
+			return queries.AuditLogEvent{}, err
+		}
+		details[fmt.Sprintf("previous%s", capitalizeFirstLetter(jsonResourceType))] = json.RawMessage(previousResourceBytes)
+	}
+	if data.Resource != nil {
+		resourceBytes, err := protojson.Marshal(data.Resource)
+		if err != nil {
+			return queries.AuditLogEvent{}, err
+		}
+		details[jsonResourceType] = json.RawMessage(resourceBytes)
+	}
+	detailsBytes, err := json.Marshal(details)
+	if err != nil {
+		return queries.AuditLogEvent{}, err
+	}
+
+	// Generate the UUIDv7 based on the event time.
+	eventTime := time.Now().UTC()
+	eventID, err := uuidv7.NewWithTime(eventTime)
+	if err != nil {
+		return queries.AuditLogEvent{}, fmt.Errorf("failed to create UUID: %w", err)
+	}
+
+	qEventParams := queries.CreateAuditLogEventParams{
+		ID:             eventID,
+		ProjectID:      authn.ProjectID(ctx),
+		OrganizationID: ptr(authn.OrganizationID(ctx)),
+		UserID:         ptr(authn.UserID(ctx)),
+		SessionID:      ptr(authn.SessionID(ctx)),
+		ResourceType: queries.NullAuditLogEventResourceType{
+			AuditLogEventResourceType: queries.AuditLogEventResourceType(data.ResourceType),
+			Valid:                     true,
+		},
+		ResourceOrganizationID: ptr(authn.OrganizationID(ctx)),
+		ResourceID:             &data.ResourceID,
+		EventName:              eventName,
+		EventTime:              &eventTime,
+		EventDetails:           detailsBytes,
+	}
+
+	qEvent, err := q.CreateAuditLogEvent(ctx, qEventParams)
+	if err != nil {
+		return queries.AuditLogEvent{}, err
+	}
+
+	if err := commit(); err != nil {
+		return queries.AuditLogEvent{}, err
+	}
+
+	return qEvent, nil
+}
 
 func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAuditLogEventsRequest) (*frontendv1.ListAuditLogEventsResponse, error) {
 	tx, _, _, rollback, err := s.tx(ctx)
@@ -26,7 +120,9 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 	projectID := authn.ProjectID(ctx)
 	orgID := authn.OrganizationID(ctx)
 
-	// TODO: Enforce owner-only
+	if err := s.validateIsOwner(ctx); err != nil {
+		return nil, err
+	}
 
 	filter := new(frontendv1.ListAuditLogEventsRequest)
 	if req.PageToken != "" {
@@ -56,7 +152,10 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 
 	wheres := []sq.Sqlizer{
 		sq.Eq{"project_id": projectID[:]},
-		sq.Eq{"organization_id": orgID[:]},
+		sq.Or{
+			sq.Eq{"resource_organization_id": orgID[:]},
+			sq.Eq{"organization_id": orgID[:]},
+		},
 		sq.Lt{"id": endID},
 	}
 	if !startTime.IsZero() {
@@ -106,7 +205,7 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 		return nil, fmt.Errorf("failed to execute sql query: %w", err)
 	}
 	results, err := pgx.CollectRows(rows, func(row pgx.CollectableRow) (*frontendv1.AuditLogEvent, error) {
-		var dto auditlog.Event
+		var dto queries.AuditLogEvent
 		if err := row.Scan(
 			&dto.ID,
 			&dto.ProjectID,
@@ -114,6 +213,13 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 			&dto.UserID,
 			&dto.SessionID,
 			&dto.ApiKeyID,
+			&dto.DogfoodUserID,
+			&dto.DogfoodSessionID,
+			&dto.BackendApiKeyID,
+			&dto.IntermediateSessionID,
+			&dto.ResourceType,
+			&dto.ResourceOrganizationID,
+			&dto.ResourceID,
 			&dto.EventName,
 			&dto.EventTime,
 			&dto.EventDetails,
@@ -140,7 +246,7 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 	}, nil
 }
 
-func parseAuditLogEvent(qEvent auditlog.Event) (*frontendv1.AuditLogEvent, error) {
+func parseAuditLogEvent(qEvent queries.AuditLogEvent) (*frontendv1.AuditLogEvent, error) {
 	eventDetailsJSON := qEvent.EventDetails
 	var eventDetails structpb.Struct
 	if err := eventDetails.UnmarshalJSON(eventDetailsJSON); err != nil {
@@ -148,14 +254,10 @@ func parseAuditLogEvent(qEvent auditlog.Event) (*frontendv1.AuditLogEvent, error
 	}
 
 	var (
-		organizationID string
-		userID         *string
-		sessionID      *string
-		apiKeyID       *string
+		userID    *string
+		sessionID *string
+		apiKeyID  *string
 	)
-	if orgUUID := qEvent.OrganizationID; orgUUID != nil {
-		organizationID = idformat.Organization.Format(*orgUUID)
-	}
 	if userUUID := qEvent.UserID; userUUID != nil {
 		userID_ := idformat.User.Format(*userUUID)
 		userID = &userID_
@@ -170,13 +272,31 @@ func parseAuditLogEvent(qEvent auditlog.Event) (*frontendv1.AuditLogEvent, error
 	}
 
 	return &frontendv1.AuditLogEvent{
-		Id:             idformat.AuditLogEvent.Format(qEvent.ID),
-		OrganizationId: organizationID,
-		UserId:         userID,
-		SessionId:      sessionID,
-		ApiKeyId:       apiKeyID,
-		EventName:      qEvent.EventName,
-		EventTime:      timestampOrNil(qEvent.EventTime),
-		EventDetails:   &eventDetails,
+		Id:           idformat.AuditLogEvent.Format(qEvent.ID),
+		UserId:       userID,
+		SessionId:    sessionID,
+		ApiKeyId:     apiKeyID,
+		EventName:    qEvent.EventName,
+		EventTime:    timestampOrNil(qEvent.EventTime),
+		EventDetails: &eventDetails,
 	}, nil
+}
+
+func capitalizeFirstLetter(s string) string {
+	if len(s) == 0 {
+		return s
+	}
+	return strings.ToUpper(s[:1]) + s[1:]
+}
+
+func snakeToCamelCase(s string) string {
+	parts := strings.Split(s, "_")
+	for i, part := range parts {
+		if i > 0 {
+			parts[i] = titleCaser.String(part)
+		} else {
+			parts[i] = strings.ToLower(part)
+		}
+	}
+	return strings.Join(parts, "")
 }

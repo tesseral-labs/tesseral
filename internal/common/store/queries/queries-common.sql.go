@@ -26,52 +26,6 @@ func (q *Queries) BumpSessionLastActiveTime(ctx context.Context, id uuid.UUID) e
 	return err
 }
 
-const createAuditLogEvent = `-- name: CreateAuditLogEvent :one
-INSERT INTO audit_log_events (id, project_id, organization_id, user_id, session_id, api_key_id, event_name, event_time, event_details)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, coalesce($9, '{}'::jsonb))
-RETURNING
-    id, project_id, organization_id, user_id, session_id, api_key_id, event_name, event_time, event_details
-`
-
-type CreateAuditLogEventParams struct {
-	ID             uuid.UUID
-	ProjectID      uuid.UUID
-	OrganizationID *uuid.UUID
-	UserID         *uuid.UUID
-	SessionID      *uuid.UUID
-	ApiKeyID       *uuid.UUID
-	EventName      string
-	EventTime      *time.Time
-	EventDetails   interface{}
-}
-
-func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEventParams) (AuditLogEvent, error) {
-	row := q.db.QueryRow(ctx, createAuditLogEvent,
-		arg.ID,
-		arg.ProjectID,
-		arg.OrganizationID,
-		arg.UserID,
-		arg.SessionID,
-		arg.ApiKeyID,
-		arg.EventName,
-		arg.EventTime,
-		arg.EventDetails,
-	)
-	var i AuditLogEvent
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.OrganizationID,
-		&i.UserID,
-		&i.SessionID,
-		&i.ApiKeyID,
-		&i.EventName,
-		&i.EventTime,
-		&i.EventDetails,
-	)
-	return i, err
-}
-
 const getAPIKeyByID = `-- name: GetAPIKeyByID :one
 SELECT
     api_keys.id, organization_id, api_keys.display_name, secret_token_sha256, secret_token_suffix, expire_time, api_keys.create_time, api_keys.update_time, organizations.id, project_id, organizations.display_name, scim_enabled, organizations.create_time, organizations.update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml, custom_roles_enabled, log_in_with_github, api_keys_enabled

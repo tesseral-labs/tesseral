@@ -1457,9 +1457,6 @@ components:
                 id:
                     type: string
                     description: The Audit Log Event ID. Starts with `audit_log_event_...`.
-                organizationId:
-                    type: string
-                    description: The ID of the Organization associated with the event.
                 userId:
                     type: string
                     description: The ID of the User associated with the event, if any.

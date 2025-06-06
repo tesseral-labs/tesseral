@@ -11,7 +11,6 @@ import (
 	"github.com/svix/svix-webhooks/go/models"
 	"github.com/tesseral-labs/tesseral/internal/bcryptcost"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
-	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
@@ -179,13 +178,10 @@ func (s *Store) UpdateUser(ctx context.Context, req *frontendv1.UpdateUserReques
 
 	pUser := parseUser(qUpdatedUser)
 	pPreviousUser := parseUser(qUser)
-	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
-		ProjectID:        authn.ProjectID(ctx),
-		OrganizationID:   ptr(authn.OrganizationID(ctx)),
-		UserID:           ptr(authn.UserID(ctx)),
-		SessionID:        ptr(authn.SessionID(ctx)),
-		EventName:        "tesseral.users.update",
-		ResourceName:     "user",
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType:     queries.AuditLogEventResourceTypeUser,
+		ResourceID:       qUser.ID,
+		EventType:        "update",
 		Resource:         pUser,
 		PreviousResource: pPreviousUser,
 	}); err != nil {
@@ -241,14 +237,11 @@ func (s *Store) DeleteUser(ctx context.Context, req *frontendv1.DeleteUserReques
 	}
 
 	pUser := parseUser(qUser)
-	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
-		ProjectID:      authn.ProjectID(ctx),
-		OrganizationID: ptr(authn.OrganizationID(ctx)),
-		UserID:         ptr(authn.UserID(ctx)),
-		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      "tesseral.users.delete",
-		ResourceName:   "user",
-		Resource:       pUser,
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType: queries.AuditLogEventResourceTypeUser,
+		ResourceID:   qUser.ID,
+		EventType:    "delete",
+		Resource:     pUser,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}

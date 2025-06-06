@@ -14,7 +14,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
-	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
@@ -167,14 +166,11 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *frontendv1.CreateUser
 	}
 
 	pUserInvite := parseUserInvite(qUserInvite)
-	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
-		ProjectID:      authn.ProjectID(ctx),
-		OrganizationID: ptr(authn.OrganizationID(ctx)),
-		UserID:         ptr(authn.UserID(ctx)),
-		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      "tesseral.user_invites.create",
-		ResourceName:   "userInvite",
-		Resource:       pUserInvite,
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType: queries.AuditLogEventResourceTypeUserInvite,
+		ResourceID:   qUserInvite.ID,
+		EventType:    "create",
+		Resource:     pUserInvite,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}
@@ -219,14 +215,11 @@ func (s *Store) DeleteUserInvite(ctx context.Context, req *frontendv1.DeleteUser
 	}
 
 	pUserInvite := parseUserInvite(qUserInvite)
-	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
-		ProjectID:      authn.ProjectID(ctx),
-		OrganizationID: ptr(authn.OrganizationID(ctx)),
-		UserID:         ptr(authn.UserID(ctx)),
-		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      "tesseral.user_invites.delete",
-		ResourceName:   "userInvite",
-		Resource:       pUserInvite,
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType: queries.AuditLogEventResourceTypeUserInvite,
+		ResourceID:   qUserInvite.ID,
+		EventType:    "delete",
+		Resource:     pUserInvite,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}

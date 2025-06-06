@@ -9,7 +9,6 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/svix/svix-webhooks/go/models"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
-	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
@@ -161,13 +160,10 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 
 	pOrganization := parseOrganization(qProject, qUpdatedOrg)
 	pPreviousOrganization := parseOrganization(qProject, qOrg)
-	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
-		ProjectID:        authn.ProjectID(ctx),
-		OrganizationID:   ptr(authn.OrganizationID(ctx)),
-		UserID:           ptr(authn.UserID(ctx)),
-		SessionID:        ptr(authn.SessionID(ctx)),
-		EventName:        "tesseral.organizations.update",
-		ResourceName:     "organization",
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType:     queries.AuditLogEventResourceTypeOrganization,
+		ResourceID:       qOrg.ID,
+		EventType:        "update",
 		Resource:         pOrganization,
 		PreviousResource: pPreviousOrganization,
 	}); err != nil {

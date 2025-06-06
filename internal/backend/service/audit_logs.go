@@ -8,7 +8,7 @@ import (
 )
 
 func (s *Service) CreateAuditLogEvent(ctx context.Context, req *connect.Request[backendv1.CreateAuditLogEventRequest]) (*connect.Response[backendv1.CreateAuditLogEventResponse], error) {
-	res, err := s.Store.CreateAuditLogEvent(ctx, req.Msg)
+	res, err := s.Store.CreateCustomAuditLogEvent(ctx, req.Msg)
 	if err != nil {
 		return nil, err
 	}

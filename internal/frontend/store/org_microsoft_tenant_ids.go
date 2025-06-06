@@ -6,7 +6,6 @@ import (
 	"log/slog"
 
 	"github.com/google/uuid"
-	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
@@ -64,14 +63,11 @@ func (s *Store) UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, req *f
 	}
 
 	pMicrosoftTenantIDs := parseOrganizationMicrosoftTenantIDs(qMicrosoftTenantIDs)
-	if _, err := s.common.CreateTesseralAuditLogEvent(ctx, auditlog.TesseralEventData{
-		ProjectID:      authn.ProjectID(ctx),
-		OrganizationID: ptr(authn.OrganizationID(ctx)),
-		UserID:         ptr(authn.UserID(ctx)),
-		SessionID:      ptr(authn.SessionID(ctx)),
-		EventName:      "tesseral.microsoft_tenant_ids.update",
-		ResourceName:   "microsoftTenantIds",
-		Resource:       pMicrosoftTenantIDs,
+	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+		ResourceType: queries.AuditLogEventResourceTypeOrganizationMicrosoftTenantIds,
+		ResourceID:   uuid.Nil,
+		EventType:    "update",
+		Resource:     pMicrosoftTenantIDs,
 	}); err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
 	}

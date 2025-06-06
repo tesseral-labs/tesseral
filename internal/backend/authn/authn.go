@@ -21,7 +21,8 @@ type BackendAPIKeyContextData struct {
 // DogfoodSessionContextData contains data related to a user logged into
 // app.tesseral.com.
 type DogfoodSessionContextData struct {
-	UserID string
+	UserID    string
+	SessionID string
 
 	// ProjectID is the ID of the project the user is manipulating. This is
 	// almost never the same thing as the dogfood project.
