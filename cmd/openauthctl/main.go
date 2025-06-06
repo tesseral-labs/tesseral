@@ -14,6 +14,6 @@ func main() {
 type args struct {
 }
 
-func (_ args) ExtendedDescription() string {
+func (args) ExtendedDescription() string {
 	return "Control the openauth database"
 }

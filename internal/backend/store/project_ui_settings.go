@@ -31,14 +31,12 @@ func (s *Store) GetProjectUISettings(ctx context.Context, req *backendv1.GetProj
 	}
 
 	logoKey := fmt.Sprintf("vault-ui-settings-v1/%s/logo", idformat.Project.Format(projectID))
-	logoURL := fmt.Sprintf("%s/%s", s.userContentBaseUrl, logoKey)
 	logoExists, err := s.getUserContentFileExists(ctx, logoKey)
 	if err != nil {
 		return nil, fmt.Errorf("failed to check if logo file exists: %w", err)
 	}
-	if !logoExists {
-		logoURL = ""
-	} else {
+	logoURL := ""
+	if logoExists {
 		logoURL, err = s.buildPresignedGetUrlForFile(ctx, logoKey)
 		if err != nil {
 			return nil, fmt.Errorf("failed to build presigned URL for logo file: %w", err)
@@ -46,14 +44,12 @@ func (s *Store) GetProjectUISettings(ctx context.Context, req *backendv1.GetProj
 	}
 
 	darkModeLogoKey := fmt.Sprintf("vault-ui-settings-v1/%s/logo-dark", idformat.Project.Format(projectID))
-	darkModeLogoURL := fmt.Sprintf("%s/%s", s.userContentBaseUrl, darkModeLogoKey)
 	darkModeLogoExists, err := s.getUserContentFileExists(ctx, darkModeLogoKey)
 	if err != nil {
 		return nil, fmt.Errorf("failed to check if dark mode logo file exists: %w", err)
 	}
-	if !darkModeLogoExists {
-		darkModeLogoURL = ""
-	} else {
+	darkModeLogoURL := ""
+	if darkModeLogoExists {
 		darkModeLogoURL, err = s.buildPresignedGetUrlForFile(ctx, darkModeLogoKey)
 		if err != nil {
 			return nil, fmt.Errorf("failed to build presigned URL for dark mode logo file: %w", err)
