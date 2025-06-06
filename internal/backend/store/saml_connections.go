@@ -200,7 +200,7 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *backendv1.CreateS
 	pSAMLConnection := parseSAMLConnection(qProject, qSAMLConnection)
 	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
 		ResourceType:           queries.AuditLogEventResourceTypeSamlConnection,
-		ResourceOrganizationID: ptr(qSAMLConnection.OrganizationID),
+		ResourceOrganizationID: &qSAMLConnection.OrganizationID,
 		ResourceID:             qSAMLConnection.ID,
 		EventType:              "create",
 		Resource:               pSAMLConnection,
@@ -306,7 +306,7 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *backendv1.UpdateS
 	pPreviousSAMLConnection := parseSAMLConnection(qProject, qSAMLConnection)
 	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
 		ResourceType:           queries.AuditLogEventResourceTypeSamlConnection,
-		ResourceOrganizationID: ptr(qSAMLConnection.OrganizationID),
+		ResourceOrganizationID: &qSAMLConnection.OrganizationID,
 		ResourceID:             qSAMLConnection.ID,
 		EventType:              "update",
 		Resource:               pSAMLConnection,
@@ -359,7 +359,7 @@ func (s *Store) DeleteSAMLConnection(ctx context.Context, req *backendv1.DeleteS
 	pSAMLConnection := parseSAMLConnection(qProject, qSAMLConnection)
 	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
 		ResourceType:           queries.AuditLogEventResourceTypeSamlConnection,
-		ResourceOrganizationID: ptr(qSAMLConnection.OrganizationID),
+		ResourceOrganizationID: &qSAMLConnection.OrganizationID,
 		ResourceID:             qSAMLConnection.ID,
 		EventType:              "delete",
 		Resource:               pSAMLConnection,

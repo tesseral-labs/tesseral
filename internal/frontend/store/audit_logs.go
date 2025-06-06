@@ -84,14 +84,14 @@ func (s *Store) CreateTesseralAuditLogEvent(ctx context.Context, data AuditLogEv
 	qEventParams := queries.CreateAuditLogEventParams{
 		ID:             eventID,
 		ProjectID:      authn.ProjectID(ctx),
-		OrganizationID: ptr(authn.OrganizationID(ctx)),
-		UserID:         ptr(authn.UserID(ctx)),
-		SessionID:      ptr(authn.SessionID(ctx)),
+		OrganizationID: refOrNil(authn.OrganizationID(ctx)),
+		UserID:         refOrNil(authn.UserID(ctx)),
+		SessionID:      refOrNil(authn.SessionID(ctx)),
 		ResourceType: queries.NullAuditLogEventResourceType{
 			AuditLogEventResourceType: queries.AuditLogEventResourceType(data.ResourceType),
 			Valid:                     true,
 		},
-		ResourceOrganizationID: ptr(authn.OrganizationID(ctx)),
+		ResourceOrganizationID: refOrNil(authn.OrganizationID(ctx)),
 		ResourceID:             &data.ResourceID,
 		EventName:              eventName,
 		EventTime:              &eventTime,

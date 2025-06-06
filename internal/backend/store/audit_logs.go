@@ -297,82 +297,82 @@ func parseAuditLogEvent(qEvent queries.AuditLogEvent) (*backendv1.AuditLogEvent,
 		resourceID   *string
 	)
 	if orgUUID := qEvent.OrganizationID; orgUUID != nil {
-		organizationID = ptr(idformat.Organization.Format(*orgUUID))
+		organizationID = refOrNil(idformat.Organization.Format(*orgUUID))
 	}
 	if userUUID := qEvent.UserID; userUUID != nil {
-		userID = ptr(idformat.User.Format(*userUUID))
+		userID = refOrNil(idformat.User.Format(*userUUID))
 	}
 	if sessionUUID := qEvent.SessionID; sessionUUID != nil {
-		sessionID = ptr(idformat.Session.Format(*sessionUUID))
+		sessionID = refOrNil(idformat.Session.Format(*sessionUUID))
 	}
 	if apiKeyUUID := qEvent.ApiKeyID; apiKeyUUID != nil {
-		apiKeyID = ptr(idformat.APIKey.Format(*apiKeyUUID))
+		apiKeyID = refOrNil(idformat.APIKey.Format(*apiKeyUUID))
 	}
 	if dogfoodUserUUID := qEvent.DogfoodUserID; dogfoodUserUUID != nil {
-		dogfoodUserID = ptr(idformat.Session.Format(*dogfoodUserUUID))
+		dogfoodUserID = refOrNil(idformat.Session.Format(*dogfoodUserUUID))
 	}
 	if dogfoodSessionUUID := qEvent.DogfoodSessionID; dogfoodSessionUUID != nil {
-		dogfoodSessionID = ptr(idformat.Session.Format(*dogfoodSessionUUID))
+		dogfoodSessionID = refOrNil(idformat.Session.Format(*dogfoodSessionUUID))
 	}
 	if backendApiKeyUUID := qEvent.BackendApiKeyID; backendApiKeyUUID != nil {
-		backendApiKeyID = ptr(idformat.BackendAPIKey.Format(*backendApiKeyUUID))
+		backendApiKeyID = refOrNil(idformat.BackendAPIKey.Format(*backendApiKeyUUID))
 	}
 	if intermediateSessionUUID := qEvent.IntermediateSessionID; intermediateSessionUUID != nil {
-		intermediateSessionID = ptr(idformat.IntermediateSession.Format(*intermediateSessionUUID))
+		intermediateSessionID = refOrNil(idformat.IntermediateSession.Format(*intermediateSessionUUID))
 	}
 	if resourceTypeDto := qEvent.ResourceType; resourceTypeDto.Valid {
-		resourceType = ptr(string(resourceTypeDto.AuditLogEventResourceType))
+		resourceType = refOrNil(string(resourceTypeDto.AuditLogEventResourceType))
 	}
 	if resourceUUID := qEvent.ResourceID; resourceUUID != nil {
 		switch qEvent.ResourceType.AuditLogEventResourceType {
 		case queries.AuditLogEventResourceTypeAction:
-			resourceID = ptr(resourceUUID.String()) // TODO: Actions don't have an ID format
+			resourceID = refOrNil(resourceUUID.String()) // TODO: Actions don't have an ID format
 		case queries.AuditLogEventResourceTypeApiKey:
-			resourceID = ptr(idformat.APIKey.Format(*resourceUUID))
+			resourceID = refOrNil(idformat.APIKey.Format(*resourceUUID))
 		case queries.AuditLogEventResourceTypeApiKeyRoleAssignment:
-			resourceID = ptr(idformat.APIKeyRoleAssignment.Format(*resourceUUID))
+			resourceID = refOrNil(idformat.APIKeyRoleAssignment.Format(*resourceUUID))
 		case queries.AuditLogEventResourceTypeAuditLogEvent:
-			resourceID = ptr(idformat.AuditLogEvent.Format(*resourceUUID))
+			resourceID = refOrNil(idformat.AuditLogEvent.Format(*resourceUUID))
 		case queries.AuditLogEventResourceTypeBackendApiKey:
-			resourceID = ptr(idformat.BackendAPIKey.Format(*resourceUUID))
+			resourceID = refOrNil(idformat.BackendAPIKey.Format(*resourceUUID))
 		case queries.AuditLogEventResourceTypeEmailVerificationChallenge:
-			resourceID = ptr(idformat.EmailVerificationChallenge.Format(*resourceUUID))
+			resourceID = refOrNil(idformat.EmailVerificationChallenge.Format(*resourceUUID))
 		case queries.AuditLogEventResourceTypeIntermediateSession:
-			resourceID = ptr(idformat.IntermediateSession.Format(*resourceUUID))
+			resourceID = refOrNil(idformat.IntermediateSession.Format(*resourceUUID))
 		case queries.AuditLogEventResourceTypeOrganization:
-			resourceID = ptr(idformat.Organization.Format(*resourceUUID))
+			resourceID = refOrNil(idformat.Organization.Format(*resourceUUID))
 		case queries.AuditLogEventResourceTypeOrganizationGoogleHostedDomains:
 			resourceID = nil // Google hosted domains are not represented as a resource ID
 		case queries.AuditLogEventResourceTypeOrganizationMicrosoftTenantIds:
 			resourceID = nil // Microsoft tenant IDs are not represented as a resource ID
 		case queries.AuditLogEventResourceTypePasskey:
-			resourceID = ptr(idformat.Passkey.Format(*resourceUUID))
+			resourceID = refOrNil(idformat.Passkey.Format(*resourceUUID))
 		case queries.AuditLogEventResourceTypePasswordResetCode:
-			resourceID = ptr(idformat.PasswordResetCode.Format(*resourceUUID))
+			resourceID = refOrNil(idformat.PasswordResetCode.Format(*resourceUUID))
 		case queries.AuditLogEventResourceTypeProject:
-			resourceID = ptr(idformat.Project.Format(*resourceUUID))
+			resourceID = refOrNil(idformat.Project.Format(*resourceUUID))
 		case queries.AuditLogEventResourceTypeProjectUiSettings:
-			resourceID = ptr(idformat.ProjectUISettings.Format(*resourceUUID))
+			resourceID = refOrNil(idformat.ProjectUISettings.Format(*resourceUUID))
 		case queries.AuditLogEventResourceTypeProjectWebhookSettings:
-			resourceID = ptr(idformat.ProjectWebhookSettings.Format(*resourceUUID))
+			resourceID = refOrNil(idformat.ProjectWebhookSettings.Format(*resourceUUID))
 		case queries.AuditLogEventResourceTypePublishableKey:
-			resourceID = ptr(idformat.PublishableKey.Format(*resourceUUID))
+			resourceID = refOrNil(idformat.PublishableKey.Format(*resourceUUID))
 		case queries.AuditLogEventResourceTypeRole:
-			resourceID = ptr(idformat.Role.Format(*resourceUUID))
+			resourceID = refOrNil(idformat.Role.Format(*resourceUUID))
 		case queries.AuditLogEventResourceTypeSamlConnection:
-			resourceID = ptr(idformat.SAMLConnection.Format(*resourceUUID))
+			resourceID = refOrNil(idformat.SAMLConnection.Format(*resourceUUID))
 		case queries.AuditLogEventResourceTypeScimApiKey:
-			resourceID = ptr(idformat.SCIMAPIKey.Format(*resourceUUID))
+			resourceID = refOrNil(idformat.SCIMAPIKey.Format(*resourceUUID))
 		case queries.AuditLogEventResourceTypeUser:
-			resourceID = ptr(idformat.User.Format(*resourceUUID))
+			resourceID = refOrNil(idformat.User.Format(*resourceUUID))
 		case queries.AuditLogEventResourceTypeUserAuthenticatorAppChallenge:
-			resourceID = ptr(idformat.AuthenticatorAppRecoveryCode.Format(*resourceUUID))
+			resourceID = refOrNil(idformat.AuthenticatorAppRecoveryCode.Format(*resourceUUID))
 		case queries.AuditLogEventResourceTypeUserImpersonationToken:
-			resourceID = ptr(idformat.UserImpersonationToken.Format(*resourceUUID))
+			resourceID = refOrNil(idformat.UserImpersonationToken.Format(*resourceUUID))
 		case queries.AuditLogEventResourceTypeUserInvite:
-			resourceID = ptr(idformat.UserInvite.Format(*resourceUUID))
+			resourceID = refOrNil(idformat.UserInvite.Format(*resourceUUID))
 		case queries.AuditLogEventResourceTypeUserRoleAssignment:
-			resourceID = ptr(idformat.UserRoleAssignment.Format(*resourceUUID))
+			resourceID = refOrNil(idformat.UserRoleAssignment.Format(*resourceUUID))
 		}
 	}
 
@@ -411,8 +411,4 @@ func snakeToCamelCase(s string) string {
 		}
 	}
 	return strings.Join(parts, "")
-}
-
-func ptr[T any](v T) *T {
-	return &v
 }

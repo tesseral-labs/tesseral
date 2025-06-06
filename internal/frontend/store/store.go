@@ -97,6 +97,10 @@ func timestampOrNil(t *time.Time) *timestamppb.Timestamp {
 	return timestamppb.New(*t)
 }
 
-func ptr[T any](t T) *T {
+func refOrNil[T comparable](t T) *T {
+	var z T
+	if t == z {
+		return nil
+	}
 	return &t
 }
