@@ -1105,6 +1105,8 @@ components:
                     type: string
                 password:
                     type: string
+                email:
+                    type: string
         VerifyPasswordResetCodeRequest:
             type: object
             properties:

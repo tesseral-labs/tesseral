@@ -305,6 +305,17 @@ WHERE
 RETURNING
     *;
 
+-- name: GetUsersByProjectIDAndEmail :many
+SELECT
+    users.*
+FROM
+    users
+    JOIN organizations ON users.organization_id = organizations.id
+WHERE
+    users.email = $1
+    AND organizations.project_id = $2
+    AND NOT organizations.logins_disabled;
+
 -- name: UpdateIntermediateSessionOrganizationID :one
 UPDATE
     intermediate_sessions

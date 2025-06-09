@@ -14,6 +14,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/sesv2"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2/types"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/bcryptcost"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
@@ -123,6 +124,14 @@ func (s *Store) RegisterPassword(ctx context.Context, req *intermediatev1.Regist
 }
 
 func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPasswordRequest) (*intermediatev1.VerifyPasswordResponse, error) {
+	if req.Email != "" {
+		res, err := s.logInWithPassword(ctx, req)
+		if err != nil {
+			return nil, fmt.Errorf("log in with password: %w", err)
+		}
+		return res, nil
+	}
+
 	intermediateSession := authn.IntermediateSession(ctx)
 
 	if intermediateSession.PasswordVerified {
@@ -202,46 +211,12 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 		return nil, apierror.NewFailedPreconditionError("too many password attempts; user is temporarily locked out", nil)
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(*qMatchingUser.PasswordBcrypt), []byte(req.Password)); err != nil {
-		attempts := qMatchingUser.FailedPasswordAttempts + 1
-		if attempts >= passwordLockoutAttempts {
-			// lock the user out
-			passwordLockoutExpireTime := time.Now().Add(passwordLockoutDuration)
-			if _, err := q.UpdateUserPasswordLockoutExpireTime(ctx, queries.UpdateUserPasswordLockoutExpireTimeParams{
-				ID:                        qMatchingUser.ID,
-				PasswordLockoutExpireTime: &passwordLockoutExpireTime,
-			}); err != nil {
-				return nil, err
-			}
-
-			// reset fail count
-			if _, err := q.UpdateUserFailedPasswordAttempts(ctx, queries.UpdateUserFailedPasswordAttemptsParams{
-				ID:                     qMatchingUser.ID,
-				FailedPasswordAttempts: 0,
-			}); err != nil {
-				return nil, err
-			}
-
-			if err := commit(); err != nil {
-				return nil, fmt.Errorf("commit: %w", err)
-			}
-
-			return nil, apierror.NewFailedPreconditionError("too many password attempts; user is temporarily locked out", nil)
+	if err := s.attemptMatchPassword(ctx, q, *qMatchingUser, req.Password); err != nil {
+		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
+			return nil, apierror.NewInvalidArgumentError("incorrect password", nil)
 		}
 
-		// update fail count, but do not lock out
-		if _, err := q.UpdateUserFailedPasswordAttempts(ctx, queries.UpdateUserFailedPasswordAttemptsParams{
-			ID:                     qMatchingUser.ID,
-			FailedPasswordAttempts: attempts,
-		}); err != nil {
-			return nil, fmt.Errorf("update user failed password attempts: %w", err)
-		}
-
-		if err := commit(); err != nil {
-			return nil, fmt.Errorf("commit: %w", err)
-		}
-
-		return nil, apierror.NewFailedPreconditionError("incorrect password", fmt.Errorf("bcrypt compare: %w", err))
+		return nil, fmt.Errorf("attempt match password: %w", err)
 	}
 
 	// Re-write password back to database; this lets us progressively increase
@@ -275,6 +250,149 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 	}
 
 	return &intermediatev1.VerifyPasswordResponse{}, nil
+}
+
+// logInWithPassword handles the flow where a user directly inputs an email and
+// password.
+func (s *Store) logInWithPassword(ctx context.Context, req *intermediatev1.VerifyPasswordRequest) (*intermediatev1.VerifyPasswordResponse, error) {
+	// In this flow, we don't require verifying an email or any other previous
+	// state on the intermediate session. We issue a user an intermediate
+	// session for (the first) user with that email and password.
+
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
+	if err := enforceProjectLoginEnabled(qProject); err != nil {
+		return nil, fmt.Errorf("enforce project login enabled: %w", err)
+	}
+
+	// this query filters organizations with logins disabled
+	qUsers, err := q.GetUsersByProjectIDAndEmail(ctx, queries.GetUsersByProjectIDAndEmailParams{
+		ProjectID: authn.ProjectID(ctx),
+		Email:     req.Email,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("get users by project id and email: %w", err)
+	}
+
+	var qMatchingUser *queries.User
+	for _, qUser := range qUsers {
+		// In the main VerifyPassword flow, these are errors. In this flow, we
+		// skip users that don't have a password or are locked out.
+		if qUser.PasswordBcrypt == nil {
+			continue
+		}
+
+		if qUser.PasswordLockoutExpireTime != nil && qUser.PasswordLockoutExpireTime.After(time.Now()) {
+			continue
+		}
+
+		if err := s.attemptMatchPassword(ctx, q, qUser, req.Password); err != nil {
+			// in the regular flow, this is an error; in this flow, this is just
+			// not our match
+			if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
+				continue
+			}
+
+			// unexpected error
+			return nil, fmt.Errorf("attempt match password: %w", err)
+		}
+
+		qMatchingUser = &qUser
+		break
+	}
+
+	if qMatchingUser == nil {
+		return nil, apierror.NewInvalidArgumentError("incorrect password", nil)
+	}
+
+	passwordBcryptBytes, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcryptcost.Cost)
+	if err != nil {
+		return nil, fmt.Errorf("generate bcrypt hash: %w", err)
+	}
+
+	passwordBcrypt := string(passwordBcryptBytes)
+	if _, err := q.UpdateUserPasswordBcrypt(ctx, queries.UpdateUserPasswordBcryptParams{
+		ID:             qMatchingUser.ID,
+		PasswordBcrypt: &passwordBcrypt,
+	}); err != nil {
+		return nil, fmt.Errorf("update user password bcrypt: %w", err)
+	}
+
+	if _, err := q.UpdateIntermediateSessionEmail(ctx, queries.UpdateIntermediateSessionEmailParams{
+		ID:    authn.IntermediateSessionID(ctx),
+		Email: &req.Email,
+	}); err != nil {
+		return nil, fmt.Errorf("update intermediate session email: %w", err)
+	}
+
+	// if you have a working password, you count as having a verified email
+	if _, err := q.UpdateIntermediateSessionEmailVerificationChallengeCompleted(ctx, authn.IntermediateSessionID(ctx)); err != nil {
+		return nil, fmt.Errorf("update intermediate session email verification challenge completed: %w", err)
+	}
+
+	if _, err := q.UpdateIntermediateSessionPasswordVerified(ctx, queries.UpdateIntermediateSessionPasswordVerifiedParams{
+		ID:             authn.IntermediateSessionID(ctx),
+		OrganizationID: &qMatchingUser.OrganizationID,
+	}); err != nil {
+		return nil, fmt.Errorf("update intermediate session password verified: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return &intermediatev1.VerifyPasswordResponse{}, nil
+}
+
+// attemptMatchPassword attempts to match a password to a user.
+//
+// Callers must check that the user has a PasswordBcrypt, and that the user is
+// not locked out of password attempts.
+func (s *Store) attemptMatchPassword(ctx context.Context, q *queries.Queries, qUser queries.User, password string) error {
+	if err := bcrypt.CompareHashAndPassword([]byte(*qUser.PasswordBcrypt), []byte(password)); err != nil {
+		attempts := qUser.FailedPasswordAttempts + 1
+		if attempts >= passwordLockoutAttempts {
+			// lock the user out
+			passwordLockoutExpireTime := time.Now().Add(passwordLockoutDuration)
+			if _, err := q.UpdateUserPasswordLockoutExpireTime(ctx, queries.UpdateUserPasswordLockoutExpireTimeParams{
+				ID:                        qUser.ID,
+				PasswordLockoutExpireTime: &passwordLockoutExpireTime,
+			}); err != nil {
+				return fmt.Errorf("update user password lockout expire time: %w", err)
+			}
+
+			// reset fail count
+			if _, err := q.UpdateUserFailedPasswordAttempts(ctx, queries.UpdateUserFailedPasswordAttemptsParams{
+				ID:                     qUser.ID,
+				FailedPasswordAttempts: 0,
+			}); err != nil {
+				return fmt.Errorf("update user failed password attempts: %w", err)
+			}
+
+			return apierror.NewFailedPreconditionError("too many password attempts; user is temporarily locked out", nil)
+		}
+
+		// update fail count, but do not lock out
+		if _, err := q.UpdateUserFailedPasswordAttempts(ctx, queries.UpdateUserFailedPasswordAttemptsParams{
+			ID:                     qUser.ID,
+			FailedPasswordAttempts: attempts,
+		}); err != nil {
+			return fmt.Errorf("update user failed password attempts: %w", err)
+		}
+
+		return fmt.Errorf("bcrypt: %w", err)
+	}
+
+	return nil
 }
 
 func (s *Store) IssuePasswordResetCode(ctx context.Context, req *intermediatev1.IssuePasswordResetCodeRequest) (*intermediatev1.IssuePasswordResetCodeResponse, error) {

@@ -29,6 +29,7 @@ require (
 	github.com/ssoready/prettyuuid v0.0.0-20241023163822-285da46017b3
 	github.com/stretchr/testify v1.10.0
 	github.com/stripe/stripe-go/v82 v82.0.0
+	github.com/svix/svix-webhooks v1.65.0
 	github.com/ucarion/cli v0.2.0
 	golang.org/x/crypto v0.36.0
 	golang.org/x/net v0.37.0
@@ -64,7 +65,6 @@ require (
 	github.com/lib/pq v1.10.9 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rogpeppe/go-internal v1.13.1 // indirect
-	github.com/svix/svix-webhooks v1.65.0 // indirect
 	github.com/tidwall/gjson v1.14.4 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect

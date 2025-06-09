@@ -446,6 +446,7 @@ message RegisterPasswordResponse {}
 message VerifyPasswordRequest {
   string organization_id = 1;
   string password = 2;
+  string email = 3;
 }
 
 message VerifyPasswordResponse {}
