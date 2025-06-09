@@ -3,7 +3,6 @@ package store
 import (
 	"context"
 	"fmt"
-	"log/slog"
 
 	"github.com/google/uuid"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
@@ -39,6 +38,12 @@ func (s *Store) UpdateOrganizationGoogleHostedDomains(ctx context.Context, req *
 	}
 	defer rollback()
 
+	// Get the current organization google hosted domains before deleting them to log the changes
+	qPreviousGoogleHostedDomains, err := q.GetOrganizationGoogleHostedDomains(ctx, authn.OrganizationID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get organization google hosted domains: %w", err)
+	}
+
 	if err := q.DeleteOrganizationGoogleHostedDomains(ctx, authn.OrganizationID(ctx)); err != nil {
 		return nil, fmt.Errorf("delete organization google hosted domains: %w", err)
 	}
@@ -62,18 +67,21 @@ func (s *Store) UpdateOrganizationGoogleHostedDomains(ctx context.Context, req *
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	pGoogleHostedDomains := parseOrganizationGoogleHostedDomains(qGoogleHostedDomains)
-	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+	googleHostedDomains := parseOrganizationGoogleHostedDomains(qGoogleHostedDomains)
+	previousGoogleHostedDomains := parseOrganizationGoogleHostedDomains(qPreviousGoogleHostedDomains)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.googleHostedDomains.update",
+		EventDetails: map[string]any{
+			"googleHostedDomains":         googleHostedDomains.GoogleHostedDomains,
+			"previousGoogleHostedDomains": previousGoogleHostedDomains.GoogleHostedDomains,
+		},
 		ResourceType: queries.AuditLogEventResourceTypeOrganizationGoogleHostedDomains,
-		ResourceID:   uuid.Nil,
-		EventType:    "update",
-		Resource:     pGoogleHostedDomains,
 	}); err != nil {
-		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
 	return &frontendv1.UpdateOrganizationGoogleHostedDomainsResponse{
-		OrganizationGoogleHostedDomains: pGoogleHostedDomains,
+		OrganizationGoogleHostedDomains: googleHostedDomains,
 	}, nil
 }
 

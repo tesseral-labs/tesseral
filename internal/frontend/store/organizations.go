@@ -158,16 +158,18 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 		return nil, fmt.Errorf("commit transaction: %w", err)
 	}
 
-	pOrganization := parseOrganization(qProject, qUpdatedOrg)
-	pPreviousOrganization := parseOrganization(qProject, qOrg)
-	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
-		ResourceType:     queries.AuditLogEventResourceTypeOrganization,
-		ResourceID:       qOrg.ID,
-		EventType:        "update",
-		Resource:         pOrganization,
-		PreviousResource: pPreviousOrganization,
+	organization := parseOrganization(qProject, qUpdatedOrg)
+	previousOrganization := parseOrganization(qProject, qOrg)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.organizations.update",
+		EventDetails: map[string]any{
+			"organization":         organization,
+			"previousOrganization": previousOrganization,
+		},
+		ResourceType: queries.AuditLogEventResourceTypeOrganization,
+		ResourceID:   &qOrg.ID,
 	}); err != nil {
-		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
 	// send sync organization event
@@ -176,7 +178,7 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 	}
 
 	return &frontendv1.UpdateOrganizationResponse{
-		Organization: parseOrganization(qProject, qUpdatedOrg),
+		Organization: organization,
 	}, nil
 }
 

@@ -15,13 +15,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/uuidv7"
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
 	"google.golang.org/protobuf/types/known/structpb"
-)
-
-var (
-	titleCaser = cases.Title(language.English)
 )
 
 type logAuditEventParams struct {

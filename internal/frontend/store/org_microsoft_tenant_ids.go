@@ -3,7 +3,6 @@ package store
 import (
 	"context"
 	"fmt"
-	"log/slog"
 
 	"github.com/google/uuid"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
@@ -39,6 +38,12 @@ func (s *Store) UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, req *f
 	}
 	defer rollback()
 
+	// Get the current organization microsoft tenant ids before deleting them to log the changes
+	qPreviousMicrosoftTenantIDs, err := q.GetOrganizationMicrosoftTenantIDs(ctx, authn.OrganizationID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get organization microsoft tenant ids: %w", err)
+	}
+
 	if err := q.DeleteOrganizationMicrosoftTenantIDs(ctx, authn.OrganizationID(ctx)); err != nil {
 		return nil, fmt.Errorf("delete organization microsoft tenant ids: %w", err)
 	}
@@ -62,18 +67,21 @@ func (s *Store) UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, req *f
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	pMicrosoftTenantIDs := parseOrganizationMicrosoftTenantIDs(qMicrosoftTenantIDs)
-	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+	microsoftTenantIDs := parseOrganizationMicrosoftTenantIDs(qMicrosoftTenantIDs)
+	previousMicrosoftTenantIDs := parseOrganizationMicrosoftTenantIDs(qPreviousMicrosoftTenantIDs)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.microsoft_tenant_ids.update",
+		EventDetails: map[string]any{
+			"microsoftTenantIds":         microsoftTenantIDs.MicrosoftTenantIds,
+			"previousMicrosoftTenantIds": previousMicrosoftTenantIDs.MicrosoftTenantIds,
+		},
 		ResourceType: queries.AuditLogEventResourceTypeOrganizationMicrosoftTenantIds,
-		ResourceID:   uuid.Nil,
-		EventType:    "update",
-		Resource:     pMicrosoftTenantIDs,
 	}); err != nil {
-		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
 	return &frontendv1.UpdateOrganizationMicrosoftTenantIDsResponse{
-		OrganizationMicrosoftTenantIds: pMicrosoftTenantIDs,
+		OrganizationMicrosoftTenantIds: microsoftTenantIDs,
 	}, nil
 }
 
