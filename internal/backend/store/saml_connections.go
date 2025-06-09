@@ -309,7 +309,7 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *backendv1.UpdateS
 		EventName: "tesseral.saml_connections.update",
 		EventDetails: map[string]any{
 			"samlConnection":         samlConnection,
-			"previousSAMLConnection": previousSAMLConnection,
+			"previousSamlConnection": previousSAMLConnection,
 		},
 		OrganizationID: &qSAMLConnection.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeSamlConnection,
