@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { Title } from "@/components/Title";
@@ -37,7 +38,8 @@ import {
   getMicrosoftOAuthRedirectURL,
   issueEmailVerificationChallenge,
   listSAMLOrganizations,
-  setEmailAsPrimaryLoginFactor, setPasswordAsPrimaryLoginFactor,
+  setEmailAsPrimaryLoginFactor,
+  setPasswordAsPrimaryLoginFactor,
   verifyPassword,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import { useLoginPageQueryParams } from "@/hooks/use-login-page-query-params";
@@ -46,7 +48,6 @@ import {
   ProjectSettingsProvider,
   useProjectSettings,
 } from "@/lib/project-settings";
-import { toast } from "sonner";
 
 export function LoginPage() {
   return (
@@ -170,7 +171,9 @@ function LoginPageContents() {
     issueEmailVerificationChallenge,
   );
   const { mutateAsync: verifyPasswordAsync } = useMutation(verifyPassword);
-  const { mutateAsync: setPasswordAsPrimaryLoginFactorAsync } = useMutation(setPasswordAsPrimaryLoginFactor);
+  const { mutateAsync: setPasswordAsPrimaryLoginFactorAsync } = useMutation(
+    setPasswordAsPrimaryLoginFactor,
+  );
   const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
   const navigate = useNavigate();
 
@@ -195,7 +198,10 @@ function LoginPageContents() {
         password: values.password,
       });
     } catch (e) {
-      if (e instanceof ConnectError && e.message === "[failed_precondition] incorrect_password") {
+      if (
+        e instanceof ConnectError &&
+        e.message === "[failed_precondition] incorrect_password"
+      ) {
         form.setError("password", {
           type: "manual",
           message: "Incorrect password",
@@ -205,8 +211,11 @@ function LoginPageContents() {
         return;
       }
 
-      if (e instanceof ConnectError && e.message === "[failed_precondition] passwords_unavailable_for_email") {
-        await setPasswordAsPrimaryLoginFactorAsync({})
+      if (
+        e instanceof ConnectError &&
+        e.message === "[failed_precondition] passwords_unavailable_for_email"
+      ) {
+        await setPasswordAsPrimaryLoginFactorAsync({});
         await issueEmailVerificationChallengeMutation.mutateAsync({
           email: values.email,
         });
@@ -214,7 +223,7 @@ function LoginPageContents() {
         toast.warning("To continue, you must verify your email address.");
 
         navigate("/verify-email");
-        return
+        return;
       }
 
       throw e;
