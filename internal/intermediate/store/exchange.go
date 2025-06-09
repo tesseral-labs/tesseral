@@ -110,7 +110,8 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 				(qIntermediateSession.GoogleUserID != nil && *qIntermediateSession.GoogleUserID != derefOrEmpty(qUser.GoogleUserID)) ||
 				(qIntermediateSession.MicrosoftUserID != nil && *qIntermediateSession.MicrosoftUserID != derefOrEmpty(qUser.MicrosoftUserID)) ||
 				(qIntermediateSession.UserDisplayName != nil && *qIntermediateSession.UserDisplayName != derefOrEmpty(qUser.DisplayName)) ||
-				(qIntermediateSession.ProfilePictureUrl != nil && *qIntermediateSession.ProfilePictureUrl != derefOrEmpty(qUser.ProfilePictureUrl))
+				(qIntermediateSession.ProfilePictureUrl != nil && *qIntermediateSession.ProfilePictureUrl != derefOrEmpty(qUser.ProfilePictureUrl)) ||
+				qIntermediateSession.NewUserPasswordBcrypt != nil
 
 		if detailsUpdated {
 			slog.InfoContext(ctx, "update_user")
@@ -121,6 +122,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 				MicrosoftUserID:   qIntermediateSession.MicrosoftUserID,
 				DisplayName:       qIntermediateSession.UserDisplayName,
 				ProfilePictureUrl: qIntermediateSession.ProfilePictureUrl,
+				PasswordBcrypt:    qIntermediateSession.NewUserPasswordBcrypt,
 			})
 			if err != nil {
 				return nil, fmt.Errorf("update user: %w", err)
@@ -343,6 +345,10 @@ func validateAuthRequirementsSatisfiedInner(qIntermediateSession queries.Interme
 	switch *qIntermediateSession.PrimaryAuthFactor {
 	case queries.PrimaryAuthFactorEmail:
 		if qOrg.LogInWithEmail {
+			return nil
+		}
+	case queries.PrimaryAuthFactorPassword:
+		if qOrg.LogInWithPassword {
 			return nil
 		}
 	case queries.PrimaryAuthFactorGoogle:

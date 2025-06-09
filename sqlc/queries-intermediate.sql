@@ -305,6 +305,18 @@ WHERE
 RETURNING
     *;
 
+-- name: GetUsersByForLogInWithPassword :many
+SELECT
+    users.*
+FROM
+    users
+    JOIN organizations ON users.organization_id = organizations.id
+WHERE
+    users.email = $1
+    AND organizations.project_id = $2
+    AND organizations.log_in_with_password = TRUE
+    AND NOT organizations.logins_disabled;
+
 -- name: UpdateIntermediateSessionOrganizationID :one
 UPDATE
     intermediate_sessions
@@ -742,7 +754,8 @@ SET
     google_user_id = coalesce(sqlc.narg (google_user_id), google_user_id),
     microsoft_user_id = coalesce(sqlc.narg (microsoft_user_id), microsoft_user_id),
     display_name = coalesce(sqlc.narg (display_name), display_name),
-    profile_picture_url = coalesce(sqlc.narg (profile_picture_url), profile_picture_url)
+    profile_picture_url = coalesce(sqlc.narg (profile_picture_url), profile_picture_url),
+    password_bcrypt = coalesce(sqlc.narg (password_bcrypt), password_bcrypt)
 WHERE
     id = $1
 RETURNING
