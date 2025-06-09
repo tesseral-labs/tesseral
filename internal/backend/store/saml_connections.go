@@ -202,8 +202,9 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *backendv1.CreateS
 		EventDetails: map[string]any{
 			"samlConnection": samlConnection,
 		},
-		ResourceType: queries.AuditLogEventResourceTypeSamlConnection,
-		ResourceID:   &qSAMLConnection.ID,
+		OrganizationID: &qSAMLConnection.OrganizationID,
+		ResourceType:   queries.AuditLogEventResourceTypeSamlConnection,
+		ResourceID:     &qSAMLConnection.ID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
@@ -310,8 +311,9 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *backendv1.UpdateS
 			"samlConnection":         samlConnection,
 			"previousSAMLConnection": previousSAMLConnection,
 		},
-		ResourceType: queries.AuditLogEventResourceTypeSamlConnection,
-		ResourceID:   &qSAMLConnection.ID,
+		OrganizationID: &qSAMLConnection.OrganizationID,
+		ResourceType:   queries.AuditLogEventResourceTypeSamlConnection,
+		ResourceID:     &qSAMLConnection.ID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
@@ -363,8 +365,9 @@ func (s *Store) DeleteSAMLConnection(ctx context.Context, req *backendv1.DeleteS
 		EventDetails: map[string]any{
 			"samlConnection": samlConnection,
 		},
-		ResourceType: queries.AuditLogEventResourceTypeSamlConnection,
-		ResourceID:   &qSAMLConnection.ID,
+		OrganizationID: &qSAMLConnection.OrganizationID,
+		ResourceType:   queries.AuditLogEventResourceTypeSamlConnection,
+		ResourceID:     &qSAMLConnection.ID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
