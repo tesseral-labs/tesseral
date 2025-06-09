@@ -107,6 +107,7 @@ const (
 	PrimaryAuthFactorSaml          PrimaryAuthFactor = "saml"
 	PrimaryAuthFactorImpersonation PrimaryAuthFactor = "impersonation"
 	PrimaryAuthFactorGithub        PrimaryAuthFactor = "github"
+	PrimaryAuthFactorPassword      PrimaryAuthFactor = "password"
 )
 
 func (e *PrimaryAuthFactor) Scan(src interface{}) error {

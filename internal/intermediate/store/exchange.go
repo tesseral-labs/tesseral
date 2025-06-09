@@ -309,6 +309,10 @@ func validateAuthRequirementsSatisfiedInner(qIntermediateSession queries.Interme
 		if qOrg.LogInWithEmail {
 			return nil
 		}
+	case queries.PrimaryAuthFactorPassword:
+		if qOrg.LogInWithPassword {
+			return nil
+		}
 	case queries.PrimaryAuthFactorGoogle:
 		if qIntermediateSession.GoogleUserID == nil {
 			panic(fmt.Errorf("intermediate session missing google user id: %v", qIntermediateSession.ID))

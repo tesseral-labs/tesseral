@@ -14,7 +14,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/sesv2"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2/types"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/bcryptcost"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
@@ -213,7 +212,7 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 
 	if err := s.attemptMatchPassword(ctx, q, *qMatchingUser, req.Password); err != nil {
 		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
-			return nil, apierror.NewInvalidArgumentError("incorrect password", nil)
+			return nil, apierror.NewIncorrectPasswordError("incorrect password", nil)
 		}
 
 		return nil, fmt.Errorf("attempt match password: %w", err)
@@ -274,6 +273,10 @@ func (s *Store) logInWithPassword(ctx context.Context, req *intermediatev1.Verif
 		return nil, fmt.Errorf("enforce project login enabled: %w", err)
 	}
 
+	if !qProject.LogInWithPassword {
+		return nil, apierror.NewFailedPreconditionError("log in with password not enabled", nil)
+	}
+
 	// this query checks for orgs with logins enabled and passwords enabled
 	qUsers, err := q.GetUsersByForLogInWithPassword(ctx, queries.GetUsersByForLogInWithPasswordParams{
 		ProjectID: authn.ProjectID(ctx),
@@ -311,7 +314,7 @@ func (s *Store) logInWithPassword(ctx context.Context, req *intermediatev1.Verif
 	}
 
 	if qMatchingUser == nil {
-		return nil, apierror.NewInvalidArgumentError("incorrect password", nil)
+		return nil, apierror.NewIncorrectPasswordError("incorrect password", nil)
 	}
 
 	passwordBcryptBytes, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcryptcost.Cost)
@@ -344,6 +347,13 @@ func (s *Store) logInWithPassword(ctx context.Context, req *intermediatev1.Verif
 		OrganizationID: &qMatchingUser.OrganizationID,
 	}); err != nil {
 		return nil, fmt.Errorf("update intermediate session password verified: %w", err)
+	}
+
+	if _, err := q.UpdateIntermediateSessionPrimaryAuthFactor(ctx, queries.UpdateIntermediateSessionPrimaryAuthFactorParams{
+		ID:                authn.IntermediateSessionID(ctx),
+		PrimaryAuthFactor: refOrNil(queries.PrimaryAuthFactorPassword),
+	}); err != nil {
+		return nil, fmt.Errorf("update intermediate session primary auth factor: %w", err)
 	}
 
 	if err := commit(); err != nil {

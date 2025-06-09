@@ -123,6 +123,8 @@ func parseIntermediateSession(qIntermediateSession queries.IntermediateSession, 
 		switch *qIntermediateSession.PrimaryAuthFactor {
 		case queries.PrimaryAuthFactorEmail:
 			primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_EMAIL
+		case queries.PrimaryAuthFactorPassword:
+			primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_PASSWORD
 		case queries.PrimaryAuthFactorGoogle:
 			primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GOOGLE
 		case queries.PrimaryAuthFactorMicrosoft:

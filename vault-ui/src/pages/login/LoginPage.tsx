@@ -1,3 +1,4 @@
+import { ConnectError } from "@connectrpc/connect";
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircleIcon } from "lucide-react";
@@ -37,8 +38,10 @@ import {
   issueEmailVerificationChallenge,
   listSAMLOrganizations,
   setEmailAsPrimaryLoginFactor,
+  verifyPassword,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import { useLoginPageQueryParams } from "@/hooks/use-login-page-query-params";
+import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
 import {
   ProjectSettingsProvider,
   useProjectSettings,
@@ -91,6 +94,7 @@ function SideBySideLoginPage({ children }: { children?: React.ReactNode }) {
 
 const schema = z.object({
   email: z.string().email(),
+  password: z.string(),
 });
 
 function LoginPageContents() {
@@ -153,6 +157,7 @@ function LoginPageContents() {
     resolver: zodResolver(schema),
     defaultValues: {
       email: "",
+      password: "",
     },
   });
 
@@ -163,9 +168,11 @@ function LoginPageContents() {
   const issueEmailVerificationChallengeMutation = useMutation(
     issueEmailVerificationChallenge,
   );
+  const { mutateAsync: verifyPasswordAsync } = useMutation(verifyPassword);
+  const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
   const navigate = useNavigate();
 
-  async function handleSubmit(values: z.infer<typeof schema>) {
+  async function handleLogInWithEmail(values: z.infer<typeof schema>) {
     setSubmitting(true);
     await createIntermediateSessionWithRelayedSessionState();
     await setEmailAsPrimaryLoginFactorMutation.mutateAsync({});
@@ -174,6 +181,32 @@ function LoginPageContents() {
     });
 
     navigate("/verify-email");
+  }
+
+  async function handleLogInWithPassword(values: z.infer<typeof schema>) {
+    setSubmitting(true);
+    await createIntermediateSessionWithRelayedSessionState();
+
+    try {
+      await verifyPasswordAsync({
+        email: values.email,
+        password: values.password,
+      });
+    } catch (e) {
+      if (e instanceof ConnectError && e.message === "[failed_precondition] incorrect_password") {
+        form.setError("password", {
+          type: "manual",
+          message: "Incorrect password",
+        });
+
+        setSubmitting(false);
+        return;
+      }
+
+      throw e;
+    }
+
+    redirectNextLoginFlowPage();
   }
 
   const watchEmail = form.watch("email");
@@ -197,116 +230,169 @@ function LoginPageContents() {
     settings.logInWithGoogle ||
     settings.logInWithMicrosoft ||
     settings.logInWithGithub;
-  const hasBelowFoldMethod = settings.logInWithEmail || settings.logInWithSaml;
+  const hasBelowFoldMethod =
+    settings.logInWithEmail ||
+    settings.logInWithPassword ||
+    settings.logInWithSaml;
 
   return (
-    <LoginFlowCard>
-      <Title title="Log in" />
-      <CardHeader>
-        <CardTitle>Log in to {settings.projectDisplayName}</CardTitle>
-        <CardDescription>Please sign in to continue.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-2">
-          {settings.logInWithGoogle && (
-            <Button
-              className="w-full"
-              variant="outline"
-              onClick={handleLogInWithGoogle}
-            >
-              <GoogleIcon />
-              Log in with Google
-            </Button>
-          )}
-          {settings.logInWithMicrosoft && (
-            <Button
-              className="w-full"
-              variant="outline"
-              onClick={handleLogInWithMicrosoft}
-            >
-              <MicrosoftIcon />
-              Log in with Microsoft
-            </Button>
-          )}
-          {settings.logInWithGithub && (
-            <Button
-              className="w-full"
-              variant="outline"
-              onClick={handleLogInWithGithub}
-            >
-              <GithubIcon />
-              Log in with GitHub
-            </Button>
-          )}
-        </div>
-
-        {hasAboveFoldMethod && hasBelowFoldMethod && (
-          <div className="block relative w-full cursor-default my-2 mt-6">
-            <div className="absolute inset-0 flex items-center border-muted-foreground">
-              <span className="w-full border-t"></span>
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">or</span>
-            </div>
-          </div>
-        )}
-
-        {hasBelowFoldMethod && (
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)}>
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="john.doe@example.com"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
+    <>
+      <LoginFlowCard>
+        <Title title="Log in" />
+        <CardHeader>
+          <CardTitle>Log in to {settings.projectDisplayName}</CardTitle>
+          <CardDescription>Please sign in to continue.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            {settings.logInWithGoogle && (
               <Button
-                type="submit"
-                className="mt-4 w-full"
-                disabled={submitting}
+                className="w-full"
+                variant="outline"
+                onClick={handleLogInWithGoogle}
               >
-                {submitting && (
-                  <LoaderCircleIcon className="h-4 w-4 animate-spin" />
-                )}
-                Log in
+                <GoogleIcon />
+                Log in with Google
               </Button>
+            )}
+            {settings.logInWithMicrosoft && (
+              <Button
+                className="w-full"
+                variant="outline"
+                onClick={handleLogInWithMicrosoft}
+              >
+                <MicrosoftIcon />
+                Log in with Microsoft
+              </Button>
+            )}
+            {settings.logInWithGithub && (
+              <Button
+                className="w-full"
+                variant="outline"
+                onClick={handleLogInWithGithub}
+              >
+                <GithubIcon />
+                Log in with GitHub
+              </Button>
+            )}
+          </div>
 
-              {listSAMLOrganizationsResponse?.organizations?.map((org) => (
-                <a
-                  key={org.id}
-                  href={`/api/saml/v1/${org.primarySamlConnectionId}/init`}
-                >
-                  <Button type="button" className="mt-4 w-full">
-                    Log in with SAML ({org.displayName})
+          {hasAboveFoldMethod && hasBelowFoldMethod && (
+            <div className="block relative w-full cursor-default my-2 mt-6">
+              <div className="absolute inset-0 flex items-center border-muted-foreground">
+                <span className="w-full border-t"></span>
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">or</span>
+              </div>
+            </div>
+          )}
+
+          {hasBelowFoldMethod && (
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(
+                  settings.logInWithPassword
+                    ? handleLogInWithPassword
+                    : handleLogInWithEmail,
+                )}
+              >
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="email"
+                            placeholder="john.doe@example.com"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {settings.logInWithPassword && (
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Password</FormLabel>
+                          <FormControl>
+                            <Input type="password" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                </div>
+
+                {settings.logInWithPassword ? (
+                  <>
+                    <Button
+                      type="submit"
+                      className="mt-4 w-full"
+                      disabled={submitting}
+                    >
+                      Log in with Password
+                    </Button>
+
+                    {settings.logInWithEmail && (
+                      <p className="text-center mt-4 text-xs text-muted-foreground">
+                        or{" "}
+                        <span
+                          onClick={form.handleSubmit(handleLogInWithEmail)}
+                          className=" cursor-pointer text-foreground underline underline-offset-2 decoration-muted-foreground"
+                        >
+                          Log in with Magic Link.
+                        </span>
+                      </p>
+                    )}
+                  </>
+                ) : (
+                  <Button
+                    type="submit"
+                    className="mt-4 w-full"
+                    disabled={submitting}
+                  >
+                    {submitting && (
+                      <LoaderCircleIcon className="h-4 w-4 animate-spin" />
+                    )}
+                    Log in with Magic Link
                   </Button>
-                </a>
-              ))}
-            </form>
-          </Form>
-        )}
+                )}
 
-        <p className="mt-4 text-xs text-muted-foreground">
-          Don't have an account?{" "}
-          <Link
-            to={`/signup${serializedQueryParamState}`}
-            className="cursor-pointer text-foreground underline underline-offset-2 decoration-muted-foreground"
-          >
-            Sign up.
-          </Link>
-        </p>
-      </CardContent>
-    </LoginFlowCard>
+                {listSAMLOrganizationsResponse?.organizations?.map((org) => (
+                  <a
+                    key={org.id}
+                    href={`/api/saml/v1/${org.primarySamlConnectionId}/init`}
+                  >
+                    <Button type="button" className="mt-4 w-full">
+                      Log in with SAML ({org.displayName})
+                    </Button>
+                  </a>
+                ))}
+              </form>
+            </Form>
+          )}
+        </CardContent>
+      </LoginFlowCard>
+
+      <p className="text-center mt-4 text-xs text-muted-foreground">
+        Don't have an account?{" "}
+        <Link
+          to={`/signup${serializedQueryParamState}`}
+          className="cursor-pointer text-foreground underline underline-offset-2 decoration-muted-foreground"
+        >
+          Sign up.
+        </Link>
+      </p>
+    </>
   );
 }
