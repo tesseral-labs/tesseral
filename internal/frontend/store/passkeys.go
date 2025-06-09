@@ -6,7 +6,6 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"log/slog"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -90,14 +89,16 @@ func (s *Store) DeleteMyPasskey(ctx context.Context, req *frontendv1.DeleteMyPas
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	pPasskey := parsePasskey(qPasskey)
-	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+	passkey := parsePasskey(qPasskey)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.passkeys.delete",
+		EventDetails: map[string]any{
+			"passkey": passkey,
+		},
 		ResourceType: queries.AuditLogEventResourceTypePasskey,
-		ResourceID:   qPasskey.ID,
-		EventType:    "delete",
-		Resource:     pPasskey,
+		ResourceID:   &qPasskey.ID,
 	}); err != nil {
-		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
 	return &frontendv1.DeleteMyPasskeyResponse{}, nil
@@ -169,18 +170,20 @@ func (s *Store) RegisterPasskey(ctx context.Context, req *frontendv1.RegisterPas
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	pPasskey := parsePasskey(qPasskey)
-	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+	passkey := parsePasskey(qPasskey)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.passdkeys.create",
+		EventDetails: map[string]any{
+			"passkey": passkey,
+		},
 		ResourceType: queries.AuditLogEventResourceTypePasskey,
-		ResourceID:   qPasskey.ID,
-		EventType:    "create",
-		Resource:     pPasskey,
+		ResourceID:   &qPasskey.ID,
 	}); err != nil {
-		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
 	return &frontendv1.RegisterPasskeyResponse{
-		Passkey: pPasskey,
+		Passkey: passkey,
 	}, nil
 }
 

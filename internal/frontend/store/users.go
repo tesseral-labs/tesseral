@@ -176,19 +176,21 @@ func (s *Store) UpdateUser(ctx context.Context, req *frontendv1.UpdateUserReques
 		return nil, fmt.Errorf("send sync user event: %w", err)
 	}
 
-	pUser := parseUser(qUpdatedUser)
-	pPreviousUser := parseUser(qUser)
-	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
-		ResourceType:     queries.AuditLogEventResourceTypeUser,
-		ResourceID:       qUser.ID,
-		EventType:        "update",
-		Resource:         pUser,
-		PreviousResource: pPreviousUser,
+	user := parseUser(qUpdatedUser)
+	previousUser := parseUser(qUser)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.users.update",
+		EventDetails: map[string]any{
+			"user":         user,
+			"previousUser": previousUser,
+		},
+		ResourceType: queries.AuditLogEventResourceTypeUser,
+		ResourceID:   &qUser.ID,
 	}); err != nil {
-		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
-	return &frontendv1.UpdateUserResponse{User: pUser}, nil
+	return &frontendv1.UpdateUserResponse{User: user}, nil
 }
 
 func (s *Store) DeleteUser(ctx context.Context, req *frontendv1.DeleteUserRequest) (*frontendv1.DeleteUserResponse, error) {
@@ -236,14 +238,16 @@ func (s *Store) DeleteUser(ctx context.Context, req *frontendv1.DeleteUserReques
 		return nil, fmt.Errorf("send sync user event: %w", err)
 	}
 
-	pUser := parseUser(qUser)
-	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+	user := parseUser(qUser)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.users.delete",
+		EventDetails: map[string]any{
+			"user": user,
+		},
 		ResourceType: queries.AuditLogEventResourceTypeUser,
-		ResourceID:   qUser.ID,
-		EventType:    "delete",
-		Resource:     pUser,
+		ResourceID:   &qUser.ID,
 	}); err != nil {
-		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
 	return &frontendv1.DeleteUserResponse{}, nil

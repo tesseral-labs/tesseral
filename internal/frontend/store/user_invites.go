@@ -165,17 +165,19 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *frontendv1.CreateUser
 		}
 	}
 
-	pUserInvite := parseUserInvite(qUserInvite)
-	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+	userInvite := parseUserInvite(qUserInvite)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.user_invites.create",
+		EventDetails: map[string]any{
+			"userInvite": userInvite,
+		},
 		ResourceType: queries.AuditLogEventResourceTypeUserInvite,
-		ResourceID:   qUserInvite.ID,
-		EventType:    "create",
-		Resource:     pUserInvite,
+		ResourceID:   &qUserInvite.ID,
 	}); err != nil {
-		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
-	return &frontendv1.CreateUserInviteResponse{UserInvite: pUserInvite}, nil
+	return &frontendv1.CreateUserInviteResponse{UserInvite: userInvite}, nil
 }
 
 func (s *Store) DeleteUserInvite(ctx context.Context, req *frontendv1.DeleteUserInviteRequest) (*frontendv1.DeleteUserInviteResponse, error) {
@@ -214,14 +216,16 @@ func (s *Store) DeleteUserInvite(ctx context.Context, req *frontendv1.DeleteUser
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	pUserInvite := parseUserInvite(qUserInvite)
-	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
+	userInvite := parseUserInvite(qUserInvite)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.user_invites.delete",
+		EventDetails: map[string]any{
+			"userInvite": userInvite,
+		},
 		ResourceType: queries.AuditLogEventResourceTypeUserInvite,
-		ResourceID:   qUserInvite.ID,
-		EventType:    "delete",
-		Resource:     pUserInvite,
+		ResourceID:   &qUserInvite.ID,
 	}); err != nil {
-		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
 	return &frontendv1.DeleteUserInviteResponse{}, nil
