@@ -305,7 +305,7 @@ WHERE
 RETURNING
     *;
 
--- name: GetUsersByProjectIDAndEmail :many
+-- name: GetUsersByForLogInWithPassword :many
 SELECT
     users.*
 FROM
@@ -314,6 +314,7 @@ FROM
 WHERE
     users.email = $1
     AND organizations.project_id = $2
+    AND organizations.log_in_with_password = TRUE
     AND NOT organizations.logins_disabled;
 
 -- name: UpdateIntermediateSessionOrganizationID :one

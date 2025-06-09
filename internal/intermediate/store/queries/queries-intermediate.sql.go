@@ -1444,7 +1444,7 @@ func (q *Queries) GetUserPasskeyCredentialIDs(ctx context.Context, userID uuid.U
 	return items, nil
 }
 
-const getUsersByProjectIDAndEmail = `-- name: GetUsersByProjectIDAndEmail :many
+const getUsersByForLogInWithPassword = `-- name: GetUsersByForLogInWithPassword :many
 SELECT
     users.id, users.organization_id, users.password_bcrypt, users.google_user_id, users.microsoft_user_id, users.email, users.create_time, users.update_time, users.deactivate_time, users.is_owner, users.failed_password_attempts, users.password_lockout_expire_time, users.authenticator_app_secret_ciphertext, users.failed_authenticator_app_attempts, users.authenticator_app_lockout_expire_time, users.authenticator_app_recovery_code_sha256s, users.display_name, users.profile_picture_url, users.github_user_id
 FROM
@@ -1453,16 +1453,17 @@ FROM
 WHERE
     users.email = $1
     AND organizations.project_id = $2
+    AND organizations.log_in_with_password = TRUE
     AND NOT organizations.logins_disabled
 `
 
-type GetUsersByProjectIDAndEmailParams struct {
+type GetUsersByForLogInWithPasswordParams struct {
 	Email     string
 	ProjectID uuid.UUID
 }
 
-func (q *Queries) GetUsersByProjectIDAndEmail(ctx context.Context, arg GetUsersByProjectIDAndEmailParams) ([]User, error) {
-	rows, err := q.db.Query(ctx, getUsersByProjectIDAndEmail, arg.Email, arg.ProjectID)
+func (q *Queries) GetUsersByForLogInWithPassword(ctx context.Context, arg GetUsersByForLogInWithPasswordParams) ([]User, error) {
+	rows, err := q.db.Query(ctx, getUsersByForLogInWithPassword, arg.Email, arg.ProjectID)
 	if err != nil {
 		return nil, err
 	}

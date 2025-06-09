@@ -274,8 +274,8 @@ func (s *Store) logInWithPassword(ctx context.Context, req *intermediatev1.Verif
 		return nil, fmt.Errorf("enforce project login enabled: %w", err)
 	}
 
-	// this query filters organizations with logins disabled
-	qUsers, err := q.GetUsersByProjectIDAndEmail(ctx, queries.GetUsersByProjectIDAndEmailParams{
+	// this query checks for orgs with logins enabled and passwords enabled
+	qUsers, err := q.GetUsersByForLogInWithPassword(ctx, queries.GetUsersByForLogInWithPasswordParams{
 		ProjectID: authn.ProjectID(ctx),
 		Email:     req.Email,
 	})
