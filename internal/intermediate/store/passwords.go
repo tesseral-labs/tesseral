@@ -202,14 +202,6 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 		return nil, apierror.NewFailedPreconditionError("no corresponding user found", nil)
 	}
 
-	if qMatchingUser.PasswordBcrypt == nil {
-		return nil, apierror.NewFailedPreconditionError("user does not have password configured", nil)
-	}
-
-	if qMatchingUser.PasswordLockoutExpireTime != nil && qMatchingUser.PasswordLockoutExpireTime.After(time.Now()) {
-		return nil, apierror.NewFailedPreconditionError("too many password attempts; user is temporarily locked out", nil)
-	}
-
 	if err := s.attemptMatchPassword(ctx, q, *qMatchingUser, req.Password); err != nil {
 		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
 			return nil, apierror.NewIncorrectPasswordError("incorrect password", nil)
@@ -292,14 +284,6 @@ func (s *Store) logInWithPassword(ctx context.Context, req *intermediatev1.Verif
 
 	qMatchingUser := qUsers[0]
 
-	if qMatchingUser.PasswordBcrypt == nil {
-		return nil, apierror.NewFailedPreconditionError("user does not have password configured", nil)
-	}
-
-	if qMatchingUser.PasswordLockoutExpireTime != nil && qMatchingUser.PasswordLockoutExpireTime.After(time.Now()) {
-		return nil, apierror.NewFailedPreconditionError("too many password attempts; user is temporarily locked out", nil)
-	}
-
 	if err := s.attemptMatchPassword(ctx, q, qMatchingUser, req.Password); err != nil {
 		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
 			return nil, apierror.NewIncorrectPasswordError("incorrect password", nil)
@@ -354,11 +338,15 @@ func (s *Store) logInWithPassword(ctx context.Context, req *intermediatev1.Verif
 	return &intermediatev1.VerifyPasswordResponse{}, nil
 }
 
-// attemptMatchPassword attempts to match a password to a user.
-//
-// Callers must check that the user has a PasswordBcrypt, and that the user is
-// not locked out of password attempts.
 func (s *Store) attemptMatchPassword(ctx context.Context, q *queries.Queries, qUser queries.User, password string) error {
+	if qUser.PasswordBcrypt == nil {
+		return apierror.NewFailedPreconditionError("user does not have password configured", nil)
+	}
+
+	if qUser.PasswordLockoutExpireTime != nil && qUser.PasswordLockoutExpireTime.After(time.Now()) {
+		return apierror.NewFailedPreconditionError("too many password attempts; user is temporarily locked out", nil)
+	}
+
 	if err := bcrypt.CompareHashAndPassword([]byte(*qUser.PasswordBcrypt), []byte(password)); err != nil {
 		attempts := qUser.FailedPasswordAttempts + 1
 		if attempts >= passwordLockoutAttempts {
