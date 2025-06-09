@@ -202,6 +202,13 @@ service IntermediateService {
     };
   }
 
+  rpc SetPasswordAsPrimaryLoginFactor(SetPasswordAsPrimaryLoginFactorRequest) returns (SetPasswordAsPrimaryLoginFactorResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/set-password-as-primary-login-factor"
+      body: "*"
+    };
+  }
+
   rpc ExchangeSessionForIntermediateSession(ExchangeSessionForIntermediateSessionRequest) returns (ExchangeSessionForIntermediateSessionResponse) {
     option (google.api.http) = {
       post: "/intermediate/v1/exchange-session-for-intermediate-session"
@@ -534,6 +541,10 @@ message VerifyPasskeyResponse {}
 message SetEmailAsPrimaryLoginFactorRequest {}
 
 message SetEmailAsPrimaryLoginFactorResponse {}
+
+message SetPasswordAsPrimaryLoginFactorRequest {}
+
+message SetPasswordAsPrimaryLoginFactorResponse {}
 
 message ExchangeSessionForIntermediateSessionRequest {
   string refresh_token = 1;

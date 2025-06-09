@@ -754,7 +754,8 @@ SET
     google_user_id = coalesce(sqlc.narg (google_user_id), google_user_id),
     microsoft_user_id = coalesce(sqlc.narg (microsoft_user_id), microsoft_user_id),
     display_name = coalesce(sqlc.narg (display_name), display_name),
-    profile_picture_url = coalesce(sqlc.narg (profile_picture_url), profile_picture_url)
+    profile_picture_url = coalesce(sqlc.narg (profile_picture_url), profile_picture_url),
+    password_bcrypt = coalesce(sqlc.narg (password_bcrypt), password_bcrypt)
 WHERE
     id = @user_id
 RETURNING

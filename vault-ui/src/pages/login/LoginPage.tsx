@@ -37,7 +37,7 @@ import {
   getMicrosoftOAuthRedirectURL,
   issueEmailVerificationChallenge,
   listSAMLOrganizations,
-  setEmailAsPrimaryLoginFactor,
+  setEmailAsPrimaryLoginFactor, setPasswordAsPrimaryLoginFactor,
   verifyPassword,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import { useLoginPageQueryParams } from "@/hooks/use-login-page-query-params";
@@ -46,6 +46,7 @@ import {
   ProjectSettingsProvider,
   useProjectSettings,
 } from "@/lib/project-settings";
+import { toast } from "sonner";
 
 export function LoginPage() {
   return (
@@ -169,6 +170,7 @@ function LoginPageContents() {
     issueEmailVerificationChallenge,
   );
   const { mutateAsync: verifyPasswordAsync } = useMutation(verifyPassword);
+  const { mutateAsync: setPasswordAsPrimaryLoginFactorAsync } = useMutation(setPasswordAsPrimaryLoginFactor);
   const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
   const navigate = useNavigate();
 
@@ -204,13 +206,15 @@ function LoginPageContents() {
       }
 
       if (e instanceof ConnectError && e.message === "[failed_precondition] passwords_unavailable_for_email") {
-        form.setError("email", {
-          type: "manual",
-          message: "Cannot log in with password for this email. Log in with Magic Link instead.",
+        await setPasswordAsPrimaryLoginFactorAsync({})
+        await issueEmailVerificationChallengeMutation.mutateAsync({
+          email: values.email,
         });
 
-        setSubmitting(false);
-        return;
+        toast.warning("To continue, you must verify your email address.");
+
+        navigate("/verify-email");
+        return
       }
 
       throw e;

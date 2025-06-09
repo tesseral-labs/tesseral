@@ -3401,9 +3401,10 @@ SET
     google_user_id = coalesce($2, google_user_id),
     microsoft_user_id = coalesce($3, microsoft_user_id),
     display_name = coalesce($4, display_name),
-    profile_picture_url = coalesce($5, profile_picture_url)
+    profile_picture_url = coalesce($5, profile_picture_url),
+    password_bcrypt = coalesce($6, password_bcrypt)
 WHERE
-    id = $6
+    id = $7
 RETURNING
     id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 `
@@ -3414,6 +3415,7 @@ type UpdateUserDetailsParams struct {
 	MicrosoftUserID   *string
 	DisplayName       *string
 	ProfilePictureUrl *string
+	PasswordBcrypt    *string
 	UserID            uuid.UUID
 }
 
@@ -3424,6 +3426,7 @@ func (q *Queries) UpdateUserDetails(ctx context.Context, arg UpdateUserDetailsPa
 		arg.MicrosoftUserID,
 		arg.DisplayName,
 		arg.ProfilePictureUrl,
+		arg.PasswordBcrypt,
 		arg.UserID,
 	)
 	var i User
