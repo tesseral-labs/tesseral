@@ -203,6 +203,16 @@ function LoginPageContents() {
         return;
       }
 
+      if (e instanceof ConnectError && e.message === "[failed_precondition] passwords_unavailable_for_email") {
+        form.setError("email", {
+          type: "manual",
+          message: "Cannot log in with password for this email. Log in with Magic Link instead.",
+        });
+
+        setSubmitting(false);
+        return;
+      }
+
       throw e;
     }
 

@@ -286,35 +286,26 @@ func (s *Store) logInWithPassword(ctx context.Context, req *intermediatev1.Verif
 		return nil, fmt.Errorf("get users by project id and email: %w", err)
 	}
 
-	var qMatchingUser *queries.User
-	for _, qUser := range qUsers {
-		// In the main VerifyPassword flow, these are errors. In this flow, we
-		// skip users that don't have a password or are locked out.
-		if qUser.PasswordBcrypt == nil {
-			continue
-		}
-
-		if qUser.PasswordLockoutExpireTime != nil && qUser.PasswordLockoutExpireTime.After(time.Now()) {
-			continue
-		}
-
-		if err := s.attemptMatchPassword(ctx, q, qUser, req.Password); err != nil {
-			// in the regular flow, this is an error; in this flow, this is just
-			// not our match
-			if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
-				continue
-			}
-
-			// unexpected error
-			return nil, fmt.Errorf("attempt match password: %w", err)
-		}
-
-		qMatchingUser = &qUser
-		break
+	if len(qUsers) != 1 {
+		return nil, apierror.NewPasswordsUnavailableForEmailError("password-based login not available for this email", nil)
 	}
 
-	if qMatchingUser == nil {
-		return nil, apierror.NewIncorrectPasswordError("incorrect password", nil)
+	qMatchingUser := qUsers[0]
+
+	if qMatchingUser.PasswordBcrypt == nil {
+		return nil, apierror.NewFailedPreconditionError("user does not have password configured", nil)
+	}
+
+	if qMatchingUser.PasswordLockoutExpireTime != nil && qMatchingUser.PasswordLockoutExpireTime.After(time.Now()) {
+		return nil, apierror.NewFailedPreconditionError("too many password attempts; user is temporarily locked out", nil)
+	}
+
+	if err := s.attemptMatchPassword(ctx, q, qMatchingUser, req.Password); err != nil {
+		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
+			return nil, apierror.NewIncorrectPasswordError("incorrect password", nil)
+		}
+
+		return nil, fmt.Errorf("attempt match password: %w", err)
 	}
 
 	passwordBcryptBytes, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcryptcost.Cost)
