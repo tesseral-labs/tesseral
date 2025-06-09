@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -15,13 +14,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/uuidv7"
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
 	"google.golang.org/protobuf/types/known/structpb"
-)
-
-var (
-	titleCaser = cases.Title(language.English)
 )
 
 func (s *Store) CreateCustomAuditLogEvent(ctx context.Context, req *backendv1.CreateAuditLogEventRequest) (*backendv1.CreateAuditLogEventResponse, error) {
@@ -349,23 +342,4 @@ func parseAuditLogEvent(qEvent queries.AuditLogEvent) (*backendv1.AuditLogEvent,
 		EventTime:             timestampOrNil(qEvent.EventTime),
 		EventDetails:          &eventDetails,
 	}, nil
-}
-
-func capitalizeFirstLetter(s string) string {
-	if len(s) == 0 {
-		return s
-	}
-	return strings.ToUpper(s[:1]) + s[1:]
-}
-
-func snakeToCamelCase(s string) string {
-	parts := strings.Split(s, "_")
-	for i, part := range parts {
-		if i > 0 {
-			parts[i] = titleCaser.String(part)
-		} else {
-			parts[i] = strings.ToLower(part)
-		}
-	}
-	return strings.Join(parts, "")
 }
