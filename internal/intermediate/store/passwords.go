@@ -248,7 +248,10 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 func (s *Store) logInWithPassword(ctx context.Context, req *intermediatev1.VerifyPasswordRequest) (*intermediatev1.VerifyPasswordResponse, error) {
 	// In this flow, we don't require verifying an email or any other previous
 	// state on the intermediate session. We issue a user an intermediate
-	// session for (the first) user with that email and password.
+	// session for the unique user with that email and password.
+	//
+	// If there is no unique password-having user with the given email, then
+	// refuse to proceed.
 
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
