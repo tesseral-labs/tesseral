@@ -6,7 +6,6 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"log/slog"
 	"net/url"
 
 	"github.com/google/uuid"
@@ -197,18 +196,19 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *backendv1.CreateS
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	pSAMLConnection := parseSAMLConnection(qProject, qSAMLConnection)
-	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
-		ResourceType:   queries.AuditLogEventResourceTypeSamlConnection,
-		OrganizationID: &qSAMLConnection.OrganizationID,
-		ResourceID:     qSAMLConnection.ID,
-		EventType:      "create",
-		Resource:       pSAMLConnection,
+	samlConnection := parseSAMLConnection(qProject, qSAMLConnection)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.saml_connections.create",
+		EventDetails: map[string]any{
+			"samlConnection": samlConnection,
+		},
+		ResourceType: queries.AuditLogEventResourceTypeSamlConnection,
+		ResourceID:   &qSAMLConnection.ID,
 	}); err != nil {
-		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
-	return &backendv1.CreateSAMLConnectionResponse{SamlConnection: pSAMLConnection}, nil
+	return &backendv1.CreateSAMLConnectionResponse{SamlConnection: samlConnection}, nil
 }
 
 func (s *Store) UpdateSAMLConnection(ctx context.Context, req *backendv1.UpdateSAMLConnectionRequest) (*backendv1.UpdateSAMLConnectionResponse, error) {
@@ -302,20 +302,21 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *backendv1.UpdateS
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	pSAMLConnection := parseSAMLConnection(qProject, qUpdatedSAMLConnection)
-	pPreviousSAMLConnection := parseSAMLConnection(qProject, qSAMLConnection)
-	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
-		ResourceType:     queries.AuditLogEventResourceTypeSamlConnection,
-		OrganizationID:   &qSAMLConnection.OrganizationID,
-		ResourceID:       qSAMLConnection.ID,
-		EventType:        "update",
-		Resource:         pSAMLConnection,
-		PreviousResource: pPreviousSAMLConnection,
+	samlConnection := parseSAMLConnection(qProject, qUpdatedSAMLConnection)
+	previousSAMLConnection := parseSAMLConnection(qProject, qSAMLConnection)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.saml_connections.update",
+		EventDetails: map[string]any{
+			"samlConnection":         samlConnection,
+			"previousSAMLConnection": previousSAMLConnection,
+		},
+		ResourceType: queries.AuditLogEventResourceTypeSamlConnection,
+		ResourceID:   &qSAMLConnection.ID,
 	}); err != nil {
-		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
-	return &backendv1.UpdateSAMLConnectionResponse{SamlConnection: pSAMLConnection}, nil
+	return &backendv1.UpdateSAMLConnectionResponse{SamlConnection: samlConnection}, nil
 }
 
 func (s *Store) DeleteSAMLConnection(ctx context.Context, req *backendv1.DeleteSAMLConnectionRequest) (*backendv1.DeleteSAMLConnectionResponse, error) {
@@ -356,15 +357,16 @@ func (s *Store) DeleteSAMLConnection(ctx context.Context, req *backendv1.DeleteS
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	pSAMLConnection := parseSAMLConnection(qProject, qSAMLConnection)
-	if _, err := s.CreateTesseralAuditLogEvent(ctx, AuditLogEventData{
-		ResourceType:   queries.AuditLogEventResourceTypeSamlConnection,
-		OrganizationID: &qSAMLConnection.OrganizationID,
-		ResourceID:     qSAMLConnection.ID,
-		EventType:      "delete",
-		Resource:       pSAMLConnection,
+	samlConnection := parseSAMLConnection(qProject, qSAMLConnection)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.saml_connections.delete",
+		EventDetails: map[string]any{
+			"samlConnection": samlConnection,
+		},
+		ResourceType: queries.AuditLogEventResourceTypeSamlConnection,
+		ResourceID:   &qSAMLConnection.ID,
 	}); err != nil {
-		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
 	return &backendv1.DeleteSAMLConnectionResponse{}, nil
