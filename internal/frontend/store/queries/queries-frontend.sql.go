@@ -1211,6 +1211,40 @@ func (q *Queries) GetSessionDetailsByRefreshTokenSHA256(ctx context.Context, ref
 	return i, err
 }
 
+const getSessionDetailsByRelayedSessionRefreshTokenSHA256 = `-- name: GetSessionDetailsByRelayedSessionRefreshTokenSHA256 :one
+SELECT
+    sessions.id AS session_id,
+    users.id AS user_id,
+    organizations.id AS organization_id,
+    organizations.project_id AS project_id
+FROM
+    relayed_sessions
+    JOIN sessions ON relayed_sessions.session_id = sessions.id
+    JOIN users ON sessions.user_id = users.id
+    JOIN organizations ON users.organization_id = organizations.id
+WHERE
+    relayed_sessions.relayed_refresh_token_sha256 = $1
+`
+
+type GetSessionDetailsByRelayedSessionRefreshTokenSHA256Row struct {
+	SessionID      uuid.UUID
+	UserID         uuid.UUID
+	OrganizationID uuid.UUID
+	ProjectID      uuid.UUID
+}
+
+func (q *Queries) GetSessionDetailsByRelayedSessionRefreshTokenSHA256(ctx context.Context, relayedRefreshTokenSha256 []byte) (GetSessionDetailsByRelayedSessionRefreshTokenSHA256Row, error) {
+	row := q.db.QueryRow(ctx, getSessionDetailsByRelayedSessionRefreshTokenSHA256, relayedRefreshTokenSha256)
+	var i GetSessionDetailsByRelayedSessionRefreshTokenSHA256Row
+	err := row.Scan(
+		&i.SessionID,
+		&i.UserID,
+		&i.OrganizationID,
+		&i.ProjectID,
+	)
+	return i, err
+}
+
 const getSessionSigningKeyPublicKey = `-- name: GetSessionSigningKeyPublicKey :one
 SELECT
     public_key

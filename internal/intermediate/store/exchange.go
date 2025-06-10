@@ -205,6 +205,18 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		relayedSessionToken = idformat.RelayedSessionToken.Format(relayedSessionTokenUUID)
 	}
 
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.session.create",
+		EventDetails: map[string]any{
+			"session": parseSessionEventDetails(qSession, nil),
+		},
+		OrganizationID: &qOrg.ID,
+		ResourceType:   queries.AuditLogEventResourceTypeSession,
+		ResourceID:     &qSession.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, err
 	}

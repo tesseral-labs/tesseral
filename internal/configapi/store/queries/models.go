@@ -35,6 +35,7 @@ const (
 	AuditLogEventResourceTypeRole                            AuditLogEventResourceType = "role"
 	AuditLogEventResourceTypeSamlConnection                  AuditLogEventResourceType = "saml_connection"
 	AuditLogEventResourceTypeScimApiKey                      AuditLogEventResourceType = "scim_api_key"
+	AuditLogEventResourceTypeSession                         AuditLogEventResourceType = "session"
 	AuditLogEventResourceTypeUser                            AuditLogEventResourceType = "user"
 	AuditLogEventResourceTypeUserAuthenticatorAppChallenge   AuditLogEventResourceType = "user_authenticator_app_challenge"
 	AuditLogEventResourceTypeUserImpersonationToken          AuditLogEventResourceType = "user_impersonation_token"

@@ -12,6 +12,60 @@ import (
 	"github.com/google/uuid"
 )
 
+const createAuditLogEvent = `-- name: CreateAuditLogEvent :one
+INSERT INTO audit_log_events (id, project_id, organization_id, user_id, session_id, resource_type, resource_id, event_name, event_time, event_details)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, coalesce($10, '{}'::jsonb))
+RETURNING
+    id, project_id, organization_id, user_id, session_id, api_key_id, dogfood_user_id, dogfood_session_id, backend_api_key_id, intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details
+`
+
+type CreateAuditLogEventParams struct {
+	ID             uuid.UUID
+	ProjectID      uuid.UUID
+	OrganizationID *uuid.UUID
+	UserID         *uuid.UUID
+	SessionID      *uuid.UUID
+	ResourceType   *AuditLogEventResourceType
+	ResourceID     *uuid.UUID
+	EventName      string
+	EventTime      *time.Time
+	EventDetails   interface{}
+}
+
+func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEventParams) (AuditLogEvent, error) {
+	row := q.db.QueryRow(ctx, createAuditLogEvent,
+		arg.ID,
+		arg.ProjectID,
+		arg.OrganizationID,
+		arg.UserID,
+		arg.SessionID,
+		arg.ResourceType,
+		arg.ResourceID,
+		arg.EventName,
+		arg.EventTime,
+		arg.EventDetails,
+	)
+	var i AuditLogEvent
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.OrganizationID,
+		&i.UserID,
+		&i.SessionID,
+		&i.ApiKeyID,
+		&i.DogfoodUserID,
+		&i.DogfoodSessionID,
+		&i.BackendApiKeyID,
+		&i.IntermediateSessionID,
+		&i.ResourceType,
+		&i.ResourceID,
+		&i.EventName,
+		&i.EventTime,
+		&i.EventDetails,
+	)
+	return i, err
+}
+
 const createImpersonatedSession = `-- name: CreateImpersonatedSession :one
 INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, impersonator_user_id, primary_auth_factor)
     VALUES ($1, $2, $3, $4, $5, 'impersonation')
@@ -1368,6 +1422,42 @@ func (q *Queries) GetSessionDetailsByRefreshTokenSHA256(ctx context.Context, ref
 		&i.Email,
 		&i.GoogleUserID,
 		&i.MicrosoftUserID,
+	)
+	return i, err
+}
+
+const getUserByID = `-- name: GetUserByID :one
+SELECT
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+FROM
+    users
+WHERE
+    id = $1
+`
+
+func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByID, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DeactivateTime,
+		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
+		&i.AuthenticatorAppSecretCiphertext,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
+		&i.AuthenticatorAppRecoveryCodeSha256s,
+		&i.DisplayName,
+		&i.ProfilePictureUrl,
+		&i.GithubUserID,
 	)
 	return i, err
 }

@@ -19,10 +19,11 @@ import (
 )
 
 type logAuditEventParams struct {
-	EventName    string
-	EventDetails map[string]any
-	ResourceType queries.AuditLogEventResourceType
-	ResourceID   *uuid.UUID
+	EventName      string
+	EventDetails   map[string]any
+	OrganizationID *uuid.UUID
+	ResourceType   queries.AuditLogEventResourceType
+	ResourceID     *uuid.UUID
 }
 
 func (s *Store) logAuditEvent(ctx context.Context, q *queries.Queries, data logAuditEventParams) (queries.AuditLogEvent, error) {
@@ -225,4 +226,40 @@ func parseAuditLogEvent(qEvent queries.AuditLogEvent) (*frontendv1.AuditLogEvent
 		EventTime:    timestampOrNil(qEvent.EventTime),
 		EventDetails: &eventDetails,
 	}, nil
+}
+
+type sessionEventDetails struct {
+	ID                string                       `json:"id"`
+	UserID            string                       `json:"userId"`
+	ExpireTime        string                       `json:"expireTime,omitempty"`
+	LastActiveTime    string                       `json:"lastActiveTime,omitempty"`
+	PrimaryAuthFactor frontendv1.PrimaryAuthFactor `json:"primaryAuthFactor,omitempty"`
+	ImpersonatorEmail string                       `json:"impersonatorEmail,omitempty"`
+}
+
+func parseSessionEventDetails(qSession queries.Session, impersonatorEmail *string) *sessionEventDetails {
+	var primaryAuthFactor frontendv1.PrimaryAuthFactor
+	switch qSession.PrimaryAuthFactor {
+	case queries.PrimaryAuthFactorEmail:
+		primaryAuthFactor = frontendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_EMAIL
+	case queries.PrimaryAuthFactorGoogle:
+		primaryAuthFactor = frontendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GOOGLE
+	case queries.PrimaryAuthFactorMicrosoft:
+		primaryAuthFactor = frontendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_MICROSOFT
+	case queries.PrimaryAuthFactorGithub:
+		primaryAuthFactor = frontendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GITHUB
+	case queries.PrimaryAuthFactorSaml:
+		primaryAuthFactor = frontendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_SAML
+	default:
+		primaryAuthFactor = frontendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_UNSPECIFIED
+	}
+
+	return &sessionEventDetails{
+		ID:                idformat.Session.Format(qSession.ID),
+		UserID:            idformat.User.Format(qSession.UserID),
+		ExpireTime:        qSession.ExpireTime.String(),
+		LastActiveTime:    qSession.LastActiveTime.String(),
+		PrimaryAuthFactor: primaryAuthFactor,
+		ImpersonatorEmail: derefOrEmpty(impersonatorEmail),
+	}
 }
