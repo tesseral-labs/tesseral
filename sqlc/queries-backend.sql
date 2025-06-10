@@ -119,7 +119,8 @@ SET
     after_signup_redirect_uri = $16,
     cookie_domain = $17,
     api_keys_enabled = $21,
-    api_key_secret_token_prefix = $22
+    api_key_secret_token_prefix = $22,
+    audit_logs_enabled = $23
 WHERE
     id = $1
 RETURNING

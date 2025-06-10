@@ -395,6 +395,7 @@ type Project struct {
 	GithubOauthClientSecretCiphertext    []byte
 	ApiKeysEnabled                       bool
 	ApiKeySecretTokenPrefix              *string
+	AuditLogsEnabled                     bool
 }
 
 type ProjectEmailQuotaDailyUsage struct {
