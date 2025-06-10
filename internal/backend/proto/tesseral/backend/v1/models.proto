@@ -101,6 +101,9 @@ message Project {
 
   // The prefix used for API Key secret tokens.
   optional string api_key_secret_token_prefix = 28;
+
+  // Whether the Project has audit logging enabled.
+  optional bool audit_logs_enabled = 29;
 }
 
 message VaultDomainSettings {

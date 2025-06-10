@@ -49,6 +49,7 @@ import { toast } from 'sonner';
 import { InputTags } from '@/components/input-tags';
 import { EditAPIKeySettingsButton } from './project-ui-settings/EditAPIKeySettingsButton';
 import { ConsoleCardDetails } from '@/components/ui/console-card';
+import { EditProjectAuditLogSettingsButton } from './EditProjectAuditLogSettingsButton';
 
 export const ProjectDetailsTab = () => {
   const { data: getProjectResponse } = useQuery(getProject, {});
@@ -208,6 +209,33 @@ export const ProjectDetailsTab = () => {
               </DetailsGridColumn>
             </DetailsGrid>
           )}
+        </ConsoleCardContent>
+      </ConsoleCard>
+
+      <ConsoleCard>
+        <ConsoleCardHeader>
+          <ConsoleCardDetails>
+            <ConsoleCardTitle>Audit log settings</ConsoleCardTitle>
+            <ConsoleCardDescription>
+              Settings for whether or not audit logs are visible to your
+              customers in the Vault.
+            </ConsoleCardDescription>
+          </ConsoleCardDetails>
+          <EditProjectAuditLogSettingsButton />
+        </ConsoleCardHeader>
+        <ConsoleCardContent>
+          <DetailsGrid>
+            <DetailsGridColumn>
+              <DetailsGridEntry>
+                <DetailsGridKey>Status</DetailsGridKey>
+                <DetailsGridValue>
+                  {getProjectResponse?.project?.auditLogsEnabled
+                    ? 'Enabled'
+                    : 'Disabled'}
+                </DetailsGridValue>
+              </DetailsGridEntry>
+            </DetailsGridColumn>
+          </DetailsGrid>
         </ConsoleCardContent>
       </ConsoleCard>
 

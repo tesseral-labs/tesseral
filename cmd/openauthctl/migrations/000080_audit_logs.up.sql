@@ -134,3 +134,7 @@ create index on audit_log_events (project_id, organization_id, event_name, id de
 -- The backend audit log UI further allows filtering by resource since the set of all Tesseral resources is fixed.
 -- We don't support this on the frontend since the set of resources is dynamic on a per-organization basis and can change over time.
 create index on audit_log_events (project_id, resource_type, resource_id, id desc) where resource_type is not null and resource_id is not null;
+
+-- Audit logs should be hidden from the vault if a project owner doesn't want to expose them.
+-- This requires a new audit_logs_enabled field on the project.
+alter table projects add column audit_logs_enabled boolean not null default true;

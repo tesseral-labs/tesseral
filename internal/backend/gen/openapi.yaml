@@ -2246,6 +2246,9 @@ components:
                 apiKeySecretTokenPrefix:
                     type: string
                     description: The prefix used for API Key secret tokens.
+                auditLogsEnabled:
+                    type: boolean
+                    description: Whether the Project has audit logging enabled.
             description: |-
                 Projects are the top-level object in Tesseral.
 

@@ -21,6 +21,7 @@ message Project {
   string vault_domain = 8;
   bool api_keys_enabled = 14;
   string api_key_secret_token_prefix = 15;
+  bool audit_logs_enabled = 16;
 }
 
 message Organization {
