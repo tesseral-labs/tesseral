@@ -33,6 +33,10 @@ func (s *Store) CreateCustomAuditLogEvent(ctx context.Context, req *backendv1.Cr
 
 	projectID := authn.ProjectID(ctx)
 
+	if err := enforceSingleActor(req); err != nil {
+		return nil, apierror.NewInvalidArgumentError("exactly one of organization_id, user_id, session_id, or api_key_id must be provided", fmt.Errorf("enforce single actor: %w", err))
+	}
+
 	eventTime := time.Now().UTC()
 	if req.AuditLogEvent.EventTime != nil {
 		eventTime = req.AuditLogEvent.EventTime.AsTime()
@@ -50,195 +54,13 @@ func (s *Store) CreateCustomAuditLogEvent(ctx context.Context, req *backendv1.Cr
 		return nil, apierror.NewInvalidArgumentError("invalide event name", fmt.Errorf("validate event name: %w", err))
 	}
 
-	// Resolve the actor type/ID from the given inputs.
-	var (
-		orgID     *uuid.UUID
-		userID    *uuid.UUID
-		sessionID *uuid.UUID
-		apiKeyID  *uuid.UUID
-	)
-
-	if req.AuditLogEvent.Credential != "" {
-		if isJWTFormat(req.AuditLogEvent.Credential) {
-			parsedAccessToken, err := parseAccessTokenNoValidate(req.AuditLogEvent.Credential)
-			if err != nil {
-				return nil, apierror.NewInvalidArgumentError("invalid credential", fmt.Errorf("parse access token: %w", err))
-			}
-
-			parsedOrgID, err := idformat.Organization.Parse(parsedAccessToken.Organization.Id)
-			if err != nil {
-				return nil, apierror.NewInvalidArgumentError("invalid organization_id", fmt.Errorf("parse organization id: %w", err))
-			}
-			orgID = (*uuid.UUID)(&parsedOrgID)
-
-			parsedUserID, err := idformat.User.Parse(parsedAccessToken.User.Id)
-			if err != nil {
-				return nil, apierror.NewInvalidArgumentError("invalid user_id", fmt.Errorf("parse user id: %w", err))
-			}
-			userID = (*uuid.UUID)(&parsedUserID)
-
-			parsedSessionID, err := idformat.Session.Parse(parsedAccessToken.Session.Id)
-			if err != nil {
-				return nil, apierror.NewInvalidArgumentError("invalid session_id", fmt.Errorf("parse session id: %w", err))
-			}
-			sessionID = (*uuid.UUID)(&parsedSessionID)
-		} else if isAPIKeyFormat(req.AuditLogEvent.Credential) {
-			qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
-			if err != nil {
-				return nil, fmt.Errorf("get project by id: %w", err)
-			}
-
-			if qProject.ApiKeySecretTokenPrefix == nil {
-				return nil, apierror.NewPermissionDeniedError("api key secret token prefix is not set for this project", fmt.Errorf("api key secret token prefix not set for project"))
-			}
-
-			secretTokenBytes, err := prettysecret.Parse(*qProject.ApiKeySecretTokenPrefix, req.AuditLogEvent.Credential)
-			if err != nil {
-				return nil, apierror.NewUnauthenticatedApiKeyError("malformed_api_key_secret_token", fmt.Errorf("parse secret token: %w", err))
-			}
-			secretTokenSHA256 := sha256.Sum256(secretTokenBytes[:])
-
-			qApiKeyDetails, err := q.GetAPIKeyDetailsBySecretTokenSHA256(ctx, queries.GetAPIKeyDetailsBySecretTokenSHA256Params{
-				SecretTokenSha256: secretTokenSHA256[:],
-				ProjectID:         authn.ProjectID(ctx),
-			})
-			if err != nil {
-				if errors.Is(err, pgx.ErrNoRows) {
-					return nil, apierror.NewInvalidArgumentError("invalid credential", fmt.Errorf("get api key details: %w", err))
-				}
-
-				return nil, fmt.Errorf("get api key details: %w", err)
-			}
-
-			apiKeyID = (*uuid.UUID)(&qApiKeyDetails.ID)
-			orgID = (*uuid.UUID)(&qApiKeyDetails.OrganizationID)
-		}
-	}
-
-	if req.AuditLogEvent.OrganizationId != "" {
-		id, err := idformat.Organization.Parse(req.AuditLogEvent.OrganizationId)
-		if err != nil {
-			return nil, apierror.NewInvalidArgumentError("invalid organization_id", fmt.Errorf("parse organization id: %w", err))
-		}
-		orgID = (*uuid.UUID)(&id)
-
-		// Ensure the organization exists in the project.
-		if _, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
-			ID:        derefOrEmpty(orgID),
-			ProjectID: projectID,
-		}); err != nil {
-			if errors.Is(err, pgx.ErrNoRows) {
-				return nil, apierror.NewInvalidArgumentError("invalid organization_id", fmt.Errorf("get organization by id: %w", err))
-			}
-			return nil, fmt.Errorf("get organization by id: %w", err)
-		}
-	}
-
-	if req.AuditLogEvent.UserId != "" {
-		id, err := idformat.User.Parse(req.AuditLogEvent.UserId)
-		if err != nil {
-			return nil, apierror.NewInvalidArgumentError("invalid user_id", fmt.Errorf("parse user id: %w", err))
-		}
-		userID = (*uuid.UUID)(&id)
-
-		// Validate that the user exists in the project.
-		qUser, err := q.GetUser(ctx, queries.GetUserParams{
-			ID:        derefOrEmpty(userID),
-			ProjectID: projectID,
-		})
-		if err != nil {
-			if errors.Is(err, pgx.ErrNoRows) {
-				return nil, apierror.NewInvalidArgumentError("invalid user_id", fmt.Errorf("get user by id: %w", err))
-			}
-			return nil, fmt.Errorf("get user by id: %w", err)
-		}
-
-		// Ensure the user belongs to an organization in the project.
-		if _, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
-			ID:        qUser.OrganizationID,
-			ProjectID: projectID,
-		}); err != nil {
-			if errors.Is(err, pgx.ErrNoRows) {
-				return nil, apierror.NewInvalidArgumentError("invalid organization_id", fmt.Errorf("get organization by id: %w", err))
-			}
-			return nil, fmt.Errorf("get organization by id: %w", err)
-		}
-	}
-
-	if req.AuditLogEvent.SessionId != "" {
-		id, err := idformat.Session.Parse(req.AuditLogEvent.SessionId)
-		if err != nil {
-			return nil, apierror.NewInvalidArgumentError("invalid session_id", fmt.Errorf("parse session id: %w", err))
-		}
-		sessionID = (*uuid.UUID)(&id)
-
-		qSession, err := q.GetSession(ctx, queries.GetSessionParams{
-			ID:        derefOrEmpty(sessionID),
-			ProjectID: projectID,
-		})
-		if err != nil {
-			if errors.Is(err, pgx.ErrNoRows) {
-				return nil, apierror.NewInvalidArgumentError("invalid session_id", fmt.Errorf("get session by id: %w", err))
-			}
-			return nil, fmt.Errorf("get session by id: %w", err)
-		}
-
-		// Ensure the session belongs to a valid user.
-		qUser, err := q.GetUser(ctx, queries.GetUserParams{
-			ID:        qSession.UserID,
-			ProjectID: projectID,
-		})
-		if err != nil {
-			if errors.Is(err, pgx.ErrNoRows) {
-				return nil, apierror.NewInvalidArgumentError("invalid user_id", fmt.Errorf("get user by id: %w", err))
-			}
-			return nil, fmt.Errorf("get user by id: %w", err)
-		}
-
-		// Ensure the user belongs to an organization in the project.
-		if _, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
-			ID:        qUser.OrganizationID,
-			ProjectID: projectID,
-		}); err != nil {
-			if errors.Is(err, pgx.ErrNoRows) {
-				return nil, apierror.NewInvalidArgumentError("invalid organization_id", fmt.Errorf("get organization by id: %w", err))
-			}
-			return nil, fmt.Errorf("get organization by id: %w", err)
-		}
-	}
-
-	if req.AuditLogEvent.ApiKeyId != "" {
-		id, err := idformat.APIKey.Parse(req.AuditLogEvent.ApiKeyId)
-		if err != nil {
-			return nil, apierror.NewInvalidArgumentError("invalid api_key_id", fmt.Errorf("parse api key id: %w", err))
-		}
-		apiKeyID = (*uuid.UUID)(&id)
-
-		qApiKey, err := q.GetAPIKeyByID(ctx, queries.GetAPIKeyByIDParams{
-			ID:        derefOrEmpty(apiKeyID),
-			ProjectID: projectID,
-		})
-		if err != nil {
-			if errors.Is(err, pgx.ErrNoRows) {
-				return nil, apierror.NewInvalidArgumentError("invalid api_key_id", fmt.Errorf("get api key by id: %w", err))
-			}
-			return nil, fmt.Errorf("get api key by id: %w", err)
-		}
-
-		// Ensure the API key belongs to an organization in the project.
-		if _, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
-			ID:        qApiKey.OrganizationID,
-			ProjectID: projectID,
-		}); err != nil {
-			if errors.Is(err, pgx.ErrNoRows) {
-				return nil, apierror.NewInvalidArgumentError("invalid organization_id", fmt.Errorf("get organization by id: %w", err))
-			}
-			return nil, fmt.Errorf("get organization by id: %w", err)
-		}
+	orgID, userID, sessionID, apiKeyID, err := deriveEventContextForActor(ctx, q, req)
+	if err != nil {
+		return nil, fmt.Errorf("derive event context for actor: %w", err)
 	}
 
 	if orgID == nil && userID == nil && sessionID == nil && apiKeyID == nil {
-		return nil, apierror.NewInvalidArgumentError("", errors.New("either organization_id, user_id, session_id, or api_key_id must be provided"))
+		return nil, apierror.NewInvalidArgumentError("unable to derive context for actor", errors.New("either organization_id, user_id, session_id, or api_key_id must be provided"))
 	}
 
 	// Marshal the details to JSON if provided.
@@ -512,4 +334,165 @@ func parseAccessTokenNoValidate(accessToken string) (*commonv1.AccessTokenData, 
 	}
 
 	return &data, nil
+}
+
+func enforceSingleActor(req *backendv1.CreateAuditLogEventRequest) error {
+	actorCount := 0
+	if req.AuditLogEvent.OrganizationId != "" {
+		actorCount++
+	}
+	if req.AuditLogEvent.UserId != "" {
+		actorCount++
+	}
+	if req.AuditLogEvent.SessionId != "" {
+		actorCount++
+	}
+	if req.AuditLogEvent.ApiKeyId != "" {
+		actorCount++
+	}
+	if req.AuditLogEvent.Credentials != "" {
+		actorCount++
+	}
+
+	if actorCount != 1 {
+		return fmt.Errorf("exactly one of organization_id, user_id, session_id, or api_key_id must be provided")
+	}
+
+	return nil
+}
+
+func deriveEventContextForActor(ctx context.Context, q *queries.Queries, req *backendv1.CreateAuditLogEventRequest) (orgID, userID, sessionID, apiKeyID *uuid.UUID, err error) {
+	projectID := authn.ProjectID(ctx)
+
+	if req.AuditLogEvent.Credentials != "" {
+		if isJWTFormat(req.AuditLogEvent.Credentials) {
+			parsedAccessToken, err := parseAccessTokenNoValidate(req.AuditLogEvent.Credentials)
+			if err != nil {
+				return nil, nil, nil, nil, apierror.NewInvalidArgumentError("invalid credential", fmt.Errorf("parse access token: %w", err))
+			}
+
+			parsedOrgID, err := idformat.Organization.Parse(parsedAccessToken.Organization.Id)
+			if err != nil {
+				return nil, nil, nil, nil, apierror.NewInvalidArgumentError("invalid organization_id", fmt.Errorf("parse organization id: %w", err))
+			}
+			orgID = (*uuid.UUID)(&parsedOrgID)
+
+			parsedUserID, err := idformat.User.Parse(parsedAccessToken.User.Id)
+			if err != nil {
+				return nil, nil, nil, nil, apierror.NewInvalidArgumentError("invalid user_id", fmt.Errorf("parse user id: %w", err))
+			}
+			userID = (*uuid.UUID)(&parsedUserID)
+
+			parsedSessionID, err := idformat.Session.Parse(parsedAccessToken.Session.Id)
+			if err != nil {
+				return nil, nil, nil, nil, apierror.NewInvalidArgumentError("invalid session_id", fmt.Errorf("parse session id: %w", err))
+			}
+			sessionID = (*uuid.UUID)(&parsedSessionID)
+		} else if isAPIKeyFormat(req.AuditLogEvent.Credentials) {
+			qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+			if err != nil {
+				return nil, nil, nil, nil, fmt.Errorf("get project by id: %w", err)
+			}
+
+			if qProject.ApiKeySecretTokenPrefix == nil {
+				return nil, nil, nil, nil, apierror.NewPermissionDeniedError("api key secret token prefix is not set for this project", fmt.Errorf("api key secret token prefix not set for project"))
+			}
+
+			secretTokenBytes, err := prettysecret.Parse(*qProject.ApiKeySecretTokenPrefix, req.AuditLogEvent.Credentials)
+			if err != nil {
+				return nil, nil, nil, nil, apierror.NewUnauthenticatedApiKeyError("malformed_api_key_secret_token", fmt.Errorf("parse secret token: %w", err))
+			}
+			secretTokenSHA256 := sha256.Sum256(secretTokenBytes[:])
+
+			qApiKeyDetails, err := q.GetAPIKeyDetailsBySecretTokenSHA256(ctx, queries.GetAPIKeyDetailsBySecretTokenSHA256Params{
+				SecretTokenSha256: secretTokenSHA256[:],
+				ProjectID:         authn.ProjectID(ctx),
+			})
+			if err != nil {
+				if errors.Is(err, pgx.ErrNoRows) {
+					return nil, nil, nil, nil, apierror.NewInvalidArgumentError("invalid credential", fmt.Errorf("get api key details: %w", err))
+				}
+
+				return nil, nil, nil, nil, fmt.Errorf("get api key details: %w", err)
+			}
+
+			apiKeyID = (*uuid.UUID)(&qApiKeyDetails.ID)
+			orgID = (*uuid.UUID)(&qApiKeyDetails.OrganizationID)
+		}
+	}
+
+	if req.AuditLogEvent.SessionId != "" {
+		parsedSessionID, err := idformat.Session.Parse(req.AuditLogEvent.SessionId)
+		if err != nil {
+			return nil, nil, nil, nil, apierror.NewInvalidArgumentError("invalid session_id", fmt.Errorf("parse session id: %w", err))
+		}
+
+		eventContext, err := q.DeriveAuditLogEventContextForSessionID(ctx, queries.DeriveAuditLogEventContextForSessionIDParams{
+			ID:        parsedSessionID,
+			ProjectID: projectID,
+		})
+		if err != nil {
+			return nil, nil, nil, nil, apierror.NewInvalidArgumentError("invalid session_id", fmt.Errorf("derive audit log event context from session id: %w", err))
+		}
+
+		sessionID = (*uuid.UUID)(&parsedSessionID)
+		orgID = refOrNil(eventContext.OrganizationID)
+		userID = refOrNil(eventContext.UserID)
+	}
+
+	if req.AuditLogEvent.UserId != "" {
+		parsedUserID, err := idformat.User.Parse(req.AuditLogEvent.UserId)
+		if err != nil {
+			return nil, nil, nil, nil, apierror.NewInvalidArgumentError("invalid user_id", fmt.Errorf("parse user id: %w", err))
+		}
+
+		eventContext, err := q.DeriveAuditLogEventContextForUserID(ctx, queries.DeriveAuditLogEventContextForUserIDParams{
+			ID:        parsedUserID,
+			ProjectID: projectID,
+		})
+		if err != nil {
+			return nil, nil, nil, nil, apierror.NewInvalidArgumentError("invalid user_id", fmt.Errorf("derive audit log event context from user id: %w", err))
+		}
+		userID = (*uuid.UUID)(&parsedUserID)
+		orgID = refOrNil(eventContext.OrganizationID)
+	}
+
+	if req.AuditLogEvent.ApiKeyId != "" {
+		parsedApiKeyID, err := idformat.APIKey.Parse(req.AuditLogEvent.ApiKeyId)
+		if err != nil {
+			return nil, nil, nil, nil, apierror.NewInvalidArgumentError("invalid api_key_id", fmt.Errorf("parse api key id: %w", err))
+		}
+
+		eventContext, err := q.DeriveAuditLogEventContextForAPIKeyID(ctx, queries.DeriveAuditLogEventContextForAPIKeyIDParams{
+			ID:        parsedApiKeyID,
+			ProjectID: projectID,
+		})
+		if err != nil {
+			return nil, nil, nil, nil, apierror.NewInvalidArgumentError("invalid api_key_id", fmt.Errorf("derive audit log event context from api key id: %w", err))
+		}
+		apiKeyID = (*uuid.UUID)(&parsedApiKeyID)
+		orgID = refOrNil(eventContext.OrganizationID)
+	}
+
+	if req.AuditLogEvent.OrganizationId != "" {
+		parsedOrgID, err := idformat.Organization.Parse(req.AuditLogEvent.OrganizationId)
+		if err != nil {
+			return nil, nil, nil, nil, apierror.NewInvalidArgumentError("invalid organization_id", fmt.Errorf("parse organization id: %w", err))
+		}
+
+		// Ensure the organization exists in the project.
+		if _, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
+			ID:        derefOrEmpty(orgID),
+			ProjectID: projectID,
+		}); err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				return nil, nil, nil, nil, apierror.NewInvalidArgumentError("invalid organization_id", fmt.Errorf("get organization by id: %w", err))
+			}
+			return nil, nil, nil, nil, fmt.Errorf("get organization by id: %w", err)
+		}
+
+		orgID = (*uuid.UUID)(&parsedOrgID)
+	}
+
+	return
 }

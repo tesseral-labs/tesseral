@@ -850,6 +850,99 @@ func (q *Queries) DeleteVaultDomainSettings(ctx context.Context, projectID uuid.
 	return err
 }
 
+const deriveAuditLogEventContextForAPIKeyID = `-- name: DeriveAuditLogEventContextForAPIKeyID :one
+SELECT
+    api_keys.id AS api_key_id,
+    organizations.id AS organization_id
+FROM
+    api_keys
+    JOIN organizations ON api_keys.organization_id = organizations.id
+    JOIN projects ON organizations.project_id = projects.id
+WHERE
+    api_keys.id = $1
+    AND projects.id = $2
+`
+
+type DeriveAuditLogEventContextForAPIKeyIDParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+type DeriveAuditLogEventContextForAPIKeyIDRow struct {
+	ApiKeyID       uuid.UUID
+	OrganizationID uuid.UUID
+}
+
+func (q *Queries) DeriveAuditLogEventContextForAPIKeyID(ctx context.Context, arg DeriveAuditLogEventContextForAPIKeyIDParams) (DeriveAuditLogEventContextForAPIKeyIDRow, error) {
+	row := q.db.QueryRow(ctx, deriveAuditLogEventContextForAPIKeyID, arg.ID, arg.ProjectID)
+	var i DeriveAuditLogEventContextForAPIKeyIDRow
+	err := row.Scan(&i.ApiKeyID, &i.OrganizationID)
+	return i, err
+}
+
+const deriveAuditLogEventContextForSessionID = `-- name: DeriveAuditLogEventContextForSessionID :one
+SELECT
+    sessions.id AS session_id,
+    users.id AS user_id,
+    organizations.id AS organization_id
+FROM
+    sessions
+    JOIN users ON sessions.user_id = users.id
+    JOIN organizations ON users.organization_id = organizations.id
+    JOIN projects ON organizations.project_id = projects.id
+WHERE
+    sessions.id = $1
+    AND projects.id = $2
+`
+
+type DeriveAuditLogEventContextForSessionIDParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+type DeriveAuditLogEventContextForSessionIDRow struct {
+	SessionID      uuid.UUID
+	UserID         uuid.UUID
+	OrganizationID uuid.UUID
+}
+
+func (q *Queries) DeriveAuditLogEventContextForSessionID(ctx context.Context, arg DeriveAuditLogEventContextForSessionIDParams) (DeriveAuditLogEventContextForSessionIDRow, error) {
+	row := q.db.QueryRow(ctx, deriveAuditLogEventContextForSessionID, arg.ID, arg.ProjectID)
+	var i DeriveAuditLogEventContextForSessionIDRow
+	err := row.Scan(&i.SessionID, &i.UserID, &i.OrganizationID)
+	return i, err
+}
+
+const deriveAuditLogEventContextForUserID = `-- name: DeriveAuditLogEventContextForUserID :one
+SELECT
+    users.id AS user_id,
+    organizations.id AS organization_id
+FROM
+    users
+    JOIN organizations ON users.organization_id = organizations.id
+    JOIN projects ON organizations.project_id = projects.id
+WHERE
+    users.id = $1
+    AND projects.id = $2
+`
+
+type DeriveAuditLogEventContextForUserIDParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+type DeriveAuditLogEventContextForUserIDRow struct {
+	UserID         uuid.UUID
+	OrganizationID uuid.UUID
+}
+
+func (q *Queries) DeriveAuditLogEventContextForUserID(ctx context.Context, arg DeriveAuditLogEventContextForUserIDParams) (DeriveAuditLogEventContextForUserIDRow, error) {
+	row := q.db.QueryRow(ctx, deriveAuditLogEventContextForUserID, arg.ID, arg.ProjectID)
+	var i DeriveAuditLogEventContextForUserIDRow
+	err := row.Scan(&i.UserID, &i.OrganizationID)
+	return i, err
+}
+
 const disableOrganizationLogins = `-- name: DisableOrganizationLogins :exec
 UPDATE
     organizations

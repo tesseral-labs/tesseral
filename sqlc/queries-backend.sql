@@ -1138,3 +1138,41 @@ INSERT INTO audit_log_events (id, project_id, organization_id, user_id, session_
 RETURNING
     *;
 
+-- name: DeriveAuditLogEventContextForSessionID :one
+SELECT
+    sessions.id AS session_id,
+    users.id AS user_id,
+    organizations.id AS organization_id
+FROM
+    sessions
+    JOIN users ON sessions.user_id = users.id
+    JOIN organizations ON users.organization_id = organizations.id
+    JOIN projects ON organizations.project_id = projects.id
+WHERE
+    sessions.id = $1
+    AND projects.id = sqlc.arg (project_id);
+
+-- name: DeriveAuditLogEventContextForAPIKeyID :one
+SELECT
+    api_keys.id AS api_key_id,
+    organizations.id AS organization_id
+FROM
+    api_keys
+    JOIN organizations ON api_keys.organization_id = organizations.id
+    JOIN projects ON organizations.project_id = projects.id
+WHERE
+    api_keys.id = $1
+    AND projects.id = sqlc.arg (project_id);
+
+-- name: DeriveAuditLogEventContextForUserID :one
+SELECT
+    users.id AS user_id,
+    organizations.id AS organization_id
+FROM
+    users
+    JOIN organizations ON users.organization_id = organizations.id
+    JOIN projects ON organizations.project_id = projects.id
+WHERE
+    users.id = $1
+    AND projects.id = sqlc.arg (project_id);
+

@@ -582,5 +582,5 @@ message AuditLogEvent {
   google.protobuf.Struct event_details = 14;
 
   // The credential associated with the event if any.
-  string credential = 15;
+  string credentials = 15;
 }
