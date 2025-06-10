@@ -206,7 +206,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	}
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
-		EventName: "tesseral.session.create",
+		EventName: "tesseral.sessions.create",
 		EventDetails: map[string]any{
 			"session": parseSessionEventDetails(qSession, nil),
 		},

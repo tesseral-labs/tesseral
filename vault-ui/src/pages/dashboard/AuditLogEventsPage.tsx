@@ -1,23 +1,28 @@
 // src/components/audit-log-viewer.tsx
 import { timestampDate, timestampFromDate } from "@bufbuild/protobuf/wkt";
-import { useQuery } from "@connectrpc/connect-query";
+import { useInfiniteQuery, useQuery } from "@connectrpc/connect-query";
 import { format } from "date-fns";
 import {
-  ArrowLeft,
-  ArrowRight,
   CalendarIcon,
   ChevronDown,
   ChevronRight,
   FilterX,
   Search,
 } from "lucide-react";
-import React, { useCallback, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import { DateRange } from "react-day-picker";
 
 import { MultiSelect } from "@/components/MultiSelect";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
+import Loader from "@/components/ui/loader";
 import {
   Popover,
   PopoverContent,
@@ -48,57 +53,46 @@ import { AuditLogEvent } from "@/gen/tesseral/frontend/v1/models_pb";
 
 // --- Filter Bar Component ---
 interface FilterBarProps {
-  onApply: (filter: ListAuditLogEventsRequest) => void;
+  setParams: Dispatch<SetStateAction<Partial<ListAuditLogEventsRequest>>>;
   isLoading: boolean;
 }
 
-function makeRequest(
-  params: Omit<
-    ListAuditLogEventsRequest,
-    "$typeName" | "filterEventName" | "pageToken"
-  > & {
-    pageToken?: string;
-    filterEventName?: string[];
-  },
-): ListAuditLogEventsRequest {
-  return {
-    $typeName: "tesseral.frontend.v1.ListAuditLogEventsRequest",
-    ...params,
-    pageToken: params.pageToken ?? "",
-    filterEventName: params.filterEventName ?? [],
-  };
-}
-
-function FilterBar({ onApply, isLoading }: FilterBarProps) {
+function FilterBar({ setParams, isLoading }: FilterBarProps) {
   const [date, setDate] = React.useState<DateRange | undefined>(undefined);
-  const [eventNames, setEventNames] = useState<string[]>([]);
+  const [eventName, setEventName] = useState<string>("");
   const [userId, setUserId] = useState("");
 
   function handleApply() {
-    const filter: ListAuditLogEventsRequest = makeRequest({});
+    const filter: Partial<ListAuditLogEventsRequest> = {};
     if (date?.from) {
       filter.filterStartTime = timestampFromDate(date.from);
     }
+
     if (date?.to) {
       // Set endTime to the end of the selected day (23:59:59.999)
       const end = new Date(date.to);
       end.setHours(23, 59, 59, 999);
       filter.filterEndTime = timestampFromDate(end);
     }
-    if (eventNames.length > 0) filter.filterEventName = eventNames;
+
+    filter.filterEventName = eventName.length > 0 ? [eventName] : [];
+
     if (userId) filter.filterUserId = userId;
 
-    onApply(filter);
+    setParams(filter);
   }
 
   function handleReset() {
     setDate(undefined);
-    setEventNames([]);
+    setEventName("");
     setUserId("");
-    onApply(makeRequest({}));
+    setParams({}); // Reset all filters
   }
 
-  const hasFilters = date || eventNames.length > 0 || userId;
+  const hasFilters = useMemo(
+    () => date || eventName.length > 0 || userId,
+    [date, eventName, userId],
+  );
 
   return (
     <div className="p-4 border-b bg-card">
@@ -136,10 +130,10 @@ function FilterBar({ onApply, isLoading }: FilterBarProps) {
           </PopoverContent>
         </Popover>
 
-        {/* Event Name Selector */}
-        <MultiSelect
-          selected={eventNames}
-          onChange={setEventNames}
+        {/* Event Name Input */}
+        <Input
+          value={eventName}
+          onChange={(e) => setEventName(e.target.value)}
           placeholder="Filter by event name..."
           className="w-full"
         />
@@ -154,7 +148,7 @@ function FilterBar({ onApply, isLoading }: FilterBarProps) {
 
         {/* Actions */}
         <div className="flex gap-2 justify-end">
-          <Button onClick={handleApply} disabled={isLoading}>
+          <Button onClick={handleApply} disabled={isLoading || !hasFilters}>
             <Search className="mr-2 h-4 w-4" /> Apply Filters
           </Button>
           {hasFilters && (
@@ -174,60 +168,45 @@ function FilterBar({ onApply, isLoading }: FilterBarProps) {
 
 // --- Main Viewer Component ---
 export function AuditLogEventsPage() {
-  const [request, setRequest] = useState<ListAuditLogEventsRequest>(
-    makeRequest({}),
-  );
-  const [pageTokens, setPageTokens] = useState<string[]>([""]);
-  const [currentPageIndex, setCurrentPageIndex] = useState(0);
-
+  const [listAuditLogEventsParams, setListAuditLogEventsParams] = useState<
+    Partial<ListAuditLogEventsRequest>
+  >({});
   // Track expanded rows by event ID
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
+  const stableParams = useMemo(
+    () => ({ ...listAuditLogEventsParams }),
+    [listAuditLogEventsParams],
+  );
+
+  const {
+    data: listAuditLogEventsResponses,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isError,
+    isFetchingNextPage,
+    isLoading,
+  } = useInfiniteQuery(
+    listAuditLogEvents,
+    {
+      ...stableParams,
+      pageToken: "",
+    } as ListAuditLogEventsRequest,
+    {
+      pageParamKey: "pageToken",
+      getNextPageParam: (page) => page.nextPageToken || undefined,
+    },
+  );
+
+  const auditLogEvents = listAuditLogEventsResponses?.pages?.flatMap(
+    (page) => page.auditLogEvents,
+  );
 
   function toggleRow(eventId: string) {
     setExpandedRows((prev) => ({
       ...prev,
       [eventId]: !prev[eventId],
     }));
-  }
-
-  const handleApplyFilters = useCallback(
-    (filter: ListAuditLogEventsRequest) => {
-      setRequest(makeRequest(filter));
-      setPageTokens([""]); // Reset pagination on filter change
-      setCurrentPageIndex(0);
-      setExpandedRows({}); // Reset expanded rows on filter change
-    },
-    [],
-  );
-
-  const currentRequest: ListAuditLogEventsRequest = {
-    ...request,
-    pageToken: pageTokens[currentPageIndex] ?? "",
-  };
-
-  const { data, isLoading, isError, error, isFetching } = useQuery(
-    listAuditLogEvents,
-    currentRequest,
-  );
-
-  function handleNextPage() {
-    if (data?.nextPageToken) {
-      // If we've been here before, just move forward
-      if (currentPageIndex < pageTokens.length - 1) {
-        setCurrentPageIndex(currentPageIndex + 1);
-      } else {
-        // Otherwise, add the new token and move
-        setPageTokens([...pageTokens, data.nextPageToken]);
-        setCurrentPageIndex(currentPageIndex + 1);
-      }
-      setExpandedRows({}); // Reset expanded rows on next page
-    }
-  }
-
-  function handlePrevPage() {
-    if (currentPageIndex > 0) {
-      setCurrentPageIndex(currentPageIndex - 1);
-    }
   }
 
   function renderActor(event: AuditLogEvent) {
@@ -244,8 +223,8 @@ export function AuditLogEventsPage() {
     <TooltipProvider>
       <div className="border rounded-lg shadow-sm">
         <FilterBar
-          onApply={handleApplyFilters}
-          isLoading={isLoading || isFetching}
+          setParams={setListAuditLogEventsParams}
+          isLoading={isLoading}
         />
         <div className="p-4">
           <Table>
@@ -258,7 +237,7 @@ export function AuditLogEventsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {isLoading && !data && (
+              {isLoading && !auditLogEvents && (
                 <>
                   {Array.from({ length: 10 }).map((_, i) => (
                     <TableRow key={`skel-${i}`}>
@@ -289,7 +268,7 @@ export function AuditLogEventsPage() {
                   </TableCell>
                 </TableRow>
               )}
-              {!isLoading && !isError && data?.auditLogEvents.length === 0 && (
+              {!isLoading && !isError && !auditLogEvents?.length && (
                 <TableRow>
                   <TableCell
                     colSpan={4}
@@ -300,7 +279,7 @@ export function AuditLogEventsPage() {
                 </TableRow>
               )}
               {!isLoading &&
-                data?.auditLogEvents.map((event) => (
+                auditLogEvents?.map((event) => (
                   <React.Fragment key={event.id}>
                     <TableRow
                       className="cursor-pointer"
@@ -356,28 +335,25 @@ export function AuditLogEventsPage() {
             </TableBody>
           </Table>
         </div>
-        {/* Pagination Controls */}
-        <div className="flex items-center justify-end space-x-2 p-4 border-t">
-          <span className="text-sm text-muted-foreground">
-            Page {currentPageIndex + 1}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handlePrevPage}
-            disabled={currentPageIndex === 0 || isLoading || isFetching}
-          >
-            <ArrowLeft className="h-4 w-4 mr-1" /> Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleNextPage}
-            disabled={!data?.nextPageToken || isLoading || isFetching}
-          >
-            Next <ArrowRight className="h-4 w-4 ml-1" />
-          </Button>
-        </div>
+
+        {hasNextPage && (
+          <div className="flex justify-center p-4">
+            <Button
+              variant="outline"
+              onClick={() => fetchNextPage()}
+              disabled={isFetchingNextPage || isLoading}
+            >
+              {isFetchingNextPage ? (
+                <>
+                  <Loader />
+                  Loading...
+                </>
+              ) : (
+                <>Load More</>
+              )}
+            </Button>
+          </div>
+        )}
       </div>
     </TooltipProvider>
   );
