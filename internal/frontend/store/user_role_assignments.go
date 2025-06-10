@@ -226,10 +226,6 @@ func (s *Store) CreateUserRoleAssignment(ctx context.Context, req *frontendv1.Cr
 		return nil, fmt.Errorf("get user role assignment by user and role: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
-	}
-
 	userRoleAssignment := parseUserRoleAssignment(qUserRoleAssignment)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.user_role_assignments.create",
@@ -240,6 +236,10 @@ func (s *Store) CreateUserRoleAssignment(ctx context.Context, req *frontendv1.Cr
 		ResourceID:   &qUserRoleAssignment.ID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &frontendv1.CreateUserRoleAssignmentResponse{UserRoleAssignment: userRoleAssignment}, nil
@@ -278,20 +278,19 @@ func (s *Store) DeleteUserRoleAssignment(ctx context.Context, req *frontendv1.De
 		return nil, fmt.Errorf("delete user role assignment: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
-	}
-
-	userRoleAssignment := parseUserRoleAssignment(qUserRoleAssignment)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.user_role_assignments.delete",
 		EventDetails: map[string]any{
-			"userRoleAssignment": userRoleAssignment,
+			"userRoleAssignment": parseUserRoleAssignment(qUserRoleAssignment),
 		},
 		ResourceType: queries.AuditLogEventResourceTypeUserRoleAssignment,
 		ResourceID:   &qUserRoleAssignment.ID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &frontendv1.DeleteUserRoleAssignmentResponse{}, nil

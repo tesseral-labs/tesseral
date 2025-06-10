@@ -85,20 +85,19 @@ func (s *Store) DeleteMyPasskey(ctx context.Context, req *frontendv1.DeleteMyPas
 		return nil, fmt.Errorf("delete passkey: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
-	}
-
-	passkey := parsePasskey(qPasskey)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.passkeys.delete",
 		EventDetails: map[string]any{
-			"passkey": passkey,
+			"passkey": parsePasskey(qPasskey),
 		},
 		ResourceType: queries.AuditLogEventResourceTypePasskey,
 		ResourceID:   &qPasskey.ID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &frontendv1.DeleteMyPasskeyResponse{}, nil

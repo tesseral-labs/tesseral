@@ -65,22 +65,21 @@ func (s *Store) UpdateOrganizationGoogleHostedDomains(ctx context.Context, req *
 		return nil, fmt.Errorf("get organization google hosted domains: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
-	}
-
 	googleHostedDomains := parseOrganizationGoogleHostedDomains(qGoogleHostedDomains)
-	previousGoogleHostedDomains := parseOrganizationGoogleHostedDomains(qPreviousGoogleHostedDomains)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.organizations.update_google_hosted_domains",
 		EventDetails: map[string]any{
 			"googleHostedDomains":         googleHostedDomains.GoogleHostedDomains,
-			"previousGoogleHostedDomains": previousGoogleHostedDomains.GoogleHostedDomains,
+			"previousGoogleHostedDomains": parseOrganizationGoogleHostedDomains(qPreviousGoogleHostedDomains).GoogleHostedDomains,
 		},
 		ResourceType: queries.AuditLogEventResourceTypeOrganization,
 		ResourceID:   &orgID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &frontendv1.UpdateOrganizationGoogleHostedDomainsResponse{

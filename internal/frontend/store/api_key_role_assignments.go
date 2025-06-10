@@ -63,10 +63,6 @@ func (s *Store) CreateAPIKeyRoleAssignment(ctx context.Context, req *frontendv1.
 		return nil, fmt.Errorf("create api key role assignment: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit transaction: %w", err)
-	}
-
 	apiKeyRoleAssignment := parseAPIKeyRoleAssignment(qAPIKeyRoleAssignment)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_key_role_assignments.create",
@@ -77,6 +73,10 @@ func (s *Store) CreateAPIKeyRoleAssignment(ctx context.Context, req *frontendv1.
 		ResourceID:   &qAPIKeyRoleAssignment.ID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit transaction: %w", err)
 	}
 
 	return &frontendv1.CreateAPIKeyRoleAssignmentResponse{
@@ -114,20 +114,19 @@ func (s *Store) DeleteAPIKeyRoleAssignment(ctx context.Context, req *frontendv1.
 		return nil, fmt.Errorf("delete api key role assignment: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit transaction: %w", err)
-	}
-
-	apiKeyRoleAssignment := parseAPIKeyRoleAssignment(qAPIKeyRoleAssignment)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_key_role_assignments.delete",
 		EventDetails: map[string]any{
-			"apiKeyRoleAssignment": apiKeyRoleAssignment,
+			"apiKeyRoleAssignment": parseAPIKeyRoleAssignment(qAPIKeyRoleAssignment),
 		},
 		ResourceType: queries.AuditLogEventResourceTypeApiKeyRoleAssignment,
 		ResourceID:   &qAPIKeyRoleAssignment.ID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit transaction: %w", err)
 	}
 
 	return &frontendv1.DeleteAPIKeyRoleAssignmentResponse{}, nil
