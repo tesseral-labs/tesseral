@@ -54,7 +54,7 @@ func (s *Store) CreateCustomAuditLogEvent(ctx context.Context, req *backendv1.Cr
 		return nil, apierror.NewInvalidArgumentError("invalide event name", fmt.Errorf("validate event name: %w", err))
 	}
 
-	orgID, userID, sessionID, apiKeyID, err := deriveEventContextForActor(ctx, q, req)
+	orgID, userID, sessionID, apiKeyID, err := deriveEventContextForRequest(ctx, q, req)
 	if err != nil {
 		return nil, fmt.Errorf("derive event context for actor: %w", err)
 	}
@@ -361,7 +361,7 @@ func enforceSingleActor(req *backendv1.CreateAuditLogEventRequest) error {
 	return nil
 }
 
-func deriveEventContextForActor(ctx context.Context, q *queries.Queries, req *backendv1.CreateAuditLogEventRequest) (orgID, userID, sessionID, apiKeyID *uuid.UUID, err error) {
+func deriveEventContextForRequest(ctx context.Context, q *queries.Queries, req *backendv1.CreateAuditLogEventRequest) (orgID, userID, sessionID, apiKeyID *uuid.UUID, err error) {
 	projectID := authn.ProjectID(ctx)
 
 	if req.AuditLogEvent.Credentials != "" {
