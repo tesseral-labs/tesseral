@@ -192,10 +192,6 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *backendv1.CreateS
 		}
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
-	}
-
 	samlConnection := parseSAMLConnection(qProject, qSAMLConnection)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.saml_connections.create",
@@ -207,6 +203,10 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *backendv1.CreateS
 		ResourceID:     &qSAMLConnection.ID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &backendv1.CreateSAMLConnectionResponse{SamlConnection: samlConnection}, nil
@@ -299,23 +299,22 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *backendv1.UpdateS
 		}
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
-	}
-
 	samlConnection := parseSAMLConnection(qProject, qUpdatedSAMLConnection)
-	previousSAMLConnection := parseSAMLConnection(qProject, qSAMLConnection)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.saml_connections.update",
 		EventDetails: map[string]any{
 			"samlConnection":         samlConnection,
-			"previousSamlConnection": previousSAMLConnection,
+			"previousSamlConnection": parseSAMLConnection(qProject, qSAMLConnection),
 		},
 		OrganizationID: &qSAMLConnection.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeSamlConnection,
 		ResourceID:     &qSAMLConnection.ID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &backendv1.UpdateSAMLConnectionResponse{SamlConnection: samlConnection}, nil
@@ -355,21 +354,20 @@ func (s *Store) DeleteSAMLConnection(ctx context.Context, req *backendv1.DeleteS
 		return nil, fmt.Errorf("delete saml connection: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
-	}
-
-	samlConnection := parseSAMLConnection(qProject, qSAMLConnection)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.saml_connections.delete",
 		EventDetails: map[string]any{
-			"samlConnection": samlConnection,
+			"samlConnection": parseSAMLConnection(qProject, qSAMLConnection),
 		},
 		OrganizationID: &qSAMLConnection.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeSamlConnection,
 		ResourceID:     &qSAMLConnection.ID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &backendv1.DeleteSAMLConnectionResponse{}, nil

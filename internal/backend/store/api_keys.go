@@ -90,12 +90,25 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *backendv1.CreateAPIKeyReq
 		return nil, fmt.Errorf("create api key: %w", err)
 	}
 
+	apiKey := parseAPIKey(qAPIKey, &secretToken)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.api_keys.create",
+		EventDetails: map[string]any{
+			"apiKey": apiKey,
+		},
+		OrganizationID: &qOrg.ID,
+		ResourceType:   queries.AuditLogEventResourceTypeApiKey,
+		ResourceID:     &qAPIKey.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit transaction: %w", err)
 	}
 
 	return &backendv1.CreateAPIKeyResponse{
-		ApiKey: parseAPIKey(qAPIKey, &secretToken),
+		ApiKey: apiKey,
 	}, nil
 }
 
@@ -131,6 +144,18 @@ func (s *Store) DeleteAPIKey(ctx context.Context, req *backendv1.DeleteAPIKeyReq
 		ProjectID: authn.ProjectID(ctx),
 	}); err != nil {
 		return nil, fmt.Errorf("delete api key: %w", err)
+	}
+
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.api_keys.delete",
+		EventDetails: map[string]any{
+			"apiKey": parseAPIKey(qApiKey, nil),
+		},
+		OrganizationID: &qApiKey.OrganizationID,
+		ResourceType:   queries.AuditLogEventResourceTypeApiKey,
+		ResourceID:     &qApiKey.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
 	if err := commit(); err != nil {
@@ -227,11 +252,40 @@ func (s *Store) RevokeAPIKey(ctx context.Context, req *backendv1.RevokeAPIKeyReq
 		return nil, apierror.NewInvalidArgumentError("invalid api key id", fmt.Errorf("parse api key id: %w", err))
 	}
 
+	qPreviousAPIKey, err := q.GetAPIKeyByID(ctx, queries.GetAPIKeyByIDParams{
+		ID:        apiKeyID,
+		ProjectID: authn.ProjectID(ctx),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("get api key by id: %w", err)
+	}
+
 	if err := q.RevokeAPIKey(ctx, queries.RevokeAPIKeyParams{
 		ID:        apiKeyID,
 		ProjectID: authn.ProjectID(ctx),
 	}); err != nil {
 		return nil, fmt.Errorf("revoke api key: %w", err)
+	}
+
+	qApiKey, err := q.GetAPIKeyByID(ctx, queries.GetAPIKeyByIDParams{
+		ID:        apiKeyID,
+		ProjectID: authn.ProjectID(ctx),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("get api key by id after revocation: %w", err)
+	}
+
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.api_keys.revoke",
+		EventDetails: map[string]any{
+			"apiKey":         parseAPIKey(qApiKey, nil),
+			"previousApiKey": parseAPIKey(qPreviousAPIKey, nil),
+		},
+		OrganizationID: &qApiKey.OrganizationID,
+		ResourceType:   queries.AuditLogEventResourceTypeApiKey,
+		ResourceID:     &qApiKey.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
 	if err := commit(); err != nil {
@@ -253,6 +307,17 @@ func (s *Store) UpdateAPIKey(ctx context.Context, req *backendv1.UpdateAPIKeyReq
 		return nil, apierror.NewInvalidArgumentError("invalid api key id", fmt.Errorf("parse api key id: %w", err))
 	}
 
+	qPreviousApiKey, err := q.GetAPIKeyByID(ctx, queries.GetAPIKeyByIDParams{
+		ID:        apiKeyID,
+		ProjectID: authn.ProjectID(ctx),
+	})
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("api key not found", fmt.Errorf("get api key: %w", err))
+		}
+		return nil, fmt.Errorf("get api key by id: %w", err)
+	}
+
 	updatedApiKey, err := q.UpdateAPIKey(ctx, queries.UpdateAPIKeyParams{
 		ID:          apiKeyID,
 		DisplayName: req.ApiKey.DisplayName,
@@ -262,12 +327,26 @@ func (s *Store) UpdateAPIKey(ctx context.Context, req *backendv1.UpdateAPIKeyReq
 		return nil, fmt.Errorf("update api key: %w", err)
 	}
 
+	apiKey := parseAPIKey(updatedApiKey, nil)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.api_keys.update",
+		EventDetails: map[string]any{
+			"apiKey":         apiKey,
+			"previousApiKey": parseAPIKey(qPreviousApiKey, nil),
+		},
+		OrganizationID: &updatedApiKey.OrganizationID,
+		ResourceType:   queries.AuditLogEventResourceTypeApiKey,
+		ResourceID:     &updatedApiKey.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit transaction: %w", err)
 	}
 
 	return &backendv1.UpdateAPIKeyResponse{
-		ApiKey: parseAPIKey(updatedApiKey, nil),
+		ApiKey: apiKey,
 	}, nil
 }
 

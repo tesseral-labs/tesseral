@@ -52,10 +52,11 @@ func (s *Store) CreateAPIKeyRoleAssignment(ctx context.Context, req *backendv1.C
 		return nil, fmt.Errorf("get role: %w", err)
 	}
 
-	if _, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
+	qOrg, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
 		ID:        qAPIKey.OrganizationID,
 		ProjectID: authn.ProjectID(ctx),
-	}); err != nil {
+	})
+	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, apierror.NewNotFoundError("api key not found", fmt.Errorf("get organization: %w", err))
 		}
@@ -71,12 +72,25 @@ func (s *Store) CreateAPIKeyRoleAssignment(ctx context.Context, req *backendv1.C
 		return nil, fmt.Errorf("create api key role assignment: %w", err)
 	}
 
+	apiKeyRoleAssignment := parseAPIKeyRoleAssignment(qAPIKeyRoleAssignment)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.api_key_role_assignments.create",
+		EventDetails: map[string]any{
+			"apiKeyRoleAssignment": apiKeyRoleAssignment,
+		},
+		OrganizationID: &qOrg.ID,
+		ResourceType:   queries.AuditLogEventResourceTypeApiKeyRoleAssignment,
+		ResourceID:     &qAPIKeyRoleAssignment.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit transaction: %w", err)
 	}
 
 	return &backendv1.CreateAPIKeyRoleAssignmentResponse{
-		ApiKeyRoleAssignment: parseAPIKeyRoleAssignment(qAPIKeyRoleAssignment),
+		ApiKeyRoleAssignment: apiKeyRoleAssignment,
 	}, nil
 }
 
@@ -92,11 +106,45 @@ func (s *Store) DeleteAPIKeyRoleAssignment(ctx context.Context, req *backendv1.D
 		return nil, apierror.NewInvalidArgumentError("invalid api key role assignment id", fmt.Errorf("parse api key role assignment id: %w", err))
 	}
 
+	qAPIKeyRoleAssignment, err := q.GetAPIKeyRoleAssignment(ctx, queries.GetAPIKeyRoleAssignmentParams{
+		ID:        apiKeyRoleAssignmentID,
+		ProjectID: authn.ProjectID(ctx),
+	})
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, apierror.NewNotFoundError("api key role assignment not found", fmt.Errorf("get api key role assignment: %w", err))
+		}
+		return nil, fmt.Errorf("get api key role assignment: %w", err)
+	}
+
+	qAPIKey, err := q.GetAPIKeyByID(ctx, queries.GetAPIKeyByIDParams{
+		ID:        qAPIKeyRoleAssignment.ApiKeyID,
+		ProjectID: authn.ProjectID(ctx),
+	})
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, apierror.NewNotFoundError("api key not found", fmt.Errorf("get api key: %w", err))
+		}
+		return nil, fmt.Errorf("get api key: %w", err)
+	}
+
 	if err := q.DeleteAPIKeyRoleAssignment(ctx, queries.DeleteAPIKeyRoleAssignmentParams{
 		ID:        apiKeyRoleAssignmentID,
 		ProjectID: authn.ProjectID(ctx),
 	}); err != nil {
 		return nil, fmt.Errorf("delete api key role assignment: %w", err)
+	}
+
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.api_key_role_assignments.delete",
+		EventDetails: map[string]any{
+			"apiKeyRoleAssignment": parseAPIKeyRoleAssignment(qAPIKeyRoleAssignment),
+		},
+		OrganizationID: &qAPIKey.OrganizationID,
+		ResourceType:   queries.AuditLogEventResourceTypeApiKeyRoleAssignment,
+		ResourceID:     &qAPIKeyRoleAssignment.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
 	if err := commit(); err != nil {
