@@ -57,12 +57,6 @@ func (s *Store) LogRefreshEvent(ctx context.Context, refreshToken string) error 
 		qDetails.SessionID = qSessionDetails.SessionID
 		qDetails.UserID = qSessionDetails.UserID
 		qDetails.OrganizationID = qSessionDetails.OrganizationID
-		qDetails.UserIsOwner = qSessionDetails.UserIsOwner
-		qDetails.UserEmail = qSessionDetails.UserEmail
-		qDetails.UserDisplayName = qSessionDetails.UserDisplayName
-		qDetails.UserProfilePictureUrl = qSessionDetails.UserProfilePictureUrl
-		qDetails.OrganizationDisplayName = qSessionDetails.OrganizationDisplayName
-		qDetails.ImpersonatorUserID = qSessionDetails.ImpersonatorUserID
 		qDetails.ProjectID = qSessionDetails.ProjectID
 	case strings.HasPrefix(refreshToken, "tesseral_secret_relayed_session_refresh_token_"):
 		slog.InfoContext(ctx, "refresh_relayed_session_token")
@@ -85,22 +79,37 @@ func (s *Store) LogRefreshEvent(ctx context.Context, refreshToken string) error 
 		qDetails.SessionID = qSessionDetails.SessionID
 		qDetails.UserID = qSessionDetails.UserID
 		qDetails.OrganizationID = qSessionDetails.OrganizationID
-		qDetails.UserIsOwner = qSessionDetails.UserIsOwner
-		qDetails.UserEmail = qSessionDetails.UserEmail
-		qDetails.UserDisplayName = qSessionDetails.UserDisplayName
-		qDetails.UserProfilePictureUrl = qSessionDetails.UserProfilePictureUrl
-		qDetails.OrganizationDisplayName = qSessionDetails.OrganizationDisplayName
-		qDetails.ImpersonatorUserID = qSessionDetails.ImpersonatorUserID
 		qDetails.ProjectID = qSessionDetails.ProjectID
+	}
+
+	qSession, err := q.GetSessionByID(ctx, qDetails.SessionID)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return apierror.NewUnauthenticatedError("invalid session", fmt.Errorf("invalid session"))
+		}
+		return fmt.Errorf("get session: %w", err)
+	}
+
+	var qImpersonatingUserEmail *string
+	if qDetails.ImpersonatorUserID != nil {
+		qImpersonatingUser, err := q.GetUserByID(ctx, *qDetails.ImpersonatorUserID)
+		if err != nil {
+			if !errors.Is(err, pgx.ErrNoRows) {
+				return fmt.Errorf("get impersonator user: %w", err)
+			}
+		}
+
+		qImpersonatingUserEmail = &qImpersonatingUser.Email
 	}
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.sessions.refresh",
 		EventDetails: map[string]any{
-			"id": qDetails.SessionID,
+			"session": parseSessionEventDetails(qSession, qImpersonatingUserEmail),
 		},
-		ResourceType: queries.AuditLogResourceTypeSession,
-		ResourceID:   &qDetails.SessionID,
+		OrganizationID: &qDetails.OrganizationID,
+		ResourceType:   queries.AuditLogEventResourceTypeSession,
+		ResourceID:     &qDetails.SessionID,
 	}); err != nil {
 		return fmt.Errorf("log audit event: %w", err)
 	}

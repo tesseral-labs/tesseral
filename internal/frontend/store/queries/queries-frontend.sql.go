@@ -1215,14 +1215,8 @@ const getSessionDetailsByRelayedSessionRefreshTokenSHA256 = `-- name: GetSession
 SELECT
     sessions.id AS session_id,
     users.id AS user_id,
-    users.is_owner AS user_is_owner,
-    users.email AS user_email,
-    users.display_name AS user_display_name,
-    users.profile_picture_url AS user_profile_picture_url,
     organizations.id AS organization_id,
-    organizations.display_name AS organization_display_name,
-    organizations.project_id AS project_id,
-    sessions.impersonator_user_id
+    organizations.project_id AS project_id
 FROM
     relayed_sessions
     JOIN sessions ON relayed_sessions.session_id = sessions.id
@@ -1233,16 +1227,10 @@ WHERE
 `
 
 type GetSessionDetailsByRelayedSessionRefreshTokenSHA256Row struct {
-	SessionID               uuid.UUID
-	UserID                  uuid.UUID
-	UserIsOwner             bool
-	UserEmail               string
-	UserDisplayName         *string
-	UserProfilePictureUrl   *string
-	OrganizationID          uuid.UUID
-	OrganizationDisplayName string
-	ProjectID               uuid.UUID
-	ImpersonatorUserID      *uuid.UUID
+	SessionID      uuid.UUID
+	UserID         uuid.UUID
+	OrganizationID uuid.UUID
+	ProjectID      uuid.UUID
 }
 
 func (q *Queries) GetSessionDetailsByRelayedSessionRefreshTokenSHA256(ctx context.Context, relayedRefreshTokenSha256 []byte) (GetSessionDetailsByRelayedSessionRefreshTokenSHA256Row, error) {
@@ -1251,14 +1239,8 @@ func (q *Queries) GetSessionDetailsByRelayedSessionRefreshTokenSHA256(ctx contex
 	err := row.Scan(
 		&i.SessionID,
 		&i.UserID,
-		&i.UserIsOwner,
-		&i.UserEmail,
-		&i.UserDisplayName,
-		&i.UserProfilePictureUrl,
 		&i.OrganizationID,
-		&i.OrganizationDisplayName,
 		&i.ProjectID,
-		&i.ImpersonatorUserID,
 	)
 	return i, err
 }

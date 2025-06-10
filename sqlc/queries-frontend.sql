@@ -711,14 +711,8 @@ RETURNING
 SELECT
     sessions.id AS session_id,
     users.id AS user_id,
-    users.is_owner AS user_is_owner,
-    users.email AS user_email,
-    users.display_name AS user_display_name,
-    users.profile_picture_url AS user_profile_picture_url,
     organizations.id AS organization_id,
-    organizations.display_name AS organization_display_name,
-    organizations.project_id AS project_id,
-    sessions.impersonator_user_id
+    organizations.project_id AS project_id
 FROM
     relayed_sessions
     JOIN sessions ON relayed_sessions.session_id = sessions.id

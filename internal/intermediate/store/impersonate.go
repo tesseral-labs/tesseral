@@ -71,11 +71,7 @@ func (s *Store) RedeemUserImpersonationToken(ctx context.Context, req *intermedi
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.sessions.create",
 		EventDetails: map[string]any{
-			"id":                  idformat.Session.Format(qSession.ID),
-			"impersonator_email":  qImpersonatingUser.Email,
-			"expire_time":         qSession.ExpireTime,
-			"user_id":             idformat.User.Format(qSession.UserID),
-			"primary_auth_factor": qSession.PrimaryAuthFactor,
+			"session": parseSessionEventDetails(qSession, &qImpersonatingUser.Email),
 		},
 		OrganizationID: &qImpersonatedUser.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeSession,

@@ -7,8 +7,10 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
+	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
+	intermediatev1 "github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/uuidv7"
 )
 
@@ -50,4 +52,41 @@ func (s *Store) logAuditEvent(ctx context.Context, q *queries.Queries, data logA
 	}
 
 	return qEvent, nil
+}
+
+// The intermediate service doesn't do CRUD in the traditional sense,
+// so we use a custom struct to represent the event details for session events.
+// This struct is used to format the session event details for logging.
+type sessionEventDetails struct {
+	ID                string                           `json:"id"`
+	UserID            string                           `json:"userId"`
+	ExpireTime        string                           `json:"expireTime,omitempty"`
+	LastActiveTime    string                           `json:"lastActiveTime,omitempty"`
+	PrimaryAuthFactor intermediatev1.PrimaryAuthFactor `json:"primaryAuthFactor,omitempty"`
+	ImpersonatorEmail string                           `json:"impersonatorEmail,omitempty"`
+}
+
+func parseSessionEventDetails(qSession queries.Session, impersonatorEmail *string) *sessionEventDetails {
+	var primaryAuthFactor intermediatev1.PrimaryAuthFactor
+	switch qSession.PrimaryAuthFactor {
+	case queries.PrimaryAuthFactorEmail:
+		primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_EMAIL
+	case queries.PrimaryAuthFactorGoogle:
+		primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GOOGLE
+	case queries.PrimaryAuthFactorMicrosoft:
+		primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_MICROSOFT
+	case queries.PrimaryAuthFactorGithub:
+		primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GITHUB
+	default:
+		primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_UNSPECIFIED
+	}
+
+	return &sessionEventDetails{
+		ID:                idformat.Session.Format(qSession.ID),
+		UserID:            idformat.User.Format(qSession.UserID),
+		ExpireTime:        qSession.ExpireTime.String(),
+		LastActiveTime:    qSession.LastActiveTime.String(),
+		PrimaryAuthFactor: primaryAuthFactor,
+		ImpersonatorEmail: derefOrEmpty(impersonatorEmail),
+	}
 }

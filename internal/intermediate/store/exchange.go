@@ -208,12 +208,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.session.create",
 		EventDetails: map[string]any{
-			"session": map[string]any{
-				"id":                  idformat.Session.Format(qSession.ID),
-				"expire_time":         qSession.ExpireTime,
-				"user_id":             idformat.User.Format(qUser.ID),
-				"primary_auth_factor": qSession.PrimaryAuthFactor,
-			},
+			"session": parseSessionEventDetails(qSession, nil),
 		},
 		OrganizationID: &qOrg.ID,
 		ResourceType:   queries.AuditLogEventResourceTypeSession,
