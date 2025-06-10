@@ -2,16 +2,22 @@ package store
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"regexp"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/prettysecret"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/uuidv7"
 	"google.golang.org/protobuf/types/known/structpb"
@@ -38,19 +44,80 @@ func (s *Store) CreateCustomAuditLogEvent(ctx context.Context, req *backendv1.Cr
 	eventName := req.AuditLogEvent.EventName
 	if eventName == "" {
 		return nil, apierror.NewInvalidArgumentError("", errors.New("missing event name"))
+	} else {
+		if err := validateEventName(eventName); err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalide event name", fmt.Errorf("validate event name: %w", err))
+		}
 	}
 
 	// Resolve the actor type/ID from the given inputs.
 	var (
-		orgID       = req.AuditLogEvent.GetOrganizationId()
+		orgID       = req.AuditLogEvent.OrganizationId
 		orgUUID     *uuid.UUID
-		userID      = req.AuditLogEvent.GetUserId()
+		userID      = req.AuditLogEvent.UserId
 		userUUID    *uuid.UUID
-		sessionID   = req.AuditLogEvent.GetSessionId()
+		sessionID   = req.AuditLogEvent.SessionId
 		sessionUUID *uuid.UUID
-		apiKeyID    = req.AuditLogEvent.GetApiKeyId()
+		apiKeyID    = req.AuditLogEvent.ApiKeyId
 		apiKeyUUID  *uuid.UUID
 	)
+
+	if req.AuditLogEvent.Credential != "" {
+		if isJWTFormat(req.AuditLogEvent.Credential) {
+			parsedAccessToken, err := parseAccessTokenNoValidate(req.AuditLogEvent.Credential)
+			if err != nil {
+				return nil, apierror.NewInvalidArgumentError("invalid credential", fmt.Errorf("parse access token: %w", err))
+			}
+
+			if parsedAccessToken.OrganizationID != nil {
+				orgID = idformat.Organization.Format(*parsedAccessToken.OrganizationID)
+				orgUUID = parsedAccessToken.OrganizationID
+			}
+
+			if parsedAccessToken.UserID != nil {
+				userID = idformat.User.Format(*parsedAccessToken.UserID)
+				userUUID = parsedAccessToken.UserID
+			}
+
+			if parsedAccessToken.SessionID != nil {
+				sessionID = idformat.Session.Format(*parsedAccessToken.SessionID)
+				sessionUUID = parsedAccessToken.SessionID
+			}
+		} else if isAPIKeyFormat(req.AuditLogEvent.Credential) {
+			qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+			if err != nil {
+				return nil, fmt.Errorf("get project by id: %w", err)
+			}
+
+			if qProject.ApiKeySecretTokenPrefix == nil {
+				return nil, apierror.NewPermissionDeniedError("api key secret token prefix is not set for this project", fmt.Errorf("api key secret token prefix not set for project"))
+			}
+
+			secretTokenBytes, err := prettysecret.Parse(*qProject.ApiKeySecretTokenPrefix, req.AuditLogEvent.Credential)
+			if err != nil {
+				return nil, apierror.NewUnauthenticatedApiKeyError("malformed_api_key_secret_token", fmt.Errorf("parse secret token: %w", err))
+			}
+			secretTokenSHA256 := sha256.Sum256(secretTokenBytes[:])
+
+			qApiKeyDetails, err := q.GetAPIKeyDetailsBySecretTokenSHA256(ctx, queries.GetAPIKeyDetailsBySecretTokenSHA256Params{
+				SecretTokenSha256: secretTokenSHA256[:],
+				ProjectID:         authn.ProjectID(ctx),
+			})
+			if err != nil {
+				if errors.Is(err, pgx.ErrNoRows) {
+					return nil, apierror.NewInvalidArgumentError("invalid credential", fmt.Errorf("get api key details: %w", err))
+				}
+
+				return nil, fmt.Errorf("get api key details: %w", err)
+			}
+
+			apiKeyID = idformat.APIKey.Format(qApiKeyDetails.ID)
+			apiKeyUUID = (*uuid.UUID)(&qApiKeyDetails.ID)
+			orgID = idformat.Organization.Format(qApiKeyDetails.OrganizationID)
+			orgUUID = (*uuid.UUID)(&qApiKeyDetails.OrganizationID)
+		}
+	}
+
 	if orgID == "" && userID == "" && sessionID == "" && apiKeyID == "" {
 		return nil, apierror.NewInvalidArgumentError("", errors.New("either organization_id, user_id, session_id, or api_key_id must be provided"))
 	}
@@ -328,18 +395,103 @@ func parseAuditLogEvent(qEvent queries.AuditLogEvent) (*backendv1.AuditLogEvent,
 
 	return &backendv1.AuditLogEvent{
 		Id:                    idformat.AuditLogEvent.Format(qEvent.ID),
-		OrganizationId:        organizationID,
-		UserId:                userID,
-		SessionId:             sessionID,
-		ApiKeyId:              apiKeyID,
-		DogfoodUserId:         dogfoodUserID,
-		DogfoodSessionId:      dogfoodSessionID,
-		BackendApiKeyId:       backendApiKeyID,
-		IntermediateSessionId: intermediateSessionID,
-		ResourceType:          resourceType,
-		ResourceId:            resourceID,
+		OrganizationId:        derefOrEmpty(organizationID),
+		UserId:                derefOrEmpty(userID),
+		SessionId:             derefOrEmpty(sessionID),
+		ApiKeyId:              derefOrEmpty(apiKeyID),
+		DogfoodUserId:         derefOrEmpty(dogfoodUserID),
+		DogfoodSessionId:      derefOrEmpty(dogfoodSessionID),
+		BackendApiKeyId:       derefOrEmpty(backendApiKeyID),
+		IntermediateSessionId: derefOrEmpty(intermediateSessionID),
+		ResourceType:          derefOrEmpty(resourceType),
+		ResourceId:            derefOrEmpty(resourceID),
 		EventName:             qEvent.EventName,
 		EventTime:             timestampOrNil(qEvent.EventTime),
 		EventDetails:          &eventDetails,
 	}, nil
+}
+
+var eventNamePattern = regexp.MustCompile(`^[a-z0-9_]+\.[a-z0-9_]+\.[a-z0-9_]+`)
+
+func validateEventName(action string) error {
+	if !eventNamePattern.MatchString(action) {
+		return apierror.NewInvalidArgumentError("event names must be of the form x.y.z, only containing a-z0-9_", nil)
+	}
+	if strings.HasPrefix(action, "tesseral") {
+		return apierror.NewInvalidArgumentError("event names must not start with 'tesseral'", nil)
+	}
+	return nil
+}
+
+var (
+	jwtRegex    = regexp.MustCompile(`^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$`)
+	apiKeyRegex = regexp.MustCompile(`^[a-z0-9_]+$`)
+)
+
+func isJWTFormat(value string) bool {
+	return jwtRegex.MatchString(value)
+}
+
+func isAPIKeyFormat(value string) bool {
+	return apiKeyRegex.MatchString(value)
+}
+
+type accessTokenDetails struct {
+	ImpersonatorEmail string
+	OrganizationID    *uuid.UUID
+	SessionID         *uuid.UUID
+	UserID            *uuid.UUID
+}
+
+func parseAccessTokenNoValidate(accessToken string) (*accessTokenDetails, error) {
+	jwtParts := strings.Split(accessToken, ".")
+	if len(jwtParts) != 3 {
+		return nil, apierror.NewInvalidArgumentError("invalid credential", fmt.Errorf("invalid access token format: expected 3 parts, got %d", len(jwtParts)))
+	}
+
+	payloadSegment := jwtParts[1]
+	decoded, err := base64.RawURLEncoding.DecodeString(payloadSegment)
+	if err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid credential", fmt.Errorf("failed to decode access token payload: %w", err))
+	}
+
+	var details accessTokenDetails
+
+	var claims map[string]interface{}
+	if err := json.Unmarshal(decoded, &claims); err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid credential", fmt.Errorf("failed to unmarshal access token claims: %w", err))
+	}
+
+	if claims["session"] != nil && claims["session"].(map[string]interface{})["id"] != nil {
+		sessionID, err := uuid.Parse(claims["session"].(map[string]interface{})["id"].(string))
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid credential", fmt.Errorf("failed to parse session ID: %w", err))
+		}
+
+		details.SessionID = &sessionID
+	}
+
+	if claims["user"] != nil && claims["user"].(map[string]interface{})["id"] != nil {
+		userID, err := uuid.Parse(claims["user"].(map[string]interface{})["id"].(string))
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid credential", fmt.Errorf("failed to parse user ID: %w", err))
+		}
+
+		details.UserID = &userID
+	}
+
+	if claims["organization"] != nil && claims["organization"].(map[string]interface{})["id"] != nil {
+		orgID, err := uuid.Parse(claims["organization"].(map[string]interface{})["id"].(string))
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid credential", fmt.Errorf("failed to parse organization ID: %w", err))
+		}
+
+		details.OrganizationID = &orgID
+	}
+
+	if claims["impersonator"] != nil && claims["impersonator"].(map[string]interface{})["email"] != nil {
+		details.ImpersonatorEmail = claims["impersonator"].(map[string]interface{})["email"].(string)
+	}
+
+	return &details, nil
 }

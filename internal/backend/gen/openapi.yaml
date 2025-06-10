@@ -1660,6 +1660,9 @@ components:
                 eventDetails:
                     type: object
                     description: The event payload JSON.
+                credential:
+                    type: string
+                    description: The credential associated with the event if any.
         AuthenticateAPIKeyRequest:
             type: object
             properties:
