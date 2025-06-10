@@ -19,6 +19,7 @@ create type audit_log_event_resource_type as enum (
     'role',
     'saml_connection',
     'scim_api_key',
+    'session',
     'user',
     'user_authenticator_app_challenge',
     'user_impersonation_token',

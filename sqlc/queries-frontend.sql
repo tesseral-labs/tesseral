@@ -707,3 +707,23 @@ INSERT INTO audit_log_events (id, project_id, organization_id, user_id, session_
 RETURNING
     *;
 
+-- name: GetSessionDetailsByRelayedSessionRefreshTokenSHA256 :one
+SELECT
+    sessions.id AS session_id,
+    users.id AS user_id,
+    users.is_owner AS user_is_owner,
+    users.email AS user_email,
+    users.display_name AS user_display_name,
+    users.profile_picture_url AS user_profile_picture_url,
+    organizations.id AS organization_id,
+    organizations.display_name AS organization_display_name,
+    organizations.project_id AS project_id,
+    sessions.impersonator_user_id
+FROM
+    relayed_sessions
+    JOIN sessions ON relayed_sessions.session_id = sessions.id
+    JOIN users ON sessions.user_id = users.id
+    JOIN organizations ON users.organization_id = organizations.id
+WHERE
+    relayed_sessions.relayed_refresh_token_sha256 = $1;
+
