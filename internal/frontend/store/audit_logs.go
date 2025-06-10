@@ -248,6 +248,8 @@ func parseSessionEventDetails(qSession queries.Session, impersonatorEmail *strin
 		primaryAuthFactor = frontendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_MICROSOFT
 	case queries.PrimaryAuthFactorGithub:
 		primaryAuthFactor = frontendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GITHUB
+	case queries.PrimaryAuthFactorSaml:
+		primaryAuthFactor = frontendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_SAML
 	default:
 		primaryAuthFactor = frontendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_UNSPECIFIED
 	}
