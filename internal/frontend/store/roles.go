@@ -180,10 +180,6 @@ func (s *Store) CreateRole(ctx context.Context, req *frontendv1.CreateRoleReques
 		return nil, fmt.Errorf("batch get role actions by role id: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
-	}
-
 	role := parseRole(qRole, qRoleActions, qActions)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.roles.create",
@@ -194,6 +190,10 @@ func (s *Store) CreateRole(ctx context.Context, req *frontendv1.CreateRoleReques
 		ResourceID:   &qRole.ID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &frontendv1.CreateRoleResponse{Role: role}, nil
@@ -305,22 +305,21 @@ func (s *Store) UpdateRole(ctx context.Context, req *frontendv1.UpdateRoleReques
 		return nil, fmt.Errorf("batch get role actions by role id: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
-	}
-
 	role := parseRole(qUpdatedRole, qUpdatedRoleActions, qActions)
-	previousRole := parseRole(qRole, qRoleActions, qActions)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.roles.update",
 		EventDetails: map[string]any{
 			"role":         role,
-			"previousRole": previousRole,
+			"previousRole": parseRole(qRole, qRoleActions, qActions),
 		},
 		ResourceType: queries.AuditLogEventResourceTypeRole,
 		ResourceID:   &qRole.ID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &frontendv1.UpdateRoleResponse{Role: role}, nil
@@ -370,20 +369,19 @@ func (s *Store) DeleteRole(ctx context.Context, req *frontendv1.DeleteRoleReques
 		return nil, fmt.Errorf("delete role: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
-	}
-
-	role := parseRole(qRole, qRoleActions, qActions)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.roles.delete",
 		EventDetails: map[string]any{
-			"role": role,
+			"role": parseRole(qRole, qRoleActions, qActions),
 		},
 		ResourceType: queries.AuditLogEventResourceTypeRole,
 		ResourceID:   &qRole.ID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &frontendv1.DeleteRoleResponse{}, nil

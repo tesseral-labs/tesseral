@@ -82,10 +82,6 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *frontendv1.CreateAPIKeyRe
 		return nil, fmt.Errorf("create api key: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit transaction: %w", err)
-	}
-
 	apiKey := parseAPIKey(qAPIKey, &secretToken)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_keys.create",
@@ -98,8 +94,12 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *frontendv1.CreateAPIKeyRe
 		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit transaction: %w", err)
+	}
+
 	return &frontendv1.CreateAPIKeyResponse{
-		ApiKey: parseAPIKey(qAPIKey, &secretToken),
+		ApiKey: apiKey,
 	}, nil
 }
 
@@ -137,20 +137,19 @@ func (s *Store) DeleteAPIKey(ctx context.Context, req *frontendv1.DeleteAPIKeyRe
 		return nil, fmt.Errorf("delete api key: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit transaction: %w", err)
-	}
-
-	apiKey := parseAPIKey(qApiKey, nil)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_keys.delete",
 		EventDetails: map[string]any{
-			"apiKey": apiKey,
+			"apiKey": parseAPIKey(qApiKey, nil),
 		},
 		ResourceType: queries.AuditLogEventResourceTypeApiKey,
 		ResourceID:   &qApiKey.ID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit transaction: %w", err)
 	}
 
 	return &frontendv1.DeleteAPIKeyResponse{}, nil
@@ -256,22 +255,20 @@ func (s *Store) RevokeAPIKey(ctx context.Context, req *frontendv1.RevokeAPIKeyRe
 		return nil, fmt.Errorf("revoke api key: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit transaction: %w", err)
-	}
-
-	apiKey := parseAPIKey(qUpdatedAPIKey, nil)
-	previousApiKey := parseAPIKey(qAPIKey, nil)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_keys.revoke",
 		EventDetails: map[string]any{
-			"apiKey":         apiKey,
-			"previousApiKey": previousApiKey,
+			"apiKey":         parseAPIKey(qUpdatedAPIKey, nil),
+			"previousApiKey": parseAPIKey(qAPIKey, nil),
 		},
 		ResourceType: queries.AuditLogEventResourceTypeApiKey,
 		ResourceID:   &qAPIKey.ID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit transaction: %w", err)
 	}
 
 	return &frontendv1.RevokeAPIKeyResponse{}, nil
@@ -309,22 +306,21 @@ func (s *Store) UpdateAPIKey(ctx context.Context, req *frontendv1.UpdateAPIKeyRe
 		return nil, fmt.Errorf("update api key: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit transaction: %w", err)
-	}
-
 	apiKey := parseAPIKey(updatedApiKey, nil)
-	previousAPIKey := parseAPIKey(qApiKey, nil)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_keys.update",
 		EventDetails: map[string]any{
 			"apiKey":         apiKey,
-			"previousApiKey": previousAPIKey,
+			"previousApiKey": parseAPIKey(qApiKey, nil),
 		},
 		ResourceType: queries.AuditLogEventResourceTypeApiKey,
 		ResourceID:   &qApiKey.ID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit transaction: %w", err)
 	}
 
 	return &frontendv1.UpdateAPIKeyResponse{

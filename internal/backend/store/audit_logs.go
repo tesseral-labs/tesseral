@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -15,15 +14,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/uuidv7"
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
-	"google.golang.org/protobuf/encoding/protojson"
-	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/structpb"
-)
-
-var (
-	titleCaser = cases.Title(language.English)
 )
 
 func (s *Store) CreateCustomAuditLogEvent(ctx context.Context, req *backendv1.CreateAuditLogEventRequest) (*backendv1.CreateAuditLogEventResponse, error) {
@@ -165,60 +156,26 @@ func (s *Store) CreateCustomAuditLogEvent(ctx context.Context, req *backendv1.Cr
 	}, nil
 }
 
-type AuditLogEventData struct {
+type logAuditEventParams struct {
 	OrganizationID *uuid.UUID
 
-	ResourceType     queries.AuditLogEventResourceType
-	ResourceID       uuid.UUID
-	Resource         proto.Message
-	PreviousResource proto.Message
-
-	// For example, `create`, `update`, `delete`, etc.
-	EventType string
+	EventName    string
+	EventDetails map[string]any
+	ResourceType queries.AuditLogEventResourceType
+	ResourceID   *uuid.UUID
 }
 
-func (s *Store) CreateTesseralAuditLogEvent(ctx context.Context, data AuditLogEventData) (queries.AuditLogEvent, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
-	if err != nil {
-		return queries.AuditLogEvent{}, err
-	}
-	defer rollback()
-
-	resourceType := string(data.ResourceType)
-	jsonResourceType := snakeToCamelCase(resourceType)
-
-	pluralResourceType := resourceType
-	if !strings.HasSuffix(resourceType, "s") {
-		pluralResourceType += "s"
-	}
-	// e.g. "tesseral.projects.create"
-	eventName := fmt.Sprintf("tesseral.%s.%s", pluralResourceType, data.EventType)
-
-	details := make(map[string]any)
-	if data.PreviousResource != nil {
-		previousResourceBytes, err := protojson.Marshal(data.PreviousResource)
-		if err != nil {
-			return queries.AuditLogEvent{}, err
-		}
-		details[fmt.Sprintf("previous%s", capitalizeFirstLetter(jsonResourceType))] = json.RawMessage(previousResourceBytes)
-	}
-	if data.Resource != nil {
-		resourceBytes, err := protojson.Marshal(data.Resource)
-		if err != nil {
-			return queries.AuditLogEvent{}, err
-		}
-		details[jsonResourceType] = json.RawMessage(resourceBytes)
-	}
-	detailsBytes, err := json.Marshal(details)
-	if err != nil {
-		return queries.AuditLogEvent{}, err
-	}
-
+func (s *Store) logAuditEvent(ctx context.Context, q *queries.Queries, data logAuditEventParams) (queries.AuditLogEvent, error) {
 	// Generate the UUIDv7 based on the event time.
 	eventTime := time.Now().UTC()
 	eventID, err := uuidv7.NewWithTime(eventTime)
 	if err != nil {
 		return queries.AuditLogEvent{}, fmt.Errorf("failed to create UUID: %w", err)
+	}
+
+	eventDetailsBytes, err := json.Marshal(data.EventDetails)
+	if err != nil {
+		return queries.AuditLogEvent{}, fmt.Errorf("failed to marshal event details: %w", err)
 	}
 
 	var (
@@ -255,18 +212,14 @@ func (s *Store) CreateTesseralAuditLogEvent(ctx context.Context, data AuditLogEv
 		DogfoodSessionID: dogfoodSessionID,
 		BackendApiKeyID:  backendApiKeyID,
 		ResourceType:     refOrNil(data.ResourceType),
-		ResourceID:       &data.ResourceID,
-		EventName:        eventName,
+		ResourceID:       data.ResourceID,
+		EventName:        data.EventName,
 		EventTime:        &eventTime,
-		EventDetails:     detailsBytes,
+		EventDetails:     eventDetailsBytes,
 	}
 
 	qEvent, err := q.CreateAuditLogEvent(ctx, qEventParams)
 	if err != nil {
-		return queries.AuditLogEvent{}, err
-	}
-
-	if err := commit(); err != nil {
 		return queries.AuditLogEvent{}, err
 	}
 
@@ -389,23 +342,4 @@ func parseAuditLogEvent(qEvent queries.AuditLogEvent) (*backendv1.AuditLogEvent,
 		EventTime:             timestampOrNil(qEvent.EventTime),
 		EventDetails:          &eventDetails,
 	}, nil
-}
-
-func capitalizeFirstLetter(s string) string {
-	if len(s) == 0 {
-		return s
-	}
-	return strings.ToUpper(s[:1]) + s[1:]
-}
-
-func snakeToCamelCase(s string) string {
-	parts := strings.Split(s, "_")
-	for i, part := range parts {
-		if i > 0 {
-			parts[i] = titleCaser.String(part)
-		} else {
-			parts[i] = strings.ToLower(part)
-		}
-	}
-	return strings.Join(parts, "")
 }

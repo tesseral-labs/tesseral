@@ -32,6 +32,8 @@ func (s *Store) UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, req *f
 		return nil, fmt.Errorf("validate is owner: %w", err)
 	}
 
+	orgID := authn.OrganizationID(ctx)
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -63,21 +65,21 @@ func (s *Store) UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, req *f
 		return nil, fmt.Errorf("get organization microsoft tenant ids: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
-	}
-
 	microsoftTenantIDs := parseOrganizationMicrosoftTenantIDs(qMicrosoftTenantIDs)
-	previousMicrosoftTenantIDs := parseOrganizationMicrosoftTenantIDs(qPreviousMicrosoftTenantIDs)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.microsoft_tenant_ids.update",
 		EventDetails: map[string]any{
 			"microsoftTenantIds":         microsoftTenantIDs.MicrosoftTenantIds,
-			"previousMicrosoftTenantIds": previousMicrosoftTenantIDs.MicrosoftTenantIds,
+			"previousMicrosoftTenantIds": parseOrganizationMicrosoftTenantIDs(qPreviousMicrosoftTenantIDs).MicrosoftTenantIds,
 		},
-		ResourceType: queries.AuditLogEventResourceTypeOrganizationMicrosoftTenantIds,
+		ResourceType: queries.AuditLogEventResourceTypeOrganization,
+		ResourceID:   &orgID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &frontendv1.UpdateOrganizationMicrosoftTenantIDsResponse{

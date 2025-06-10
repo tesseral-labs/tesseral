@@ -166,6 +166,19 @@ func (s *Store) UpdateUser(ctx context.Context, req *frontendv1.UpdateUserReques
 		return nil, fmt.Errorf("update user: %w", err)
 	}
 
+	user := parseUser(qUpdatedUser)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.users.update",
+		EventDetails: map[string]any{
+			"user":         user,
+			"previousUser": parseUser(qUser),
+		},
+		ResourceType: queries.AuditLogEventResourceTypeUser,
+		ResourceID:   &qUser.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
 	// Commit the transaction.
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit transaction: %w", err)
@@ -174,20 +187,6 @@ func (s *Store) UpdateUser(ctx context.Context, req *frontendv1.UpdateUserReques
 	// send sync user event
 	if err := s.sendSyncUserEvent(ctx, qUpdatedUser); err != nil {
 		return nil, fmt.Errorf("send sync user event: %w", err)
-	}
-
-	user := parseUser(qUpdatedUser)
-	previousUser := parseUser(qUser)
-	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
-		EventName: "tesseral.users.update",
-		EventDetails: map[string]any{
-			"user":         user,
-			"previousUser": previousUser,
-		},
-		ResourceType: queries.AuditLogEventResourceTypeUser,
-		ResourceID:   &qUser.ID,
-	}); err != nil {
-		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
 	return &frontendv1.UpdateUserResponse{User: user}, nil
@@ -229,6 +228,17 @@ func (s *Store) DeleteUser(ctx context.Context, req *frontendv1.DeleteUserReques
 		return nil, fmt.Errorf("delete user: %w", err)
 	}
 
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.users.delete",
+		EventDetails: map[string]any{
+			"user": parseUser(qUser),
+		},
+		ResourceType: queries.AuditLogEventResourceTypeUser,
+		ResourceID:   &qUser.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit transaction: %w", err)
 	}
@@ -236,18 +246,6 @@ func (s *Store) DeleteUser(ctx context.Context, req *frontendv1.DeleteUserReques
 	// send sync user event
 	if err := s.sendSyncUserEvent(ctx, qUser); err != nil {
 		return nil, fmt.Errorf("send sync user event: %w", err)
-	}
-
-	user := parseUser(qUser)
-	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
-		EventName: "tesseral.users.delete",
-		EventDetails: map[string]any{
-			"user": user,
-		},
-		ResourceType: queries.AuditLogEventResourceTypeUser,
-		ResourceID:   &qUser.ID,
-	}); err != nil {
-		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
 	return &frontendv1.DeleteUserResponse{}, nil

@@ -155,16 +155,6 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *frontendv1.CreateUser
 		return nil, apierror.NewFailedPreconditionError("email daily quota exceeded", fmt.Errorf("email daily quota exceeded"))
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
-	}
-
-	if req.SendEmail {
-		if err := s.sendUserInviteEmail(ctx, req.UserInvite.Email, qOrg.DisplayName); err != nil {
-			return nil, fmt.Errorf("send user invite email: %w", err)
-		}
-	}
-
 	userInvite := parseUserInvite(qUserInvite)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.user_invites.create",
@@ -175,6 +165,16 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *frontendv1.CreateUser
 		ResourceID:   &qUserInvite.ID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	if req.SendEmail {
+		if err := s.sendUserInviteEmail(ctx, req.UserInvite.Email, qOrg.DisplayName); err != nil {
+			return nil, fmt.Errorf("send user invite email: %w", err)
+		}
 	}
 
 	return &frontendv1.CreateUserInviteResponse{UserInvite: userInvite}, nil
@@ -212,20 +212,19 @@ func (s *Store) DeleteUserInvite(ctx context.Context, req *frontendv1.DeleteUser
 		return nil, fmt.Errorf("delete user invite: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
-	}
-
-	userInvite := parseUserInvite(qUserInvite)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.user_invites.delete",
 		EventDetails: map[string]any{
-			"userInvite": userInvite,
+			"userInvite": parseUserInvite(qUserInvite),
 		},
 		ResourceType: queries.AuditLogEventResourceTypeUserInvite,
 		ResourceID:   &qUserInvite.ID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &frontendv1.DeleteUserInviteResponse{}, nil
