@@ -3,16 +3,19 @@ package store
 import (
 	"context"
 	"crypto/sha256"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log/slog"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
+	"github.com/tesseral-labs/tesseral/internal/uuidv7"
 )
 
 func (s *Store) LogRefreshEvent(ctx context.Context, refreshToken string) error {
@@ -102,14 +105,36 @@ func (s *Store) LogRefreshEvent(ctx context.Context, refreshToken string) error 
 		qImpersonatingUserEmail = &qImpersonatingUser.Email
 	}
 
-	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
-		EventName: "tesseral.sessions.refresh",
-		EventDetails: map[string]any{
-			"session": parseSessionEventDetails(qSession, qImpersonatingUserEmail),
-		},
-		OrganizationID: &qDetails.OrganizationID,
-		ResourceType:   queries.AuditLogEventResourceTypeSession,
-		ResourceID:     &qDetails.SessionID,
+	eventTime := time.Now().UTC()
+	eventID, err := uuidv7.NewWithTime(eventTime)
+	if err != nil {
+		return fmt.Errorf("create UUIDv7: %w", err)
+	}
+
+	eventDetails := map[string]any{
+		"session": parseSessionEventDetails(qSession, qImpersonatingUserEmail),
+	}
+	eventDetailsBytes, err := json.Marshal(eventDetails)
+	if err != nil {
+		return fmt.Errorf("marshal event details: %w", err)
+	}
+
+	// Since this is being called in a context that doesn't have authn context data,
+	// we need to manually set properties like ProjectID and PrganizationID as gleaned
+	// from the session details. As such, we can't use the logAuditEvent() fuction
+	// directly, so we're calling the CreateAuditLogEvent query directly.
+	resourceType := queries.AuditLogEventResourceTypeSession
+	if _, err := q.CreateAuditLogEvent(ctx, queries.CreateAuditLogEventParams{
+		ID:             eventID,
+		ProjectID:      qDetails.ProjectID,
+		OrganizationID: refOrNil(qDetails.OrganizationID),
+		UserID:         refOrNil(qDetails.UserID),
+		SessionID:      refOrNil(qDetails.SessionID),
+		ResourceType:   &resourceType,
+		ResourceID:     refOrNil(qDetails.SessionID),
+		EventName:      "tesseral.sessions.refresh",
+		EventTime:      &eventTime,
+		EventDetails:   eventDetailsBytes,
 	}); err != nil {
 		return fmt.Errorf("log audit event: %w", err)
 	}
