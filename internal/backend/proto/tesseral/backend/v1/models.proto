@@ -540,34 +540,34 @@ message AuditLogEvent {
   string id = 1;
 
   // The ID of the Organization associated with the event.
-  optional string organization_id = 2;
+  string organization_id = 2;
 
   // The ID of the User associated with the event, if any.
-  optional string user_id = 3;
+  string user_id = 3;
 
   // The ID of the Session associated with the event, if any.
-  optional string session_id = 4;
+  string session_id = 4;
 
   // The ID of the API Key associated with the event, if any.
-  optional string api_key_id = 5;
+  string api_key_id = 5;
 
   // The dogfood user ID associated with the event, if any.
-  optional string dogfood_user_id = 6;
+  string dogfood_user_id = 6;
 
   // The dogfood session ID associated with the event, if any.
-  optional string dogfood_session_id = 7;
+  string dogfood_session_id = 7;
 
   // The backend API key associated with the event, if any.
-  optional string backend_api_key_id = 8;
+  string backend_api_key_id = 8;
 
   // The intermediate session ID associated with the event, if any.
-  optional string intermediate_session_id = 9;
+  string intermediate_session_id = 9;
 
   // The resource type associated with the event, if any.
-  optional string resource_type = 10;
+  string resource_type = 10;
 
   // The resource ID associated with the event, if any.
-  optional string resource_id = 11;
+  string resource_id = 11;
 
   // The time the event occurred.
   //
@@ -580,4 +580,7 @@ message AuditLogEvent {
 
   // The event payload JSON.
   google.protobuf.Struct event_details = 14;
+
+  // The credential associated with the event if any.
+  string credentials = 15;
 }
