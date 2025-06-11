@@ -1150,7 +1150,7 @@ FROM
     JOIN projects ON organizations.project_id = projects.id
 WHERE
     sessions.id = $1
-    AND projects.id = sqlc.arg (project_id);
+    AND projects.id = @project_id;
 
 -- name: DeriveAuditLogEventContextForAPIKeyID :one
 SELECT
@@ -1162,7 +1162,7 @@ FROM
     JOIN projects ON organizations.project_id = projects.id
 WHERE
     api_keys.id = $1
-    AND projects.id = sqlc.arg (project_id);
+    AND projects.id = @project_id;
 
 -- name: DeriveAuditLogEventContextForUserID :one
 SELECT
@@ -1174,5 +1174,5 @@ FROM
     JOIN projects ON organizations.project_id = projects.id
 WHERE
     users.id = $1
-    AND projects.id = sqlc.arg (project_id);
+    AND projects.id = @project_id;
 

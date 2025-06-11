@@ -24,16 +24,13 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 	}
 	defer rollback()
 
-	projectID := authn.ProjectID(ctx)
-	orgID := authn.OrganizationID(ctx)
-
 	if err := s.validateIsOwner(ctx); err != nil {
 		return nil, err
 	}
 
 	listParams := queries.ListAuditLogEventsParams{
-		ProjectID:      projectID,
-		OrganizationID: refOrNil(orgID),
+		ProjectID:      authn.ProjectID(ctx),
+		OrganizationID: refOrNil(authn.OrganizationID(ctx)),
 	}
 
 	var startTime *time.Time
