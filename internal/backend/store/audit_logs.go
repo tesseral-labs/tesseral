@@ -21,6 +21,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/prettysecret"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/uuidv7"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
@@ -162,11 +163,10 @@ func (s *Store) logAuditEvent(ctx context.Context, q *queries.Queries, data logA
 	return qEvent, nil
 }
 
-func parseAuditLogEvent(qEvent queries.AuditLogEvent) (*backendv1.AuditLogEvent, error) {
-	eventDetailsJSON := qEvent.EventDetails
+func parseAuditLogEvent(qAuditLogEvent queries.AuditLogEvent) (*backendv1.AuditLogEvent, error) {
 	var eventDetails structpb.Struct
-	if err := eventDetails.UnmarshalJSON(eventDetailsJSON); err != nil {
-		return nil, err
+	if err := protojson.Unmarshal(qAuditLogEvent.EventDetails, &eventDetails); err != nil {
+		return nil, fmt.Errorf("unmarshal event details: %w", err)
 	}
 
 	var (
@@ -179,33 +179,33 @@ func parseAuditLogEvent(qEvent queries.AuditLogEvent) (*backendv1.AuditLogEvent,
 		backendApiKeyID       *string
 		intermediateSessionID *string
 	)
-	if orgUUID := qEvent.OrganizationID; orgUUID != nil {
+	if orgUUID := qAuditLogEvent.OrganizationID; orgUUID != nil {
 		organizationID = refOrNil(idformat.Organization.Format(*orgUUID))
 	}
-	if userUUID := qEvent.UserID; userUUID != nil {
+	if userUUID := qAuditLogEvent.UserID; userUUID != nil {
 		userID = refOrNil(idformat.User.Format(*userUUID))
 	}
-	if sessionUUID := qEvent.SessionID; sessionUUID != nil {
+	if sessionUUID := qAuditLogEvent.SessionID; sessionUUID != nil {
 		sessionID = refOrNil(idformat.Session.Format(*sessionUUID))
 	}
-	if apiKeyUUID := qEvent.ApiKeyID; apiKeyUUID != nil {
+	if apiKeyUUID := qAuditLogEvent.ApiKeyID; apiKeyUUID != nil {
 		apiKeyID = refOrNil(idformat.APIKey.Format(*apiKeyUUID))
 	}
-	if dogfoodUserUUID := qEvent.DogfoodUserID; dogfoodUserUUID != nil {
+	if dogfoodUserUUID := qAuditLogEvent.DogfoodUserID; dogfoodUserUUID != nil {
 		dogfoodUserID = refOrNil(idformat.Session.Format(*dogfoodUserUUID))
 	}
-	if dogfoodSessionUUID := qEvent.DogfoodSessionID; dogfoodSessionUUID != nil {
+	if dogfoodSessionUUID := qAuditLogEvent.DogfoodSessionID; dogfoodSessionUUID != nil {
 		dogfoodSessionID = refOrNil(idformat.Session.Format(*dogfoodSessionUUID))
 	}
-	if backendApiKeyUUID := qEvent.BackendApiKeyID; backendApiKeyUUID != nil {
+	if backendApiKeyUUID := qAuditLogEvent.BackendApiKeyID; backendApiKeyUUID != nil {
 		backendApiKeyID = refOrNil(idformat.BackendAPIKey.Format(*backendApiKeyUUID))
 	}
-	if intermediateSessionUUID := qEvent.IntermediateSessionID; intermediateSessionUUID != nil {
+	if intermediateSessionUUID := qAuditLogEvent.IntermediateSessionID; intermediateSessionUUID != nil {
 		intermediateSessionID = refOrNil(idformat.IntermediateSession.Format(*intermediateSessionUUID))
 	}
 
 	return &backendv1.AuditLogEvent{
-		Id:                    idformat.AuditLogEvent.Format(qEvent.ID),
+		Id:                    idformat.AuditLogEvent.Format(qAuditLogEvent.ID),
 		OrganizationId:        derefOrEmpty(organizationID),
 		UserId:                derefOrEmpty(userID),
 		SessionId:             derefOrEmpty(sessionID),
@@ -214,8 +214,8 @@ func parseAuditLogEvent(qEvent queries.AuditLogEvent) (*backendv1.AuditLogEvent,
 		DogfoodSessionId:      derefOrEmpty(dogfoodSessionID),
 		BackendApiKeyId:       derefOrEmpty(backendApiKeyID),
 		IntermediateSessionId: derefOrEmpty(intermediateSessionID),
-		EventName:             qEvent.EventName,
-		EventTime:             timestampOrNil(qEvent.EventTime),
+		EventName:             qAuditLogEvent.EventName,
+		EventTime:             timestampOrNil(qAuditLogEvent.EventTime),
 		EventDetails:          &eventDetails,
 	}, nil
 }

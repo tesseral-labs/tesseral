@@ -14,6 +14,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/uuidv7"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
@@ -116,7 +117,7 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 
 func parseAuditLogEvent(qAuditLogEvent queries.AuditLogEvent) (*frontendv1.AuditLogEvent, error) {
 	var eventDetails structpb.Struct
-	if err := eventDetails.UnmarshalJSON(qAuditLogEvent.EventDetails); err != nil {
+	if err := protojson.Unmarshal(qAuditLogEvent.EventDetails, &eventDetails); err != nil {
 		return nil, fmt.Errorf("unmarshal event details: %w", err)
 	}
 
