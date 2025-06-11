@@ -2,7 +2,7 @@ package store
 
 import (
 	"context"
-	"crypto/sha256"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -13,79 +13,34 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	commonv1 "github.com/tesseral-labs/tesseral/internal/common/gen/tesseral/common/v1"
+	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/uuidv7"
 )
 
-func (s *Store) LogRefreshEvent(ctx context.Context, refreshToken string) error {
+func (s *Store) CreateRefreshAuditLogEvent(ctx context.Context, accessToken string) error {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return fmt.Errorf("store: %w", err)
 	}
 	defer rollback()
 
-	var qDetails struct {
-		SessionID               uuid.UUID
-		UserID                  uuid.UUID
-		OrganizationID          uuid.UUID
-		UserIsOwner             bool
-		UserEmail               string
-		UserDisplayName         *string
-		UserProfilePictureUrl   *string
-		OrganizationDisplayName string
-		ImpersonatorUserID      *uuid.UUID
-		ProjectID               uuid.UUID
+	projectID := authn.ProjectID(ctx)
+
+	accessTokenDetails, err := parseAccessTokenNoValidate(accessToken)
+	if err != nil {
+		return fmt.Errorf("parse access token: %w", err)
 	}
 
-	switch {
-	case strings.HasPrefix(refreshToken, "tesseral_secret_session_refresh_token_"):
-		slog.InfoContext(ctx, "refresh_session_token")
+	slog.InfoContext(ctx, "logging refresh", "🚨 access_token_details", accessTokenDetails)
 
-		refreshTokenUUID, err := idformat.SessionRefreshToken.Parse(refreshToken)
-		if err != nil {
-			return fmt.Errorf("parse refresh token: %w", err)
-		}
-
-		refreshTokenSHA := sha256.Sum256(refreshTokenUUID[:])
-		qSessionDetails, err := q.GetSessionDetailsByRefreshTokenSHA256(ctx, refreshTokenSHA[:])
-		if err != nil {
-			if errors.Is(err, pgx.ErrNoRows) {
-				return apierror.NewUnauthenticatedError("invalid refresh token", fmt.Errorf("invalid refresh token"))
-			}
-
-			return fmt.Errorf("get session details by refresh token sha256: %w", err)
-		}
-
-		qDetails.SessionID = qSessionDetails.SessionID
-		qDetails.UserID = qSessionDetails.UserID
-		qDetails.OrganizationID = qSessionDetails.OrganizationID
-		qDetails.ProjectID = qSessionDetails.ProjectID
-	case strings.HasPrefix(refreshToken, "tesseral_secret_relayed_session_refresh_token_"):
-		slog.InfoContext(ctx, "refresh_relayed_session_token")
-
-		relayedRefreshTokenUUID, err := idformat.RelayedSessionRefreshToken.Parse(refreshToken)
-		if err != nil {
-			return fmt.Errorf("parse refresh token: %w", err)
-		}
-
-		relayedRefreshTokenSHA := sha256.Sum256(relayedRefreshTokenUUID[:])
-		qSessionDetails, err := q.GetSessionDetailsByRelayedSessionRefreshTokenSHA256(ctx, relayedRefreshTokenSHA[:])
-		if err != nil {
-			if errors.Is(err, pgx.ErrNoRows) {
-				return apierror.NewUnauthenticatedError("invalid refresh token", fmt.Errorf("invalid refresh token"))
-			}
-
-			return fmt.Errorf("get session details by refresh token sha256: %w", err)
-		}
-
-		qDetails.SessionID = qSessionDetails.SessionID
-		qDetails.UserID = qSessionDetails.UserID
-		qDetails.OrganizationID = qSessionDetails.OrganizationID
-		qDetails.ProjectID = qSessionDetails.ProjectID
+	sessionID, err := idformat.Session.Parse(accessTokenDetails.Session.Id)
+	if err != nil {
+		return apierror.NewInvalidArgumentError("invalid session ID", fmt.Errorf("parse session ID: %w", err))
 	}
-
-	qSession, err := q.GetSessionByID(ctx, qDetails.SessionID)
+	qSession, err := q.GetSessionByID(ctx, sessionID)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return apierror.NewUnauthenticatedError("invalid session", fmt.Errorf("invalid session"))
@@ -93,16 +48,14 @@ func (s *Store) LogRefreshEvent(ctx context.Context, refreshToken string) error 
 		return fmt.Errorf("get session: %w", err)
 	}
 
-	var qImpersonatingUserEmail *string
-	if qDetails.ImpersonatorUserID != nil {
-		qImpersonatingUser, err := q.GetUserByID(ctx, *qDetails.ImpersonatorUserID)
-		if err != nil {
-			if !errors.Is(err, pgx.ErrNoRows) {
-				return fmt.Errorf("get impersonator user: %w", err)
-			}
-		}
+	orgID, err := idformat.Organization.Parse(accessTokenDetails.Organization.Id)
+	if err != nil {
+		return apierror.NewInvalidArgumentError("invalid organization ID", fmt.Errorf("parse organization ID: %w", err))
+	}
 
-		qImpersonatingUserEmail = &qImpersonatingUser.Email
+	userID, err := idformat.User.Parse(accessTokenDetails.User.Id)
+	if err != nil {
+		return apierror.NewInvalidArgumentError("invalid user ID", fmt.Errorf("parse user ID: %w", err))
 	}
 
 	eventTime := time.Now()
@@ -111,8 +64,13 @@ func (s *Store) LogRefreshEvent(ctx context.Context, refreshToken string) error 
 		return fmt.Errorf("create UUIDv7: %w", err)
 	}
 
+	var impersonatorEmail *string
+	if accessTokenDetails.Impersonator != nil && accessTokenDetails.Impersonator.Email != "" {
+		impersonatorEmail = &accessTokenDetails.Impersonator.Email
+	}
+
 	eventDetails := map[string]any{
-		"session": parseSessionEventDetails(qSession, qImpersonatingUserEmail),
+		"session": parseSessionEventDetails(qSession, impersonatorEmail),
 	}
 	eventDetailsBytes, err := json.Marshal(eventDetails)
 	if err != nil {
@@ -126,12 +84,12 @@ func (s *Store) LogRefreshEvent(ctx context.Context, refreshToken string) error 
 	resourceType := queries.AuditLogEventResourceTypeSession
 	if _, err := q.CreateAuditLogEvent(ctx, queries.CreateAuditLogEventParams{
 		ID:             eventID,
-		ProjectID:      qDetails.ProjectID,
-		OrganizationID: refOrNil(qDetails.OrganizationID),
-		UserID:         refOrNil(qDetails.UserID),
-		SessionID:      refOrNil(qDetails.SessionID),
+		ProjectID:      projectID,
+		OrganizationID: (*uuid.UUID)(&orgID),
+		UserID:         (*uuid.UUID)(&userID),
+		SessionID:      (*uuid.UUID)(&sessionID),
 		ResourceType:   &resourceType,
-		ResourceID:     refOrNil(qDetails.SessionID),
+		ResourceID:     (*uuid.UUID)(&sessionID),
 		EventName:      "tesseral.sessions.refresh",
 		EventTime:      &eventTime,
 		EventDetails:   eventDetailsBytes,
@@ -144,4 +102,25 @@ func (s *Store) LogRefreshEvent(ctx context.Context, refreshToken string) error 
 	}
 
 	return nil
+}
+
+func parseAccessTokenNoValidate(accessToken string) (*commonv1.AccessTokenData, error) {
+	jwtParts := strings.Split(accessToken, ".")
+	if len(jwtParts) != 3 {
+		return nil, apierror.NewInvalidArgumentError("invalid credential", fmt.Errorf("invalid access token format: expected 3 parts, got %d", len(jwtParts)))
+	}
+
+	payloadSegment := jwtParts[1]
+	decoded, err := base64.RawURLEncoding.DecodeString(payloadSegment)
+	if err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid credential", fmt.Errorf("failed to decode access token payload: %w", err))
+	}
+
+	var data commonv1.AccessTokenData
+
+	if err := json.Unmarshal(decoded, &data); err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid credential", fmt.Errorf("failed to unmarshal access token claims: %w", err))
+	}
+
+	return &data, nil
 }

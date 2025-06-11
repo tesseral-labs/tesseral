@@ -707,17 +707,26 @@ INSERT INTO audit_log_events (id, project_id, organization_id, user_id, session_
 RETURNING
     *;
 
--- name: GetSessionDetailsByRelayedSessionRefreshTokenSHA256 :one
+-- name: ListAuditLogEvents :many
 SELECT
-    sessions.id AS session_id,
-    users.id AS user_id,
-    organizations.id AS organization_id,
-    organizations.project_id AS project_id
+    *
 FROM
-    relayed_sessions
-    JOIN sessions ON relayed_sessions.session_id = sessions.id
-    JOIN users ON sessions.user_id = users.id
-    JOIN organizations ON users.organization_id = organizations.id
-WHERE
-    relayed_sessions.relayed_refresh_token_sha256 = $1;
+    audit_log_events
+WHERE (@start_time::pg_catalog.timestamptz IS NULL
+    OR event_time >= @start_time::pg_catalog.timestamptz)
+AND (@end_time::pg_catalog.timestamptz IS NULL
+    OR event_time <= @end_time::pg_catalog.timestamptz)
+AND (event_name = @event_name
+    OR @event_name = '')
+AND (user_id = @user_id
+    OR @user_id IS NULL)
+AND (session_id = @session_id
+    OR @session_id IS NULL)
+AND (api_key_id = @api_key_id
+    OR @api_key_id IS NULL)
+AND project_id = @project_id
+AND organization_id = @organization_id
+ORDER BY
+    event_time DESC
+LIMIT $1;
 

@@ -1213,40 +1213,6 @@ func (q *Queries) GetSessionDetailsByRefreshTokenSHA256(ctx context.Context, ref
 	return i, err
 }
 
-const getSessionDetailsByRelayedSessionRefreshTokenSHA256 = `-- name: GetSessionDetailsByRelayedSessionRefreshTokenSHA256 :one
-SELECT
-    sessions.id AS session_id,
-    users.id AS user_id,
-    organizations.id AS organization_id,
-    organizations.project_id AS project_id
-FROM
-    relayed_sessions
-    JOIN sessions ON relayed_sessions.session_id = sessions.id
-    JOIN users ON sessions.user_id = users.id
-    JOIN organizations ON users.organization_id = organizations.id
-WHERE
-    relayed_sessions.relayed_refresh_token_sha256 = $1
-`
-
-type GetSessionDetailsByRelayedSessionRefreshTokenSHA256Row struct {
-	SessionID      uuid.UUID
-	UserID         uuid.UUID
-	OrganizationID uuid.UUID
-	ProjectID      uuid.UUID
-}
-
-func (q *Queries) GetSessionDetailsByRelayedSessionRefreshTokenSHA256(ctx context.Context, relayedRefreshTokenSha256 []byte) (GetSessionDetailsByRelayedSessionRefreshTokenSHA256Row, error) {
-	row := q.db.QueryRow(ctx, getSessionDetailsByRelayedSessionRefreshTokenSHA256, relayedRefreshTokenSha256)
-	var i GetSessionDetailsByRelayedSessionRefreshTokenSHA256Row
-	err := row.Scan(
-		&i.SessionID,
-		&i.UserID,
-		&i.OrganizationID,
-		&i.ProjectID,
-	)
-	return i, err
-}
-
 const getSessionSigningKeyPublicKey = `-- name: GetSessionSigningKeyPublicKey :one
 SELECT
     public_key
@@ -1635,6 +1601,88 @@ func (q *Queries) ListAllAPIKeyRoleAssignments(ctx context.Context, arg ListAllA
 			&i.ApiKeyID,
 			&i.RoleID,
 			&i.CreateTime,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listAuditLogEvents = `-- name: ListAuditLogEvents :many
+SELECT
+    id, project_id, organization_id, user_id, session_id, api_key_id, dogfood_user_id, dogfood_session_id, backend_api_key_id, intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details
+FROM
+    audit_log_events
+WHERE ($2::pg_catalog.timestamptz IS NULL
+    OR event_time >= $2::pg_catalog.timestamptz)
+AND ($3::pg_catalog.timestamptz IS NULL
+    OR event_time <= $3::pg_catalog.timestamptz)
+AND (event_name = $4
+    OR $4 = '')
+AND (user_id = $5
+    OR $5 IS NULL)
+AND (session_id = $6
+    OR $6 IS NULL)
+AND (api_key_id = $7
+    OR $7 IS NULL)
+AND project_id = $8
+AND organization_id = $9
+ORDER BY
+    event_time DESC
+LIMIT $1
+`
+
+type ListAuditLogEventsParams struct {
+	Limit          int32
+	StartTime      *time.Time
+	EndTime        *time.Time
+	EventName      string
+	UserID         *uuid.UUID
+	SessionID      *uuid.UUID
+	ApiKeyID       *uuid.UUID
+	ProjectID      uuid.UUID
+	OrganizationID *uuid.UUID
+}
+
+func (q *Queries) ListAuditLogEvents(ctx context.Context, arg ListAuditLogEventsParams) ([]AuditLogEvent, error) {
+	rows, err := q.db.Query(ctx, listAuditLogEvents,
+		arg.Limit,
+		arg.StartTime,
+		arg.EndTime,
+		arg.EventName,
+		arg.UserID,
+		arg.SessionID,
+		arg.ApiKeyID,
+		arg.ProjectID,
+		arg.OrganizationID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []AuditLogEvent
+	for rows.Next() {
+		var i AuditLogEvent
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProjectID,
+			&i.OrganizationID,
+			&i.UserID,
+			&i.SessionID,
+			&i.ApiKeyID,
+			&i.DogfoodUserID,
+			&i.DogfoodSessionID,
+			&i.BackendApiKeyID,
+			&i.IntermediateSessionID,
+			&i.ResourceType,
+			&i.ResourceID,
+			&i.EventName,
+			&i.EventTime,
+			&i.EventDetails,
 		); err != nil {
 			return nil, err
 		}

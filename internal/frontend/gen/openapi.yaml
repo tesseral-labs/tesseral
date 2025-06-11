@@ -267,9 +267,7 @@ paths:
                   in: query
                   description: The event names to filter by, if any.
                   schema:
-                    type: array
-                    items:
-                        type: string
+                    type: string
                 - name: filterUserId
                   in: query
                   description: The user ID to filter by, if any.

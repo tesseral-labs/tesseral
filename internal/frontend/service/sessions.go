@@ -25,7 +25,7 @@ func (s *Service) Refresh(ctx context.Context, req *connect.Request[frontendv1.R
 		return nil, fmt.Errorf("store: %w", err)
 	}
 
-	if err := s.Store.LogRefreshEvent(ctx, refreshToken); err != nil {
+	if err := s.Store.CreateRefreshAuditLogEvent(ctx, accessToken); err != nil {
 		return nil, fmt.Errorf("log refresh event: %w", err)
 	}
 
