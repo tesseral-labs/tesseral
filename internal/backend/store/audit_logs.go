@@ -37,7 +37,7 @@ func (s *Store) CreateCustomAuditLogEvent(ctx context.Context, req *backendv1.Cr
 		return nil, apierror.NewInvalidArgumentError("exactly one of organization_id, user_id, session_id, or api_key_id must be provided", fmt.Errorf("enforce single actor: %w", err))
 	}
 
-	eventTime := time.Now().UTC()
+	eventTime := time.Now()
 	if req.AuditLogEvent.EventTime != nil {
 		eventTime = req.AuditLogEvent.EventTime.AsTime()
 	}
@@ -113,7 +113,7 @@ type logAuditEventParams struct {
 
 func (s *Store) logAuditEvent(ctx context.Context, q *queries.Queries, data logAuditEventParams) (queries.AuditLogEvent, error) {
 	// Generate the UUIDv7 based on the event time.
-	eventTime := time.Now().UTC()
+	eventTime := time.Now()
 	eventID, err := uuidv7.NewWithTime(eventTime)
 	if err != nil {
 		return queries.AuditLogEvent{}, fmt.Errorf("failed to create UUID: %w", err)

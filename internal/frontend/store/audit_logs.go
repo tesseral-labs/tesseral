@@ -28,7 +28,7 @@ type logAuditEventParams struct {
 
 func (s *Store) logAuditEvent(ctx context.Context, q *queries.Queries, data logAuditEventParams) (queries.AuditLogEvent, error) {
 	// Generate the UUIDv7 based on the event time.
-	eventTime := time.Now().UTC()
+	eventTime := time.Now()
 	eventID, err := uuidv7.NewWithTime(eventTime)
 	if err != nil {
 		return queries.AuditLogEvent{}, fmt.Errorf("failed to create UUID: %w", err)
@@ -93,7 +93,7 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 	if filterEndTime := filter.GetFilterEndTime(); filterEndTime != nil {
 		endTime = filterEndTime.AsTime()
 	} else {
-		endTime = time.Now().UTC()
+		endTime = time.Now()
 	}
 	if endTime.Before(startTime) {
 		return nil, apierror.NewInvalidArgumentError("end_time must be after start_time", fmt.Errorf("end time %s is before start time %s", endTime, startTime))

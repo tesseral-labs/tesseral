@@ -105,7 +105,7 @@ func (s *Store) LogRefreshEvent(ctx context.Context, refreshToken string) error 
 		qImpersonatingUserEmail = &qImpersonatingUser.Email
 	}
 
-	eventTime := time.Now().UTC()
+	eventTime := time.Now()
 	eventID, err := uuidv7.NewWithTime(eventTime)
 	if err != nil {
 		return fmt.Errorf("create UUIDv7: %w", err)
