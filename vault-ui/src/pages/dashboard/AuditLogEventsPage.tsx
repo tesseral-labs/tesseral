@@ -68,7 +68,9 @@ function FilterBar({ setParams, isLoading }: FilterBarProps) {
       filter.filterEndTime = timestampFromDate(end);
     }
 
-    filter.filterEventName = eventName.length > 0 ? [eventName] : [];
+    if (eventName.length > 0) {
+      filter.filterEventName = eventName;
+    }
 
     if (userId) filter.filterUserId = userId;
 
