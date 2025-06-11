@@ -121,22 +121,19 @@ func parseAuditLogEvent(qAuditLogEvent queries.AuditLogEvent) (*frontendv1.Audit
 		return nil, fmt.Errorf("unmarshal event details: %w", err)
 	}
 
-	var (
-		userID    *string
-		sessionID *string
-		apiKeyID  *string
-	)
+	var userID string
 	if qAuditLogEvent.UserID != nil {
-		userID_ := idformat.User.Format((uuid.UUID)(*qAuditLogEvent.UserID))
-		userID = &userID_
+		userID = idformat.User.Format(*qAuditLogEvent.UserID)
 	}
+
+	var sessionID string
 	if qAuditLogEvent.SessionID != nil {
-		sessionID_ := idformat.Session.Format((uuid.UUID)(*qAuditLogEvent.SessionID))
-		sessionID = &sessionID_
+		sessionID = idformat.Session.Format(*qAuditLogEvent.SessionID)
 	}
+
+	var apiKeyID string
 	if qAuditLogEvent.ApiKeyID != nil {
-		apiKeyID_ := idformat.APIKey.Format((uuid.UUID)(*qAuditLogEvent.ApiKeyID))
-		apiKeyID = &apiKeyID_
+		apiKeyID = idformat.APIKey.Format(*qAuditLogEvent.ApiKeyID)
 	}
 
 	return &frontendv1.AuditLogEvent{
