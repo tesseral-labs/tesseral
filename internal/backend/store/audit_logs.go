@@ -59,10 +59,6 @@ func (s *Store) CreateCustomAuditLogEvent(ctx context.Context, req *backendv1.Cr
 		return nil, fmt.Errorf("derive event context for actor: %w", err)
 	}
 
-	if orgID == nil && userID == nil && sessionID == nil && apiKeyID == nil {
-		return nil, apierror.NewInvalidArgumentError("unable to derive context for actor", errors.New("either organization_id, user_id, session_id, or api_key_id must be provided"))
-	}
-
 	// Marshal the details to JSON if provided.
 	var eventDetailsJSON []byte
 	if eventDetails := req.AuditLogEvent.EventDetails; eventDetails != nil {
