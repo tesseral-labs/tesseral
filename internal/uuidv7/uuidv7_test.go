@@ -1,4 +1,4 @@
-package uuidv7_test
+package uuidv7
 
 import (
 	"testing"
@@ -6,7 +6,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
-	"github.com/tesseral-labs/tesseral/internal/uuidv7"
 )
 
 func TestUUIDv7(t *testing.T) {
@@ -15,8 +14,7 @@ func TestUUIDv7(t *testing.T) {
 		time.Now(),
 	}
 	for _, test := range tt {
-		uuid, err := uuidv7.NewWithTime(test)
-		assert.NoError(t, err)
+		uuid := NewWithTime(test)
 
 		ts := tsFromUUIDv7(uuid)
 		assert.Equal(t, ts.UnixMilli(), test.UnixMilli())

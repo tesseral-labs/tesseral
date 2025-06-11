@@ -42,10 +42,7 @@ func (s *Store) CreateCustomAuditLogEvent(ctx context.Context, req *backendv1.Cr
 		eventTime = req.AuditLogEvent.EventTime.AsTime()
 	}
 	// Generate the UUIDv7 based on the event time.
-	eventID, err := uuidv7.NewWithTime(eventTime)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create UUID: %w", err)
-	}
+	eventID := uuidv7.NewWithTime(eventTime)
 	eventName := req.AuditLogEvent.EventName
 	if eventName == "" {
 		return nil, apierror.NewInvalidArgumentError("", errors.New("missing event name"))
@@ -110,10 +107,7 @@ type logAuditEventParams struct {
 func (s *Store) logAuditEvent(ctx context.Context, q *queries.Queries, data logAuditEventParams) (queries.AuditLogEvent, error) {
 	// Generate the UUIDv7 based on the event time.
 	eventTime := time.Now()
-	eventID, err := uuidv7.NewWithTime(eventTime)
-	if err != nil {
-		return queries.AuditLogEvent{}, fmt.Errorf("failed to create UUID: %w", err)
-	}
+	eventID := uuidv7.NewWithTime(eventTime)
 
 	eventDetailsBytes, err := json.Marshal(data.EventDetails)
 	if err != nil {

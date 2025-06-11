@@ -56,10 +56,7 @@ func (s *Store) CreateRefreshAuditLogEvent(ctx context.Context, accessToken stri
 	}
 
 	eventTime := time.Now()
-	eventID, err := uuidv7.NewWithTime(eventTime)
-	if err != nil {
-		return fmt.Errorf("create UUIDv7: %w", err)
-	}
+	eventID := uuidv7.NewWithTime(eventTime)
 
 	var impersonatorEmail *string
 	if accessTokenDetails.Impersonator != nil && accessTokenDetails.Impersonator.Email != "" {

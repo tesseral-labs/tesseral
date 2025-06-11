@@ -1,6 +1,7 @@
 package uuidv7
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -10,12 +11,12 @@ import (
 //
 // Allowing control over the time bits (as opposed to using the current time)
 // means that the bits typically reserved for a sequence number are left random.
-func NewWithTime(ts time.Time) (uuid.UUID, error) {
+func NewWithTime(ts time.Time) uuid.UUID {
 	id, err := uuid.NewRandom()
 	if err != nil {
-		return uuid.Nil, err
+		panic(fmt.Errorf("generate random uuid: %w", err))
 	}
-	return makeUUIDv7(ts, id), nil
+	return makeUUIDv7(ts, id)
 }
 
 // makeUUIDv7 copies google/uuid for constructing a UUIDv7 at a point in time
