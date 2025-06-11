@@ -114,11 +114,10 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 	}, nil
 }
 
-func parseAuditLogEvent(qEvent queries.AuditLogEvent) (*frontendv1.AuditLogEvent, error) {
-	eventDetailsJSON := qEvent.EventDetails
+func parseAuditLogEvent(qAuditLogEvent queries.AuditLogEvent) (*frontendv1.AuditLogEvent, error) {
 	var eventDetails structpb.Struct
-	if err := eventDetails.UnmarshalJSON(eventDetailsJSON); err != nil {
-		return nil, err
+	if err := eventDetails.UnmarshalJSON(qAuditLogEvent.EventDetails); err != nil {
+		return nil, fmt.Errorf("unmarshal event details: %w", err)
 	}
 
 	var (
@@ -126,26 +125,26 @@ func parseAuditLogEvent(qEvent queries.AuditLogEvent) (*frontendv1.AuditLogEvent
 		sessionID *string
 		apiKeyID  *string
 	)
-	if userUUID := qEvent.UserID; userUUID != nil {
-		userID_ := idformat.User.Format(*userUUID)
+	if qAuditLogEvent.UserID != nil {
+		userID_ := idformat.User.Format((uuid.UUID)(*qAuditLogEvent.UserID))
 		userID = &userID_
 	}
-	if sessionUUID := qEvent.SessionID; sessionUUID != nil {
-		sessionID_ := idformat.Session.Format(*sessionUUID)
+	if qAuditLogEvent.SessionID != nil {
+		sessionID_ := idformat.Session.Format((uuid.UUID)(*qAuditLogEvent.SessionID))
 		sessionID = &sessionID_
 	}
-	if apiKeyUUID := qEvent.ApiKeyID; apiKeyUUID != nil {
-		apiKeyID_ := idformat.APIKey.Format(*apiKeyUUID)
+	if qAuditLogEvent.ApiKeyID != nil {
+		apiKeyID_ := idformat.APIKey.Format((uuid.UUID)(*qAuditLogEvent.ApiKeyID))
 		apiKeyID = &apiKeyID_
 	}
 
 	return &frontendv1.AuditLogEvent{
-		Id:           idformat.AuditLogEvent.Format(qEvent.ID),
+		Id:           idformat.AuditLogEvent.Format(qAuditLogEvent.ID),
 		UserId:       userID,
 		SessionId:    sessionID,
 		ApiKeyId:     apiKeyID,
-		EventName:    qEvent.EventName,
-		EventTime:    timestampOrNil(qEvent.EventTime),
+		EventName:    qAuditLogEvent.EventName,
+		EventTime:    timestampOrNil(qAuditLogEvent.EventTime),
 		EventDetails: &eventDetails,
 	}, nil
 }

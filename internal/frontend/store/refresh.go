@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log/slog"
 	"strings"
 	"time"
 
@@ -33,8 +32,6 @@ func (s *Store) CreateRefreshAuditLogEvent(ctx context.Context, accessToken stri
 	if err != nil {
 		return fmt.Errorf("parse access token: %w", err)
 	}
-
-	slog.InfoContext(ctx, "logging refresh", "🚨 access_token_details", accessTokenDetails)
 
 	sessionID, err := idformat.Session.Parse(accessTokenDetails.Session.Id)
 	if err != nil {
@@ -98,7 +95,7 @@ func (s *Store) CreateRefreshAuditLogEvent(ctx context.Context, accessToken stri
 	}
 
 	if err := commit(); err != nil {
-		return fmt.Errorf("commit transaction: %w", err)
+		return fmt.Errorf("commit: %w", err)
 	}
 
 	return nil
