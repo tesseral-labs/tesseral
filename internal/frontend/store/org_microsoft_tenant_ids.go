@@ -32,8 +32,6 @@ func (s *Store) UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, req *f
 		return nil, fmt.Errorf("validate is owner: %w", err)
 	}
 
-	orgID := authn.OrganizationID(ctx)
-
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -73,7 +71,7 @@ func (s *Store) UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, req *f
 			"previousMicrosoftTenantIds": parseOrganizationMicrosoftTenantIDs(qPreviousMicrosoftTenantIDs).MicrosoftTenantIds,
 		},
 		ResourceType: queries.AuditLogEventResourceTypeOrganization,
-		ResourceID:   &orgID,
+		ResourceID:   refOrNil(authn.OrganizationID(ctx)),
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
 	}

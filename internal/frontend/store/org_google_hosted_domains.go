@@ -38,8 +38,6 @@ func (s *Store) UpdateOrganizationGoogleHostedDomains(ctx context.Context, req *
 	}
 	defer rollback()
 
-	orgID := authn.OrganizationID(ctx)
-
 	// Get the current organization google hosted domains before deleting them to log the changes
 	qPreviousGoogleHostedDomains, err := q.GetOrganizationGoogleHostedDomains(ctx, authn.OrganizationID(ctx))
 	if err != nil {
@@ -73,7 +71,7 @@ func (s *Store) UpdateOrganizationGoogleHostedDomains(ctx context.Context, req *
 			"previousGoogleHostedDomains": parseOrganizationGoogleHostedDomains(qPreviousGoogleHostedDomains).GoogleHostedDomains,
 		},
 		ResourceType: queries.AuditLogEventResourceTypeOrganization,
-		ResourceID:   &orgID,
+		ResourceID:   refOrNil(authn.OrganizationID(ctx)),
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
