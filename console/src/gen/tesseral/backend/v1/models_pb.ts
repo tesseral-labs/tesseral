@@ -1509,9 +1509,6 @@ export type AuditLogEvent = Message<"tesseral.backend.v1.AuditLogEvent"> & {
   /**
    * The time the event occurred.
    *
-   * This can optionally be provided on input when the event occurred at some point in the past.
-   * Otherwise, this will be returned on output and defaults to the time the event is published.
-   *
    * @generated from field: google.protobuf.Timestamp event_time = 10;
    */
   eventTime?: Timestamp;
@@ -1531,7 +1528,9 @@ export type AuditLogEvent = Message<"tesseral.backend.v1.AuditLogEvent"> & {
   eventDetails?: JsonObject;
 
   /**
-   * The credential associated with the event, if any.
+   * Credentials for the actor associated with the event. Input-only.
+   *
+   * Can be used as a shorthand for actor information when calling CreateAuditLogEvent.
    *
    * @generated from field: string credentials = 13;
    */

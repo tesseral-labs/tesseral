@@ -1637,11 +1637,7 @@ components:
                     description: The intermediate session ID associated with the event, if any.
                 eventTime:
                     type: string
-                    description: |-
-                        The time the event occurred.
-
-                         This can optionally be provided on input when the event occurred at some point in the past.
-                         Otherwise, this will be returned on output and defaults to the time the event is published.
+                    description: The time the event occurred.
                     format: date-time
                 eventName:
                     type: string
@@ -1651,7 +1647,10 @@ components:
                     description: The event payload JSON.
                 credentials:
                     type: string
-                    description: The credential associated with the event, if any.
+                    description: |-
+                        Credentials for the actor associated with the event. Input-only.
+
+                         Can be used as a shorthand for actor information when calling CreateAuditLogEvent.
             description: AuditLogEvent represents a record in the Project's audit log.
         AuthenticateAPIKeyRequest:
             type: object

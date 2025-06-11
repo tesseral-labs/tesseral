@@ -2440,15 +2440,14 @@ type AuditLogEvent struct {
 	// The intermediate session ID associated with the event, if any.
 	IntermediateSessionId string `protobuf:"bytes,9,opt,name=intermediate_session_id,json=intermediateSessionId,proto3" json:"intermediate_session_id,omitempty"`
 	// The time the event occurred.
-	//
-	// This can optionally be provided on input when the event occurred at some point in the past.
-	// Otherwise, this will be returned on output and defaults to the time the event is published.
 	EventTime *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=event_time,json=eventTime,proto3" json:"event_time,omitempty"`
 	// The name of the event.
 	EventName string `protobuf:"bytes,11,opt,name=event_name,json=eventName,proto3" json:"event_name,omitempty"`
 	// The event payload JSON.
 	EventDetails *structpb.Struct `protobuf:"bytes,12,opt,name=event_details,json=eventDetails,proto3" json:"event_details,omitempty"`
-	// The credential associated with the event, if any.
+	// Credentials for the actor associated with the event. Input-only.
+	//
+	// Can be used as a shorthand for actor information when calling CreateAuditLogEvent.
 	Credentials   string `protobuf:"bytes,13,opt,name=credentials,proto3" json:"credentials,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

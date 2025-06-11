@@ -1466,11 +1466,7 @@ components:
                     description: The ID of the API Key associated with the event, if any.
                 eventTime:
                     type: string
-                    description: |-
-                        The time the event occurred.
-
-                         This can optionally be provided on input when the event occurred at some point in the past.
-                         Otherwise, this will be returned on output and defaults to the time the event is published.
+                    description: The time the event occurred.
                     format: date-time
                 eventName:
                     type: string
