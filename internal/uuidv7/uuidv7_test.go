@@ -9,15 +9,32 @@ import (
 )
 
 func TestUUIDv7(t *testing.T) {
-	tt := []time.Time{
-		time.UnixMilli(0),
-		time.Now(),
+	testCases := []struct {
+		name string
+		now  time.Time
+		id   uuid.UUID
+		want uuid.UUID
+	}{
+		{
+			name: "make against nil uuid",
+			now:  time.Unix(1749684795, 0),
+			id:   uuid.Nil,
+			want: uuid.MustParse("01976157-3678-7000-8000-000000000000"),
+		},
+		{
+			name: "make against max uuid",
+			now:  time.Unix(1749684795, 0),
+			id:   uuid.Max,
+			want: uuid.MustParse("01976157-3678-7fff-bfff-ffffffffffff"),
+		},
 	}
-	for _, test := range tt {
-		uuid := NewWithTime(test)
 
-		ts := tsFromUUIDv7(uuid)
-		assert.Equal(t, ts.UnixMilli(), test.UnixMilli())
+	for _, tt := range testCases {
+		t.Run(tt.name, func(t *testing.T) {
+			got := makeUUIDv7(tt.now, tt.id)
+			assert.Equal(t, tt.want, got)
+			assert.Equal(t, tt.now.Unix(), tsFromUUIDv7(got).Unix())
+		})
 	}
 }
 
