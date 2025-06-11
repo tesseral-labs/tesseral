@@ -1623,12 +1623,12 @@ AND ($3::pg_catalog.timestamptz IS NULL
     OR event_time <= $3::pg_catalog.timestamptz)
 AND (event_name = $4
     OR $4 = '')
-AND (user_id = $5
-    OR $5 IS NULL)
-AND (session_id = $6
-    OR $6 IS NULL)
-AND (api_key_id = $7
-    OR $7 IS NULL)
+AND ($5 IS NULL
+    OR user_id = $5)
+AND ($6 IS NULL
+    OR session_id = $6)
+AND ($7 IS NULL
+    OR api_key_id = $7)
 AND project_id = $8
 AND organization_id = $9
 ORDER BY
@@ -1641,9 +1641,9 @@ type ListAuditLogEventsParams struct {
 	StartTime      *time.Time
 	EndTime        *time.Time
 	EventName      string
-	UserID         *uuid.UUID
-	SessionID      *uuid.UUID
-	ApiKeyID       *uuid.UUID
+	UserID         interface{}
+	SessionID      interface{}
+	ApiKeyID       interface{}
 	ProjectID      uuid.UUID
 	OrganizationID *uuid.UUID
 }
