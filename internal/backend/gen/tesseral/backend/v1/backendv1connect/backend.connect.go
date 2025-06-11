@@ -208,6 +208,9 @@ const (
 	// BackendServiceAuthenticateAPIKeyProcedure is the fully-qualified name of the BackendService's
 	// AuthenticateAPIKey RPC.
 	BackendServiceAuthenticateAPIKeyProcedure = "/tesseral.backend.v1.BackendService/AuthenticateAPIKey"
+	// BackendServiceCreateAuditLogEventProcedure is the fully-qualified name of the BackendService's
+	// CreateAuditLogEvent RPC.
+	BackendServiceCreateAuditLogEventProcedure = "/tesseral.backend.v1.BackendService/CreateAuditLogEvent"
 	// BackendServiceDisableOrganizationLoginsProcedure is the fully-qualified name of the
 	// BackendService's DisableOrganizationLogins RPC.
 	BackendServiceDisableOrganizationLoginsProcedure = "/tesseral.backend.v1.BackendService/DisableOrganizationLogins"
@@ -286,9 +289,6 @@ const (
 	// BackendServiceGetProjectWebhookManagementURLProcedure is the fully-qualified name of the
 	// BackendService's GetProjectWebhookManagementURL RPC.
 	BackendServiceGetProjectWebhookManagementURLProcedure = "/tesseral.backend.v1.BackendService/GetProjectWebhookManagementURL"
-	// BackendServiceCreateAuditLogEventProcedure is the fully-qualified name of the BackendService's
-	// CreateAuditLogEvent RPC.
-	BackendServiceCreateAuditLogEventProcedure = "/tesseral.backend.v1.BackendService/CreateAuditLogEvent"
 )
 
 // BackendServiceClient is a client for the tesseral.backend.v1.BackendService service.
@@ -405,6 +405,7 @@ type BackendServiceClient interface {
 	DeleteAPIKeyRoleAssignment(context.Context, *connect.Request[v1.DeleteAPIKeyRoleAssignmentRequest]) (*connect.Response[v1.DeleteAPIKeyRoleAssignmentResponse], error)
 	ListAPIKeyRoleAssignments(context.Context, *connect.Request[v1.ListAPIKeyRoleAssignmentsRequest]) (*connect.Response[v1.ListAPIKeyRoleAssignmentsResponse], error)
 	AuthenticateAPIKey(context.Context, *connect.Request[v1.AuthenticateAPIKeyRequest]) (*connect.Response[v1.AuthenticateAPIKeyResponse], error)
+	CreateAuditLogEvent(context.Context, *connect.Request[v1.CreateAuditLogEventRequest]) (*connect.Response[v1.CreateAuditLogEventResponse], error)
 	DisableOrganizationLogins(context.Context, *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error)
 	DisableProjectLogins(context.Context, *connect.Request[v1.DisableProjectLoginsRequest]) (*connect.Response[v1.DisableProjectLoginsResponse], error)
 	EnableOrganizationLogins(context.Context, *connect.Request[v1.EnableOrganizationLoginsRequest]) (*connect.Response[v1.EnableOrganizationLoginsResponse], error)
@@ -431,11 +432,6 @@ type BackendServiceClient interface {
 	GetProjectEntitlements(context.Context, *connect.Request[v1.GetProjectEntitlementsRequest]) (*connect.Response[v1.GetProjectEntitlementsResponse], error)
 	CreateStripeCheckoutLink(context.Context, *connect.Request[v1.CreateStripeCheckoutLinkRequest]) (*connect.Response[v1.CreateStripeCheckoutLinkResponse], error)
 	GetProjectWebhookManagementURL(context.Context, *connect.Request[v1.GetProjectWebhookManagementURLRequest]) (*connect.Response[v1.GetProjectWebhookManagementURLResponse], error)
-	// Creates an audit log event for an organization.
-	//
-	// Audit log events will be recorded in the event history and asynchronously delivered to any endpoints
-	// configured by the organization.
-	CreateAuditLogEvent(context.Context, *connect.Request[v1.CreateAuditLogEventRequest]) (*connect.Response[v1.CreateAuditLogEventResponse], error)
 }
 
 // NewBackendServiceClient constructs a client for the tesseral.backend.v1.BackendService service.
@@ -803,6 +799,12 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("AuthenticateAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
+		createAuditLogEvent: connect.NewClient[v1.CreateAuditLogEventRequest, v1.CreateAuditLogEventResponse](
+			httpClient,
+			baseURL+BackendServiceCreateAuditLogEventProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("CreateAuditLogEvent")),
+			connect.WithClientOptions(opts...),
+		),
 		disableOrganizationLogins: connect.NewClient[v1.DisableOrganizationLoginsRequest, v1.DisableOrganizationLoginsResponse](
 			httpClient,
 			baseURL+BackendServiceDisableOrganizationLoginsProcedure,
@@ -959,12 +961,6 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("GetProjectWebhookManagementURL")),
 			connect.WithClientOptions(opts...),
 		),
-		createAuditLogEvent: connect.NewClient[v1.CreateAuditLogEventRequest, v1.CreateAuditLogEventResponse](
-			httpClient,
-			baseURL+BackendServiceCreateAuditLogEventProcedure,
-			connect.WithSchema(backendServiceMethods.ByName("CreateAuditLogEvent")),
-			connect.WithClientOptions(opts...),
-		),
 	}
 }
 
@@ -1029,6 +1025,7 @@ type backendServiceClient struct {
 	deleteAPIKeyRoleAssignment            *connect.Client[v1.DeleteAPIKeyRoleAssignmentRequest, v1.DeleteAPIKeyRoleAssignmentResponse]
 	listAPIKeyRoleAssignments             *connect.Client[v1.ListAPIKeyRoleAssignmentsRequest, v1.ListAPIKeyRoleAssignmentsResponse]
 	authenticateAPIKey                    *connect.Client[v1.AuthenticateAPIKeyRequest, v1.AuthenticateAPIKeyResponse]
+	createAuditLogEvent                   *connect.Client[v1.CreateAuditLogEventRequest, v1.CreateAuditLogEventResponse]
 	disableOrganizationLogins             *connect.Client[v1.DisableOrganizationLoginsRequest, v1.DisableOrganizationLoginsResponse]
 	disableProjectLogins                  *connect.Client[v1.DisableProjectLoginsRequest, v1.DisableProjectLoginsResponse]
 	enableOrganizationLogins              *connect.Client[v1.EnableOrganizationLoginsRequest, v1.EnableOrganizationLoginsResponse]
@@ -1055,7 +1052,6 @@ type backendServiceClient struct {
 	getProjectEntitlements                *connect.Client[v1.GetProjectEntitlementsRequest, v1.GetProjectEntitlementsResponse]
 	createStripeCheckoutLink              *connect.Client[v1.CreateStripeCheckoutLinkRequest, v1.CreateStripeCheckoutLinkResponse]
 	getProjectWebhookManagementURL        *connect.Client[v1.GetProjectWebhookManagementURLRequest, v1.GetProjectWebhookManagementURLResponse]
-	createAuditLogEvent                   *connect.Client[v1.CreateAuditLogEventRequest, v1.CreateAuditLogEventResponse]
 }
 
 // GetProject calls tesseral.backend.v1.BackendService.GetProject.
@@ -1357,6 +1353,11 @@ func (c *backendServiceClient) AuthenticateAPIKey(ctx context.Context, req *conn
 	return c.authenticateAPIKey.CallUnary(ctx, req)
 }
 
+// CreateAuditLogEvent calls tesseral.backend.v1.BackendService.CreateAuditLogEvent.
+func (c *backendServiceClient) CreateAuditLogEvent(ctx context.Context, req *connect.Request[v1.CreateAuditLogEventRequest]) (*connect.Response[v1.CreateAuditLogEventResponse], error) {
+	return c.createAuditLogEvent.CallUnary(ctx, req)
+}
+
 // DisableOrganizationLogins calls tesseral.backend.v1.BackendService.DisableOrganizationLogins.
 func (c *backendServiceClient) DisableOrganizationLogins(ctx context.Context, req *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error) {
 	return c.disableOrganizationLogins.CallUnary(ctx, req)
@@ -1489,11 +1490,6 @@ func (c *backendServiceClient) GetProjectWebhookManagementURL(ctx context.Contex
 	return c.getProjectWebhookManagementURL.CallUnary(ctx, req)
 }
 
-// CreateAuditLogEvent calls tesseral.backend.v1.BackendService.CreateAuditLogEvent.
-func (c *backendServiceClient) CreateAuditLogEvent(ctx context.Context, req *connect.Request[v1.CreateAuditLogEventRequest]) (*connect.Response[v1.CreateAuditLogEventResponse], error) {
-	return c.createAuditLogEvent.CallUnary(ctx, req)
-}
-
 // BackendServiceHandler is an implementation of the tesseral.backend.v1.BackendService service.
 type BackendServiceHandler interface {
 	// Get the current project.
@@ -1608,6 +1604,7 @@ type BackendServiceHandler interface {
 	DeleteAPIKeyRoleAssignment(context.Context, *connect.Request[v1.DeleteAPIKeyRoleAssignmentRequest]) (*connect.Response[v1.DeleteAPIKeyRoleAssignmentResponse], error)
 	ListAPIKeyRoleAssignments(context.Context, *connect.Request[v1.ListAPIKeyRoleAssignmentsRequest]) (*connect.Response[v1.ListAPIKeyRoleAssignmentsResponse], error)
 	AuthenticateAPIKey(context.Context, *connect.Request[v1.AuthenticateAPIKeyRequest]) (*connect.Response[v1.AuthenticateAPIKeyResponse], error)
+	CreateAuditLogEvent(context.Context, *connect.Request[v1.CreateAuditLogEventRequest]) (*connect.Response[v1.CreateAuditLogEventResponse], error)
 	DisableOrganizationLogins(context.Context, *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error)
 	DisableProjectLogins(context.Context, *connect.Request[v1.DisableProjectLoginsRequest]) (*connect.Response[v1.DisableProjectLoginsResponse], error)
 	EnableOrganizationLogins(context.Context, *connect.Request[v1.EnableOrganizationLoginsRequest]) (*connect.Response[v1.EnableOrganizationLoginsResponse], error)
@@ -1634,11 +1631,6 @@ type BackendServiceHandler interface {
 	GetProjectEntitlements(context.Context, *connect.Request[v1.GetProjectEntitlementsRequest]) (*connect.Response[v1.GetProjectEntitlementsResponse], error)
 	CreateStripeCheckoutLink(context.Context, *connect.Request[v1.CreateStripeCheckoutLinkRequest]) (*connect.Response[v1.CreateStripeCheckoutLinkResponse], error)
 	GetProjectWebhookManagementURL(context.Context, *connect.Request[v1.GetProjectWebhookManagementURLRequest]) (*connect.Response[v1.GetProjectWebhookManagementURLResponse], error)
-	// Creates an audit log event for an organization.
-	//
-	// Audit log events will be recorded in the event history and asynchronously delivered to any endpoints
-	// configured by the organization.
-	CreateAuditLogEvent(context.Context, *connect.Request[v1.CreateAuditLogEventRequest]) (*connect.Response[v1.CreateAuditLogEventResponse], error)
 }
 
 // NewBackendServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -2002,6 +1994,12 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("AuthenticateAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceCreateAuditLogEventHandler := connect.NewUnaryHandler(
+		BackendServiceCreateAuditLogEventProcedure,
+		svc.CreateAuditLogEvent,
+		connect.WithSchema(backendServiceMethods.ByName("CreateAuditLogEvent")),
+		connect.WithHandlerOptions(opts...),
+	)
 	backendServiceDisableOrganizationLoginsHandler := connect.NewUnaryHandler(
 		BackendServiceDisableOrganizationLoginsProcedure,
 		svc.DisableOrganizationLogins,
@@ -2158,12 +2156,6 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("GetProjectWebhookManagementURL")),
 		connect.WithHandlerOptions(opts...),
 	)
-	backendServiceCreateAuditLogEventHandler := connect.NewUnaryHandler(
-		BackendServiceCreateAuditLogEventProcedure,
-		svc.CreateAuditLogEvent,
-		connect.WithSchema(backendServiceMethods.ByName("CreateAuditLogEvent")),
-		connect.WithHandlerOptions(opts...),
-	)
 	return "/tesseral.backend.v1.BackendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case BackendServiceGetProjectProcedure:
@@ -2284,6 +2276,8 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceListAPIKeyRoleAssignmentsHandler.ServeHTTP(w, r)
 		case BackendServiceAuthenticateAPIKeyProcedure:
 			backendServiceAuthenticateAPIKeyHandler.ServeHTTP(w, r)
+		case BackendServiceCreateAuditLogEventProcedure:
+			backendServiceCreateAuditLogEventHandler.ServeHTTP(w, r)
 		case BackendServiceDisableOrganizationLoginsProcedure:
 			backendServiceDisableOrganizationLoginsHandler.ServeHTTP(w, r)
 		case BackendServiceDisableProjectLoginsProcedure:
@@ -2336,8 +2330,6 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceCreateStripeCheckoutLinkHandler.ServeHTTP(w, r)
 		case BackendServiceGetProjectWebhookManagementURLProcedure:
 			backendServiceGetProjectWebhookManagementURLHandler.ServeHTTP(w, r)
-		case BackendServiceCreateAuditLogEventProcedure:
-			backendServiceCreateAuditLogEventHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -2583,6 +2575,10 @@ func (UnimplementedBackendServiceHandler) AuthenticateAPIKey(context.Context, *c
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.AuthenticateAPIKey is not implemented"))
 }
 
+func (UnimplementedBackendServiceHandler) CreateAuditLogEvent(context.Context, *connect.Request[v1.CreateAuditLogEventRequest]) (*connect.Response[v1.CreateAuditLogEventResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.CreateAuditLogEvent is not implemented"))
+}
+
 func (UnimplementedBackendServiceHandler) DisableOrganizationLogins(context.Context, *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.DisableOrganizationLogins is not implemented"))
 }
@@ -2685,8 +2681,4 @@ func (UnimplementedBackendServiceHandler) CreateStripeCheckoutLink(context.Conte
 
 func (UnimplementedBackendServiceHandler) GetProjectWebhookManagementURL(context.Context, *connect.Request[v1.GetProjectWebhookManagementURLRequest]) (*connect.Response[v1.GetProjectWebhookManagementURLResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetProjectWebhookManagementURL is not implemented"))
-}
-
-func (UnimplementedBackendServiceHandler) CreateAuditLogEvent(context.Context, *connect.Request[v1.CreateAuditLogEventRequest]) (*connect.Response[v1.CreateAuditLogEventResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.CreateAuditLogEvent is not implemented"))
 }

@@ -7879,9 +7879,8 @@ func (x *AuthenticateAPIKeyResponse) GetActions() []string {
 }
 
 type CreateAuditLogEventRequest struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The event to publish.
-	AuditLogEvent *AuditLogEvent `protobuf:"bytes,1,opt,name=audit_log_event,json=auditLogEvent,proto3" json:"audit_log_event,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AuditLogEvent *AuditLogEvent         `protobuf:"bytes,1,opt,name=audit_log_event,json=auditLogEvent,proto3" json:"audit_log_event,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -7924,9 +7923,8 @@ func (x *CreateAuditLogEventRequest) GetAuditLogEvent() *AuditLogEvent {
 }
 
 type CreateAuditLogEventResponse struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The published event.
-	AuditLogEvent *AuditLogEvent `protobuf:"bytes,1,opt,name=audit_log_event,json=auditLogEvent,proto3" json:"audit_log_event,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AuditLogEvent *AuditLogEvent         `protobuf:"bytes,1,opt,name=audit_log_event,json=auditLogEvent,proto3" json:"audit_log_event,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -9504,7 +9502,17 @@ var file_tesseral_backend_v1_backend_proto_rawDesc = string([]byte{
 	0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74, 0x65, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79,
 	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x24, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1e,
 	0x3a, 0x01, 0x2a, 0x22, 0x19, 0x2f, 0x76, 0x31, 0x2f, 0x61, 0x70, 0x69, 0x2d, 0x6b, 0x65, 0x79,
-	0x73, 0x2f, 0x61, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74, 0x65, 0x12, 0x8c,
+	0x73, 0x2f, 0x61, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74, 0x65, 0x12, 0x9d,
+	0x01, 0x0a, 0x13, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x41, 0x75, 0x64, 0x69, 0x74, 0x4c, 0x6f,
+	0x67, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x2f, 0x2e, 0x74, 0x65, 0x73, 0x73, 0x65, 0x72, 0x61,
+	0x6c, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x72, 0x65,
+	0x61, 0x74, 0x65, 0x41, 0x75, 0x64, 0x69, 0x74, 0x4c, 0x6f, 0x67, 0x45, 0x76, 0x65, 0x6e, 0x74,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x30, 0x2e, 0x74, 0x65, 0x73, 0x73, 0x65, 0x72,
+	0x61, 0x6c, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x72,
+	0x65, 0x61, 0x74, 0x65, 0x41, 0x75, 0x64, 0x69, 0x74, 0x4c, 0x6f, 0x67, 0x45, 0x76, 0x65, 0x6e,
+	0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x23, 0x82, 0xd3, 0xe4, 0x93, 0x02,
+	0x1d, 0x3a, 0x0f, 0x61, 0x75, 0x64, 0x69, 0x74, 0x5f, 0x6c, 0x6f, 0x67, 0x5f, 0x65, 0x76, 0x65,
+	0x6e, 0x74, 0x22, 0x0a, 0x2f, 0x76, 0x31, 0x2f, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x73, 0x12, 0x8c,
 	0x01, 0x0a, 0x19, 0x44, 0x69, 0x73, 0x61, 0x62, 0x6c, 0x65, 0x4f, 0x72, 0x67, 0x61, 0x6e, 0x69,
 	0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x73, 0x12, 0x35, 0x2e, 0x74,
 	0x65, 0x73, 0x73, 0x65, 0x72, 0x61, 0x6c, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e,
@@ -9714,17 +9722,7 @@ var file_tesseral_backend_v1_backend_proto_rawDesc = string([]byte{
 	0x74, 0x1a, 0x3b, 0x2e, 0x74, 0x65, 0x73, 0x73, 0x65, 0x72, 0x61, 0x6c, 0x2e, 0x62, 0x61, 0x63,
 	0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x6a, 0x65,
 	0x63, 0x74, 0x57, 0x65, 0x62, 0x68, 0x6f, 0x6f, 0x6b, 0x4d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x6d,
-	0x65, 0x6e, 0x74, 0x55, 0x52, 0x4c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x9d,
-	0x01, 0x0a, 0x13, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x41, 0x75, 0x64, 0x69, 0x74, 0x4c, 0x6f,
-	0x67, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x2f, 0x2e, 0x74, 0x65, 0x73, 0x73, 0x65, 0x72, 0x61,
-	0x6c, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x72, 0x65,
-	0x61, 0x74, 0x65, 0x41, 0x75, 0x64, 0x69, 0x74, 0x4c, 0x6f, 0x67, 0x45, 0x76, 0x65, 0x6e, 0x74,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x30, 0x2e, 0x74, 0x65, 0x73, 0x73, 0x65, 0x72,
-	0x61, 0x6c, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x72,
-	0x65, 0x61, 0x74, 0x65, 0x41, 0x75, 0x64, 0x69, 0x74, 0x4c, 0x6f, 0x67, 0x45, 0x76, 0x65, 0x6e,
-	0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x23, 0x82, 0xd3, 0xe4, 0x93, 0x02,
-	0x1d, 0x3a, 0x0f, 0x61, 0x75, 0x64, 0x69, 0x74, 0x5f, 0x6c, 0x6f, 0x67, 0x5f, 0x65, 0x76, 0x65,
-	0x6e, 0x74, 0x22, 0x0a, 0x2f, 0x76, 0x31, 0x2f, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x73, 0x42, 0xeb,
+	0x65, 0x6e, 0x74, 0x55, 0x52, 0x4c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0xeb,
 	0x01, 0x0a, 0x17, 0x63, 0x6f, 0x6d, 0x2e, 0x74, 0x65, 0x73, 0x73, 0x65, 0x72, 0x61, 0x6c, 0x2e,
 	0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x42, 0x0c, 0x42, 0x61, 0x63, 0x6b,
 	0x65, 0x6e, 0x64, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x54, 0x67, 0x69, 0x74, 0x68,
@@ -10106,33 +10104,33 @@ var file_tesseral_backend_v1_backend_proto_depIdxs = []int32{
 	167, // 148: tesseral.backend.v1.BackendService.DeleteAPIKeyRoleAssignment:input_type -> tesseral.backend.v1.DeleteAPIKeyRoleAssignmentRequest
 	165, // 149: tesseral.backend.v1.BackendService.ListAPIKeyRoleAssignments:input_type -> tesseral.backend.v1.ListAPIKeyRoleAssignmentsRequest
 	169, // 150: tesseral.backend.v1.BackendService.AuthenticateAPIKey:input_type -> tesseral.backend.v1.AuthenticateAPIKeyRequest
-	112, // 151: tesseral.backend.v1.BackendService.DisableOrganizationLogins:input_type -> tesseral.backend.v1.DisableOrganizationLoginsRequest
-	114, // 152: tesseral.backend.v1.BackendService.DisableProjectLogins:input_type -> tesseral.backend.v1.DisableProjectLoginsRequest
-	116, // 153: tesseral.backend.v1.BackendService.EnableOrganizationLogins:input_type -> tesseral.backend.v1.EnableOrganizationLoginsRequest
-	118, // 154: tesseral.backend.v1.BackendService.EnableProjectLogins:input_type -> tesseral.backend.v1.EnableProjectLoginsRequest
-	2,   // 155: tesseral.backend.v1.BackendService.UpdateProject:input_type -> tesseral.backend.v1.UpdateProjectRequest
-	90,  // 156: tesseral.backend.v1.BackendService.GetVaultDomainSettings:input_type -> tesseral.backend.v1.GetVaultDomainSettingsRequest
-	92,  // 157: tesseral.backend.v1.BackendService.UpdateVaultDomainSettings:input_type -> tesseral.backend.v1.UpdateVaultDomainSettingsRequest
-	94,  // 158: tesseral.backend.v1.BackendService.EnableCustomVaultDomain:input_type -> tesseral.backend.v1.EnableCustomVaultDomainRequest
-	96,  // 159: tesseral.backend.v1.BackendService.EnableEmailSendFromDomain:input_type -> tesseral.backend.v1.EnableEmailSendFromDomainRequest
-	108, // 160: tesseral.backend.v1.BackendService.GetProjectUISettings:input_type -> tesseral.backend.v1.GetProjectUISettingsRequest
-	110, // 161: tesseral.backend.v1.BackendService.UpdateProjectUISettings:input_type -> tesseral.backend.v1.UpdateProjectUISettingsRequest
-	78,  // 162: tesseral.backend.v1.BackendService.ListBackendAPIKeys:input_type -> tesseral.backend.v1.ListBackendAPIKeysRequest
-	80,  // 163: tesseral.backend.v1.BackendService.GetBackendAPIKey:input_type -> tesseral.backend.v1.GetBackendAPIKeyRequest
-	82,  // 164: tesseral.backend.v1.BackendService.CreateBackendAPIKey:input_type -> tesseral.backend.v1.CreateBackendAPIKeyRequest
-	84,  // 165: tesseral.backend.v1.BackendService.UpdateBackendAPIKey:input_type -> tesseral.backend.v1.UpdateBackendAPIKeyRequest
-	86,  // 166: tesseral.backend.v1.BackendService.DeleteBackendAPIKey:input_type -> tesseral.backend.v1.DeleteBackendAPIKeyRequest
-	88,  // 167: tesseral.backend.v1.BackendService.RevokeBackendAPIKey:input_type -> tesseral.backend.v1.RevokeBackendAPIKeyRequest
-	98,  // 168: tesseral.backend.v1.BackendService.ListPublishableKeys:input_type -> tesseral.backend.v1.ListPublishableKeysRequest
-	100, // 169: tesseral.backend.v1.BackendService.GetPublishableKey:input_type -> tesseral.backend.v1.GetPublishableKeyRequest
-	102, // 170: tesseral.backend.v1.BackendService.CreatePublishableKey:input_type -> tesseral.backend.v1.CreatePublishableKeyRequest
-	104, // 171: tesseral.backend.v1.BackendService.UpdatePublishableKey:input_type -> tesseral.backend.v1.UpdatePublishableKeyRequest
-	106, // 172: tesseral.backend.v1.BackendService.DeletePublishableKey:input_type -> tesseral.backend.v1.DeletePublishableKeyRequest
-	121, // 173: tesseral.backend.v1.BackendService.CreateUserImpersonationToken:input_type -> tesseral.backend.v1.CreateUserImpersonationTokenRequest
-	123, // 174: tesseral.backend.v1.BackendService.GetProjectEntitlements:input_type -> tesseral.backend.v1.GetProjectEntitlementsRequest
-	125, // 175: tesseral.backend.v1.BackendService.CreateStripeCheckoutLink:input_type -> tesseral.backend.v1.CreateStripeCheckoutLinkRequest
-	149, // 176: tesseral.backend.v1.BackendService.GetProjectWebhookManagementURL:input_type -> tesseral.backend.v1.GetProjectWebhookManagementURLRequest
-	171, // 177: tesseral.backend.v1.BackendService.CreateAuditLogEvent:input_type -> tesseral.backend.v1.CreateAuditLogEventRequest
+	171, // 151: tesseral.backend.v1.BackendService.CreateAuditLogEvent:input_type -> tesseral.backend.v1.CreateAuditLogEventRequest
+	112, // 152: tesseral.backend.v1.BackendService.DisableOrganizationLogins:input_type -> tesseral.backend.v1.DisableOrganizationLoginsRequest
+	114, // 153: tesseral.backend.v1.BackendService.DisableProjectLogins:input_type -> tesseral.backend.v1.DisableProjectLoginsRequest
+	116, // 154: tesseral.backend.v1.BackendService.EnableOrganizationLogins:input_type -> tesseral.backend.v1.EnableOrganizationLoginsRequest
+	118, // 155: tesseral.backend.v1.BackendService.EnableProjectLogins:input_type -> tesseral.backend.v1.EnableProjectLoginsRequest
+	2,   // 156: tesseral.backend.v1.BackendService.UpdateProject:input_type -> tesseral.backend.v1.UpdateProjectRequest
+	90,  // 157: tesseral.backend.v1.BackendService.GetVaultDomainSettings:input_type -> tesseral.backend.v1.GetVaultDomainSettingsRequest
+	92,  // 158: tesseral.backend.v1.BackendService.UpdateVaultDomainSettings:input_type -> tesseral.backend.v1.UpdateVaultDomainSettingsRequest
+	94,  // 159: tesseral.backend.v1.BackendService.EnableCustomVaultDomain:input_type -> tesseral.backend.v1.EnableCustomVaultDomainRequest
+	96,  // 160: tesseral.backend.v1.BackendService.EnableEmailSendFromDomain:input_type -> tesseral.backend.v1.EnableEmailSendFromDomainRequest
+	108, // 161: tesseral.backend.v1.BackendService.GetProjectUISettings:input_type -> tesseral.backend.v1.GetProjectUISettingsRequest
+	110, // 162: tesseral.backend.v1.BackendService.UpdateProjectUISettings:input_type -> tesseral.backend.v1.UpdateProjectUISettingsRequest
+	78,  // 163: tesseral.backend.v1.BackendService.ListBackendAPIKeys:input_type -> tesseral.backend.v1.ListBackendAPIKeysRequest
+	80,  // 164: tesseral.backend.v1.BackendService.GetBackendAPIKey:input_type -> tesseral.backend.v1.GetBackendAPIKeyRequest
+	82,  // 165: tesseral.backend.v1.BackendService.CreateBackendAPIKey:input_type -> tesseral.backend.v1.CreateBackendAPIKeyRequest
+	84,  // 166: tesseral.backend.v1.BackendService.UpdateBackendAPIKey:input_type -> tesseral.backend.v1.UpdateBackendAPIKeyRequest
+	86,  // 167: tesseral.backend.v1.BackendService.DeleteBackendAPIKey:input_type -> tesseral.backend.v1.DeleteBackendAPIKeyRequest
+	88,  // 168: tesseral.backend.v1.BackendService.RevokeBackendAPIKey:input_type -> tesseral.backend.v1.RevokeBackendAPIKeyRequest
+	98,  // 169: tesseral.backend.v1.BackendService.ListPublishableKeys:input_type -> tesseral.backend.v1.ListPublishableKeysRequest
+	100, // 170: tesseral.backend.v1.BackendService.GetPublishableKey:input_type -> tesseral.backend.v1.GetPublishableKeyRequest
+	102, // 171: tesseral.backend.v1.BackendService.CreatePublishableKey:input_type -> tesseral.backend.v1.CreatePublishableKeyRequest
+	104, // 172: tesseral.backend.v1.BackendService.UpdatePublishableKey:input_type -> tesseral.backend.v1.UpdatePublishableKeyRequest
+	106, // 173: tesseral.backend.v1.BackendService.DeletePublishableKey:input_type -> tesseral.backend.v1.DeletePublishableKeyRequest
+	121, // 174: tesseral.backend.v1.BackendService.CreateUserImpersonationToken:input_type -> tesseral.backend.v1.CreateUserImpersonationTokenRequest
+	123, // 175: tesseral.backend.v1.BackendService.GetProjectEntitlements:input_type -> tesseral.backend.v1.GetProjectEntitlementsRequest
+	125, // 176: tesseral.backend.v1.BackendService.CreateStripeCheckoutLink:input_type -> tesseral.backend.v1.CreateStripeCheckoutLinkRequest
+	149, // 177: tesseral.backend.v1.BackendService.GetProjectWebhookManagementURL:input_type -> tesseral.backend.v1.GetProjectWebhookManagementURLRequest
 	1,   // 178: tesseral.backend.v1.BackendService.GetProject:output_type -> tesseral.backend.v1.GetProjectResponse
 	5,   // 179: tesseral.backend.v1.BackendService.ListOrganizations:output_type -> tesseral.backend.v1.ListOrganizationsResponse
 	7,   // 180: tesseral.backend.v1.BackendService.GetOrganization:output_type -> tesseral.backend.v1.GetOrganizationResponse
@@ -10192,33 +10190,33 @@ var file_tesseral_backend_v1_backend_proto_depIdxs = []int32{
 	168, // 234: tesseral.backend.v1.BackendService.DeleteAPIKeyRoleAssignment:output_type -> tesseral.backend.v1.DeleteAPIKeyRoleAssignmentResponse
 	166, // 235: tesseral.backend.v1.BackendService.ListAPIKeyRoleAssignments:output_type -> tesseral.backend.v1.ListAPIKeyRoleAssignmentsResponse
 	170, // 236: tesseral.backend.v1.BackendService.AuthenticateAPIKey:output_type -> tesseral.backend.v1.AuthenticateAPIKeyResponse
-	113, // 237: tesseral.backend.v1.BackendService.DisableOrganizationLogins:output_type -> tesseral.backend.v1.DisableOrganizationLoginsResponse
-	115, // 238: tesseral.backend.v1.BackendService.DisableProjectLogins:output_type -> tesseral.backend.v1.DisableProjectLoginsResponse
-	117, // 239: tesseral.backend.v1.BackendService.EnableOrganizationLogins:output_type -> tesseral.backend.v1.EnableOrganizationLoginsResponse
-	119, // 240: tesseral.backend.v1.BackendService.EnableProjectLogins:output_type -> tesseral.backend.v1.EnableProjectLoginsResponse
-	3,   // 241: tesseral.backend.v1.BackendService.UpdateProject:output_type -> tesseral.backend.v1.UpdateProjectResponse
-	91,  // 242: tesseral.backend.v1.BackendService.GetVaultDomainSettings:output_type -> tesseral.backend.v1.GetVaultDomainSettingsResponse
-	93,  // 243: tesseral.backend.v1.BackendService.UpdateVaultDomainSettings:output_type -> tesseral.backend.v1.UpdateVaultDomainSettingsResponse
-	95,  // 244: tesseral.backend.v1.BackendService.EnableCustomVaultDomain:output_type -> tesseral.backend.v1.EnableCustomVaultDomainResponse
-	97,  // 245: tesseral.backend.v1.BackendService.EnableEmailSendFromDomain:output_type -> tesseral.backend.v1.EnableEmailSendFromDomainResponse
-	109, // 246: tesseral.backend.v1.BackendService.GetProjectUISettings:output_type -> tesseral.backend.v1.GetProjectUISettingsResponse
-	111, // 247: tesseral.backend.v1.BackendService.UpdateProjectUISettings:output_type -> tesseral.backend.v1.UpdateProjectUISettingsResponse
-	79,  // 248: tesseral.backend.v1.BackendService.ListBackendAPIKeys:output_type -> tesseral.backend.v1.ListBackendAPIKeysResponse
-	81,  // 249: tesseral.backend.v1.BackendService.GetBackendAPIKey:output_type -> tesseral.backend.v1.GetBackendAPIKeyResponse
-	83,  // 250: tesseral.backend.v1.BackendService.CreateBackendAPIKey:output_type -> tesseral.backend.v1.CreateBackendAPIKeyResponse
-	85,  // 251: tesseral.backend.v1.BackendService.UpdateBackendAPIKey:output_type -> tesseral.backend.v1.UpdateBackendAPIKeyResponse
-	87,  // 252: tesseral.backend.v1.BackendService.DeleteBackendAPIKey:output_type -> tesseral.backend.v1.DeleteBackendAPIKeyResponse
-	89,  // 253: tesseral.backend.v1.BackendService.RevokeBackendAPIKey:output_type -> tesseral.backend.v1.RevokeBackendAPIKeyResponse
-	99,  // 254: tesseral.backend.v1.BackendService.ListPublishableKeys:output_type -> tesseral.backend.v1.ListPublishableKeysResponse
-	101, // 255: tesseral.backend.v1.BackendService.GetPublishableKey:output_type -> tesseral.backend.v1.GetPublishableKeyResponse
-	103, // 256: tesseral.backend.v1.BackendService.CreatePublishableKey:output_type -> tesseral.backend.v1.CreatePublishableKeyResponse
-	105, // 257: tesseral.backend.v1.BackendService.UpdatePublishableKey:output_type -> tesseral.backend.v1.UpdatePublishableKeyResponse
-	107, // 258: tesseral.backend.v1.BackendService.DeletePublishableKey:output_type -> tesseral.backend.v1.DeletePublishableKeyResponse
-	122, // 259: tesseral.backend.v1.BackendService.CreateUserImpersonationToken:output_type -> tesseral.backend.v1.CreateUserImpersonationTokenResponse
-	124, // 260: tesseral.backend.v1.BackendService.GetProjectEntitlements:output_type -> tesseral.backend.v1.GetProjectEntitlementsResponse
-	126, // 261: tesseral.backend.v1.BackendService.CreateStripeCheckoutLink:output_type -> tesseral.backend.v1.CreateStripeCheckoutLinkResponse
-	150, // 262: tesseral.backend.v1.BackendService.GetProjectWebhookManagementURL:output_type -> tesseral.backend.v1.GetProjectWebhookManagementURLResponse
-	172, // 263: tesseral.backend.v1.BackendService.CreateAuditLogEvent:output_type -> tesseral.backend.v1.CreateAuditLogEventResponse
+	172, // 237: tesseral.backend.v1.BackendService.CreateAuditLogEvent:output_type -> tesseral.backend.v1.CreateAuditLogEventResponse
+	113, // 238: tesseral.backend.v1.BackendService.DisableOrganizationLogins:output_type -> tesseral.backend.v1.DisableOrganizationLoginsResponse
+	115, // 239: tesseral.backend.v1.BackendService.DisableProjectLogins:output_type -> tesseral.backend.v1.DisableProjectLoginsResponse
+	117, // 240: tesseral.backend.v1.BackendService.EnableOrganizationLogins:output_type -> tesseral.backend.v1.EnableOrganizationLoginsResponse
+	119, // 241: tesseral.backend.v1.BackendService.EnableProjectLogins:output_type -> tesseral.backend.v1.EnableProjectLoginsResponse
+	3,   // 242: tesseral.backend.v1.BackendService.UpdateProject:output_type -> tesseral.backend.v1.UpdateProjectResponse
+	91,  // 243: tesseral.backend.v1.BackendService.GetVaultDomainSettings:output_type -> tesseral.backend.v1.GetVaultDomainSettingsResponse
+	93,  // 244: tesseral.backend.v1.BackendService.UpdateVaultDomainSettings:output_type -> tesseral.backend.v1.UpdateVaultDomainSettingsResponse
+	95,  // 245: tesseral.backend.v1.BackendService.EnableCustomVaultDomain:output_type -> tesseral.backend.v1.EnableCustomVaultDomainResponse
+	97,  // 246: tesseral.backend.v1.BackendService.EnableEmailSendFromDomain:output_type -> tesseral.backend.v1.EnableEmailSendFromDomainResponse
+	109, // 247: tesseral.backend.v1.BackendService.GetProjectUISettings:output_type -> tesseral.backend.v1.GetProjectUISettingsResponse
+	111, // 248: tesseral.backend.v1.BackendService.UpdateProjectUISettings:output_type -> tesseral.backend.v1.UpdateProjectUISettingsResponse
+	79,  // 249: tesseral.backend.v1.BackendService.ListBackendAPIKeys:output_type -> tesseral.backend.v1.ListBackendAPIKeysResponse
+	81,  // 250: tesseral.backend.v1.BackendService.GetBackendAPIKey:output_type -> tesseral.backend.v1.GetBackendAPIKeyResponse
+	83,  // 251: tesseral.backend.v1.BackendService.CreateBackendAPIKey:output_type -> tesseral.backend.v1.CreateBackendAPIKeyResponse
+	85,  // 252: tesseral.backend.v1.BackendService.UpdateBackendAPIKey:output_type -> tesseral.backend.v1.UpdateBackendAPIKeyResponse
+	87,  // 253: tesseral.backend.v1.BackendService.DeleteBackendAPIKey:output_type -> tesseral.backend.v1.DeleteBackendAPIKeyResponse
+	89,  // 254: tesseral.backend.v1.BackendService.RevokeBackendAPIKey:output_type -> tesseral.backend.v1.RevokeBackendAPIKeyResponse
+	99,  // 255: tesseral.backend.v1.BackendService.ListPublishableKeys:output_type -> tesseral.backend.v1.ListPublishableKeysResponse
+	101, // 256: tesseral.backend.v1.BackendService.GetPublishableKey:output_type -> tesseral.backend.v1.GetPublishableKeyResponse
+	103, // 257: tesseral.backend.v1.BackendService.CreatePublishableKey:output_type -> tesseral.backend.v1.CreatePublishableKeyResponse
+	105, // 258: tesseral.backend.v1.BackendService.UpdatePublishableKey:output_type -> tesseral.backend.v1.UpdatePublishableKeyResponse
+	107, // 259: tesseral.backend.v1.BackendService.DeletePublishableKey:output_type -> tesseral.backend.v1.DeletePublishableKeyResponse
+	122, // 260: tesseral.backend.v1.BackendService.CreateUserImpersonationToken:output_type -> tesseral.backend.v1.CreateUserImpersonationTokenResponse
+	124, // 261: tesseral.backend.v1.BackendService.GetProjectEntitlements:output_type -> tesseral.backend.v1.GetProjectEntitlementsResponse
+	126, // 262: tesseral.backend.v1.BackendService.CreateStripeCheckoutLink:output_type -> tesseral.backend.v1.CreateStripeCheckoutLinkResponse
+	150, // 263: tesseral.backend.v1.BackendService.GetProjectWebhookManagementURL:output_type -> tesseral.backend.v1.GetProjectWebhookManagementURLResponse
 	178, // [178:264] is the sub-list for method output_type
 	92,  // [92:178] is the sub-list for method input_type
 	92,  // [92:92] is the sub-list for extension type_name

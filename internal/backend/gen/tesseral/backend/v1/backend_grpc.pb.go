@@ -78,6 +78,7 @@ const (
 	BackendService_DeleteAPIKeyRoleAssignment_FullMethodName            = "/tesseral.backend.v1.BackendService/DeleteAPIKeyRoleAssignment"
 	BackendService_ListAPIKeyRoleAssignments_FullMethodName             = "/tesseral.backend.v1.BackendService/ListAPIKeyRoleAssignments"
 	BackendService_AuthenticateAPIKey_FullMethodName                    = "/tesseral.backend.v1.BackendService/AuthenticateAPIKey"
+	BackendService_CreateAuditLogEvent_FullMethodName                   = "/tesseral.backend.v1.BackendService/CreateAuditLogEvent"
 	BackendService_DisableOrganizationLogins_FullMethodName             = "/tesseral.backend.v1.BackendService/DisableOrganizationLogins"
 	BackendService_DisableProjectLogins_FullMethodName                  = "/tesseral.backend.v1.BackendService/DisableProjectLogins"
 	BackendService_EnableOrganizationLogins_FullMethodName              = "/tesseral.backend.v1.BackendService/EnableOrganizationLogins"
@@ -104,7 +105,6 @@ const (
 	BackendService_GetProjectEntitlements_FullMethodName                = "/tesseral.backend.v1.BackendService/GetProjectEntitlements"
 	BackendService_CreateStripeCheckoutLink_FullMethodName              = "/tesseral.backend.v1.BackendService/CreateStripeCheckoutLink"
 	BackendService_GetProjectWebhookManagementURL_FullMethodName        = "/tesseral.backend.v1.BackendService/GetProjectWebhookManagementURL"
-	BackendService_CreateAuditLogEvent_FullMethodName                   = "/tesseral.backend.v1.BackendService/CreateAuditLogEvent"
 )
 
 // BackendServiceClient is the client API for BackendService service.
@@ -223,6 +223,7 @@ type BackendServiceClient interface {
 	DeleteAPIKeyRoleAssignment(ctx context.Context, in *DeleteAPIKeyRoleAssignmentRequest, opts ...grpc.CallOption) (*DeleteAPIKeyRoleAssignmentResponse, error)
 	ListAPIKeyRoleAssignments(ctx context.Context, in *ListAPIKeyRoleAssignmentsRequest, opts ...grpc.CallOption) (*ListAPIKeyRoleAssignmentsResponse, error)
 	AuthenticateAPIKey(ctx context.Context, in *AuthenticateAPIKeyRequest, opts ...grpc.CallOption) (*AuthenticateAPIKeyResponse, error)
+	CreateAuditLogEvent(ctx context.Context, in *CreateAuditLogEventRequest, opts ...grpc.CallOption) (*CreateAuditLogEventResponse, error)
 	DisableOrganizationLogins(ctx context.Context, in *DisableOrganizationLoginsRequest, opts ...grpc.CallOption) (*DisableOrganizationLoginsResponse, error)
 	DisableProjectLogins(ctx context.Context, in *DisableProjectLoginsRequest, opts ...grpc.CallOption) (*DisableProjectLoginsResponse, error)
 	EnableOrganizationLogins(ctx context.Context, in *EnableOrganizationLoginsRequest, opts ...grpc.CallOption) (*EnableOrganizationLoginsResponse, error)
@@ -249,11 +250,6 @@ type BackendServiceClient interface {
 	GetProjectEntitlements(ctx context.Context, in *GetProjectEntitlementsRequest, opts ...grpc.CallOption) (*GetProjectEntitlementsResponse, error)
 	CreateStripeCheckoutLink(ctx context.Context, in *CreateStripeCheckoutLinkRequest, opts ...grpc.CallOption) (*CreateStripeCheckoutLinkResponse, error)
 	GetProjectWebhookManagementURL(ctx context.Context, in *GetProjectWebhookManagementURLRequest, opts ...grpc.CallOption) (*GetProjectWebhookManagementURLResponse, error)
-	// Creates an audit log event for an organization.
-	//
-	// Audit log events will be recorded in the event history and asynchronously delivered to any endpoints
-	// configured by the organization.
-	CreateAuditLogEvent(ctx context.Context, in *CreateAuditLogEventRequest, opts ...grpc.CallOption) (*CreateAuditLogEventResponse, error)
 }
 
 type backendServiceClient struct {
@@ -854,6 +850,16 @@ func (c *backendServiceClient) AuthenticateAPIKey(ctx context.Context, in *Authe
 	return out, nil
 }
 
+func (c *backendServiceClient) CreateAuditLogEvent(ctx context.Context, in *CreateAuditLogEventRequest, opts ...grpc.CallOption) (*CreateAuditLogEventResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateAuditLogEventResponse)
+	err := c.cc.Invoke(ctx, BackendService_CreateAuditLogEvent_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *backendServiceClient) DisableOrganizationLogins(ctx context.Context, in *DisableOrganizationLoginsRequest, opts ...grpc.CallOption) (*DisableOrganizationLoginsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DisableOrganizationLoginsResponse)
@@ -1114,16 +1120,6 @@ func (c *backendServiceClient) GetProjectWebhookManagementURL(ctx context.Contex
 	return out, nil
 }
 
-func (c *backendServiceClient) CreateAuditLogEvent(ctx context.Context, in *CreateAuditLogEventRequest, opts ...grpc.CallOption) (*CreateAuditLogEventResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CreateAuditLogEventResponse)
-	err := c.cc.Invoke(ctx, BackendService_CreateAuditLogEvent_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // BackendServiceServer is the server API for BackendService service.
 // All implementations must embed UnimplementedBackendServiceServer
 // for forward compatibility.
@@ -1240,6 +1236,7 @@ type BackendServiceServer interface {
 	DeleteAPIKeyRoleAssignment(context.Context, *DeleteAPIKeyRoleAssignmentRequest) (*DeleteAPIKeyRoleAssignmentResponse, error)
 	ListAPIKeyRoleAssignments(context.Context, *ListAPIKeyRoleAssignmentsRequest) (*ListAPIKeyRoleAssignmentsResponse, error)
 	AuthenticateAPIKey(context.Context, *AuthenticateAPIKeyRequest) (*AuthenticateAPIKeyResponse, error)
+	CreateAuditLogEvent(context.Context, *CreateAuditLogEventRequest) (*CreateAuditLogEventResponse, error)
 	DisableOrganizationLogins(context.Context, *DisableOrganizationLoginsRequest) (*DisableOrganizationLoginsResponse, error)
 	DisableProjectLogins(context.Context, *DisableProjectLoginsRequest) (*DisableProjectLoginsResponse, error)
 	EnableOrganizationLogins(context.Context, *EnableOrganizationLoginsRequest) (*EnableOrganizationLoginsResponse, error)
@@ -1266,11 +1263,6 @@ type BackendServiceServer interface {
 	GetProjectEntitlements(context.Context, *GetProjectEntitlementsRequest) (*GetProjectEntitlementsResponse, error)
 	CreateStripeCheckoutLink(context.Context, *CreateStripeCheckoutLinkRequest) (*CreateStripeCheckoutLinkResponse, error)
 	GetProjectWebhookManagementURL(context.Context, *GetProjectWebhookManagementURLRequest) (*GetProjectWebhookManagementURLResponse, error)
-	// Creates an audit log event for an organization.
-	//
-	// Audit log events will be recorded in the event history and asynchronously delivered to any endpoints
-	// configured by the organization.
-	CreateAuditLogEvent(context.Context, *CreateAuditLogEventRequest) (*CreateAuditLogEventResponse, error)
 	mustEmbedUnimplementedBackendServiceServer()
 }
 
@@ -1458,6 +1450,9 @@ func (UnimplementedBackendServiceServer) ListAPIKeyRoleAssignments(context.Conte
 func (UnimplementedBackendServiceServer) AuthenticateAPIKey(context.Context, *AuthenticateAPIKeyRequest) (*AuthenticateAPIKeyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthenticateAPIKey not implemented")
 }
+func (UnimplementedBackendServiceServer) CreateAuditLogEvent(context.Context, *CreateAuditLogEventRequest) (*CreateAuditLogEventResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAuditLogEvent not implemented")
+}
 func (UnimplementedBackendServiceServer) DisableOrganizationLogins(context.Context, *DisableOrganizationLoginsRequest) (*DisableOrganizationLoginsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DisableOrganizationLogins not implemented")
 }
@@ -1535,9 +1530,6 @@ func (UnimplementedBackendServiceServer) CreateStripeCheckoutLink(context.Contex
 }
 func (UnimplementedBackendServiceServer) GetProjectWebhookManagementURL(context.Context, *GetProjectWebhookManagementURLRequest) (*GetProjectWebhookManagementURLResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProjectWebhookManagementURL not implemented")
-}
-func (UnimplementedBackendServiceServer) CreateAuditLogEvent(context.Context, *CreateAuditLogEventRequest) (*CreateAuditLogEventResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateAuditLogEvent not implemented")
 }
 func (UnimplementedBackendServiceServer) mustEmbedUnimplementedBackendServiceServer() {}
 func (UnimplementedBackendServiceServer) testEmbeddedByValue()                        {}
@@ -2622,6 +2614,24 @@ func _BackendService_AuthenticateAPIKey_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_CreateAuditLogEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateAuditLogEventRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).CreateAuditLogEvent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_CreateAuditLogEvent_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).CreateAuditLogEvent(ctx, req.(*CreateAuditLogEventRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BackendService_DisableOrganizationLogins_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DisableOrganizationLoginsRequest)
 	if err := dec(in); err != nil {
@@ -3090,24 +3100,6 @@ func _BackendService_GetProjectWebhookManagementURL_Handler(srv interface{}, ctx
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BackendService_CreateAuditLogEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateAuditLogEventRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServiceServer).CreateAuditLogEvent(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BackendService_CreateAuditLogEvent_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).CreateAuditLogEvent(ctx, req.(*CreateAuditLogEventRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // BackendService_ServiceDesc is the grpc.ServiceDesc for BackendService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -3352,6 +3344,10 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BackendService_AuthenticateAPIKey_Handler,
 		},
 		{
+			MethodName: "CreateAuditLogEvent",
+			Handler:    _BackendService_CreateAuditLogEvent_Handler,
+		},
+		{
 			MethodName: "DisableOrganizationLogins",
 			Handler:    _BackendService_DisableOrganizationLogins_Handler,
 		},
@@ -3454,10 +3450,6 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetProjectWebhookManagementURL",
 			Handler:    _BackendService_GetProjectWebhookManagementURL_Handler,
-		},
-		{
-			MethodName: "CreateAuditLogEvent",
-			Handler:    _BackendService_CreateAuditLogEvent_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

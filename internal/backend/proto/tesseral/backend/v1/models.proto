@@ -535,11 +535,12 @@ message APIKeyRoleAssignment {
   string role_id = 3;
 }
 
+// AuditLogEvent represents a record in the Project's audit log.
 message AuditLogEvent {
   // The Audit Log Event ID. Starts with `audit_log_event_...`.
   string id = 1;
 
-  // The ID of the Organization associated with the event.
+  // The ID of the Organization associated with the event, if any.
   string organization_id = 2;
 
   // The ID of the User associated with the event, if any.
@@ -563,24 +564,17 @@ message AuditLogEvent {
   // The intermediate session ID associated with the event, if any.
   string intermediate_session_id = 9;
 
-  // The resource type associated with the event, if any.
-  string resource_type = 10;
-
-  // The resource ID associated with the event, if any.
-  string resource_id = 11;
-
   // The time the event occurred.
-  //
-  // This can optionally be provided on input when the event occurred at some point in the past.
-  // Otherwise, this will be returned on output and defaults to the time the event is published.
-  google.protobuf.Timestamp event_time = 12;
+  google.protobuf.Timestamp event_time = 10;
 
   // The name of the event.
-  string event_name = 13;
+  string event_name = 11;
 
   // The event payload JSON.
-  google.protobuf.Struct event_details = 14;
+  google.protobuf.Struct event_details = 12;
 
-  // The credential associated with the event if any.
-  string credentials = 15;
+  // Credentials for the actor associated with the event. Input-only.
+  //
+  // Can be used as a shorthand for actor information when calling CreateAuditLogEvent.
+  string credentials = 13;
 }

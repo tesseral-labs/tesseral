@@ -6,11 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// New creates a UUIDv7.
-func New() (uuid.UUID, error) {
-	return uuid.NewV7()
-}
-
 // NewWithTime creates a new UUID at the given time.
 //
 // Allowing control over the time bits (as opposed to using the current time)
@@ -21,14 +16,6 @@ func NewWithTime(ts time.Time) (uuid.UUID, error) {
 		return uuid.Nil, err
 	}
 	return makeUUIDv7(ts, id), nil
-}
-
-// NilWithTime creates a nil UUID where just the time bits have been filled.
-//
-// This is useful for constructing a UUID which comes before all other UUIDs
-// for a given time.
-func NilWithTime(ts time.Time) uuid.UUID {
-	return makeUUIDv7(ts, uuid.Nil)
 }
 
 // makeUUIDv7 copies google/uuid for constructing a UUIDv7 at a point in time

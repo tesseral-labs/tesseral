@@ -184,9 +184,6 @@ func parseAuditLogEvent(qEvent queries.AuditLogEvent) (*backendv1.AuditLogEvent,
 		dogfoodSessionID      *string
 		backendApiKeyID       *string
 		intermediateSessionID *string
-
-		resourceType *string
-		resourceID   *string
 	)
 	if orgUUID := qEvent.OrganizationID; orgUUID != nil {
 		organizationID = refOrNil(idformat.Organization.Format(*orgUUID))
@@ -212,61 +209,6 @@ func parseAuditLogEvent(qEvent queries.AuditLogEvent) (*backendv1.AuditLogEvent,
 	if intermediateSessionUUID := qEvent.IntermediateSessionID; intermediateSessionUUID != nil {
 		intermediateSessionID = refOrNil(idformat.IntermediateSession.Format(*intermediateSessionUUID))
 	}
-	if resourceTypeDto := qEvent.ResourceType; resourceTypeDto != nil {
-		resourceType = (*string)(resourceTypeDto)
-	}
-	if resourceUUID := qEvent.ResourceID; resourceUUID != nil {
-		switch *qEvent.ResourceType {
-		case queries.AuditLogEventResourceTypeAction:
-			resourceID = refOrNil(resourceUUID.String()) // TODO: Actions don't have an ID format
-		case queries.AuditLogEventResourceTypeApiKey:
-			resourceID = refOrNil(idformat.APIKey.Format(*resourceUUID))
-		case queries.AuditLogEventResourceTypeApiKeyRoleAssignment:
-			resourceID = refOrNil(idformat.APIKeyRoleAssignment.Format(*resourceUUID))
-		case queries.AuditLogEventResourceTypeAuditLogEvent:
-			resourceID = refOrNil(idformat.AuditLogEvent.Format(*resourceUUID))
-		case queries.AuditLogEventResourceTypeBackendApiKey:
-			resourceID = refOrNil(idformat.BackendAPIKey.Format(*resourceUUID))
-		case queries.AuditLogEventResourceTypeEmailVerificationChallenge:
-			resourceID = refOrNil(idformat.EmailVerificationChallenge.Format(*resourceUUID))
-		case queries.AuditLogEventResourceTypeIntermediateSession:
-			resourceID = refOrNil(idformat.IntermediateSession.Format(*resourceUUID))
-		case queries.AuditLogEventResourceTypeOrganization:
-			resourceID = refOrNil(idformat.Organization.Format(*resourceUUID))
-		case queries.AuditLogEventResourceTypeOrganizationGoogleHostedDomains:
-			resourceID = nil // Google hosted domains are not represented as a resource ID
-		case queries.AuditLogEventResourceTypeOrganizationMicrosoftTenantIds:
-			resourceID = nil // Microsoft tenant IDs are not represented as a resource ID
-		case queries.AuditLogEventResourceTypePasskey:
-			resourceID = refOrNil(idformat.Passkey.Format(*resourceUUID))
-		case queries.AuditLogEventResourceTypePasswordResetCode:
-			resourceID = refOrNil(idformat.PasswordResetCode.Format(*resourceUUID))
-		case queries.AuditLogEventResourceTypeProject:
-			resourceID = refOrNil(idformat.Project.Format(*resourceUUID))
-		case queries.AuditLogEventResourceTypeProjectUiSettings:
-			resourceID = refOrNil(idformat.ProjectUISettings.Format(*resourceUUID))
-		case queries.AuditLogEventResourceTypeProjectWebhookSettings:
-			resourceID = refOrNil(idformat.ProjectWebhookSettings.Format(*resourceUUID))
-		case queries.AuditLogEventResourceTypePublishableKey:
-			resourceID = refOrNil(idformat.PublishableKey.Format(*resourceUUID))
-		case queries.AuditLogEventResourceTypeRole:
-			resourceID = refOrNil(idformat.Role.Format(*resourceUUID))
-		case queries.AuditLogEventResourceTypeSamlConnection:
-			resourceID = refOrNil(idformat.SAMLConnection.Format(*resourceUUID))
-		case queries.AuditLogEventResourceTypeScimApiKey:
-			resourceID = refOrNil(idformat.SCIMAPIKey.Format(*resourceUUID))
-		case queries.AuditLogEventResourceTypeUser:
-			resourceID = refOrNil(idformat.User.Format(*resourceUUID))
-		case queries.AuditLogEventResourceTypeUserAuthenticatorAppChallenge:
-			resourceID = refOrNil(idformat.AuthenticatorAppRecoveryCode.Format(*resourceUUID))
-		case queries.AuditLogEventResourceTypeUserImpersonationToken:
-			resourceID = refOrNil(idformat.UserImpersonationToken.Format(*resourceUUID))
-		case queries.AuditLogEventResourceTypeUserInvite:
-			resourceID = refOrNil(idformat.UserInvite.Format(*resourceUUID))
-		case queries.AuditLogEventResourceTypeUserRoleAssignment:
-			resourceID = refOrNil(idformat.UserRoleAssignment.Format(*resourceUUID))
-		}
-	}
 
 	return &backendv1.AuditLogEvent{
 		Id:                    idformat.AuditLogEvent.Format(qEvent.ID),
@@ -278,8 +220,6 @@ func parseAuditLogEvent(qEvent queries.AuditLogEvent) (*backendv1.AuditLogEvent,
 		DogfoodSessionId:      derefOrEmpty(dogfoodSessionID),
 		BackendApiKeyId:       derefOrEmpty(backendApiKeyID),
 		IntermediateSessionId: derefOrEmpty(intermediateSessionID),
-		ResourceType:          derefOrEmpty(resourceType),
-		ResourceId:            derefOrEmpty(resourceID),
 		EventName:             qEvent.EventName,
 		EventTime:             timestampOrNil(qEvent.EventTime),
 		EventDetails:          &eventDetails,

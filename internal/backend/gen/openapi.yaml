@@ -268,11 +268,6 @@ paths:
         post:
             tags:
                 - BackendService
-            description: |-
-                Creates an audit log event for an organization.
-
-                 Audit log events will be recorded in the event history and asynchronously delivered to any endpoints
-                 configured by the organization.
             operationId: BackendService_CreateAuditLogEvent
             requestBody:
                 content:
@@ -1618,7 +1613,7 @@ components:
                     description: The Audit Log Event ID. Starts with `audit_log_event_...`.
                 organizationId:
                     type: string
-                    description: The ID of the Organization associated with the event.
+                    description: The ID of the Organization associated with the event, if any.
                 userId:
                     type: string
                     description: The ID of the User associated with the event, if any.
@@ -1640,12 +1635,6 @@ components:
                 intermediateSessionId:
                     type: string
                     description: The intermediate session ID associated with the event, if any.
-                resourceType:
-                    type: string
-                    description: The resource type associated with the event, if any.
-                resourceId:
-                    type: string
-                    description: The resource ID associated with the event, if any.
                 eventTime:
                     type: string
                     description: |-
@@ -1662,7 +1651,8 @@ components:
                     description: The event payload JSON.
                 credentials:
                     type: string
-                    description: The credential associated with the event if any.
+                    description: The credential associated with the event, if any.
+            description: AuditLogEvent represents a record in the Project's audit log.
         AuthenticateAPIKeyRequest:
             type: object
             properties:
@@ -1703,9 +1693,7 @@ components:
             type: object
             properties:
                 auditLogEvent:
-                    allOf:
-                        - $ref: '#/components/schemas/AuditLogEvent'
-                    description: The published event.
+                    $ref: '#/components/schemas/AuditLogEvent'
         CreateOrganizationResponse:
             type: object
             properties:

@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
@@ -36,7 +37,7 @@ func (s *Store) CreateAPIKeyRoleAssignment(ctx context.Context, req *frontendv1.
 		ID:             apiKeyID,
 		OrganizationID: authn.OrganizationID(ctx),
 	}); err != nil {
-		if err == pgx.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("api key not found", fmt.Errorf("get api key: %w", err))
 		}
 		return nil, fmt.Errorf("get api key: %w", err)
@@ -47,7 +48,7 @@ func (s *Store) CreateAPIKeyRoleAssignment(ctx context.Context, req *frontendv1.
 		OrganizationID: &orgID,
 		ProjectID:      authn.ProjectID(ctx),
 	}); err != nil {
-		if err == pgx.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("role not found", fmt.Errorf("get role: %w", err))
 		}
 
@@ -101,7 +102,7 @@ func (s *Store) DeleteAPIKeyRoleAssignment(ctx context.Context, req *frontendv1.
 		OrganizationID: authn.OrganizationID(ctx),
 	})
 	if err != nil {
-		if err == pgx.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("api key role assignment not found", fmt.Errorf("get api key role assignment: %w", err))
 		}
 		return nil, fmt.Errorf("get api key role assignment: %w", err)
@@ -158,7 +159,7 @@ func (s *Store) ListAPIKeyRoleAssignments(ctx context.Context, req *frontendv1.L
 		Limit:          int32(limit + 1),
 	})
 	if err != nil {
-		if err == pgx.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return &frontendv1.ListAPIKeyRoleAssignmentsResponse{
 				ApiKeyRoleAssignments: apiKeyRoleAssignments,
 			}, nil

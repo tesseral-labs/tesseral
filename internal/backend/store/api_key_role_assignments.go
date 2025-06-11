@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
@@ -35,7 +36,7 @@ func (s *Store) CreateAPIKeyRoleAssignment(ctx context.Context, req *backendv1.C
 		ProjectID: authn.ProjectID(ctx),
 	})
 	if err != nil {
-		if err == pgx.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("api key not found", fmt.Errorf("get api key: %w", err))
 		}
 		return nil, fmt.Errorf("get api key: %w", err)
@@ -45,7 +46,7 @@ func (s *Store) CreateAPIKeyRoleAssignment(ctx context.Context, req *backendv1.C
 		ID:        roleID,
 		ProjectID: authn.ProjectID(ctx),
 	}); err != nil {
-		if err == pgx.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("role not found", fmt.Errorf("get role: %w", err))
 		}
 
@@ -57,7 +58,7 @@ func (s *Store) CreateAPIKeyRoleAssignment(ctx context.Context, req *backendv1.C
 		ProjectID: authn.ProjectID(ctx),
 	})
 	if err != nil {
-		if err == pgx.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("api key not found", fmt.Errorf("get organization: %w", err))
 		}
 		return nil, fmt.Errorf("get organization: %w", err)
@@ -122,7 +123,7 @@ func (s *Store) DeleteAPIKeyRoleAssignment(ctx context.Context, req *backendv1.D
 		ProjectID: authn.ProjectID(ctx),
 	})
 	if err != nil {
-		if err == pgx.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("api key not found", fmt.Errorf("get api key: %w", err))
 		}
 		return nil, fmt.Errorf("get api key: %w", err)
