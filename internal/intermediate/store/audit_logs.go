@@ -35,15 +35,17 @@ func (s *Store) logAuditEvent(ctx context.Context, q *queries.Queries, data logA
 		return queries.AuditLogEvent{}, fmt.Errorf("failed to marshal event details: %w", err)
 	}
 
+	intermediateSessionID := authn.IntermediateSessionID(ctx)
 	qEventParams := queries.CreateAuditLogEventParams{
-		ID:             eventID,
-		ProjectID:      authn.ProjectID(ctx),
-		OrganizationID: data.OrganizationID,
-		ResourceType:   &data.ResourceType,
-		ResourceID:     data.ResourceID,
-		EventName:      data.EventName,
-		EventTime:      &eventTime,
-		EventDetails:   eventDetailsBytes,
+		ID:                    eventID,
+		ProjectID:             authn.ProjectID(ctx),
+		OrganizationID:        data.OrganizationID,
+		ResourceType:          &data.ResourceType,
+		ResourceID:            data.ResourceID,
+		EventName:             data.EventName,
+		EventTime:             &eventTime,
+		EventDetails:          eventDetailsBytes,
+		IntermediateSessionID: &intermediateSessionID,
 	}
 
 	qEvent, err := q.CreateAuditLogEvent(ctx, qEventParams)

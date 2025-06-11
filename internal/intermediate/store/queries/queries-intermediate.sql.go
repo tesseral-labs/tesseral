@@ -13,23 +13,24 @@ import (
 )
 
 const createAuditLogEvent = `-- name: CreateAuditLogEvent :one
-INSERT INTO audit_log_events (id, project_id, organization_id, user_id, session_id, resource_type, resource_id, event_name, event_time, event_details)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, coalesce($10, '{}'::jsonb))
+INSERT INTO audit_log_events (id, project_id, organization_id, user_id, session_id, resource_type, resource_id, event_name, event_time, event_details, intermediate_session_id)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, coalesce($11, '{}'::jsonb), $10)
 RETURNING
     id, project_id, organization_id, user_id, session_id, api_key_id, dogfood_user_id, dogfood_session_id, backend_api_key_id, intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details
 `
 
 type CreateAuditLogEventParams struct {
-	ID             uuid.UUID
-	ProjectID      uuid.UUID
-	OrganizationID *uuid.UUID
-	UserID         *uuid.UUID
-	SessionID      *uuid.UUID
-	ResourceType   *AuditLogEventResourceType
-	ResourceID     *uuid.UUID
-	EventName      string
-	EventTime      *time.Time
-	EventDetails   interface{}
+	ID                    uuid.UUID
+	ProjectID             uuid.UUID
+	OrganizationID        *uuid.UUID
+	UserID                *uuid.UUID
+	SessionID             *uuid.UUID
+	ResourceType          *AuditLogEventResourceType
+	ResourceID            *uuid.UUID
+	EventName             string
+	EventTime             *time.Time
+	IntermediateSessionID *uuid.UUID
+	EventDetails          interface{}
 }
 
 func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEventParams) (AuditLogEvent, error) {
@@ -43,6 +44,7 @@ func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEve
 		arg.ResourceID,
 		arg.EventName,
 		arg.EventTime,
+		arg.IntermediateSessionID,
 		arg.EventDetails,
 	)
 	var i AuditLogEvent
