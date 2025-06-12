@@ -172,7 +172,7 @@ func (s *Store) RegisterPasskey(ctx context.Context, req *frontendv1.RegisterPas
 
 	passkey := parsePasskey(qPasskey)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
-		EventName: "tesseral.passdkeys.create",
+		EventName: "tesseral.passkeys.create",
 		EventDetails: muststructpb.MustNewValue(map[string]any{
 			"passkey": passkey,
 		}),
