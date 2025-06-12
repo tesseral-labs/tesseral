@@ -35,7 +35,7 @@ func (s *Store) CreateCustomAuditLogEvent(ctx context.Context, req *backendv1.Cr
 	projectID := authn.ProjectID(ctx)
 
 	if err := enforceSingleActor(req); err != nil {
-		return nil, apierror.NewInvalidArgumentError("exactly one of organization_id, user_id, session_id, or api_key_id must be provided", fmt.Errorf("enforce single actor: %w", err))
+		return nil, apierror.NewInvalidArgumentError("exactly one of organizationId, userId, sessionId, or apiKeyId must be provided", fmt.Errorf("enforce single actor: %w", err))
 	}
 
 	eventTime := time.Now()
@@ -285,7 +285,7 @@ func enforceSingleActor(req *backendv1.CreateAuditLogEventRequest) error {
 	}
 
 	if actorCount != 1 {
-		return fmt.Errorf("exactly one of organization_id, user_id, session_id, or api_key_id must be provided")
+		return fmt.Errorf("exactly one of organizationId, userId, sessionId, or apiKeyId must be provided")
 	}
 
 	return nil
@@ -303,19 +303,19 @@ func deriveEventContextForRequest(ctx context.Context, q *queries.Queries, req *
 
 			parsedOrgID, err := idformat.Organization.Parse(parsedAccessToken.Organization.Id)
 			if err != nil {
-				return nil, nil, nil, nil, apierror.NewInvalidArgumentError("invalid organization_id", fmt.Errorf("parse organization id: %w", err))
+				return nil, nil, nil, nil, apierror.NewInvalidArgumentError("invalid organization_id in credential", fmt.Errorf("parse organization id: %w", err))
 			}
 			orgID = (*uuid.UUID)(&parsedOrgID)
 
 			parsedUserID, err := idformat.User.Parse(parsedAccessToken.User.Id)
 			if err != nil {
-				return nil, nil, nil, nil, apierror.NewInvalidArgumentError("invalid user_id", fmt.Errorf("parse user id: %w", err))
+				return nil, nil, nil, nil, apierror.NewInvalidArgumentError("invalid user_id in credential", fmt.Errorf("parse user id: %w", err))
 			}
 			userID = (*uuid.UUID)(&parsedUserID)
 
 			parsedSessionID, err := idformat.Session.Parse(parsedAccessToken.Session.Id)
 			if err != nil {
-				return nil, nil, nil, nil, apierror.NewInvalidArgumentError("invalid session_id", fmt.Errorf("parse session id: %w", err))
+				return nil, nil, nil, nil, apierror.NewInvalidArgumentError("invalid session_id in credential", fmt.Errorf("parse session id: %w", err))
 			}
 			sessionID = (*uuid.UUID)(&parsedSessionID)
 		} else if isAPIKeyFormat(req.AuditLogEvent.Credentials) {
@@ -412,11 +412,11 @@ func deriveEventContextForRequest(ctx context.Context, q *queries.Queries, req *
 
 		// Ensure the organization exists in the project.
 		if _, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
-			ID:        derefOrEmpty(orgID),
+			ID:        derefOrEmpty((*uuid.UUID)(&parsedOrgID)),
 			ProjectID: projectID,
 		}); err != nil {
 			if errors.Is(err, pgx.ErrNoRows) {
-				return nil, nil, nil, nil, apierror.NewInvalidArgumentError("invalid organization_id", fmt.Errorf("get organization by id: %w", err))
+				return nil, nil, nil, nil, apierror.NewInvalidArgumentError("organization_id not found", fmt.Errorf("get organization by id: %w", err))
 			}
 			return nil, nil, nil, nil, fmt.Errorf("get organization by id: %w", err)
 		}
