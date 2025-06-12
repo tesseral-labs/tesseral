@@ -56,7 +56,7 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 		if err != nil {
 			return nil, apierror.NewInvalidArgumentError("invalid api_key_id", err)
 		}
-		listParams.ApiKeyID = (*uuid.UUID)(&apiKeyID)
+		listParams.ApiKeyID = (uuid.UUID)(apiKeyID)
 	}
 
 	if req.FilterEventName != "" {
@@ -68,7 +68,7 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 		if err != nil {
 			return nil, apierror.NewInvalidArgumentError("invalid session_id", err)
 		}
-		listParams.SessionID = (*uuid.UUID)(&sessionID)
+		listParams.SessionID = (uuid.UUID)(sessionID)
 	}
 
 	if req.FilterUserId != "" {
@@ -76,7 +76,7 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 		if err != nil {
 			return nil, apierror.NewInvalidArgumentError("invalid user_id", err)
 		}
-		listParams.UserID = (*uuid.UUID)(&userID)
+		listParams.UserID = (uuid.UUID)(userID)
 	}
 
 	const limit = 10

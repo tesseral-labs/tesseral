@@ -9,7 +9,13 @@ import {
   FilterX,
   Search,
 } from "lucide-react";
-import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { DateRange } from "react-day-picker";
 
 import { Button } from "@/components/ui/button";
@@ -88,6 +94,13 @@ function FilterBar({ setParams, isLoading }: FilterBarProps) {
     () => date || eventName.length > 0 || userId,
     [date, eventName, userId],
   );
+
+  useEffect(() => {
+    // Reset filters if no filters are applied
+    if (!hasFilters && setParams) {
+      setParams({});
+    }
+  }, [hasFilters, setParams]);
 
   return (
     <div className="p-4 border-b bg-card">

@@ -718,12 +718,12 @@ AND (@end_time::pg_catalog.timestamptz IS NULL
     OR event_time <= @end_time::pg_catalog.timestamptz)
 AND (event_name = @event_name
     OR @event_name = '')
-AND (@user_id IS NULL
-    OR user_id = @user_id)
-AND (@session_id IS NULL
-    OR session_id = @session_id)
-AND (@api_key_id IS NULL
-    OR api_key_id = @api_key_id)
+AND (@user_id::uuid = '00000000-0000-0000-0000-000000000000'
+    OR user_id = @user_id::uuid)
+AND (@session_id::uuid = '00000000-0000-0000-0000-000000000000'
+    OR session_id = @session_id::uuid)
+AND (@api_key_id::uuid = '00000000-0000-0000-0000-000000000000'
+    OR api_key_id = @api_key_id::uuid)
 AND project_id = @project_id
 AND organization_id = @organization_id
 ORDER BY
