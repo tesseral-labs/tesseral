@@ -17,6 +17,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/uuidv7"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 func (s *Store) CreateRefreshAuditLogEvent(ctx context.Context, accessToken string) error {
@@ -63,10 +64,9 @@ func (s *Store) CreateRefreshAuditLogEvent(ctx context.Context, accessToken stri
 		impersonatorEmail = &accessTokenDetails.Impersonator.Email
 	}
 
-	eventDetails := map[string]any{
-		"session": parseSessionEventDetails(qSession, impersonatorEmail),
-	}
-	eventDetailsBytes, err := json.Marshal(eventDetails)
+	eventDetails := parseSessionEventDetails(qSession, impersonatorEmail)
+
+	eventDetailsBytes, err := protojson.Marshal(eventDetails)
 	if err != nil {
 		return fmt.Errorf("marshal event details: %w", err)
 	}
