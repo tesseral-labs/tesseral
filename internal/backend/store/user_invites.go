@@ -17,6 +17,7 @@ import (
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -171,9 +172,9 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *backendv1.CreateUserI
 	userInvite := parseUserInvite(qUserInvite)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.user_invites.create",
-		EventDetails: map[string]any{
+		EventDetails: muststructpb.MustNewValue(map[string]any{
 			"userInvite": userInvite,
-		},
+		}),
 		OrganizationID: &qOrg.ID,
 		ResourceType:   queries.AuditLogEventResourceTypeUserInvite,
 		ResourceID:     &qUserInvite.ID,
@@ -224,9 +225,9 @@ func (s *Store) DeleteUserInvite(ctx context.Context, req *backendv1.DeleteUserI
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.user_invites.delete",
-		EventDetails: map[string]any{
+		EventDetails: muststructpb.MustNewValue(map[string]any{
 			"userInvite": parseUserInvite(qUserInvite),
-		},
+		}),
 		OrganizationID: &qUserInvite.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeUserInvite,
 		ResourceID:     &qUserInvite.ID,

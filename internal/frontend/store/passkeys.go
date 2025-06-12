@@ -13,6 +13,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/webauthn"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -87,9 +88,9 @@ func (s *Store) DeleteMyPasskey(ctx context.Context, req *frontendv1.DeleteMyPas
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.passkeys.delete",
-		EventDetails: map[string]any{
+		EventDetails: muststructpb.MustNewValue(map[string]any{
 			"passkey": parsePasskey(qPasskey),
-		},
+		}),
 		ResourceType: queries.AuditLogEventResourceTypePasskey,
 		ResourceID:   &qPasskey.ID,
 	}); err != nil {
@@ -172,9 +173,9 @@ func (s *Store) RegisterPasskey(ctx context.Context, req *frontendv1.RegisterPas
 	passkey := parsePasskey(qPasskey)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.passdkeys.create",
-		EventDetails: map[string]any{
+		EventDetails: muststructpb.MustNewValue(map[string]any{
 			"passkey": passkey,
-		},
+		}),
 		ResourceType: queries.AuditLogEventResourceTypePasskey,
 		ResourceID:   &qPasskey.ID,
 	}); err != nil {

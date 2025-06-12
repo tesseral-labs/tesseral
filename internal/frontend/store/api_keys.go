@@ -14,6 +14,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 	"github.com/tesseral-labs/tesseral/internal/prettysecret"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -85,9 +86,9 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *frontendv1.CreateAPIKeyRe
 	apiKey := parseAPIKey(qAPIKey, &secretToken)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_keys.create",
-		EventDetails: map[string]any{
+		EventDetails: muststructpb.MustNewValue(map[string]any{
 			"apiKey": apiKey,
-		},
+		}),
 		ResourceType: queries.AuditLogEventResourceTypeApiKey,
 		ResourceID:   &qAPIKey.ID,
 	}); err != nil {
@@ -139,9 +140,9 @@ func (s *Store) DeleteAPIKey(ctx context.Context, req *frontendv1.DeleteAPIKeyRe
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_keys.delete",
-		EventDetails: map[string]any{
+		EventDetails: muststructpb.MustNewValue(map[string]any{
 			"apiKey": parseAPIKey(qApiKey, nil),
-		},
+		}),
 		ResourceType: queries.AuditLogEventResourceTypeApiKey,
 		ResourceID:   &qApiKey.ID,
 	}); err != nil {
@@ -257,10 +258,10 @@ func (s *Store) RevokeAPIKey(ctx context.Context, req *frontendv1.RevokeAPIKeyRe
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_keys.revoke",
-		EventDetails: map[string]any{
+		EventDetails: muststructpb.MustNewValue(map[string]any{
 			"apiKey":         parseAPIKey(qUpdatedAPIKey, nil),
 			"previousApiKey": parseAPIKey(qAPIKey, nil),
-		},
+		}),
 		ResourceType: queries.AuditLogEventResourceTypeApiKey,
 		ResourceID:   &qAPIKey.ID,
 	}); err != nil {
@@ -309,10 +310,10 @@ func (s *Store) UpdateAPIKey(ctx context.Context, req *frontendv1.UpdateAPIKeyRe
 	apiKey := parseAPIKey(updatedApiKey, nil)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_keys.update",
-		EventDetails: map[string]any{
+		EventDetails: muststructpb.MustNewValue(map[string]any{
 			"apiKey":         apiKey,
 			"previousApiKey": parseAPIKey(qApiKey, nil),
-		},
+		}),
 		ResourceType: queries.AuditLogEventResourceTypeApiKey,
 		ResourceID:   &qApiKey.ID,
 	}); err != nil {

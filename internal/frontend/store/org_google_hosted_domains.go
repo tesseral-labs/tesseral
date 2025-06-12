@@ -8,6 +8,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 )
 
 func (s *Store) GetOrganizationGoogleHostedDomains(ctx context.Context, req *frontendv1.GetOrganizationGoogleHostedDomainsRequest) (*frontendv1.GetOrganizationGoogleHostedDomainsResponse, error) {
@@ -66,10 +67,10 @@ func (s *Store) UpdateOrganizationGoogleHostedDomains(ctx context.Context, req *
 	googleHostedDomains := parseOrganizationGoogleHostedDomains(qGoogleHostedDomains)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.organizations.update_google_hosted_domains",
-		EventDetails: map[string]any{
+		EventDetails: muststructpb.MustNewValue(map[string]any{
 			"googleHostedDomains":         googleHostedDomains.GoogleHostedDomains,
 			"previousGoogleHostedDomains": parseOrganizationGoogleHostedDomains(qPreviousGoogleHostedDomains).GoogleHostedDomains,
-		},
+		}),
 		ResourceType: queries.AuditLogEventResourceTypeOrganization,
 		ResourceID:   refOrNil(authn.OrganizationID(ctx)),
 	}); err != nil {

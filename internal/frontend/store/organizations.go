@@ -12,6 +12,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -156,10 +157,10 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 	organization := parseOrganization(qProject, qUpdatedOrg)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.organizations.update",
-		EventDetails: map[string]any{
+		EventDetails: muststructpb.MustNewValue(map[string]any{
 			"organization":         organization,
 			"previousOrganization": parseOrganization(qProject, qOrg),
-		},
+		}),
 		ResourceType: queries.AuditLogEventResourceTypeOrganization,
 		ResourceID:   &qOrg.ID,
 	}); err != nil {

@@ -14,6 +14,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -173,9 +174,9 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *frontendv1.Create
 	samlConnection := parseSAMLConnection(qProject, qSAMLConnection)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.saml_connections.create",
-		EventDetails: map[string]any{
+		EventDetails: muststructpb.MustNewValue(map[string]any{
 			"samlConnection": samlConnection,
-		},
+		}),
 		ResourceType: queries.AuditLogEventResourceTypeSamlConnection,
 		ResourceID:   &qSAMLConnection.ID,
 	}); err != nil {
@@ -283,10 +284,10 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *frontendv1.Update
 	samlConnection := parseSAMLConnection(qProject, qUpdatedSAMLConnection)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.saml_connections.update",
-		EventDetails: map[string]any{
+		EventDetails: muststructpb.MustNewValue(map[string]any{
 			"samlConnection":         samlConnection,
 			"previousSAMLConnection": parseSAMLConnection(qProject, qSAMLConnection),
-		},
+		}),
 		ResourceType: queries.AuditLogEventResourceTypeSamlConnection,
 		ResourceID:   &qSAMLConnection.ID,
 	}); err != nil {
@@ -340,9 +341,9 @@ func (s *Store) DeleteSAMLConnection(ctx context.Context, req *frontendv1.Delete
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.saml_connections.delete",
-		EventDetails: map[string]any{
+		EventDetails: muststructpb.MustNewValue(map[string]any{
 			"samlConnection": parseSAMLConnection(qProject, qSAMLConnection),
-		},
+		}),
 		ResourceType: queries.AuditLogEventResourceTypeSamlConnection,
 		ResourceID:   &qSAMLConnection.ID,
 	}); err != nil {

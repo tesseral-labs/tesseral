@@ -2,7 +2,6 @@ package store
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -149,7 +148,7 @@ func parseAuditLogEvent(qAuditLogEvent queries.AuditLogEvent) (*frontendv1.Audit
 
 type logAuditEventParams struct {
 	EventName      string
-	EventDetails   map[string]any
+	EventDetails   *structpb.Value
 	OrganizationID *uuid.UUID
 	ResourceType   queries.AuditLogEventResourceType
 	ResourceID     *uuid.UUID
@@ -160,7 +159,7 @@ func (s *Store) logAuditEvent(ctx context.Context, q *queries.Queries, data logA
 	eventTime := time.Now()
 	eventID := uuidv7.NewWithTime(eventTime)
 
-	eventDetailsBytes, err := json.Marshal(data.EventDetails)
+	eventDetailsBytes, err := protojson.Marshal(data.EventDetails)
 	if err != nil {
 		return queries.AuditLogEvent{}, fmt.Errorf("failed to marshal event details: %w", err)
 	}

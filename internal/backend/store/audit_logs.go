@@ -32,6 +32,8 @@ func (s *Store) CreateCustomAuditLogEvent(ctx context.Context, req *backendv1.Cr
 	}
 	defer rollback()
 
+	fmt.Println("🚨 request:", req)
+
 	projectID := authn.ProjectID(ctx)
 
 	if err := enforceSingleActor(req); err != nil {
@@ -100,7 +102,7 @@ type logAuditEventParams struct {
 	OrganizationID *uuid.UUID
 
 	EventName    string
-	EventDetails map[string]any
+	EventDetails *structpb.Value
 	ResourceType queries.AuditLogEventResourceType
 	ResourceID   *uuid.UUID
 }
@@ -110,7 +112,7 @@ func (s *Store) logAuditEvent(ctx context.Context, q *queries.Queries, data logA
 	eventTime := time.Now()
 	eventID := uuidv7.NewWithTime(eventTime)
 
-	eventDetailsBytes, err := json.Marshal(data.EventDetails)
+	eventDetailsBytes, err := protojson.Marshal(data.EventDetails)
 	if err != nil {
 		return queries.AuditLogEvent{}, fmt.Errorf("failed to marshal event details: %w", err)
 	}

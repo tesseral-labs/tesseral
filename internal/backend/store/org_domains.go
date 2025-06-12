@@ -9,6 +9,7 @@ import (
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
@@ -98,10 +99,10 @@ func (s *Store) UpdateOrganizationDomains(ctx context.Context, req *backendv1.Up
 	organizationDomains := parseOrganizationDomains(qOrg, qDomains)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.organizations.update_domains",
-		EventDetails: map[string]any{
+		EventDetails: muststructpb.MustNewValue(map[string]any{
 			"domains":         organizationDomains.Domains,
 			"previousDomains": parseOrganizationDomains(qOrg, qPreviousDomains).Domains,
-		},
+		}),
 		OrganizationID: &qOrg.ID,
 		ResourceType:   queries.AuditLogEventResourceTypeOrganization,
 		ResourceID:     &qOrg.ID,

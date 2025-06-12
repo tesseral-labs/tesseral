@@ -15,6 +15,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/hibp"
 	"github.com/tesseral-labs/tesseral/internal/pagetoken"
+	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -65,6 +66,14 @@ func New(p NewStoreParams) *Store {
 	}
 
 	return store
+}
+
+func (s *Store) mustNewStructpbValue(v interface{}) *structpb.Value {
+	val, err := structpb.NewValue(v)
+	if err != nil {
+		panic(err)
+	}
+	return val
 }
 
 func (s *Store) tx(ctx context.Context) (tx pgx.Tx, q *queries.Queries, commit func() error, rollback func() error, err error) {

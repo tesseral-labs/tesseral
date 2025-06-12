@@ -9,6 +9,7 @@ import (
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
@@ -98,10 +99,10 @@ func (s *Store) UpdateOrganizationGoogleHostedDomains(ctx context.Context, req *
 	googleHostedDomains := parseOrganizationGoogleHostedDomains(qOrg, qGoogleHostedDomains)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.organizations.update_google_hosted_domains",
-		EventDetails: map[string]any{
+		EventDetails: muststructpb.MustNewValue(map[string]any{
 			"googleHostedDomains":         googleHostedDomains,
 			"previousGoogleHostedDomains": parseOrganizationGoogleHostedDomains(qOrg, qPreviousGoogleHostedDomains),
-		},
+		}),
 		OrganizationID: &qOrg.ID,
 		ResourceType:   queries.AuditLogEventResourceTypeOrganization,
 		ResourceID:     &qOrg.ID,

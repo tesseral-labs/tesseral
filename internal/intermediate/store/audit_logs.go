@@ -2,7 +2,6 @@ package store
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -10,13 +9,16 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
 	intermediatev1 "github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/uuidv7"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/types/known/structpb"
 )
 
 type logAuditEventParams struct {
 	EventName      string
-	EventDetails   map[string]any
+	EventDetails   *structpb.Value
 	OrganizationID *uuid.UUID
 	ResourceType   queries.AuditLogEventResourceType
 	ResourceID     *uuid.UUID
@@ -27,7 +29,7 @@ func (s *Store) logAuditEvent(ctx context.Context, q *queries.Queries, data logA
 	eventTime := time.Now()
 	eventID := uuidv7.NewWithTime(eventTime)
 
-	eventDetailsBytes, err := json.Marshal(data.EventDetails)
+	eventDetailsBytes, err := protojson.Marshal(data.EventDetails)
 	if err != nil {
 		return queries.AuditLogEvent{}, fmt.Errorf("failed to marshal event details: %w", err)
 	}
@@ -53,39 +55,31 @@ func (s *Store) logAuditEvent(ctx context.Context, q *queries.Queries, data logA
 	return qEvent, nil
 }
 
-// The intermediate service doesn't do CRUD in the traditional sense,
-// so we use a custom struct to represent the event details for session events.
-// This struct is used to format the session event details for logging.
-type sessionEventDetails struct {
-	ID                string                           `json:"id"`
-	UserID            string                           `json:"userId"`
-	ExpireTime        string                           `json:"expireTime,omitempty"`
-	LastActiveTime    string                           `json:"lastActiveTime,omitempty"`
-	PrimaryAuthFactor intermediatev1.PrimaryAuthFactor `json:"primaryAuthFactor,omitempty"`
-	ImpersonatorEmail string                           `json:"impersonatorEmail,omitempty"`
-}
-
-func parseSessionEventDetails(qSession queries.Session, impersonatorEmail *string) *sessionEventDetails {
-	var primaryAuthFactor intermediatev1.PrimaryAuthFactor
+func parseSessionEventDetails(qSession queries.Session, impersonatorEmail *string) *structpb.Value {
+	var primaryAuthFactor string
 	switch qSession.PrimaryAuthFactor {
 	case queries.PrimaryAuthFactorEmail:
-		primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_EMAIL
+		primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_EMAIL.String()
 	case queries.PrimaryAuthFactorGoogle:
-		primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GOOGLE
+		primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GOOGLE.String()
 	case queries.PrimaryAuthFactorMicrosoft:
-		primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_MICROSOFT
+		primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_MICROSOFT.String()
 	case queries.PrimaryAuthFactorGithub:
-		primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GITHUB
+		primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GITHUB.String()
 	default:
-		primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_UNSPECIFIED
+		primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_UNSPECIFIED.String()
 	}
 
-	return &sessionEventDetails{
-		ID:                idformat.Session.Format(qSession.ID),
-		UserID:            idformat.User.Format(qSession.UserID),
-		ExpireTime:        qSession.ExpireTime.String(),
-		LastActiveTime:    qSession.LastActiveTime.String(),
-		PrimaryAuthFactor: primaryAuthFactor,
-		ImpersonatorEmail: derefOrEmpty(impersonatorEmail),
+	sessionDetails := map[string]interface{}{
+		"session": map[string]interface{}{
+			"id":                  idformat.Session.Format(qSession.ID),
+			"user_id":             idformat.User.Format(qSession.UserID),
+			"expire_time":         qSession.ExpireTime.String(),
+			"last_active_time":    qSession.LastActiveTime.String(),
+			"primary_auth_factor": primaryAuthFactor,
+			"impersonator_email":  derefOrEmpty(impersonatorEmail),
+		},
 	}
+
+	return structpb.NewStructValue(muststructpb.MustNewStruct(sessionDetails))
 }

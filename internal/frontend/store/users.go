@@ -14,6 +14,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -169,10 +170,10 @@ func (s *Store) UpdateUser(ctx context.Context, req *frontendv1.UpdateUserReques
 	user := parseUser(qUpdatedUser)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.users.update",
-		EventDetails: map[string]any{
+		EventDetails: muststructpb.MustNewValue(map[string]any{
 			"user":         user,
 			"previousUser": parseUser(qUser),
-		},
+		}),
 		ResourceType: queries.AuditLogEventResourceTypeUser,
 		ResourceID:   &qUser.ID,
 	}); err != nil {
@@ -230,9 +231,9 @@ func (s *Store) DeleteUser(ctx context.Context, req *frontendv1.DeleteUserReques
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.users.delete",
-		EventDetails: map[string]any{
+		EventDetails: muststructpb.MustNewValue(map[string]any{
 			"user": parseUser(qUser),
-		},
+		}),
 		ResourceType: queries.AuditLogEventResourceTypeUser,
 		ResourceID:   &qUser.ID,
 	}); err != nil {

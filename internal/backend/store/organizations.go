@@ -13,6 +13,7 @@ import (
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -99,9 +100,9 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 	organization := parseOrganization(qProject, qOrg)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.organizations.create",
-		EventDetails: map[string]any{
+		EventDetails: muststructpb.MustNewValue(map[string]any{
 			"organization": organization,
-		},
+		}),
 		OrganizationID: &qOrg.ID,
 		ResourceType:   queries.AuditLogEventResourceTypeOrganization,
 		ResourceID:     &qOrg.ID,
@@ -346,10 +347,10 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 	organization := parseOrganization(qProject, qUpdatedOrg)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.organizations.update",
-		EventDetails: map[string]any{
+		EventDetails: muststructpb.MustNewValue(map[string]any{
 			"organization":         organization,
 			"previousOrganization": parseOrganization(qProject, qOrg),
-		},
+		}),
 		OrganizationID: &qOrg.ID,
 		ResourceType:   queries.AuditLogEventResourceTypeOrganization,
 		ResourceID:     &qOrg.ID,
@@ -405,9 +406,9 @@ func (s *Store) DeleteOrganization(ctx context.Context, req *backendv1.DeleteOrg
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.organizations.delete",
-		EventDetails: map[string]any{
+		EventDetails: muststructpb.MustNewValue(map[string]any{
 			"organization": parseOrganization(qProject, qOrg),
-		},
+		}),
 		OrganizationID: &qOrg.ID,
 		ResourceType:   queries.AuditLogEventResourceTypeOrganization,
 		ResourceID:     &qOrg.ID,
