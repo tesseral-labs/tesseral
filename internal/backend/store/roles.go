@@ -11,7 +11,6 @@ import (
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
-	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -211,9 +210,9 @@ func (s *Store) CreateRole(ctx context.Context, req *backendv1.CreateRoleRequest
 	role := parseRole(qRole, qRoleActions, qActions)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.roles.create",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"role": role,
-		}),
+		EventDetails: &backendv1.RoleCreated{
+			Role: role,
+		},
 		OrganizationID: roleOrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeRole,
 		ResourceID:     &qRole.ID,
@@ -322,10 +321,10 @@ func (s *Store) UpdateRole(ctx context.Context, req *backendv1.UpdateRoleRequest
 	role := parseRole(qUpdatedRole, qRoleActions, qActions)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.roles.update",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"role":         role,
-			"previousRole": parseRole(qRole, qPreviousRoleActions, qActions),
-		}),
+		EventDetails: &backendv1.RoleUpdated{
+			Role:         role,
+			PreviousRole: parseRole(qRole, qPreviousRoleActions, qActions),
+		},
 		OrganizationID: qUpdatedRole.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeRole,
 		ResourceID:     &qUpdatedRole.ID,
@@ -380,9 +379,9 @@ func (s *Store) DeleteRole(ctx context.Context, req *backendv1.DeleteRoleRequest
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.roles.delete",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"role": parseRole(qRole, qRoleActions, qActions),
-		}),
+		EventDetails: &backendv1.RoleDeleted{
+			Role: parseRole(qRole, qRoleActions, qActions),
+		},
 		OrganizationID: qRole.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeRole,
 		ResourceID:     &qRole.ID,

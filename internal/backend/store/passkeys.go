@@ -12,7 +12,6 @@ import (
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
-	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -145,10 +144,10 @@ func (s *Store) UpdatePasskey(ctx context.Context, req *backendv1.UpdatePasskeyR
 	passkey := parsePasskey(qUpdatedPasskey)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.passkeys.update",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"passkey":         passkey,
-			"previousPasskey": parsePasskey(qPasskey),
-		}),
+		EventDetails: &backendv1.PasskeyUpdated{
+			Passkey:         passkey,
+			PreviousPasskey: parsePasskey(qPasskey),
+		},
 		OrganizationID: &qUser.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypePasskey,
 		ResourceID:     &qUpdatedPasskey.ID,
@@ -204,9 +203,9 @@ func (s *Store) DeletePasskey(ctx context.Context, req *backendv1.DeletePasskeyR
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.passkeys.delete",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"passkey": parsePasskey(qPasskey),
-		}),
+		EventDetails: &backendv1.PasskeyDeleted{
+			Passkey: parsePasskey(qPasskey),
+		},
 		OrganizationID: &qUser.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypePasskey,
 		ResourceID:     &qPasskey.ID,

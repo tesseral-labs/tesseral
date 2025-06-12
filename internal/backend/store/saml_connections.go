@@ -14,7 +14,6 @@ import (
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
-	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -196,9 +195,9 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *backendv1.CreateS
 	samlConnection := parseSAMLConnection(qProject, qSAMLConnection)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.saml_connections.create",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"samlConnection": samlConnection,
-		}),
+		EventDetails: &backendv1.SAMLConnectionCreated{
+			SamlConnection: samlConnection,
+		},
 		OrganizationID: &qSAMLConnection.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeSamlConnection,
 		ResourceID:     &qSAMLConnection.ID,
@@ -303,10 +302,10 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *backendv1.UpdateS
 	samlConnection := parseSAMLConnection(qProject, qUpdatedSAMLConnection)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.saml_connections.update",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"samlConnection":         samlConnection,
-			"previousSamlConnection": parseSAMLConnection(qProject, qSAMLConnection),
-		}),
+		EventDetails: &backendv1.SAMLConnectionUpdated{
+			SamlConnection:         samlConnection,
+			PreviousSamlConnection: parseSAMLConnection(qProject, qSAMLConnection),
+		},
 		OrganizationID: &qSAMLConnection.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeSamlConnection,
 		ResourceID:     &qSAMLConnection.ID,
@@ -357,9 +356,9 @@ func (s *Store) DeleteSAMLConnection(ctx context.Context, req *backendv1.DeleteS
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.saml_connections.delete",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"samlConnection": parseSAMLConnection(qProject, qSAMLConnection),
-		}),
+		EventDetails: &backendv1.SAMLConnectionDeleted{
+			SamlConnection: parseSAMLConnection(qProject, qSAMLConnection),
+		},
 		OrganizationID: &qSAMLConnection.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeSamlConnection,
 		ResourceID:     &qSAMLConnection.ID,

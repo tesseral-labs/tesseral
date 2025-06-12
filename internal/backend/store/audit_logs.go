@@ -22,6 +22,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/uuidv7"
 	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
@@ -102,7 +103,7 @@ type logAuditEventParams struct {
 	OrganizationID *uuid.UUID
 
 	EventName    string
-	EventDetails *structpb.Value
+	EventDetails proto.Message
 	ResourceType queries.AuditLogEventResourceType
 	ResourceID   *uuid.UUID
 }

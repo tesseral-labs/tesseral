@@ -80,6 +80,10 @@ message Session {
   google.protobuf.Timestamp expire_time = 4;
   bool revoked = 5;
   PrimaryAuthFactor primary_auth_factor = 6;
+  google.protobuf.Timestamp last_active_time = 7;
+  string project_id = 8;
+  string organization_id = 9;
+  string impersonator_email = 10;
 }
 
 enum PrimaryAuthFactor {

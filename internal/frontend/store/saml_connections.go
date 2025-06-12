@@ -14,7 +14,6 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
-	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -174,9 +173,9 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *frontendv1.Create
 	samlConnection := parseSAMLConnection(qProject, qSAMLConnection)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.saml_connections.create",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"samlConnection": samlConnection,
-		}),
+		EventDetails: &frontendv1.SAMLConnectionCreated{
+			SamlConnection: samlConnection,
+		},
 		ResourceType: queries.AuditLogEventResourceTypeSamlConnection,
 		ResourceID:   &qSAMLConnection.ID,
 	}); err != nil {
@@ -284,10 +283,10 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *frontendv1.Update
 	samlConnection := parseSAMLConnection(qProject, qUpdatedSAMLConnection)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.saml_connections.update",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"samlConnection":         samlConnection,
-			"previousSAMLConnection": parseSAMLConnection(qProject, qSAMLConnection),
-		}),
+		EventDetails: &frontendv1.SAMLConnectionUpdated{
+			SamlConnection:         samlConnection,
+			PreviousSamlConnection: parseSAMLConnection(qProject, qSAMLConnection),
+		},
 		ResourceType: queries.AuditLogEventResourceTypeSamlConnection,
 		ResourceID:   &qSAMLConnection.ID,
 	}); err != nil {
@@ -341,9 +340,9 @@ func (s *Store) DeleteSAMLConnection(ctx context.Context, req *frontendv1.Delete
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.saml_connections.delete",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"samlConnection": parseSAMLConnection(qProject, qSAMLConnection),
-		}),
+		EventDetails: &frontendv1.SAMLConnectionDeleted{
+			SamlConnection: parseSAMLConnection(qProject, qSAMLConnection),
+		},
 		ResourceType: queries.AuditLogEventResourceTypeSamlConnection,
 		ResourceID:   &qSAMLConnection.ID,
 	}); err != nil {

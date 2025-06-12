@@ -11,7 +11,6 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
-	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
@@ -230,9 +229,9 @@ func (s *Store) CreateUserRoleAssignment(ctx context.Context, req *frontendv1.Cr
 	userRoleAssignment := parseUserRoleAssignment(qUserRoleAssignment)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.user_role_assignments.create",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"userRoleAssignment": userRoleAssignment,
-		}),
+		EventDetails: &frontendv1.UserRoleAssignmentCreated{
+			UserRoleAssignment: userRoleAssignment,
+		},
 		ResourceType: queries.AuditLogEventResourceTypeUserRoleAssignment,
 		ResourceID:   &qUserRoleAssignment.ID,
 	}); err != nil {
@@ -281,9 +280,9 @@ func (s *Store) DeleteUserRoleAssignment(ctx context.Context, req *frontendv1.De
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.user_role_assignments.delete",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"userRoleAssignment": parseUserRoleAssignment(qUserRoleAssignment),
-		}),
+		EventDetails: &frontendv1.UserRoleAssignmentDeleted{
+			UserRoleAssignment: parseUserRoleAssignment(qUserRoleAssignment),
+		},
 		ResourceType: queries.AuditLogEventResourceTypeUserRoleAssignment,
 		ResourceID:   &qUserRoleAssignment.ID,
 	}); err != nil {

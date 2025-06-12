@@ -11,11 +11,12 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
-	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/uuidv7"
 	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/structpb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAuditLogEventsRequest) (*frontendv1.ListAuditLogEventsResponse, error) {
@@ -149,7 +150,7 @@ func parseAuditLogEvent(qAuditLogEvent queries.AuditLogEvent) (*frontendv1.Audit
 
 type logAuditEventParams struct {
 	EventName      string
-	EventDetails   *structpb.Value
+	EventDetails   proto.Message
 	OrganizationID *uuid.UUID
 	ResourceType   queries.AuditLogEventResourceType
 	ResourceID     *uuid.UUID
@@ -195,33 +196,29 @@ type sessionEventDetails struct {
 	ImpersonatorEmail string                       `json:"impersonatorEmail,omitempty"`
 }
 
-func parseSessionEventDetails(qSession queries.Session, impersonatorEmail *string) *structpb.Value {
-	var primaryAuthFactor string
+func parseSessionEventDetails(qSession queries.Session, impersonatorEmail *string) *frontendv1.Session {
+	var primaryAuthFactor frontendv1.PrimaryAuthFactor
 	switch qSession.PrimaryAuthFactor {
 	case queries.PrimaryAuthFactorEmail:
-		primaryAuthFactor = frontendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_EMAIL.String()
+		primaryAuthFactor = frontendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_EMAIL
 	case queries.PrimaryAuthFactorGoogle:
-		primaryAuthFactor = frontendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GOOGLE.String()
+		primaryAuthFactor = frontendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GOOGLE
 	case queries.PrimaryAuthFactorMicrosoft:
-		primaryAuthFactor = frontendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_MICROSOFT.String()
+		primaryAuthFactor = frontendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_MICROSOFT
 	case queries.PrimaryAuthFactorGithub:
-		primaryAuthFactor = frontendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GITHUB.String()
+		primaryAuthFactor = frontendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GITHUB
 	case queries.PrimaryAuthFactorSaml:
-		primaryAuthFactor = frontendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_SAML.String()
+		primaryAuthFactor = frontendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_SAML
 	default:
-		primaryAuthFactor = frontendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_UNSPECIFIED.String()
+		primaryAuthFactor = frontendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_UNSPECIFIED
 	}
 
-	sessionDetails := map[string]interface{}{
-		"session": map[string]interface{}{
-			"id":                  idformat.Session.Format(qSession.ID),
-			"user_id":             idformat.User.Format(qSession.UserID),
-			"expire_time":         qSession.ExpireTime.String(),
-			"last_active_time":    qSession.LastActiveTime.String(),
-			"primary_auth_factor": primaryAuthFactor,
-			"impersonator_email":  derefOrEmpty(impersonatorEmail),
-		},
+	return &frontendv1.Session{
+		Id:                idformat.Session.Format(qSession.ID),
+		UserId:            idformat.User.Format(qSession.UserID),
+		ExpireTime:        timestamppb.New(derefOrEmpty(qSession.ExpireTime)),
+		LastActiveTime:    timestamppb.New(derefOrEmpty(qSession.LastActiveTime)),
+		PrimaryAuthFactor: primaryAuthFactor,
+		ImpersonatorEmail: derefOrEmpty(impersonatorEmail),
 	}
-
-	return structpb.NewStructValue(muststructpb.MustNewStruct(sessionDetails))
 }

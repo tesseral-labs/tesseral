@@ -11,7 +11,6 @@ import (
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
-	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
@@ -77,9 +76,9 @@ func (s *Store) CreateAPIKeyRoleAssignment(ctx context.Context, req *backendv1.C
 	apiKeyRoleAssignment := parseAPIKeyRoleAssignment(qAPIKeyRoleAssignment)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_key_role_assignments.create",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"apiKeyRoleAssignment": apiKeyRoleAssignment,
-		}),
+		EventDetails: &backendv1.APIKeyRoleAssignmentCreated{
+			RoleAssignment: apiKeyRoleAssignment,
+		},
 		OrganizationID: &qOrg.ID,
 		ResourceType:   queries.AuditLogEventResourceTypeApiKeyRoleAssignment,
 		ResourceID:     &qAPIKeyRoleAssignment.ID,
@@ -139,9 +138,9 @@ func (s *Store) DeleteAPIKeyRoleAssignment(ctx context.Context, req *backendv1.D
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_key_role_assignments.delete",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"apiKeyRoleAssignment": parseAPIKeyRoleAssignment(qAPIKeyRoleAssignment),
-		}),
+		EventDetails: &backendv1.APIKeyRoleAssignmentDeleted{
+			RoleAssignment: parseAPIKeyRoleAssignment(qAPIKeyRoleAssignment),
+		},
 		OrganizationID: &qAPIKey.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeApiKeyRoleAssignment,
 		ResourceID:     &qAPIKeyRoleAssignment.ID,

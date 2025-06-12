@@ -11,7 +11,6 @@ import (
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
-	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
@@ -221,9 +220,9 @@ func (s *Store) CreateUserRoleAssignment(ctx context.Context, req *backendv1.Cre
 	userRoleAssignment := parseUserRoleAssignment(qUserRoleAssignment)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.users.create_role_assignment",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"userRoleAssignment": userRoleAssignment,
-		}),
+		EventDetails: &backendv1.UserRoleAssignmentCreated{
+			UserRoleAssignment: userRoleAssignment,
+		},
 		OrganizationID: &qUser.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeUser,
 		ResourceID:     &qUser.ID,
@@ -279,9 +278,9 @@ func (s *Store) DeleteUserRoleAssignment(ctx context.Context, req *backendv1.Del
 	userRoleAssignment := parseUserRoleAssignment(qUserRoleAssignment)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.users.delete_role_assignment",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"userRoleAssignment": userRoleAssignment,
-		}),
+		EventDetails: &backendv1.UserRoleAssignmentDeleted{
+			UserRoleAssignment: userRoleAssignment,
+		},
 		OrganizationID: &qUser.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeUser,
 		ResourceID:     &qUserRoleAssignment.UserID,

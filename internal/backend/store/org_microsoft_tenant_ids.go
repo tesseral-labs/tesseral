@@ -9,7 +9,6 @@ import (
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
-	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
@@ -99,10 +98,10 @@ func (s *Store) UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, req *b
 	microsoftTenantIDs := parseOrganizationMicrosoftTenantIDs(qOrg, qMicrosoftTenantIDs)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.organizations.update_microsoft_tenant_ids",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"microsoftTenantIDs":         microsoftTenantIDs,
-			"previousMicrosoftTenantIDs": parseOrganizationMicrosoftTenantIDs(qOrg, qPreviousMicrosoftTenantIDs),
-		}),
+		EventDetails: &backendv1.OrganizationMicrosoftTenantIDsUpdated{
+			MicrosoftTenantIds:         microsoftTenantIDs.MicrosoftTenantIds,
+			PreviousMicrosoftTenantIds: parseOrganizationMicrosoftTenantIDs(qOrg, qPreviousMicrosoftTenantIDs).MicrosoftTenantIds,
+		},
 		OrganizationID: &qOrg.ID,
 		ResourceType:   queries.AuditLogEventResourceTypeOrganization,
 		ResourceID:     &qOrg.ID,

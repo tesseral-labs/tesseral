@@ -13,7 +13,6 @@ import (
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
-	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -145,9 +144,9 @@ func (s *Store) CreateSCIMAPIKey(ctx context.Context, req *backendv1.CreateSCIMA
 	scimAPIKey := parseSCIMAPIKey(qSCIMAPIKey)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.scim_api_keys.create",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"scimApiKey": scimAPIKey,
-		}),
+		EventDetails: &backendv1.SCIMAPIKeyCreated{
+			ScimApiKey: scimAPIKey,
+		},
 		OrganizationID: &qOrg.ID,
 		ResourceType:   queries.AuditLogEventResourceTypeScimApiKey,
 		ResourceID:     &qSCIMAPIKey.ID,
@@ -205,10 +204,10 @@ func (s *Store) UpdateSCIMAPIKey(ctx context.Context, req *backendv1.UpdateSCIMA
 	scimAPIKey := parseSCIMAPIKey(qUpdatedSCIMAPIKey)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.scim_api_keys.update",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"scimApiKey":         scimAPIKey,
-			"previousScimApiKey": parseSCIMAPIKey(qSCIMAPIKey),
-		}),
+		EventDetails: &backendv1.SCIMAPIKeyUpdated{
+			ScimApiKey:         scimAPIKey,
+			PreviousScimApiKey: parseSCIMAPIKey(qSCIMAPIKey),
+		},
 		OrganizationID: &qSCIMAPIKey.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeScimApiKey,
 		ResourceID:     &qUpdatedSCIMAPIKey.ID,
@@ -258,9 +257,9 @@ func (s *Store) DeleteSCIMAPIKey(ctx context.Context, req *backendv1.DeleteSCIMA
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.scim_api_keys.delete",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"scimApiKey": parseSCIMAPIKey(qSCIMAPIKey),
-		}),
+		EventDetails: &backendv1.SCIMAPIKeyDeleted{
+			ScimApiKey: parseSCIMAPIKey(qSCIMAPIKey),
+		},
 		OrganizationID: &qSCIMAPIKey.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeScimApiKey,
 		ResourceID:     &qSCIMAPIKey.ID,
@@ -308,10 +307,10 @@ func (s *Store) RevokeSCIMAPIKey(ctx context.Context, req *backendv1.RevokeSCIMA
 	scimAPIKey := parseSCIMAPIKey(qSCIMAPIKey)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.scim_api_keys.revoke",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"scimApiKey":         scimAPIKey,
-			"previousScimApiKey": parseSCIMAPIKey(qPreviousSCIMAPIKey),
-		}),
+		EventDetails: &backendv1.SCIMAPIKeyRevoked{
+			ScimApiKey:         scimAPIKey,
+			PreviousScimApiKey: parseSCIMAPIKey(qPreviousSCIMAPIKey),
+		},
 		OrganizationID: &qSCIMAPIKey.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeScimApiKey,
 		ResourceID:     &qSCIMAPIKey.ID,

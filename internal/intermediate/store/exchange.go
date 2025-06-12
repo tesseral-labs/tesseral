@@ -91,6 +91,16 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 			return nil, fmt.Errorf("create user: %w", err)
 		}
 
+		s.logAuditEvent(ctx, q, logAuditEventParams{
+			EventName: "tesseral.users.create",
+			EventDetails: &intermediatev1.UserCreated{
+				User: parseUser(qNewUser),
+			},
+			OrganizationID: &qOrg.ID,
+			ResourceType:   queries.AuditLogEventResourceTypeUser,
+			ResourceID:     &qNewUser.ID,
+		})
+
 		qUser = &qNewUser
 	} else {
 		detailsUpdated =
@@ -113,6 +123,18 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 			if err != nil {
 				return nil, fmt.Errorf("update user: %w", err)
 			}
+
+			s.logAuditEvent(ctx, q, logAuditEventParams{
+				EventName: "tesseral.users.update",
+				EventDetails: &intermediatev1.UserUpdated{
+					User:         parseUser(qUpdatedUser),
+					PreviousUser: parseUser(derefOrEmpty(qUser)),
+				},
+				OrganizationID: &qOrg.ID,
+				ResourceType:   queries.AuditLogEventResourceTypeUser,
+				ResourceID:     &qUser.ID,
+			})
+
 			qUser = &qUpdatedUser
 		}
 	}

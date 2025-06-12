@@ -8,7 +8,6 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
-	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 )
 
 func (s *Store) GetOrganizationMicrosoftTenantIDs(ctx context.Context, req *frontendv1.GetOrganizationMicrosoftTenantIDsRequest) (*frontendv1.GetOrganizationMicrosoftTenantIDsResponse, error) {
@@ -67,10 +66,10 @@ func (s *Store) UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, req *f
 	microsoftTenantIDs := parseOrganizationMicrosoftTenantIDs(qMicrosoftTenantIDs)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.microsoft_tenant_ids.update",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"microsoftTenantIds":         microsoftTenantIDs.MicrosoftTenantIds,
-			"previousMicrosoftTenantIds": parseOrganizationMicrosoftTenantIDs(qPreviousMicrosoftTenantIDs).MicrosoftTenantIds,
-		}),
+		EventDetails: &frontendv1.OrganizationMicrosoftTenantIDsUpdated{
+			MicrosoftTenantIds:         microsoftTenantIDs.MicrosoftTenantIds,
+			PreviousMicrosoftTenantIds: parseOrganizationMicrosoftTenantIDs(qPreviousMicrosoftTenantIDs).MicrosoftTenantIds,
+		},
 		ResourceType: queries.AuditLogEventResourceTypeOrganization,
 		ResourceID:   refOrNil(authn.OrganizationID(ctx)),
 	}); err != nil {

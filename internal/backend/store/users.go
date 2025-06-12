@@ -12,7 +12,6 @@ import (
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
-	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -138,9 +137,9 @@ func (s *Store) CreateUser(ctx context.Context, req *backendv1.CreateUserRequest
 	user := parseUser(qUser)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.users.create",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"user": user,
-		}),
+		EventDetails: &backendv1.UserCreated{
+			User: user,
+		},
 		OrganizationID: &qUser.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeUser,
 		ResourceID:     &qUser.ID,
@@ -232,10 +231,10 @@ func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest
 	previousUser := parseUser(qUser)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.users.update",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"user":         user,
-			"previousUser": previousUser,
-		}),
+		EventDetails: &backendv1.UserUpdated{
+			User:         user,
+			PreviousUser: previousUser,
+		},
 		OrganizationID: &qUpdatedUser.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeUser,
 		ResourceID:     &qUpdatedUser.ID,
@@ -285,9 +284,9 @@ func (s *Store) DeleteUser(ctx context.Context, req *backendv1.DeleteUserRequest
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.users.delete",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"user": parseUser(qUser),
-		}),
+		EventDetails: &backendv1.UserDeleted{
+			User: parseUser(qUser),
+		},
 		OrganizationID: &qUser.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeUser,
 		ResourceID:     &qUser.ID,

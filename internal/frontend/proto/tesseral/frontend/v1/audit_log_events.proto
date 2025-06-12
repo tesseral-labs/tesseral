@@ -1,0 +1,149 @@
+syntax = "proto3";
+
+package tesseral.frontend.v1;
+
+import "tesseral/frontend/v1/models.proto";
+
+message APIKeyRoleAssignmentCreated {
+  APIKeyRoleAssignment role_assignment = 1;
+}
+
+message APIKeyRoleAssignmentDeleted {
+  APIKeyRoleAssignment role_assignment = 1;
+}
+
+message APIKeyRoleAssignmentUpdated {
+  APIKeyRoleAssignment role_assignment = 1;
+  APIKeyRoleAssignment previous_role_assignment = 2;
+}
+
+message APIKeyCreated {
+  APIKey api_key = 1;
+}
+
+message APIKeyDeleted {
+  APIKey api_key = 1;
+}
+
+message APIKeyRevoked {
+  APIKey api_key = 1;
+  APIKey previous_api_key = 2;
+}
+
+message APIKeyUpdated {
+  APIKey api_key = 1;
+  APIKey previous_api_key = 2;
+}
+
+message OrganizationCreated {
+  Organization organization = 1;
+}
+
+message OrganizationDeleted {
+  Organization organization = 1;
+}
+
+message OrganizationUpdated {
+  Organization organization = 1;
+  Organization previous_organization = 2;
+}
+
+message OrganizationGoogleHostedDomainsUpdated {
+  repeated string google_hosted_domains = 1;
+  repeated string previous_google_hosted_domains = 2;
+}
+
+message OrganizationMicrosoftTenantIDsUpdated {
+  repeated string microsoft_tenant_ids = 1;
+  repeated string previous_microsoft_tenant_ids = 2;
+}
+
+message PasskeyCreated {
+  Passkey passkey = 1;
+}
+
+message PasskeyDeleted {
+  Passkey passkey = 1;
+}
+
+message RoleCreated {
+  Role role = 1;
+}
+
+message RoleDeleted {
+  Role role = 1;
+}
+
+message RoleUpdated {
+  Role role = 1;
+  Role previous_role = 2;
+}
+
+message SAMLConnectionCreated {
+  SAMLConnection saml_connection = 1;
+}
+
+message SAMLConnectionDeleted {
+  SAMLConnection saml_connection = 1;
+}
+
+message SAMLConnectionUpdated {
+  SAMLConnection saml_connection = 1;
+  SAMLConnection previous_saml_connection = 2;
+}
+
+message SessionRefreshed {
+  Session session = 1;
+}
+
+message SCIMAPIKeyCreated {
+  SCIMAPIKey scim_api_key = 1;
+}
+
+message SCIMAPIKeyDeleted {
+  SCIMAPIKey scim_api_key = 1;
+}
+
+message SCIMAPIKeyRevoked {
+  SCIMAPIKey scim_api_key = 1;
+  SCIMAPIKey previous_scim_api_key = 2;
+}
+
+message SCIMAPIKeyUpdated {
+  SCIMAPIKey scim_api_key = 1;
+  SCIMAPIKey previous_scim_api_key = 2;
+}
+
+message UserInviteCreated {
+  UserInvite user_invite = 1;
+}
+
+message UserInviteDeleted {
+  UserInvite user_invite = 1;
+}
+
+message UserInviteUpdated {
+  UserInvite user_invite = 1;
+  UserInvite previous_user_invite = 2;
+}
+
+message UserRoleAssignmentCreated {
+  UserRoleAssignment user_role_assignment = 1;
+}
+
+message UserRoleAssignmentDeleted {
+  UserRoleAssignment user_role_assignment = 1;
+}
+
+message UserCreated {
+  User user = 1;
+}
+
+message UserDeleted {
+  User user = 1;
+}
+
+message UserUpdated {
+  User user = 1;
+  User previous_user = 2;
+}

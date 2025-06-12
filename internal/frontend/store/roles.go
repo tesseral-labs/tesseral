@@ -11,7 +11,6 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
-	"github.com/tesseral-labs/tesseral/internal/muststructpb"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -184,9 +183,9 @@ func (s *Store) CreateRole(ctx context.Context, req *frontendv1.CreateRoleReques
 	role := parseRole(qRole, qRoleActions, qActions)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.roles.create",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"role": role,
-		}),
+		EventDetails: &frontendv1.RoleCreated{
+			Role: role,
+		},
 		ResourceType: queries.AuditLogEventResourceTypeRole,
 		ResourceID:   &qRole.ID,
 	}); err != nil {
@@ -309,10 +308,10 @@ func (s *Store) UpdateRole(ctx context.Context, req *frontendv1.UpdateRoleReques
 	role := parseRole(qUpdatedRole, qUpdatedRoleActions, qActions)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.roles.update",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"role":         role,
-			"previousRole": parseRole(qRole, qRoleActions, qActions),
-		}),
+		EventDetails: &frontendv1.RoleUpdated{
+			Role:         role,
+			PreviousRole: parseRole(qRole, qRoleActions, qActions),
+		},
 		ResourceType: queries.AuditLogEventResourceTypeRole,
 		ResourceID:   &qRole.ID,
 	}); err != nil {
@@ -372,9 +371,9 @@ func (s *Store) DeleteRole(ctx context.Context, req *frontendv1.DeleteRoleReques
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.roles.delete",
-		EventDetails: muststructpb.MustNewValue(map[string]any{
-			"role": parseRole(qRole, qRoleActions, qActions),
-		}),
+		EventDetails: &frontendv1.RoleDeleted{
+			Role: parseRole(qRole, qRoleActions, qActions),
+		},
 		ResourceType: queries.AuditLogEventResourceTypeRole,
 		ResourceID:   &qRole.ID,
 	}); err != nil {
