@@ -105,10 +105,10 @@ func parseSession(qSession queries.Session) *backendv1.Session {
 		primaryAuthFactor = backendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_EMAIL
 	case "google":
 		primaryAuthFactor = backendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GOOGLE
-	case "github":
-		primaryAuthFactor = backendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GITHUB
 	case "microsoft":
 		primaryAuthFactor = backendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_MICROSOFT
+	case "github":
+		primaryAuthFactor = backendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GITHUB
 	case "saml":
 		primaryAuthFactor = backendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_SAML
 	case "impersonation":
