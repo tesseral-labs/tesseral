@@ -187,15 +187,6 @@ func (s *Store) logAuditEvent(ctx context.Context, q *queries.Queries, data logA
 	return qEvent, nil
 }
 
-type sessionEventDetails struct {
-	ID                string                       `json:"id"`
-	UserID            string                       `json:"userId"`
-	ExpireTime        string                       `json:"expireTime,omitempty"`
-	LastActiveTime    string                       `json:"lastActiveTime,omitempty"`
-	PrimaryAuthFactor frontendv1.PrimaryAuthFactor `json:"primaryAuthFactor,omitempty"`
-	ImpersonatorEmail string                       `json:"impersonatorEmail,omitempty"`
-}
-
 func parseSessionEventDetails(qSession queries.Session, impersonatorEmail *string) *frontendv1.Session {
 	var primaryAuthFactor frontendv1.PrimaryAuthFactor
 	switch qSession.PrimaryAuthFactor {
