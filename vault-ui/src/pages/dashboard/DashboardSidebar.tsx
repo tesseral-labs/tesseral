@@ -4,6 +4,7 @@ import {
   ChevronsUpDownIcon,
   LayoutGridIcon,
   LogOutIcon,
+  ShieldIcon,
   UserIcon,
 } from "lucide-react";
 import React from "react";
@@ -28,9 +29,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  SidebarSeparator,
 } from "@/components/ui/sidebar";
 import {
   getOrganization,
+  getProject,
   listSwitchableOrganizations,
   whoami,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
@@ -39,6 +42,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 export function DashboardSidebar() {
   const isMobile = useIsMobile();
 
+  const { data: getProjectResponse } = useQuery(getProject);
   const { data: getOrganizationResponse } = useQuery(getOrganization);
   const { data: listSwitchableOrganizationsResponse } = useQuery(
     listSwitchableOrganizations,
@@ -130,6 +134,23 @@ export function DashboardSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
+
+            {getProjectResponse?.project?.auditLogsEnabled &&
+              whoamiResponse?.user?.owner && (
+                <>
+                  <SidebarSeparator />
+                  <SidebarMenu>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild>
+                        <Link to="/audit-logs">
+                          <ShieldIcon />
+                          Audit Logs
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </SidebarMenu>
+                </>
+              )}
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

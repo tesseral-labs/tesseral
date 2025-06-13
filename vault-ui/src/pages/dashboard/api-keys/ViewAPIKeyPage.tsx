@@ -212,8 +212,8 @@ function EditAPIKeyButton() {
 
   async function handleSubmit(data: z.infer<typeof schema>) {
     await updateAPIKeyMutation.mutateAsync({
+      id: apiKeyId,
       apiKey: {
-        id: apiKeyId,
         displayName: data.displayName,
       },
     });

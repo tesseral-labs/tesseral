@@ -233,6 +233,19 @@ message IntermediateSession {
   PrimaryAuthFactor primary_auth_factor = 13;
 }
 
+message Session {
+  string id = 1;
+  string user_id = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp expire_time = 4;
+  google.protobuf.Timestamp last_active_time = 5;
+  PrimaryAuthFactor primary_auth_factor = 6;
+  bool revoked = 7;
+  string project_id = 8;
+  string organization_id = 9;
+  string impersonator_email = 10;
+}
+
 enum PrimaryAuthFactor {
   PRIMARY_AUTH_FACTOR_UNSPECIFIED = 0;
   PRIMARY_AUTH_FACTOR_EMAIL = 1;
@@ -560,4 +573,18 @@ message ProjectWebhookSettings {
 
   // When the Webhook was last updated.
   google.protobuf.Timestamp update_time = 6;
+}
+
+message User {
+  string id = 1;
+  string email = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  optional bool owner = 5;
+  string google_user_id = 6;
+  string microsoft_user_id = 7;
+  string github_user_id = 11;
+  bool has_authenticator_app = 8;
+  optional string display_name = 9;
+  optional string profile_picture_url = 10;
 }

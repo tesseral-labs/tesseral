@@ -180,11 +180,23 @@ func (s *Store) CreateRole(ctx context.Context, req *frontendv1.CreateRoleReques
 		return nil, fmt.Errorf("batch get role actions by role id: %w", err)
 	}
 
+	role := parseRole(qRole, qRoleActions, qActions)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.roles.create",
+		EventDetails: &frontendv1.RoleCreated{
+			Role: role,
+		},
+		ResourceType: queries.AuditLogEventResourceTypeRole,
+		ResourceID:   &qRole.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &frontendv1.CreateRoleResponse{Role: parseRole(qRole, qRoleActions, qActions)}, nil
+	return &frontendv1.CreateRoleResponse{Role: role}, nil
 }
 
 func (s *Store) UpdateRole(ctx context.Context, req *frontendv1.UpdateRoleRequest) (*frontendv1.UpdateRoleResponse, error) {
@@ -228,6 +240,11 @@ func (s *Store) UpdateRole(ctx context.Context, req *frontendv1.UpdateRoleReques
 	qActions, err := q.GetActions(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		return nil, fmt.Errorf("get actions: %w", err)
+	}
+
+	qRoleActions, err := q.BatchGetRoleActionsByRoleID(ctx, []uuid.UUID{qRole.ID})
+	if err != nil {
+		return nil, fmt.Errorf("batch get role actions by role id: %w", err)
 	}
 
 	var updates queries.UpdateRoleParams
@@ -283,16 +300,29 @@ func (s *Store) UpdateRole(ctx context.Context, req *frontendv1.UpdateRoleReques
 		return nil, fmt.Errorf("update role: %w", err)
 	}
 
-	qRoleActions, err := q.BatchGetRoleActionsByRoleID(ctx, []uuid.UUID{qUpdatedRole.ID})
+	qUpdatedRoleActions, err := q.BatchGetRoleActionsByRoleID(ctx, []uuid.UUID{qUpdatedRole.ID})
 	if err != nil {
 		return nil, fmt.Errorf("batch get role actions by role id: %w", err)
+	}
+
+	role := parseRole(qUpdatedRole, qUpdatedRoleActions, qActions)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.roles.update",
+		EventDetails: &frontendv1.RoleUpdated{
+			Role:         role,
+			PreviousRole: parseRole(qRole, qRoleActions, qActions),
+		},
+		ResourceType: queries.AuditLogEventResourceTypeRole,
+		ResourceID:   &qRole.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &frontendv1.UpdateRoleResponse{Role: parseRole(qUpdatedRole, qRoleActions, qActions)}, nil
+	return &frontendv1.UpdateRoleResponse{Role: role}, nil
 }
 
 func (s *Store) DeleteRole(ctx context.Context, req *frontendv1.DeleteRoleRequest) (*frontendv1.DeleteRoleResponse, error) {
@@ -312,20 +342,42 @@ func (s *Store) DeleteRole(ctx context.Context, req *frontendv1.DeleteRoleReques
 	}
 
 	orgID := authn.OrganizationID(ctx)
-	if _, err := q.GetRoleInOrganization(ctx, queries.GetRoleInOrganizationParams{
+	qRole, err := q.GetRoleInOrganization(ctx, queries.GetRoleInOrganizationParams{
 		ProjectID:      authn.ProjectID(ctx),
 		OrganizationID: &orgID,
 		ID:             roleID,
-	}); err != nil {
+	})
+	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("role not found", fmt.Errorf("get role: %w", err))
 		}
 		return nil, fmt.Errorf("get role: %w", err)
 	}
 
+	qRoleActions, err := q.BatchGetRoleActionsByRoleID(ctx, []uuid.UUID{qRole.ID})
+	if err != nil {
+		return nil, fmt.Errorf("batch get role actions by role id: %w", err)
+	}
+
+	qActions, err := q.GetActions(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get actions: %w", err)
+	}
+
 	err = q.DeleteRole(ctx, roleID)
 	if err != nil {
 		return nil, fmt.Errorf("delete role: %w", err)
+	}
+
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.roles.delete",
+		EventDetails: &frontendv1.RoleDeleted{
+			Role: parseRole(qRole, qRoleActions, qActions),
+		},
+		ResourceType: queries.AuditLogEventResourceTypeRole,
+		ResourceID:   &qRole.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
 	if err := commit(); err != nil {

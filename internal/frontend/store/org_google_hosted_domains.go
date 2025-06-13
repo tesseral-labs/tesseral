@@ -38,6 +38,12 @@ func (s *Store) UpdateOrganizationGoogleHostedDomains(ctx context.Context, req *
 	}
 	defer rollback()
 
+	// Get the current organization google hosted domains before deleting them to log the changes
+	qPreviousGoogleHostedDomains, err := q.GetOrganizationGoogleHostedDomains(ctx, authn.OrganizationID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get organization google hosted domains: %w", err)
+	}
+
 	if err := q.DeleteOrganizationGoogleHostedDomains(ctx, authn.OrganizationID(ctx)); err != nil {
 		return nil, fmt.Errorf("delete organization google hosted domains: %w", err)
 	}
@@ -57,12 +63,25 @@ func (s *Store) UpdateOrganizationGoogleHostedDomains(ctx context.Context, req *
 		return nil, fmt.Errorf("get organization google hosted domains: %w", err)
 	}
 
+	googleHostedDomains := parseOrganizationGoogleHostedDomains(qGoogleHostedDomains)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.organizations.update_google_hosted_domains",
+		EventDetails: &frontendv1.OrganizationGoogleHostedDomainsUpdated{
+			GoogleHostedDomains:         googleHostedDomains.GoogleHostedDomains,
+			PreviousGoogleHostedDomains: parseOrganizationGoogleHostedDomains(qPreviousGoogleHostedDomains).GoogleHostedDomains,
+		},
+		ResourceType: queries.AuditLogEventResourceTypeOrganization,
+		ResourceID:   refOrNil(authn.OrganizationID(ctx)),
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &frontendv1.UpdateOrganizationGoogleHostedDomainsResponse{
-		OrganizationGoogleHostedDomains: parseOrganizationGoogleHostedDomains(qGoogleHostedDomains),
+		OrganizationGoogleHostedDomains: googleHostedDomains,
 	}, nil
 }
 
