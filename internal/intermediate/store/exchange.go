@@ -391,6 +391,14 @@ func (s *Store) matchUser(ctx context.Context, q *queries.Queries, qOrg queries.
 		return qUser, nil
 	}
 
+	qUser, err = s.matchGithubUser(ctx, q, qOrg, qIntermediateSession)
+	if err != nil {
+		return nil, fmt.Errorf("match github user: %w", err)
+	}
+	if qUser != nil {
+		return qUser, nil
+	}
+
 	qUser, err = s.matchEmailUser(ctx, q, qOrg, qIntermediateSession)
 	if err != nil {
 		return nil, fmt.Errorf("match email user: %w", err)
@@ -435,6 +443,25 @@ func (s *Store) matchMicrosoftUser(ctx context.Context, q *queries.Queries, qOrg
 			return nil, nil
 		}
 		return nil, fmt.Errorf("get organization user by microsoft user id: %w", err)
+	}
+
+	return &qUser, nil
+}
+
+func (s *Store) matchGithubUser(ctx context.Context, q *queries.Queries, qOrg queries.Organization, qIntermediateSession queries.IntermediateSession) (*queries.User, error) {
+	if qIntermediateSession.GithubUserID == nil {
+		return nil, nil
+	}
+
+	qUser, err := q.GetOrganizationUserByGithubUserID(ctx, queries.GetOrganizationUserByGithubUserIDParams{
+		OrganizationID: qOrg.ID,
+		GithubUserID:   qIntermediateSession.GithubUserID,
+	})
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("get organization user by github user id: %w", err)
 	}
 
 	return &qUser, nil
