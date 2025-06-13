@@ -8,7 +8,6 @@ import {
 import {
   ConsoleCard,
   ConsoleCardDetails,
-  ConsoleCardContent,
   ConsoleCardDescription,
   ConsoleCardHeader,
   ConsoleCardTitle,
@@ -125,6 +124,7 @@ const schema = z.object({
   email: z.string().email(),
   googleUserId: z.string().optional(),
   microsoftUserId: z.string().optional(),
+  githubUserId: z.string().optional(),
   owner: z.boolean(),
 });
 
@@ -143,6 +143,7 @@ const CreateUserButton: FC = () => {
       email: '',
       googleUserId: '',
       microsoftUserId: '',
+      githubUserId: '',
       owner: false,
     },
   });
@@ -163,6 +164,10 @@ const CreateUserButton: FC = () => {
 
       if (data.microsoftUserId) {
         newUser.microsoftUserId = data.microsoftUserId;
+      }
+
+      if (data.githubUserId) {
+        newUser.githubUserId = data.githubUserId;
       }
 
       const createUserResponse = await createUserMutation.mutateAsync({
@@ -265,6 +270,29 @@ const CreateUserButton: FC = () => {
                     </FormDescription>
                     <FormControl>
                       <Input placeholder="Microsoft User ID" {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            )}
+
+            {organizationResponse?.organization?.logInWithGithub && (
+              <FormField
+                control={form.control}
+                name="githubUserId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      GitHub User ID{' '}
+                      <span className="font-normal text-sm">(optional)</span>
+                    </FormLabel>
+                    <FormDescription>
+                      The GitHub User ID belonging to the User. This is
+                      optional, and will be set on the User automatically on a
+                      successful login attempt.
+                    </FormDescription>
+                    <FormControl>
+                      <Input placeholder="GitHub User ID" {...field} />
                     </FormControl>
                   </FormItem>
                 )}

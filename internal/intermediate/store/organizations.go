@@ -356,6 +356,7 @@ func (s *Store) getVisibleOrganizations(ctx context.Context, q *queries.Queries,
 		Email:           *qIntermediateSession.Email,
 		GoogleUserID:    qIntermediateSession.GoogleUserID,
 		MicrosoftUserID: qIntermediateSession.MicrosoftUserID,
+		GithubUserID:    qIntermediateSession.GithubUserID,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("list organizations by matching user: %w", err)
