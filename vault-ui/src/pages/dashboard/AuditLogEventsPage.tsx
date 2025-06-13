@@ -1,4 +1,3 @@
-// src/components/audit-log-viewer.tsx
 import { timestampDate, timestampFromDate } from "@bufbuild/protobuf/wkt";
 import { useInfiniteQuery, useQuery } from "@connectrpc/connect-query";
 import { format } from "date-fns";
@@ -50,7 +49,6 @@ import { getAPIKey } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_c
 import { ListAuditLogEventsRequest } from "@/gen/tesseral/frontend/v1/frontend_pb";
 import { AuditLogEvent } from "@/gen/tesseral/frontend/v1/models_pb";
 
-// --- Filter Bar Component ---
 interface FilterBarProps {
   setParams: Dispatch<SetStateAction<Partial<ListAuditLogEventsRequest>>>;
   isLoading: boolean;
@@ -103,7 +101,7 @@ function FilterBar({ setParams, isLoading }: FilterBarProps) {
   }, [hasFilters, setParams]);
 
   return (
-    <div className="p-4 border-b bg-card">
+    <div className="p-4">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Date Picker */}
         <Popover>
@@ -174,12 +172,11 @@ function FilterBar({ setParams, isLoading }: FilterBarProps) {
   );
 }
 
-// --- Main Viewer Component ---
 export function AuditLogEventsPage() {
   const [listAuditLogEventsParams, setListAuditLogEventsParams] = useState<
     Partial<ListAuditLogEventsRequest>
   >({});
-  // Track expanded rows by event ID
+
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
   const stableParams = useMemo(
     () => ({ ...listAuditLogEventsParams }),
@@ -218,11 +215,11 @@ export function AuditLogEventsPage() {
   }
 
   function renderActor(event: AuditLogEvent) {
-    if (event.userId) {
-      return event.userId;
+    if (event.actorUserId) {
+      return event.actorUserId;
     }
-    if (event.apiKeyId) {
-      return event.apiKeyId;
+    if (event.actorApiKeyId) {
+      return event.actorApiKeyId;
     }
     return <span className="text-muted-foreground">System</span>;
   }
@@ -310,12 +307,12 @@ export function AuditLogEventsPage() {
                             <span>{renderActor(event)}</span>
                           </TooltipTrigger>
                           <TooltipContent>
-                            {event.userId && <p>User ID: {event.userId}</p>}
-                            {event.sessionId && (
-                              <p>Session ID: {event.sessionId}</p>
+                            {event.actorUserId && <p>User ID: {event.actorUserId}</p>}
+                            {event.actorSessionId && (
+                              <p>Session ID: {event.actorSessionId}</p>
                             )}
-                            {event.apiKeyId && (
-                              <p>API Key ID: {event.apiKeyId}</p>
+                            {event.actorApiKeyId && (
+                              <p>API Key ID: {event.actorApiKeyId}</p>
                             )}
                           </TooltipContent>
                         </Tooltip>
@@ -369,10 +366,10 @@ export function AuditLogEventsPage() {
 
 function AuditLogEventDetails({ event }: { event: AuditLogEvent }) {
   let actorDetails: React.ReactNode = null;
-  if (event.apiKeyId) {
-    actorDetails = <AuditLogEventApiKeyDetails apiKeyId={event.apiKeyId} />;
-  } else if (event.userId) {
-    actorDetails = <AuditLogEventUserDetails userId={event.userId} />;
+  if (event.actorApiKeyId) {
+    actorDetails = <AuditLogEventApiKeyDetails apiKeyId={event.actorApiKeyId} />;
+  } else if (event.actorUserId) {
+    actorDetails = <AuditLogEventUserDetails userId={event.actorUserId} />;
   } else {
     actorDetails = <div className="text-muted-foreground">System</div>;
   }
