@@ -324,6 +324,9 @@ enum PrimaryAuthFactor {
   // Log in with Microsoft.
   PRIMARY_AUTH_FACTOR_MICROSOFT = 3;
 
+  // Log in with GitHub.
+  PRIMARY_AUTH_FACTOR_GITHUB = 6;
+
   // Log in with SAML.
   PRIMARY_AUTH_FACTOR_SAML = 4;
 
