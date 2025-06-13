@@ -165,10 +165,6 @@ func (s *Store) RegisterPasskey(ctx context.Context, req *frontendv1.RegisterPas
 		return nil, fmt.Errorf("create passkey: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
-	}
-
 	passkey := parsePasskey(qPasskey)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.passkeys.create",
@@ -179,6 +175,10 @@ func (s *Store) RegisterPasskey(ctx context.Context, req *frontendv1.RegisterPas
 		ResourceID:   &qPasskey.ID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &frontendv1.RegisterPasskeyResponse{
