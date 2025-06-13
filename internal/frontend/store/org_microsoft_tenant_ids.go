@@ -65,7 +65,7 @@ func (s *Store) UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, req *f
 
 	microsoftTenantIDs := parseOrganizationMicrosoftTenantIDs(qMicrosoftTenantIDs)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
-		EventName: "tesseral.microsoft_tenant_ids.update",
+		EventName: "tesseral.organizations.update_microsoft_tenant_ids",
 		EventDetails: &frontendv1.OrganizationMicrosoftTenantIDsUpdated{
 			MicrosoftTenantIds:         microsoftTenantIDs.MicrosoftTenantIds,
 			PreviousMicrosoftTenantIds: parseOrganizationMicrosoftTenantIDs(qPreviousMicrosoftTenantIDs).MicrosoftTenantIds,
