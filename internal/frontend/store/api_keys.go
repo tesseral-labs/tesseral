@@ -82,10 +82,11 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *frontendv1.CreateAPIKeyRe
 		return nil, fmt.Errorf("create api key: %w", err)
 	}
 
+	apiKey := parseAPIKey(qAPIKey)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_keys.create",
 		EventDetails: &frontendv1.APIKeyCreated{
-			ApiKey: parseAPIKey(qAPIKey, nil),
+			ApiKey: apiKey,
 		},
 		ResourceType: queries.AuditLogEventResourceTypeApiKey,
 		ResourceID:   &qAPIKey.ID,
@@ -97,8 +98,9 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *frontendv1.CreateAPIKeyRe
 		return nil, fmt.Errorf("commit transaction: %w", err)
 	}
 
+	apiKey.SecretToken = secretToken
 	return &frontendv1.CreateAPIKeyResponse{
-		ApiKey: parseAPIKey(qAPIKey, &secretToken),
+		ApiKey: apiKey,
 	}, nil
 }
 
@@ -139,7 +141,7 @@ func (s *Store) DeleteAPIKey(ctx context.Context, req *frontendv1.DeleteAPIKeyRe
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_keys.delete",
 		EventDetails: &frontendv1.APIKeyDeleted{
-			ApiKey: parseAPIKey(qApiKey, nil),
+			ApiKey: parseAPIKey(qApiKey),
 		},
 		ResourceType: queries.AuditLogEventResourceTypeApiKey,
 		ResourceID:   &qApiKey.ID,
@@ -180,7 +182,7 @@ func (s *Store) GetAPIKey(ctx context.Context, req *frontendv1.GetAPIKeyRequest)
 	}
 
 	return &frontendv1.GetAPIKeyResponse{
-		ApiKey: parseAPIKey(qAPIKey, nil),
+		ApiKey: parseAPIKey(qAPIKey),
 	}, nil
 }
 
@@ -208,7 +210,7 @@ func (s *Store) ListAPIKeys(ctx context.Context, req *frontendv1.ListAPIKeysRequ
 
 	apiKeys := make([]*frontendv1.APIKey, len(qAPIKeys))
 	for i, qAPIKey := range qAPIKeys {
-		apiKeys[i] = parseAPIKey(qAPIKey, nil)
+		apiKeys[i] = parseAPIKey(qAPIKey)
 	}
 
 	var nextPageToken string
@@ -257,8 +259,8 @@ func (s *Store) RevokeAPIKey(ctx context.Context, req *frontendv1.RevokeAPIKeyRe
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_keys.revoke",
 		EventDetails: &frontendv1.APIKeyRevoked{
-			ApiKey:         parseAPIKey(qUpdatedAPIKey, nil),
-			PreviousApiKey: parseAPIKey(qAPIKey, nil),
+			ApiKey:         parseAPIKey(qUpdatedAPIKey),
+			PreviousApiKey: parseAPIKey(qAPIKey),
 		},
 		ResourceType: queries.AuditLogEventResourceTypeApiKey,
 		ResourceID:   &qAPIKey.ID,
@@ -305,12 +307,12 @@ func (s *Store) UpdateAPIKey(ctx context.Context, req *frontendv1.UpdateAPIKeyRe
 		return nil, fmt.Errorf("update api key: %w", err)
 	}
 
-	apiKey := parseAPIKey(updatedApiKey, nil)
+	apiKey := parseAPIKey(updatedApiKey)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_keys.update",
 		EventDetails: &frontendv1.APIKeyUpdated{
 			ApiKey:         apiKey,
-			PreviousApiKey: parseAPIKey(qApiKey, nil),
+			PreviousApiKey: parseAPIKey(qApiKey),
 		},
 		ResourceType: queries.AuditLogEventResourceTypeApiKey,
 		ResourceID:   &qApiKey.ID,
@@ -327,7 +329,7 @@ func (s *Store) UpdateAPIKey(ctx context.Context, req *frontendv1.UpdateAPIKeyRe
 	}, nil
 }
 
-func parseAPIKey(qAPIKey queries.ApiKey, secretToken *string) *frontendv1.APIKey {
+func parseAPIKey(qAPIKey queries.ApiKey) *frontendv1.APIKey {
 	return &frontendv1.APIKey{
 		Id:                idformat.APIKey.Format(qAPIKey.ID),
 		DisplayName:       qAPIKey.DisplayName,
@@ -335,7 +337,7 @@ func parseAPIKey(qAPIKey queries.ApiKey, secretToken *string) *frontendv1.APIKey
 		UpdateTime:        timestamppb.New(*qAPIKey.UpdateTime),
 		ExpireTime:        timestampOrNil(qAPIKey.ExpireTime),
 		Revoked:           qAPIKey.SecretTokenSha256 == nil,
-		SecretToken:       derefOrEmpty(secretToken),
+		SecretToken:       "", // intentionally left blank
 		SecretTokenSuffix: derefOrEmpty(qAPIKey.SecretTokenSuffix),
 	}
 }

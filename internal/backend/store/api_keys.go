@@ -90,10 +90,11 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *backendv1.CreateAPIKeyReq
 		return nil, fmt.Errorf("create api key: %w", err)
 	}
 
+	apiKey := parseAPIKey(qAPIKey)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_keys.create",
 		EventDetails: &backendv1.APIKeyCreated{
-			ApiKey: parseAPIKey(qAPIKey, nil),
+			ApiKey: apiKey,
 		},
 		OrganizationID: &qOrg.ID,
 		ResourceType:   queries.AuditLogEventResourceTypeApiKey,
@@ -106,8 +107,9 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *backendv1.CreateAPIKeyReq
 		return nil, fmt.Errorf("commit transaction: %w", err)
 	}
 
+	apiKey.SecretToken = secretToken
 	return &backendv1.CreateAPIKeyResponse{
-		ApiKey: parseAPIKey(qAPIKey, &secretToken),
+		ApiKey: apiKey,
 	}, nil
 }
 
@@ -123,7 +125,7 @@ func (s *Store) DeleteAPIKey(ctx context.Context, req *backendv1.DeleteAPIKeyReq
 		return nil, apierror.NewInvalidArgumentError("invalid api key id", fmt.Errorf("parse api key id: %w", err))
 	}
 
-	qApiKey, err := q.GetAPIKeyByID(ctx, queries.GetAPIKeyByIDParams{
+	qAPIKey, err := q.GetAPIKeyByID(ctx, queries.GetAPIKeyByIDParams{
 		ID:        apiKeyID,
 		ProjectID: authn.ProjectID(ctx),
 	})
@@ -134,7 +136,7 @@ func (s *Store) DeleteAPIKey(ctx context.Context, req *backendv1.DeleteAPIKeyReq
 		return nil, fmt.Errorf("get api key: %w", err)
 	}
 
-	if qApiKey.SecretTokenSha256 != nil {
+	if qAPIKey.SecretTokenSha256 != nil {
 		return nil, apierror.NewFailedPreconditionError("api key must be revoked to be deleted", fmt.Errorf("api key mut be revoked to be deleted"))
 	}
 
@@ -148,11 +150,11 @@ func (s *Store) DeleteAPIKey(ctx context.Context, req *backendv1.DeleteAPIKeyReq
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_keys.delete",
 		EventDetails: &backendv1.APIKeyDeleted{
-			ApiKey: parseAPIKey(qApiKey, nil),
+			ApiKey: parseAPIKey(qAPIKey),
 		},
-		OrganizationID: &qApiKey.OrganizationID,
+		OrganizationID: &qAPIKey.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeApiKey,
-		ResourceID:     &qApiKey.ID,
+		ResourceID:     &qAPIKey.ID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
@@ -190,7 +192,7 @@ func (s *Store) GetAPIKey(ctx context.Context, req *backendv1.GetAPIKeyRequest) 
 	}
 
 	return &backendv1.GetAPIKeyResponse{
-		ApiKey: parseAPIKey(qAPIKey, nil),
+		ApiKey: parseAPIKey(qAPIKey),
 	}, nil
 }
 
@@ -224,7 +226,7 @@ func (s *Store) ListAPIKeys(ctx context.Context, req *backendv1.ListAPIKeysReque
 
 	apiKeys := make([]*backendv1.APIKey, len(qAPIKeys))
 	for i, qAPIKey := range qAPIKeys {
-		apiKeys[i] = parseAPIKey(qAPIKey, nil)
+		apiKeys[i] = parseAPIKey(qAPIKey)
 	}
 
 	var nextPageToken string
@@ -266,7 +268,7 @@ func (s *Store) RevokeAPIKey(ctx context.Context, req *backendv1.RevokeAPIKeyReq
 		return nil, fmt.Errorf("revoke api key: %w", err)
 	}
 
-	qApiKey, err := q.GetAPIKeyByID(ctx, queries.GetAPIKeyByIDParams{
+	qAPIKey, err := q.GetAPIKeyByID(ctx, queries.GetAPIKeyByIDParams{
 		ID:        apiKeyID,
 		ProjectID: authn.ProjectID(ctx),
 	})
@@ -277,12 +279,12 @@ func (s *Store) RevokeAPIKey(ctx context.Context, req *backendv1.RevokeAPIKeyReq
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_keys.revoke",
 		EventDetails: &backendv1.APIKeyRevoked{
-			ApiKey:         parseAPIKey(qApiKey, nil),
-			PreviousApiKey: parseAPIKey(qPreviousAPIKey, nil),
+			ApiKey:         parseAPIKey(qAPIKey),
+			PreviousApiKey: parseAPIKey(qPreviousAPIKey),
 		},
-		OrganizationID: &qApiKey.OrganizationID,
+		OrganizationID: &qAPIKey.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeApiKey,
-		ResourceID:     &qApiKey.ID,
+		ResourceID:     &qAPIKey.ID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
@@ -306,7 +308,7 @@ func (s *Store) UpdateAPIKey(ctx context.Context, req *backendv1.UpdateAPIKeyReq
 		return nil, apierror.NewInvalidArgumentError("invalid api key id", fmt.Errorf("parse api key id: %w", err))
 	}
 
-	qPreviousApiKey, err := q.GetAPIKeyByID(ctx, queries.GetAPIKeyByIDParams{
+	qPreviousAPIKey, err := q.GetAPIKeyByID(ctx, queries.GetAPIKeyByIDParams{
 		ID:        apiKeyID,
 		ProjectID: authn.ProjectID(ctx),
 	})
@@ -317,7 +319,7 @@ func (s *Store) UpdateAPIKey(ctx context.Context, req *backendv1.UpdateAPIKeyReq
 		return nil, fmt.Errorf("get api key by id: %w", err)
 	}
 
-	updatedApiKey, err := q.UpdateAPIKey(ctx, queries.UpdateAPIKeyParams{
+	qUpdatedAPIKey, err := q.UpdateAPIKey(ctx, queries.UpdateAPIKeyParams{
 		ID:          apiKeyID,
 		DisplayName: req.ApiKey.DisplayName,
 		ProjectID:   authn.ProjectID(ctx),
@@ -326,16 +328,16 @@ func (s *Store) UpdateAPIKey(ctx context.Context, req *backendv1.UpdateAPIKeyReq
 		return nil, fmt.Errorf("update api key: %w", err)
 	}
 
-	apiKey := parseAPIKey(updatedApiKey, nil)
+	apiKey := parseAPIKey(qUpdatedAPIKey)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_keys.update",
 		EventDetails: &backendv1.APIKeyUpdated{
 			ApiKey:         apiKey,
-			PreviousApiKey: parseAPIKey(qPreviousApiKey, nil),
+			PreviousApiKey: parseAPIKey(qPreviousAPIKey),
 		},
-		OrganizationID: &updatedApiKey.OrganizationID,
+		OrganizationID: &qUpdatedAPIKey.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeApiKey,
-		ResourceID:     &updatedApiKey.ID,
+		ResourceID:     &qUpdatedAPIKey.ID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
@@ -417,7 +419,7 @@ func (s *Store) AuthenticateAPIKey(ctx context.Context, req *backendv1.Authentic
 	}, nil
 }
 
-func parseAPIKey(qAPIKey queries.ApiKey, secretToken *string) *backendv1.APIKey {
+func parseAPIKey(qAPIKey queries.ApiKey) *backendv1.APIKey {
 	return &backendv1.APIKey{
 		Id:                idformat.APIKey.Format(qAPIKey.ID),
 		DisplayName:       qAPIKey.DisplayName,
@@ -425,7 +427,7 @@ func parseAPIKey(qAPIKey queries.ApiKey, secretToken *string) *backendv1.APIKey 
 		UpdateTime:        timestamppb.New(*qAPIKey.UpdateTime),
 		ExpireTime:        timestampOrNil(qAPIKey.ExpireTime),
 		Revoked:           qAPIKey.SecretTokenSha256 == nil,
-		SecretToken:       derefOrEmpty(secretToken),
+		SecretToken:       "", // intentionally left blank
 		SecretTokenSuffix: derefOrEmpty(qAPIKey.SecretTokenSuffix),
 	}
 }
