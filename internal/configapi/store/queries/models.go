@@ -221,21 +221,21 @@ type ApiKeyRoleAssignment struct {
 }
 
 type AuditLogEvent struct {
-	ID                    uuid.UUID
-	ProjectID             uuid.UUID
-	OrganizationID        *uuid.UUID
-	UserID                *uuid.UUID
-	SessionID             *uuid.UUID
-	ApiKeyID              *uuid.UUID
-	DogfoodUserID         *uuid.UUID
-	DogfoodSessionID      *uuid.UUID
-	BackendApiKeyID       *uuid.UUID
-	IntermediateSessionID *uuid.UUID
-	ResourceType          *AuditLogEventResourceType
-	ResourceID            *uuid.UUID
-	EventName             string
-	EventTime             *time.Time
-	EventDetails          []byte
+	ID                         uuid.UUID
+	ProjectID                  uuid.UUID
+	OrganizationID             *uuid.UUID
+	ActorUserID                *uuid.UUID
+	ActorSessionID             *uuid.UUID
+	ActorApiKeyID              *uuid.UUID
+	ActorConsoleUserID         *uuid.UUID
+	ActorConsoleSessionID      *uuid.UUID
+	ActorBackendApiKeyID       *uuid.UUID
+	ActorIntermediateSessionID *uuid.UUID
+	ResourceType               *AuditLogEventResourceType
+	ResourceID                 *uuid.UUID
+	EventName                  string
+	EventTime                  *time.Time
+	EventDetails               []byte
 }
 
 type BackendApiKey struct {

@@ -248,39 +248,24 @@ paths:
             parameters:
                 - name: pageToken
                   in: query
-                  description: A pagination token. Leave empty to get the first page of results.
                   schema:
                     type: string
                 - name: filterStartTime
                   in: query
-                  description: The start time to filter by, if any.
                   schema:
                     type: string
                     format: date-time
                 - name: filterEndTime
                   in: query
-                  description: The end time to filter by, if any.
                   schema:
                     type: string
                     format: date-time
                 - name: filterEventName
                   in: query
-                  description: The event names to filter by, if any.
                   schema:
                     type: string
                 - name: filterUserId
                   in: query
-                  description: The user ID to filter by, if any.
-                  schema:
-                    type: string
-                - name: filterSessionId
-                  in: query
-                  description: The session ID to filter by, if any.
-                  schema:
-                    type: string
-                - name: filterApiKeyId
-                  in: query
-                  description: The API key ID to filter by, if any.
                   schema:
                     type: string
             responses:

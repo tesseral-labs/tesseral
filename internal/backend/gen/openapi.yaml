@@ -1623,12 +1623,6 @@ components:
                 actorApiKeyId:
                     type: string
                     description: The ID of the API Key that performed the action, if any.
-                dogfoodUserId:
-                    type: string
-                    description: The dogfood user ID associated with the event, if any.
-                dogfoodSessionId:
-                    type: string
-                    description: The dogfood session ID associated with the event, if any.
                 actorBackendApiKeyId:
                     type: string
                     description: The backend API key associated with the event, if any.

@@ -106,18 +106,18 @@ func (q *Queries) CreateAPIKeyRoleAssignment(ctx context.Context, arg CreateAPIK
 }
 
 const createAuditLogEvent = `-- name: CreateAuditLogEvent :one
-INSERT INTO audit_log_events (id, project_id, organization_id, user_id, session_id, resource_type, resource_id, event_name, event_time, event_details)
+INSERT INTO audit_log_events (id, project_id, organization_id, actor_user_id, actor_session_id, resource_type, resource_id, event_name, event_time, event_details)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, coalesce($10, '{}'::jsonb))
 RETURNING
-    id, project_id, organization_id, user_id, session_id, api_key_id, dogfood_user_id, dogfood_session_id, backend_api_key_id, intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details
+    id, project_id, organization_id, actor_user_id, actor_session_id, actor_api_key_id, actor_console_user_id, actor_console_session_id, actor_backend_api_key_id, actor_intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details
 `
 
 type CreateAuditLogEventParams struct {
 	ID             uuid.UUID
 	ProjectID      uuid.UUID
 	OrganizationID *uuid.UUID
-	UserID         *uuid.UUID
-	SessionID      *uuid.UUID
+	ActorUserID    *uuid.UUID
+	ActorSessionID *uuid.UUID
 	ResourceType   *AuditLogEventResourceType
 	ResourceID     *uuid.UUID
 	EventName      string
@@ -130,8 +130,8 @@ func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEve
 		arg.ID,
 		arg.ProjectID,
 		arg.OrganizationID,
-		arg.UserID,
-		arg.SessionID,
+		arg.ActorUserID,
+		arg.ActorSessionID,
 		arg.ResourceType,
 		arg.ResourceID,
 		arg.EventName,
@@ -143,13 +143,13 @@ func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEve
 		&i.ID,
 		&i.ProjectID,
 		&i.OrganizationID,
-		&i.UserID,
-		&i.SessionID,
-		&i.ApiKeyID,
-		&i.DogfoodUserID,
-		&i.DogfoodSessionID,
-		&i.BackendApiKeyID,
-		&i.IntermediateSessionID,
+		&i.ActorUserID,
+		&i.ActorSessionID,
+		&i.ActorApiKeyID,
+		&i.ActorConsoleUserID,
+		&i.ActorConsoleSessionID,
+		&i.ActorBackendApiKeyID,
+		&i.ActorIntermediateSessionID,
 		&i.ResourceType,
 		&i.ResourceID,
 		&i.EventName,
@@ -1614,51 +1614,47 @@ func (q *Queries) ListAllAPIKeyRoleAssignments(ctx context.Context, arg ListAllA
 
 const listAuditLogEvents = `-- name: ListAuditLogEvents :many
 SELECT
-    id, project_id, organization_id, user_id, session_id, api_key_id, dogfood_user_id, dogfood_session_id, backend_api_key_id, intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details
+    id, project_id, organization_id, actor_user_id, actor_session_id, actor_api_key_id, actor_console_user_id, actor_console_session_id, actor_backend_api_key_id, actor_intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details
 FROM
     audit_log_events
-WHERE ($2::pg_catalog.timestamptz IS NULL
-    OR event_time >= $2::pg_catalog.timestamptz)
-AND ($3::pg_catalog.timestamptz IS NULL
-    OR event_time <= $3::pg_catalog.timestamptz)
-AND (event_name = $4
-    OR $4 = '')
-AND ($5::uuid = '00000000-0000-0000-0000-000000000000'
-    OR user_id = $5::uuid)
-AND ($6::uuid = '00000000-0000-0000-0000-000000000000'
-    OR session_id = $6::uuid)
-AND ($7::uuid = '00000000-0000-0000-0000-000000000000'
-    OR api_key_id = $7::uuid)
-AND project_id = $8
-AND organization_id = $9
+WHERE
+    project_id = $2
+    AND organization_id = $3
+    AND (event_time >= $4
+        OR $4 IS NULL)
+    AND (event_time <= $5
+        OR $5 IS NULL)
+    AND (event_name = $6
+        OR $6 IS NULL)
+    AND (actor_user_id = $7
+        OR $7 IS NULL)
+    AND id < $8
 ORDER BY
-    event_time DESC
+    id DESC
 LIMIT $1
 `
 
 type ListAuditLogEventsParams struct {
 	Limit          int32
-	StartTime      *time.Time
-	EndTime        *time.Time
-	EventName      string
-	UserID         uuid.UUID
-	SessionID      uuid.UUID
-	ApiKeyID       uuid.UUID
 	ProjectID      uuid.UUID
 	OrganizationID *uuid.UUID
+	StartTime      *time.Time
+	EndTime        *time.Time
+	EventName      *string
+	ActorUserID    *uuid.UUID
+	ID             uuid.UUID
 }
 
 func (q *Queries) ListAuditLogEvents(ctx context.Context, arg ListAuditLogEventsParams) ([]AuditLogEvent, error) {
 	rows, err := q.db.Query(ctx, listAuditLogEvents,
 		arg.Limit,
+		arg.ProjectID,
+		arg.OrganizationID,
 		arg.StartTime,
 		arg.EndTime,
 		arg.EventName,
-		arg.UserID,
-		arg.SessionID,
-		arg.ApiKeyID,
-		arg.ProjectID,
-		arg.OrganizationID,
+		arg.ActorUserID,
+		arg.ID,
 	)
 	if err != nil {
 		return nil, err
@@ -1671,13 +1667,13 @@ func (q *Queries) ListAuditLogEvents(ctx context.Context, arg ListAuditLogEvents
 			&i.ID,
 			&i.ProjectID,
 			&i.OrganizationID,
-			&i.UserID,
-			&i.SessionID,
-			&i.ApiKeyID,
-			&i.DogfoodUserID,
-			&i.DogfoodSessionID,
-			&i.BackendApiKeyID,
-			&i.IntermediateSessionID,
+			&i.ActorUserID,
+			&i.ActorSessionID,
+			&i.ActorApiKeyID,
+			&i.ActorConsoleUserID,
+			&i.ActorConsoleSessionID,
+			&i.ActorBackendApiKeyID,
+			&i.ActorIntermediateSessionID,
 			&i.ResourceType,
 			&i.ResourceID,
 			&i.EventName,

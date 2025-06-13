@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
@@ -20,78 +19,57 @@ import (
 )
 
 func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAuditLogEventsRequest) (*frontendv1.ListAuditLogEventsResponse, error) {
+	if err := s.validateIsOwner(ctx); err != nil {
+		return nil, err
+	}
+
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer rollback()
 
-	if err := s.validateIsOwner(ctx); err != nil {
-		return nil, err
+	// We want data sorted by event time, newest first. That corresponds to
+	// paginating through IDs high-to-low, because IDs are uuidv7s for this
+	// table.
+	startID := uuid.Max
+	if err := s.pageEncoder.Unmarshal(req.PageToken, &startID); err != nil {
+		return nil, fmt.Errorf("unmarshal page token: %w", err)
 	}
 
+	limit := 10
 	listParams := queries.ListAuditLogEventsParams{
 		ProjectID:      authn.ProjectID(ctx),
 		OrganizationID: refOrNil(authn.OrganizationID(ctx)),
+		ID:             startID,
+		Limit:          int32(limit + 1),
 	}
 
-	var startTime *time.Time
-	if req.PageToken != "" {
-		if err := s.pageEncoder.Unmarshal(req.PageToken, &startTime); err != nil {
-			return nil, apierror.NewInvalidArgumentError("invalid page_token", err)
-		}
-	} else if req.FilterStartTime != nil {
+	if req.FilterStartTime != nil {
 		filterStartTime := req.FilterStartTime.AsTime()
-		startTime = &filterStartTime
+		listParams.StartTime = &filterStartTime
 	}
-
-	listParams.StartTime = startTime
 
 	if req.FilterEndTime != nil {
 		endTime := req.FilterEndTime.AsTime()
 		listParams.EndTime = &endTime
 	}
 
-	if req.FilterApiKeyId != "" {
-		apiKeyID, err := idformat.APIKey.Parse(req.FilterApiKeyId)
-		if err != nil {
-			return nil, apierror.NewInvalidArgumentError("invalid api_key_id", err)
-		}
-		listParams.ApiKeyID = (uuid.UUID)(apiKeyID)
-	}
-
 	if req.FilterEventName != "" {
-		listParams.EventName = req.FilterEventName
-	}
-
-	if req.FilterSessionId != "" {
-		sessionID, err := idformat.Session.Parse(req.FilterSessionId)
-		if err != nil {
-			return nil, apierror.NewInvalidArgumentError("invalid session_id", err)
-		}
-		listParams.SessionID = (uuid.UUID)(sessionID)
+		listParams.EventName = &req.FilterEventName
 	}
 
 	if req.FilterUserId != "" {
-		userID, err := idformat.User.Parse(req.FilterUserId)
+		id, err := idformat.User.Parse(req.FilterUserId)
 		if err != nil {
 			return nil, apierror.NewInvalidArgumentError("invalid user_id", err)
 		}
-		listParams.UserID = (uuid.UUID)(userID)
+		listParams.ActorUserID = (*uuid.UUID)(&id)
 	}
-
-	const limit = 10
-	listParams.Limit = limit + 1
 
 	qAuditLogEvents, err := q.ListAuditLogEvents(ctx, listParams)
 	if err != nil {
-		if err == pgx.ErrNoRows {
-			return &frontendv1.ListAuditLogEventsResponse{
-				AuditLogEvents: []*frontendv1.AuditLogEvent{},
-				NextPageToken:  "",
-			}, nil
-		}
-		return nil, fmt.Errorf("failed to list audit log events: %w", err)
+		return nil, fmt.Errorf("list audit log events: %w", err)
 	}
 
 	var auditLogEvents []*frontendv1.AuditLogEvent
@@ -122,32 +100,32 @@ func parseAuditLogEvent(qAuditLogEvent queries.AuditLogEvent) (*frontendv1.Audit
 		return nil, fmt.Errorf("unmarshal event details: %w", err)
 	}
 
-	var userID string
-	if qAuditLogEvent.UserID != nil {
-		userID = idformat.User.Format(*qAuditLogEvent.UserID)
+	var actorUserID string
+	if qAuditLogEvent.ActorUserID != nil {
+		actorUserID = idformat.User.Format(*qAuditLogEvent.ActorUserID)
 	}
 
-	var sessionID string
-	if qAuditLogEvent.SessionID != nil {
-		sessionID = idformat.Session.Format(*qAuditLogEvent.SessionID)
+	var actorSessionID string
+	if qAuditLogEvent.ActorSessionID != nil {
+		actorSessionID = idformat.Session.Format(*qAuditLogEvent.ActorSessionID)
 	}
 
-	var apiKeyID string
-	if qAuditLogEvent.ApiKeyID != nil {
-		apiKeyID = idformat.APIKey.Format(*qAuditLogEvent.ApiKeyID)
+	var actorAPIKeyID string
+	if qAuditLogEvent.ActorApiKeyID != nil {
+		actorAPIKeyID = idformat.APIKey.Format(*qAuditLogEvent.ActorApiKeyID)
 	}
 
-	var intermediateSessionID string
-	if qAuditLogEvent.IntermediateSessionID != nil {
-		intermediateSessionID = idformat.IntermediateSession.Format(*qAuditLogEvent.IntermediateSessionID)
+	var actorIntermediateSessionID string
+	if qAuditLogEvent.ActorIntermediateSessionID != nil {
+		actorIntermediateSessionID = idformat.IntermediateSession.Format(*qAuditLogEvent.ActorIntermediateSessionID)
 	}
 
 	return &frontendv1.AuditLogEvent{
 		Id:                         idformat.AuditLogEvent.Format(qAuditLogEvent.ID),
-		ActorUserId:                userID,
-		ActorSessionId:             sessionID,
-		ActorApiKeyId:              apiKeyID,
-		ActorIntermediateSessionId: intermediateSessionID,
+		ActorUserId:                actorUserID,
+		ActorSessionId:             actorSessionID,
+		ActorApiKeyId:              actorAPIKeyID,
+		ActorIntermediateSessionId: actorIntermediateSessionID,
 		EventName:                  qAuditLogEvent.EventName,
 		EventTime:                  timestampOrNil(qAuditLogEvent.EventTime),
 		EventDetails:               &eventDetails,
@@ -176,8 +154,8 @@ func (s *Store) logAuditEvent(ctx context.Context, q *queries.Queries, data logA
 		ID:             eventID,
 		ProjectID:      authn.ProjectID(ctx),
 		OrganizationID: refOrNil(authn.OrganizationID(ctx)),
-		UserID:         refOrNil(authn.UserID(ctx)),
-		SessionID:      refOrNil(authn.SessionID(ctx)),
+		ActorUserID:    refOrNil(authn.UserID(ctx)),
+		ActorSessionID: refOrNil(authn.SessionID(ctx)),
 		ResourceType:   refOrNil(data.ResourceType),
 		ResourceID:     data.ResourceID,
 		EventName:      data.EventName,

@@ -750,26 +750,11 @@ message DeleteAPIKeyRoleAssignmentRequest {
 message DeleteAPIKeyRoleAssignmentResponse {}
 
 message ListAuditLogEventsRequest {
-  // A pagination token. Leave empty to get the first page of results.
   string page_token = 1;
-
-  // The start time to filter by, if any.
   google.protobuf.Timestamp filter_start_time = 2;
-
-  // The end time to filter by, if any.
   google.protobuf.Timestamp filter_end_time = 3;
-
-  // The event names to filter by, if any.
   string filter_event_name = 4;
-
-  // The user ID to filter by, if any.
   string filter_user_id = 5;
-
-  // The session ID to filter by, if any.
-  string filter_session_id = 6;
-
-  // The API key ID to filter by, if any.
-  string filter_api_key_id = 7;
 }
 
 message ListAuditLogEventsResponse {

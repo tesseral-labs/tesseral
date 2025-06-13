@@ -749,7 +749,7 @@ RETURNING
     *;
 
 -- name: CreateAuditLogEvent :one
-INSERT INTO audit_log_events (id, project_id, organization_id, user_id, session_id, resource_type, resource_id, event_name, event_time, event_details, intermediate_session_id)
+INSERT INTO audit_log_events (id, project_id, organization_id, actor_user_id, actor_session_id, resource_type, resource_id, event_name, event_time, event_details, actor_intermediate_session_id)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, coalesce(@event_details, '{}'::jsonb), $10)
 RETURNING
     *;

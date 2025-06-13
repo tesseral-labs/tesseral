@@ -24,6 +24,7 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/structpb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (s *Store) CreateCustomAuditLogEvent(ctx context.Context, req *backendv1.CreateAuditLogEventRequest) (*backendv1.CreateAuditLogEventResponse, error) {
@@ -72,9 +73,9 @@ func (s *Store) CreateCustomAuditLogEvent(ctx context.Context, req *backendv1.Cr
 		ID:             eventID,
 		ProjectID:      projectID,
 		OrganizationID: orgID,
-		UserID:         userID,
-		SessionID:      sessionID,
-		ApiKeyID:       apiKeyID,
+		ActorUserID:    userID,
+		ActorSessionID: sessionID,
+		ActorApiKeyID:  apiKeyID,
 		EventName:      eventName,
 		EventTime:      &eventTime,
 		EventDetails:   eventDetailsJSON,
@@ -117,8 +118,8 @@ func (s *Store) logAuditEvent(ctx context.Context, q *queries.Queries, data logA
 	}
 
 	var (
-		dogfoodUserID    *uuid.UUID
-		dogfoodSessionID *uuid.UUID
+		consoleUserID    *uuid.UUID
+		consoleSessionID *uuid.UUID
 		backendApiKeyID  *uuid.UUID
 	)
 	contextData := authn.GetContextData(ctx)
@@ -134,26 +135,26 @@ func (s *Store) logAuditEvent(ctx context.Context, q *queries.Queries, data logA
 		if err != nil {
 			return queries.AuditLogEvent{}, fmt.Errorf("parse dogfood session user id: %w", err)
 		}
-		dogfoodUserID = (*uuid.UUID)(&dogfoodUserUUID)
+		consoleUserID = (*uuid.UUID)(&dogfoodUserUUID)
 		dogfoodSessionUUID, err := idformat.Session.Parse(contextData.DogfoodSession.SessionID)
 		if err != nil {
 			return queries.AuditLogEvent{}, fmt.Errorf("parse dogfood session project id: %w", err)
 		}
-		dogfoodSessionID = (*uuid.UUID)(&dogfoodSessionUUID)
+		consoleSessionID = (*uuid.UUID)(&dogfoodSessionUUID)
 	}
 
 	qEventParams := queries.CreateAuditLogEventParams{
-		ID:               eventID,
-		ProjectID:        authn.ProjectID(ctx),
-		OrganizationID:   data.OrganizationID,
-		DogfoodUserID:    dogfoodUserID,
-		DogfoodSessionID: dogfoodSessionID,
-		BackendApiKeyID:  backendApiKeyID,
-		ResourceType:     refOrNil(data.ResourceType),
-		ResourceID:       data.ResourceID,
-		EventName:        data.EventName,
-		EventTime:        &eventTime,
-		EventDetails:     eventDetailsBytes,
+		ID:                    eventID,
+		ProjectID:             authn.ProjectID(ctx),
+		OrganizationID:        data.OrganizationID,
+		ActorConsoleUserID:    consoleUserID,
+		ActorConsoleSessionID: consoleSessionID,
+		ActorBackendApiKeyID:  backendApiKeyID,
+		ResourceType:          refOrNil(data.ResourceType),
+		ResourceID:            data.ResourceID,
+		EventName:             data.EventName,
+		EventTime:             &eventTime,
+		EventDetails:          eventDetailsBytes,
 	}
 
 	qEvent, err := q.CreateAuditLogEvent(ctx, qEventParams)
@@ -170,53 +171,46 @@ func parseAuditLogEvent(qAuditLogEvent queries.AuditLogEvent) (*backendv1.AuditL
 		return nil, fmt.Errorf("unmarshal event details: %w", err)
 	}
 
-	var (
-		organizationID        *string
-		userID                *string
-		sessionID             *string
-		apiKeyID              *string
-		dogfoodUserID         *string
-		dogfoodSessionID      *string
-		backendApiKeyID       *string
-		intermediateSessionID *string
-	)
-	if orgUUID := qAuditLogEvent.OrganizationID; orgUUID != nil {
-		organizationID = refOrNil(idformat.Organization.Format(*orgUUID))
+	var organizationID string
+	if qAuditLogEvent.OrganizationID != nil {
+		organizationID = idformat.Organization.Format(*qAuditLogEvent.OrganizationID)
 	}
-	if userUUID := qAuditLogEvent.UserID; userUUID != nil {
-		userID = refOrNil(idformat.User.Format(*userUUID))
+
+	var userID string
+	if qAuditLogEvent.ActorUserID != nil {
+		userID = idformat.User.Format(*qAuditLogEvent.ActorUserID)
 	}
-	if sessionUUID := qAuditLogEvent.SessionID; sessionUUID != nil {
-		sessionID = refOrNil(idformat.Session.Format(*sessionUUID))
+
+	var sessionID string
+	if qAuditLogEvent.ActorSessionID != nil {
+		sessionID = idformat.Session.Format(*qAuditLogEvent.ActorSessionID)
 	}
-	if apiKeyUUID := qAuditLogEvent.ApiKeyID; apiKeyUUID != nil {
-		apiKeyID = refOrNil(idformat.APIKey.Format(*apiKeyUUID))
+
+	var apiKeyID string
+	if qAuditLogEvent.ActorApiKeyID != nil {
+		apiKeyID = idformat.APIKey.Format(*qAuditLogEvent.ActorApiKeyID)
 	}
-	if dogfoodUserUUID := qAuditLogEvent.DogfoodUserID; dogfoodUserUUID != nil {
-		dogfoodUserID = refOrNil(idformat.Session.Format(*dogfoodUserUUID))
+
+	var backendApiKeyID string
+	if qAuditLogEvent.ActorBackendApiKeyID != nil {
+		backendApiKeyID = idformat.BackendAPIKey.Format(*qAuditLogEvent.ActorBackendApiKeyID)
 	}
-	if dogfoodSessionUUID := qAuditLogEvent.DogfoodSessionID; dogfoodSessionUUID != nil {
-		dogfoodSessionID = refOrNil(idformat.Session.Format(*dogfoodSessionUUID))
-	}
-	if backendApiKeyUUID := qAuditLogEvent.BackendApiKeyID; backendApiKeyUUID != nil {
-		backendApiKeyID = refOrNil(idformat.BackendAPIKey.Format(*backendApiKeyUUID))
-	}
-	if intermediateSessionUUID := qAuditLogEvent.IntermediateSessionID; intermediateSessionUUID != nil {
-		intermediateSessionID = refOrNil(idformat.IntermediateSession.Format(*intermediateSessionUUID))
+
+	var intermediateSessionID string
+	if qAuditLogEvent.ActorIntermediateSessionID != nil {
+		intermediateSessionID = idformat.IntermediateSession.Format(*qAuditLogEvent.ActorIntermediateSessionID)
 	}
 
 	return &backendv1.AuditLogEvent{
 		Id:                         idformat.AuditLogEvent.Format(qAuditLogEvent.ID),
-		OrganizationId:             derefOrEmpty(organizationID),
-		ActorUserId:                derefOrEmpty(userID),
-		ActorSessionId:             derefOrEmpty(sessionID),
-		ActorApiKeyId:              derefOrEmpty(apiKeyID),
-		DogfoodUserId:              derefOrEmpty(dogfoodUserID),
-		DogfoodSessionId:           derefOrEmpty(dogfoodSessionID),
-		ActorBackendApiKeyId:       derefOrEmpty(backendApiKeyID),
-		ActorIntermediateSessionId: derefOrEmpty(intermediateSessionID),
+		OrganizationId:             organizationID,
+		ActorUserId:                userID,
+		ActorSessionId:             sessionID,
+		ActorApiKeyId:              apiKeyID,
+		ActorBackendApiKeyId:       backendApiKeyID,
+		ActorIntermediateSessionId: intermediateSessionID,
 		EventName:                  qAuditLogEvent.EventName,
-		EventTime:                  timestampOrNil(qAuditLogEvent.EventTime),
+		EventTime:                  timestamppb.New(*qAuditLogEvent.EventTime),
 		EventDetails:               &eventDetails,
 	}, nil
 }

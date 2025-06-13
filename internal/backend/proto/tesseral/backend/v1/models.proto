@@ -552,12 +552,6 @@ message AuditLogEvent {
   // The ID of the API Key that performed the action, if any.
   string actor_api_key_id = 5;
 
-  // The dogfood user ID associated with the event, if any.
-  string dogfood_user_id = 6;
-
-  // The dogfood session ID associated with the event, if any.
-  string dogfood_session_id = 7;
-
   // The backend API key associated with the event, if any.
   string actor_backend_api_key_id = 8;
 
