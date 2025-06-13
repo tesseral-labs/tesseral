@@ -36,15 +36,15 @@ func (s *Store) logAuditEvent(ctx context.Context, q *queries.Queries, data logA
 
 	intermediateSessionID := authn.IntermediateSessionID(ctx)
 	qEventParams := queries.CreateAuditLogEventParams{
-		ID:                    eventID,
-		ProjectID:             authn.ProjectID(ctx),
-		OrganizationID:        data.OrganizationID,
-		ResourceType:          &data.ResourceType,
-		ResourceID:            data.ResourceID,
-		EventName:             data.EventName,
-		EventTime:             &eventTime,
-		EventDetails:          eventDetailsBytes,
-		IntermediateSessionID: &intermediateSessionID,
+		ID:                         eventID,
+		ProjectID:                  authn.ProjectID(ctx),
+		OrganizationID:             data.OrganizationID,
+		ResourceType:               &data.ResourceType,
+		ResourceID:                 data.ResourceID,
+		EventName:                  data.EventName,
+		EventTime:                  &eventTime,
+		EventDetails:               eventDetailsBytes,
+		ActorIntermediateSessionID: &intermediateSessionID,
 	}
 
 	qEvent, err := q.CreateAuditLogEvent(ctx, qEventParams)
