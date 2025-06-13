@@ -72,7 +72,7 @@ func (s *Store) CreateRefreshAuditLogEvent(ctx context.Context, accessToken stri
 	}
 
 	// Since this is being called in a context that doesn't have authn context data,
-	// we need to manually set properties like ProjectID and PrganizationID as gleaned
+	// we need to manually set properties like ProjectID and OrganizationID as gleaned
 	// from the session details. As such, we can't use the logAuditEvent() fuction
 	// directly, so we're calling the CreateAuditLogEvent query directly.
 	resourceType := queries.AuditLogEventResourceTypeSession
