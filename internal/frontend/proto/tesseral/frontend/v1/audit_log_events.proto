@@ -114,6 +114,11 @@ message SCIMAPIKeyUpdated {
   SCIMAPIKey previous_scim_api_key = 2;
 }
 
+message UserAuthenticatorAppRegistered {
+  User user = 1;
+  User previous_user = 2;
+}
+
 message UserInviteCreated {
   UserInvite user_invite = 1;
 }
