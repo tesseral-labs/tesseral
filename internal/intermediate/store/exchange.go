@@ -91,7 +91,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 			return nil, fmt.Errorf("create user: %w", err)
 		}
 
-		s.logAuditEvent(ctx, q, logAuditEventParams{
+		if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 			EventName: "tesseral.users.create",
 			EventDetails: &intermediatev1.UserCreated{
 				User: parseUser(qNewUser),
@@ -99,7 +99,9 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 			OrganizationID: &qOrg.ID,
 			ResourceType:   queries.AuditLogEventResourceTypeUser,
 			ResourceID:     &qNewUser.ID,
-		})
+		}); err != nil {
+			return nil, fmt.Errorf("log audit event: %w", err)
+		}
 
 		qUser = &qNewUser
 	} else {
@@ -124,7 +126,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 				return nil, fmt.Errorf("update user: %w", err)
 			}
 
-			s.logAuditEvent(ctx, q, logAuditEventParams{
+			if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 				EventName: "tesseral.users.update",
 				EventDetails: &intermediatev1.UserUpdated{
 					User:         parseUser(qUpdatedUser),
@@ -133,7 +135,9 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 				OrganizationID: &qOrg.ID,
 				ResourceType:   queries.AuditLogEventResourceTypeUser,
 				ResourceID:     &qUser.ID,
-			})
+			}); err != nil {
+				return nil, fmt.Errorf("log audit event: %w", err)
+			}
 
 			qUser = &qUpdatedUser
 		}
