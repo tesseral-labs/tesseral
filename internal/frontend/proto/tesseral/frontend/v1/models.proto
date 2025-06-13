@@ -229,20 +229,23 @@ message AuditLogEvent {
   string id = 1;
 
   // The ID of the User associated with the event, if any.
-  string user_id = 2;
+  string actor_user_id = 2;
 
   // The ID of the Session associated with the event, if any.
-  string session_id = 3;
+  string actor_session_id = 3;
 
   // The ID of the API Key associated with the event, if any.
-  string api_key_id = 4;
+  string actor_api_key_id = 4;
+
+  // The ID of the Intermediate Session that performed the action, if any.
+  string actor_intermediate_session_id = 5;
 
   // The time the event occurred.
-  google.protobuf.Timestamp event_time = 5;
+  google.protobuf.Timestamp event_time = 6;
 
   // The name of the event.
-  string event_name = 6;
+  string event_name = 7;
 
   // The event payload JSON.
-  google.protobuf.Struct event_details = 7;
+  google.protobuf.Struct event_details = 8;
 }

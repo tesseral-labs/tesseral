@@ -543,14 +543,14 @@ message AuditLogEvent {
   // The ID of the Organization associated with the event, if any.
   string organization_id = 2;
 
-  // The ID of the User associated with the event, if any.
-  string user_id = 3;
+  // The ID of the User that performed the action, if any.
+  string actor_user_id = 3;
 
-  // The ID of the Session associated with the event, if any.
-  string session_id = 4;
+  // The ID of the Session that performed the action, if any.
+  string actor_session_id = 4;
 
-  // The ID of the API Key associated with the event, if any.
-  string api_key_id = 5;
+  // The ID of the API Key that performed the action, if any.
+  string actor_api_key_id = 5;
 
   // The dogfood user ID associated with the event, if any.
   string dogfood_user_id = 6;
@@ -559,10 +559,10 @@ message AuditLogEvent {
   string dogfood_session_id = 7;
 
   // The backend API key associated with the event, if any.
-  string backend_api_key_id = 8;
+  string actor_backend_api_key_id = 8;
 
-  // The intermediate session ID associated with the event, if any.
-  string intermediate_session_id = 9;
+  // The intermediate session ID that performed the action, if any.
+  string actor_intermediate_session_id = 9;
 
   // The time the event occurred.
   google.protobuf.Timestamp event_time = 10;
@@ -573,8 +573,8 @@ message AuditLogEvent {
   // The event payload JSON.
   google.protobuf.Struct event_details = 12;
 
-  // Credentials for the actor associated with the event. Input-only.
+  // Credentials for the actor performing the action. Input-only.
   //
   // Can be used as a shorthand for actor information when calling CreateAuditLogEvent.
-  string credentials = 13;
+  string actor_credentials = 13;
 }

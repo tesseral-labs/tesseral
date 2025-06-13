@@ -1614,27 +1614,27 @@ components:
                 organizationId:
                     type: string
                     description: The ID of the Organization associated with the event, if any.
-                userId:
+                actorUserId:
                     type: string
-                    description: The ID of the User associated with the event, if any.
-                sessionId:
+                    description: The ID of the User that performed the action, if any.
+                actorSessionId:
                     type: string
-                    description: The ID of the Session associated with the event, if any.
-                apiKeyId:
+                    description: The ID of the Session that performed the action, if any.
+                actorApiKeyId:
                     type: string
-                    description: The ID of the API Key associated with the event, if any.
+                    description: The ID of the API Key that performed the action, if any.
                 dogfoodUserId:
                     type: string
                     description: The dogfood user ID associated with the event, if any.
                 dogfoodSessionId:
                     type: string
                     description: The dogfood session ID associated with the event, if any.
-                backendApiKeyId:
+                actorBackendApiKeyId:
                     type: string
                     description: The backend API key associated with the event, if any.
-                intermediateSessionId:
+                actorIntermediateSessionId:
                     type: string
-                    description: The intermediate session ID associated with the event, if any.
+                    description: The intermediate session ID that performed the action, if any.
                 eventTime:
                     type: string
                     description: The time the event occurred.
@@ -1645,10 +1645,10 @@ components:
                 eventDetails:
                     type: object
                     description: The event payload JSON.
-                credentials:
+                actorCredentials:
                     type: string
                     description: |-
-                        Credentials for the actor associated with the event. Input-only.
+                        Credentials for the actor performing the action. Input-only.
 
                          Can be used as a shorthand for actor information when calling CreateAuditLogEvent.
             description: AuditLogEvent represents a record in the Project's audit log.

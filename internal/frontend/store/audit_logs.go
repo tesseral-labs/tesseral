@@ -137,14 +137,20 @@ func parseAuditLogEvent(qAuditLogEvent queries.AuditLogEvent) (*frontendv1.Audit
 		apiKeyID = idformat.APIKey.Format(*qAuditLogEvent.ApiKeyID)
 	}
 
+	var intermediateSessionID string
+	if qAuditLogEvent.IntermediateSessionID != nil {
+		intermediateSessionID = idformat.IntermediateSession.Format(*qAuditLogEvent.IntermediateSessionID)
+	}
+
 	return &frontendv1.AuditLogEvent{
-		Id:           idformat.AuditLogEvent.Format(qAuditLogEvent.ID),
-		UserId:       userID,
-		SessionId:    sessionID,
-		ApiKeyId:     apiKeyID,
-		EventName:    qAuditLogEvent.EventName,
-		EventTime:    timestampOrNil(qAuditLogEvent.EventTime),
-		EventDetails: &eventDetails,
+		Id:                         idformat.AuditLogEvent.Format(qAuditLogEvent.ID),
+		ActorUserId:                userID,
+		ActorSessionId:             sessionID,
+		ActorApiKeyId:              apiKeyID,
+		ActorIntermediateSessionId: intermediateSessionID,
+		EventName:                  qAuditLogEvent.EventName,
+		EventTime:                  timestampOrNil(qAuditLogEvent.EventTime),
+		EventDetails:               &eventDetails,
 	}, nil
 }
 
