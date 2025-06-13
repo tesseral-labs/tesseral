@@ -170,7 +170,9 @@ function SignupPageContents() {
   }
 
   const hasAboveFoldMethod =
-    settings.logInWithGoogle || settings.logInWithMicrosoft;
+    settings.logInWithGoogle ||
+    settings.logInWithMicrosoft ||
+    settings.logInWithGithub;
   const hasBelowFoldMethod = settings.logInWithEmail || settings.logInWithSaml;
 
   return (
