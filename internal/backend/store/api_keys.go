@@ -90,11 +90,10 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *backendv1.CreateAPIKeyReq
 		return nil, fmt.Errorf("create api key: %w", err)
 	}
 
-	apiKey := parseAPIKey(qAPIKey, &secretToken)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_keys.create",
 		EventDetails: &backendv1.APIKeyCreated{
-			ApiKey: apiKey,
+			ApiKey: parseAPIKey(qAPIKey, nil),
 		},
 		OrganizationID: &qOrg.ID,
 		ResourceType:   queries.AuditLogEventResourceTypeApiKey,
@@ -108,7 +107,7 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *backendv1.CreateAPIKeyReq
 	}
 
 	return &backendv1.CreateAPIKeyResponse{
-		ApiKey: apiKey,
+		ApiKey: parseAPIKey(qAPIKey, &secretToken),
 	}, nil
 }
 
