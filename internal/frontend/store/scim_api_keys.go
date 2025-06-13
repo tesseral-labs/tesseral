@@ -120,7 +120,7 @@ func (s *Store) CreateSCIMAPIKey(ctx context.Context, req *frontendv1.CreateSCIM
 
 	scimAPIKey := parseSCIMAPIKey(qSCIMAPIKey)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
-		EventName: "tesseral.scim_api_key.create",
+		EventName: "tesseral.scim_api_keys.create",
 		EventDetails: &frontendv1.SCIMAPIKeyCreated{
 			ScimApiKey: scimAPIKey,
 		},
@@ -183,7 +183,7 @@ func (s *Store) UpdateSCIMAPIKey(ctx context.Context, req *frontendv1.UpdateSCIM
 
 	scimAPIKey := parseSCIMAPIKey(qUpdatedSCIMAPIKey)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
-		EventName: "tesseral.scim_api_key.update",
+		EventName: "tesseral.scim_api_keys.update",
 		EventDetails: &frontendv1.SCIMAPIKeyUpdated{
 			ScimApiKey:         scimAPIKey,
 			PreviousScimApiKey: parseSCIMAPIKey(qSCIMAPIKey),
@@ -239,7 +239,7 @@ func (s *Store) DeleteSCIMAPIKey(ctx context.Context, req *frontendv1.DeleteSCIM
 	}
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
-		EventName: "tesseral.scim_api_key.delete",
+		EventName: "tesseral.scim_api_keys.delete",
 		EventDetails: &frontendv1.SCIMAPIKeyDeleted{
 			ScimApiKey: parseSCIMAPIKey(qSCIMAPIKey),
 		},
@@ -292,7 +292,7 @@ func (s *Store) RevokeSCIMAPIKey(ctx context.Context, req *frontendv1.RevokeSCIM
 
 	scimAPIKey := parseSCIMAPIKey(qUpdatedSCIMAPIKey)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
-		EventName: "tesseral.scim_api_key.revoke",
+		EventName: "tesseral.scim_api_keys.revoke",
 		EventDetails: &frontendv1.SCIMAPIKeyRevoked{
 			ScimApiKey:         scimAPIKey,
 			PreviousScimApiKey: parseSCIMAPIKey(qSCIMAPIKey),
