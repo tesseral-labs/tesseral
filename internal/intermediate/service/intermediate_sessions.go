@@ -16,3 +16,12 @@ func (s *Service) SetEmailAsPrimaryLoginFactor(ctx context.Context, req *connect
 
 	return connect.NewResponse(res), nil
 }
+
+func (s *Service) SetPasswordAsPrimaryLoginFactor(ctx context.Context, req *connect.Request[intermediatev1.SetPasswordAsPrimaryLoginFactorRequest]) (*connect.Response[intermediatev1.SetPasswordAsPrimaryLoginFactorResponse], error) {
+	res, err := s.Store.SetPasswordAsPrimaryLoginFactor(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %s", err)
+	}
+
+	return connect.NewResponse(res), nil
+}

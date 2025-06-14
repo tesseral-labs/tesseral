@@ -574,6 +574,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/set-password-as-primary-login-factor:
+        post:
+            tags:
+                - IntermediateService
+            operationId: IntermediateService_SetPasswordAsPrimaryLoginFactor
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SetPasswordAsPrimaryLoginFactorRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SetPasswordAsPrimaryLoginFactorResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/verify-authenticator-app:
         post:
             tags:
@@ -1049,6 +1073,12 @@ components:
         SetOrganizationResponse:
             type: object
             properties: {}
+        SetPasswordAsPrimaryLoginFactorRequest:
+            type: object
+            properties: {}
+        SetPasswordAsPrimaryLoginFactorResponse:
+            type: object
+            properties: {}
         Status:
             type: object
             properties:
@@ -1104,6 +1134,8 @@ components:
                 organizationId:
                     type: string
                 password:
+                    type: string
+                email:
                     type: string
         VerifyPasswordResetCodeRequest:
             type: object
