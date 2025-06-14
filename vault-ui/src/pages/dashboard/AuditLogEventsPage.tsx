@@ -307,7 +307,9 @@ export function AuditLogEventsPage() {
                             <span>{renderActor(event)}</span>
                           </TooltipTrigger>
                           <TooltipContent>
-                            {event.actorUserId && <p>User ID: {event.actorUserId}</p>}
+                            {event.actorUserId && (
+                              <p>User ID: {event.actorUserId}</p>
+                            )}
                             {event.actorSessionId && (
                               <p>Session ID: {event.actorSessionId}</p>
                             )}
@@ -367,7 +369,9 @@ export function AuditLogEventsPage() {
 function AuditLogEventDetails({ event }: { event: AuditLogEvent }) {
   let actorDetails: React.ReactNode = null;
   if (event.actorApiKeyId) {
-    actorDetails = <AuditLogEventApiKeyDetails apiKeyId={event.actorApiKeyId} />;
+    actorDetails = (
+      <AuditLogEventApiKeyDetails apiKeyId={event.actorApiKeyId} />
+    );
   } else if (event.actorUserId) {
     actorDetails = <AuditLogEventUserDetails userId={event.actorUserId} />;
   } else {
