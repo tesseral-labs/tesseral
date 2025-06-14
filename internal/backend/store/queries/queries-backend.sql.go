@@ -3665,7 +3665,8 @@ const upsertAction = `-- name: UpsertAction :exec
 INSERT INTO actions (id, project_id, name, description)
     VALUES ($1, $2, $3, $4)
 ON CONFLICT (project_id, name)
-    DO NOTHING
+    DO UPDATE SET
+        description = excluded.description
 `
 
 type UpsertActionParams struct {
