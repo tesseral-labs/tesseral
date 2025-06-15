@@ -353,7 +353,7 @@ service BackendService {
 
   rpc CreateAuditLogEvent(CreateAuditLogEventRequest) returns (CreateAuditLogEventResponse) {
     option (google.api.http) = {
-      post: "/v1/events"
+      post: "/v1/audit-log-events"
       body: "audit_log_event"
     };
   }

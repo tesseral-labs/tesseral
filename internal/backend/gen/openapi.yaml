@@ -264,7 +264,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/events:
+    /v1/audit-log-events:
         post:
             tags:
                 - BackendService

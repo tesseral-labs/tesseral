@@ -3169,7 +3169,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/CreateAuditLogEvent", runtime.WithHTTPPathPattern("/v1/events"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/CreateAuditLogEvent", runtime.WithHTTPPathPattern("/v1/audit-log-events"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -4196,7 +4196,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/CreateAuditLogEvent", runtime.WithHTTPPathPattern("/v1/events"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/CreateAuditLogEvent", runtime.WithHTTPPathPattern("/v1/audit-log-events"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -4270,7 +4270,7 @@ var (
 	pattern_BackendService_DeleteAPIKeyRoleAssignment_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "api-key-role-assignments", "id"}, ""))
 	pattern_BackendService_ListAPIKeyRoleAssignments_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "api-key-role-assignments"}, ""))
 	pattern_BackendService_AuthenticateAPIKey_0                    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "api-keys", "authenticate"}, ""))
-	pattern_BackendService_CreateAuditLogEvent_0                   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "events"}, ""))
+	pattern_BackendService_CreateAuditLogEvent_0                   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "audit-log-events"}, ""))
 )
 
 var (
