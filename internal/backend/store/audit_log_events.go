@@ -33,8 +33,6 @@ func (s *Store) CreateCustomAuditLogEvent(ctx context.Context, req *backendv1.Cr
 	}
 	defer rollback()
 
-	projectID := authn.ProjectID(ctx)
-
 	if err := enforceSingleActor(req); err != nil {
 		return nil, apierror.NewInvalidArgumentError("exactly one of organizationId, userId, sessionId, or apiKeyId must be provided", fmt.Errorf("enforce single actor: %w", err))
 	}
@@ -43,14 +41,13 @@ func (s *Store) CreateCustomAuditLogEvent(ctx context.Context, req *backendv1.Cr
 	if req.AuditLogEvent.EventTime != nil {
 		eventTime = req.AuditLogEvent.EventTime.AsTime()
 	}
+
 	// Generate the UUIDv7 based on the event time.
 	eventID := uuidv7.NewWithTime(eventTime)
+
 	eventName := req.AuditLogEvent.EventName
-	if eventName == "" {
-		return nil, apierror.NewInvalidArgumentError("", errors.New("missing event name"))
-	}
 	if err := validateEventName(eventName); err != nil {
-		return nil, apierror.NewInvalidArgumentError("invalide event name", fmt.Errorf("validate event name: %w", err))
+		return nil, apierror.NewInvalidArgumentError("invalid event name", fmt.Errorf("validate event name: %w", err))
 	}
 
 	orgID, userID, sessionID, apiKeyID, err := deriveEventContextForRequest(ctx, q, req)
@@ -59,25 +56,25 @@ func (s *Store) CreateCustomAuditLogEvent(ctx context.Context, req *backendv1.Cr
 	}
 
 	// Marshal the details to JSON if provided.
-	var eventDetailsJSON []byte
-	if eventDetails := req.AuditLogEvent.EventDetails; eventDetails != nil {
-		json, err := eventDetails.MarshalJSON()
+	var eventDetails []byte
+	if req.AuditLogEvent.EventDetails != nil {
+		b, err := req.AuditLogEvent.EventDetails.MarshalJSON()
 		if err != nil {
 			return nil, fmt.Errorf("create audit log event: failed to marshal event details JSON: %w", err)
 		}
-		eventDetailsJSON = json
+		eventDetails = b
 	}
 
 	qEvent, err := q.CreateAuditLogEvent(ctx, queries.CreateAuditLogEventParams{
 		ID:             eventID,
-		ProjectID:      projectID,
+		ProjectID:      authn.ProjectID(ctx),
 		OrganizationID: orgID,
 		ActorUserID:    userID,
 		ActorSessionID: sessionID,
 		ActorApiKeyID:  apiKeyID,
 		EventName:      eventName,
 		EventTime:      &eventTime,
-		EventDetails:   eventDetailsJSON,
+		EventDetails:   eventDetails,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
@@ -87,20 +84,15 @@ func (s *Store) CreateCustomAuditLogEvent(ctx context.Context, req *backendv1.Cr
 		return nil, fmt.Errorf("commit transaction: %w", err)
 	}
 
-	pEvent, err := parseAuditLogEvent(qEvent)
-	if err != nil {
-		return nil, fmt.Errorf("parse audit log event: %w", err)
-	}
-
 	return &backendv1.CreateAuditLogEventResponse{
-		AuditLogEvent: pEvent,
+		AuditLogEvent: parseAuditLogEvent(qEvent),
 	}, nil
 }
 
-func parseAuditLogEvent(qAuditLogEvent queries.AuditLogEvent) (*backendv1.AuditLogEvent, error) {
+func parseAuditLogEvent(qAuditLogEvent queries.AuditLogEvent) *backendv1.AuditLogEvent {
 	var eventDetails structpb.Struct
 	if err := protojson.Unmarshal(qAuditLogEvent.EventDetails, &eventDetails); err != nil {
-		return nil, fmt.Errorf("unmarshal event details: %w", err)
+		panic(fmt.Errorf("unmarshal event details: %w", err))
 	}
 
 	var organizationID string
@@ -144,7 +136,7 @@ func parseAuditLogEvent(qAuditLogEvent queries.AuditLogEvent) (*backendv1.AuditL
 		EventName:                  qAuditLogEvent.EventName,
 		EventTime:                  timestamppb.New(*qAuditLogEvent.EventTime),
 		EventDetails:               &eventDetails,
-	}, nil
+	}
 }
 
 var eventNamePattern = regexp.MustCompile(`^[a-z0-9_]+\.[a-z0-9_]+\.[a-z0-9_]+`)
