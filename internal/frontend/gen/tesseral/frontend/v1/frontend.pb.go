@@ -5101,13 +5101,11 @@ func (x *ListAuditLogEventsRequest) GetFilterUserId() string {
 }
 
 type ListAuditLogEventsResponse struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The audit log events.
-	AuditLogEvents []*AuditLogEvent `protobuf:"bytes,1,rep,name=audit_log_events,json=auditLogEvents,proto3" json:"audit_log_events,omitempty"`
-	// The pagination token for the next page of results. Empty if there is no next page.
-	NextPageToken string `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	AuditLogEvents []*AuditLogEvent       `protobuf:"bytes,1,rep,name=audit_log_events,json=auditLogEvents,proto3" json:"audit_log_events,omitempty"`
+	NextPageToken  string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *ListAuditLogEventsResponse) Reset() {

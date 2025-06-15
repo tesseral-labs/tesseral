@@ -881,35 +881,35 @@ export type AuditLogEvent = Message<"tesseral.frontend.v1.AuditLogEvent"> & {
   id: string;
 
   /**
-   * The ID of the User associated with the event, if any.
+   * The User that performed the event, if any.
    *
    * @generated from field: string actor_user_id = 2;
    */
   actorUserId: string;
 
   /**
-   * The ID of the Session associated with the event, if any.
+   * The Session that performed the event, if any.
    *
    * @generated from field: string actor_session_id = 3;
    */
   actorSessionId: string;
 
   /**
-   * The ID of the API Key associated with the event, if any.
+   * The API Key that performed the event, if any.
    *
    * @generated from field: string actor_api_key_id = 4;
    */
   actorApiKeyId: string;
 
   /**
-   * The ID of the Intermediate Session that performed the action, if any.
+   * The Intermediate Session that performed the action, if any.
    *
    * @generated from field: string actor_intermediate_session_id = 5;
    */
   actorIntermediateSessionId: string;
 
   /**
-   * The time the event occurred.
+   * When the event occurred.
    *
    * @generated from field: google.protobuf.Timestamp event_time = 6;
    */

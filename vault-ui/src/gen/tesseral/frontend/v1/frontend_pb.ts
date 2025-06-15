@@ -2030,15 +2030,11 @@ export const ListAuditLogEventsRequestSchema: GenMessage<ListAuditLogEventsReque
  */
 export type ListAuditLogEventsResponse = Message<"tesseral.frontend.v1.ListAuditLogEventsResponse"> & {
   /**
-   * The audit log events.
-   *
    * @generated from field: repeated tesseral.frontend.v1.AuditLogEvent audit_log_events = 1;
    */
   auditLogEvents: AuditLogEvent[];
 
   /**
-   * The pagination token for the next page of results. Empty if there is no next page.
-   *
    * @generated from field: string next_page_token = 2;
    */
   nextPageToken: string;

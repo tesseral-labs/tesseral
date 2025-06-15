@@ -758,9 +758,6 @@ message ListAuditLogEventsRequest {
 }
 
 message ListAuditLogEventsResponse {
-  // The audit log events.
   repeated AuditLogEvent audit_log_events = 1;
-
-  // The pagination token for the next page of results. Empty if there is no next page.
   string next_page_token = 2;
 }

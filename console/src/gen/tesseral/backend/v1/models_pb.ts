@@ -1451,49 +1451,49 @@ export type AuditLogEvent = Message<"tesseral.backend.v1.AuditLogEvent"> & {
   id: string;
 
   /**
-   * The ID of the Organization associated with the event, if any.
+   * The Organization the event occurred within, if any.
    *
    * @generated from field: string organization_id = 2;
    */
   organizationId: string;
 
   /**
-   * The ID of the User that performed the action, if any.
+   * The User that performed the event, if any.
    *
    * @generated from field: string actor_user_id = 3;
    */
   actorUserId: string;
 
   /**
-   * The ID of the Session that performed the action, if any.
+   * The Session that performed the event, if any.
    *
    * @generated from field: string actor_session_id = 4;
    */
   actorSessionId: string;
 
   /**
-   * The ID of the API Key that performed the action, if any.
+   * The API Key that performed the event, if any.
    *
    * @generated from field: string actor_api_key_id = 5;
    */
   actorApiKeyId: string;
 
   /**
-   * The backend API key associated with the event, if any.
+   * The Backend API key that performed the event, if any.
    *
    * @generated from field: string actor_backend_api_key_id = 8;
    */
   actorBackendApiKeyId: string;
 
   /**
-   * The intermediate session ID that performed the action, if any.
+   * The Intermediate Session that performed the action, if any.
    *
    * @generated from field: string actor_intermediate_session_id = 9;
    */
   actorIntermediateSessionId: string;
 
   /**
-   * The time the event occurred.
+   * When the event occurred.
    *
    * @generated from field: google.protobuf.Timestamp event_time = 10;
    */

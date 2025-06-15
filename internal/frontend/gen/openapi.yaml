@@ -1442,19 +1442,19 @@ components:
                     description: The Audit Log Event ID. Starts with `audit_log_event_...`.
                 actorUserId:
                     type: string
-                    description: The ID of the User associated with the event, if any.
+                    description: The User that performed the event, if any.
                 actorSessionId:
                     type: string
-                    description: The ID of the Session associated with the event, if any.
+                    description: The Session that performed the event, if any.
                 actorApiKeyId:
                     type: string
-                    description: The ID of the API Key associated with the event, if any.
+                    description: The API Key that performed the event, if any.
                 actorIntermediateSessionId:
                     type: string
-                    description: The ID of the Intermediate Session that performed the action, if any.
+                    description: The Intermediate Session that performed the action, if any.
                 eventTime:
                     type: string
-                    description: The time the event occurred.
+                    description: When the event occurred.
                     format: date-time
                 eventName:
                     type: string
@@ -1638,10 +1638,8 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/AuditLogEvent'
-                    description: The audit log events.
                 nextPageToken:
                     type: string
-                    description: The pagination token for the next page of results. Empty if there is no next page.
         ListMyPasskeysResponse:
             type: object
             properties:

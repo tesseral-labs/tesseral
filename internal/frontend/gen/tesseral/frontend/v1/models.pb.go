@@ -1694,15 +1694,15 @@ type AuditLogEvent struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Audit Log Event ID. Starts with `audit_log_event_...`.
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	// The ID of the User associated with the event, if any.
+	// The User that performed the event, if any.
 	ActorUserId string `protobuf:"bytes,2,opt,name=actor_user_id,json=actorUserId,proto3" json:"actor_user_id,omitempty"`
-	// The ID of the Session associated with the event, if any.
+	// The Session that performed the event, if any.
 	ActorSessionId string `protobuf:"bytes,3,opt,name=actor_session_id,json=actorSessionId,proto3" json:"actor_session_id,omitempty"`
-	// The ID of the API Key associated with the event, if any.
+	// The API Key that performed the event, if any.
 	ActorApiKeyId string `protobuf:"bytes,4,opt,name=actor_api_key_id,json=actorApiKeyId,proto3" json:"actor_api_key_id,omitempty"`
-	// The ID of the Intermediate Session that performed the action, if any.
+	// The Intermediate Session that performed the action, if any.
 	ActorIntermediateSessionId string `protobuf:"bytes,5,opt,name=actor_intermediate_session_id,json=actorIntermediateSessionId,proto3" json:"actor_intermediate_session_id,omitempty"`
-	// The time the event occurred.
+	// When the event occurred.
 	EventTime *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=event_time,json=eventTime,proto3" json:"event_time,omitempty"`
 	// The name of the event.
 	EventName string `protobuf:"bytes,7,opt,name=event_name,json=eventName,proto3" json:"event_name,omitempty"`

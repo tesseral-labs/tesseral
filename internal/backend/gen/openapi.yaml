@@ -1613,25 +1613,25 @@ components:
                     description: The Audit Log Event ID. Starts with `audit_log_event_...`.
                 organizationId:
                     type: string
-                    description: The ID of the Organization associated with the event, if any.
+                    description: The Organization the event occurred within, if any.
                 actorUserId:
                     type: string
-                    description: The ID of the User that performed the action, if any.
+                    description: The User that performed the event, if any.
                 actorSessionId:
                     type: string
-                    description: The ID of the Session that performed the action, if any.
+                    description: The Session that performed the event, if any.
                 actorApiKeyId:
                     type: string
-                    description: The ID of the API Key that performed the action, if any.
+                    description: The API Key that performed the event, if any.
                 actorBackendApiKeyId:
                     type: string
-                    description: The backend API key associated with the event, if any.
+                    description: The Backend API key that performed the event, if any.
                 actorIntermediateSessionId:
                     type: string
-                    description: The intermediate session ID that performed the action, if any.
+                    description: The Intermediate Session that performed the action, if any.
                 eventTime:
                     type: string
-                    description: The time the event occurred.
+                    description: When the event occurred.
                     format: date-time
                 eventName:
                     type: string

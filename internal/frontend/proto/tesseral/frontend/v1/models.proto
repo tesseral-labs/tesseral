@@ -228,19 +228,19 @@ message AuditLogEvent {
   // The Audit Log Event ID. Starts with `audit_log_event_...`.
   string id = 1;
 
-  // The ID of the User associated with the event, if any.
+  // The User that performed the event, if any.
   string actor_user_id = 2;
 
-  // The ID of the Session associated with the event, if any.
+  // The Session that performed the event, if any.
   string actor_session_id = 3;
 
-  // The ID of the API Key associated with the event, if any.
+  // The API Key that performed the event, if any.
   string actor_api_key_id = 4;
 
-  // The ID of the Intermediate Session that performed the action, if any.
+  // The Intermediate Session that performed the action, if any.
   string actor_intermediate_session_id = 5;
 
-  // The time the event occurred.
+  // When the event occurred.
   google.protobuf.Timestamp event_time = 6;
 
   // The name of the event.
