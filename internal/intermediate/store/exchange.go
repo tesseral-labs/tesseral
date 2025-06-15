@@ -91,6 +91,18 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 			return nil, fmt.Errorf("create user: %w", err)
 		}
 
+		if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+			EventName: "tesseral.users.create",
+			EventDetails: &intermediatev1.UserCreated{
+				User: parseUser(qNewUser),
+			},
+			OrganizationID: &qOrg.ID,
+			ResourceType:   queries.AuditLogEventResourceTypeUser,
+			ResourceID:     &qNewUser.ID,
+		}); err != nil {
+			return nil, fmt.Errorf("log audit event: %w", err)
+		}
+
 		qUser = &qNewUser
 	} else {
 		detailsUpdated =
@@ -103,7 +115,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		if detailsUpdated {
 			slog.InfoContext(ctx, "update_user")
 			qUpdatedUser, err := q.UpdateUserDetails(ctx, queries.UpdateUserDetailsParams{
-				UserID:            qUser.ID,
+				ID:                qUser.ID,
 				GithubUserID:      qIntermediateSession.GithubUserID,
 				GoogleUserID:      qIntermediateSession.GoogleUserID,
 				MicrosoftUserID:   qIntermediateSession.MicrosoftUserID,
@@ -113,6 +125,20 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 			if err != nil {
 				return nil, fmt.Errorf("update user: %w", err)
 			}
+
+			if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+				EventName: "tesseral.users.update",
+				EventDetails: &intermediatev1.UserUpdated{
+					User:         parseUser(qUpdatedUser),
+					PreviousUser: parseUser(derefOrEmpty(qUser)),
+				},
+				OrganizationID: &qOrg.ID,
+				ResourceType:   queries.AuditLogEventResourceTypeUser,
+				ResourceID:     &qUser.ID,
+			}); err != nil {
+				return nil, fmt.Errorf("log audit event: %w", err)
+			}
+
 			qUser = &qUpdatedUser
 		}
 	}
@@ -203,6 +229,16 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		}
 
 		relayedSessionToken = idformat.RelayedSessionToken.Format(relayedSessionTokenUUID)
+	}
+
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName:      "tesseral.sessions.create",
+		EventDetails:   parseSessionEventDetails(qSession, nil),
+		OrganizationID: &qOrg.ID,
+		ResourceType:   queries.AuditLogEventResourceTypeSession,
+		ResourceID:     &qSession.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
 	if err := commit(); err != nil {

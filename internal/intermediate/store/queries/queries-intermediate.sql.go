@@ -12,6 +12,62 @@ import (
 	"github.com/google/uuid"
 )
 
+const createAuditLogEvent = `-- name: CreateAuditLogEvent :one
+INSERT INTO audit_log_events (id, project_id, organization_id, actor_user_id, actor_session_id, resource_type, resource_id, event_name, event_time, event_details, actor_intermediate_session_id)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, coalesce($11, '{}'::jsonb), $10)
+RETURNING
+    id, project_id, organization_id, actor_user_id, actor_session_id, actor_api_key_id, actor_console_user_id, actor_console_session_id, actor_backend_api_key_id, actor_intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details
+`
+
+type CreateAuditLogEventParams struct {
+	ID                         uuid.UUID
+	ProjectID                  uuid.UUID
+	OrganizationID             *uuid.UUID
+	ActorUserID                *uuid.UUID
+	ActorSessionID             *uuid.UUID
+	ResourceType               *AuditLogEventResourceType
+	ResourceID                 *uuid.UUID
+	EventName                  string
+	EventTime                  *time.Time
+	ActorIntermediateSessionID *uuid.UUID
+	EventDetails               interface{}
+}
+
+func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEventParams) (AuditLogEvent, error) {
+	row := q.db.QueryRow(ctx, createAuditLogEvent,
+		arg.ID,
+		arg.ProjectID,
+		arg.OrganizationID,
+		arg.ActorUserID,
+		arg.ActorSessionID,
+		arg.ResourceType,
+		arg.ResourceID,
+		arg.EventName,
+		arg.EventTime,
+		arg.ActorIntermediateSessionID,
+		arg.EventDetails,
+	)
+	var i AuditLogEvent
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.OrganizationID,
+		&i.ActorUserID,
+		&i.ActorSessionID,
+		&i.ActorApiKeyID,
+		&i.ActorConsoleUserID,
+		&i.ActorConsoleSessionID,
+		&i.ActorBackendApiKeyID,
+		&i.ActorIntermediateSessionID,
+		&i.ResourceType,
+		&i.ResourceID,
+		&i.EventName,
+		&i.EventTime,
+		&i.EventDetails,
+	)
+	return i, err
+}
+
 const createImpersonatedSession = `-- name: CreateImpersonatedSession :one
 INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, impersonator_user_id, primary_auth_factor)
     VALUES ($1, $2, $3, $4, $5, 'impersonation')
@@ -270,7 +326,7 @@ const createProject = `-- name: CreateProject :one
 INSERT INTO projects (id, organization_id, display_name, redirect_uri, vault_domain, email_send_from_domain, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_saml, log_in_with_email, cookie_domain, stripe_customer_id)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
 RETURNING
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix, audit_logs_enabled
 `
 
 type CreateProjectParams struct {
@@ -339,6 +395,7 @@ func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (P
 		&i.GithubOauthClientSecretCiphertext,
 		&i.ApiKeysEnabled,
 		&i.ApiKeySecretTokenPrefix,
+		&i.AuditLogsEnabled,
 	)
 	return i, err
 }
@@ -1100,7 +1157,7 @@ func (q *Queries) GetPasskeyByCredentialID(ctx context.Context, arg GetPasskeyBy
 
 const getProjectByBackingOrganizationID = `-- name: GetProjectByBackingOrganizationID :one
 SELECT
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix, audit_logs_enabled
 FROM
     projects
 WHERE
@@ -1143,13 +1200,14 @@ func (q *Queries) GetProjectByBackingOrganizationID(ctx context.Context, organiz
 		&i.GithubOauthClientSecretCiphertext,
 		&i.ApiKeysEnabled,
 		&i.ApiKeySecretTokenPrefix,
+		&i.AuditLogsEnabled,
 	)
 	return i, err
 }
 
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix, audit_logs_enabled
 FROM
     projects
 WHERE
@@ -1192,6 +1250,7 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.GithubOauthClientSecretCiphertext,
 		&i.ApiKeysEnabled,
 		&i.ApiKeySecretTokenPrefix,
+		&i.AuditLogsEnabled,
 	)
 	return i, err
 }
@@ -1368,6 +1427,42 @@ func (q *Queries) GetSessionDetailsByRefreshTokenSHA256(ctx context.Context, ref
 		&i.Email,
 		&i.GoogleUserID,
 		&i.MicrosoftUserID,
+	)
+	return i, err
+}
+
+const getUserByID = `-- name: GetUserByID :one
+SELECT
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+FROM
+    users
+WHERE
+    id = $1
+`
+
+func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByID, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DeactivateTime,
+		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
+		&i.AuthenticatorAppSecretCiphertext,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
+		&i.AuthenticatorAppRecoveryCodeSha256s,
+		&i.DisplayName,
+		&i.ProfilePictureUrl,
+		&i.GithubUserID,
 	)
 	return i, err
 }
@@ -3339,34 +3434,34 @@ UPDATE
     users
 SET
     update_time = now(),
-    github_user_id = coalesce($1, github_user_id),
-    google_user_id = coalesce($2, google_user_id),
-    microsoft_user_id = coalesce($3, microsoft_user_id),
-    display_name = coalesce($4, display_name),
-    profile_picture_url = coalesce($5, profile_picture_url)
+    github_user_id = coalesce($2, github_user_id),
+    google_user_id = coalesce($3, google_user_id),
+    microsoft_user_id = coalesce($4, microsoft_user_id),
+    display_name = coalesce($5, display_name),
+    profile_picture_url = coalesce($6, profile_picture_url)
 WHERE
-    id = $6
+    id = $1
 RETURNING
     id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 `
 
 type UpdateUserDetailsParams struct {
+	ID                uuid.UUID
 	GithubUserID      *string
 	GoogleUserID      *string
 	MicrosoftUserID   *string
 	DisplayName       *string
 	ProfilePictureUrl *string
-	UserID            uuid.UUID
 }
 
 func (q *Queries) UpdateUserDetails(ctx context.Context, arg UpdateUserDetailsParams) (User, error) {
 	row := q.db.QueryRow(ctx, updateUserDetails,
+		arg.ID,
 		arg.GithubUserID,
 		arg.GoogleUserID,
 		arg.MicrosoftUserID,
 		arg.DisplayName,
 		arg.ProfilePictureUrl,
-		arg.UserID,
 	)
 	var i User
 	err := row.Scan(

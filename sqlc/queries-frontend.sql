@@ -630,7 +630,7 @@ ORDER BY
     id
 LIMIT $3;
 
--- name: RevokeAPIKey :exec
+-- name: RevokeAPIKey :one
 UPDATE
     api_keys
 SET
@@ -639,7 +639,9 @@ SET
     secret_token_suffix = NULL
 WHERE
     id = $1
-    AND organization_id = $2;
+    AND organization_id = $2
+RETURNING
+    *;
 
 -- name: CreateAPIKeyRoleAssignment :one
 INSERT INTO api_key_role_assignments (id, api_key_id, role_id)
@@ -699,3 +701,51 @@ WHERE api_key_role_assignments.api_key_id = api_keys.id
     AND api_key_role_assignments.id = $1
     AND api_keys.organization_id = $2;
 
+-- name: CreateAuditLogEvent :one
+INSERT INTO audit_log_events (id, project_id, organization_id, actor_user_id, actor_session_id, resource_type, resource_id, event_name, event_time, event_details)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, coalesce(@event_details, '{}'::jsonb))
+RETURNING
+    *;
+
+-- name: ListAuditLogEvents :many
+SELECT
+    *
+FROM
+    audit_log_events
+WHERE
+    project_id = @project_id
+    AND organization_id = @organization_id
+    AND (event_time >= @start_time
+        OR @start_time IS NULL)
+    AND (event_time <= @end_time
+        OR @end_time IS NULL)
+    AND (event_name = sqlc.narg ('event_name')
+        OR sqlc.narg ('event_name') IS NULL)
+    AND (actor_user_id = @actor_user_id
+        OR @actor_user_id IS NULL)
+    AND id < @id
+ORDER BY
+    id DESC
+LIMIT $1;
+
+-- SELECT
+--     *
+-- FROM
+--     audit_log_events
+-- WHERE (@start_time::pg_catalog.timestamptz IS NULL
+--     OR event_time >= @start_time::pg_catalog.timestamptz)
+-- AND (@end_time::pg_catalog.timestamptz IS NULL
+--     OR event_time <= @end_time::pg_catalog.timestamptz)
+-- AND (event_name = @event_name
+--     OR @event_name = '')
+-- AND (@user_id::uuid = '00000000-0000-0000-0000-000000000000'
+--     OR user_id = @user_id::uuid)
+-- AND (@session_id::uuid = '00000000-0000-0000-0000-000000000000'
+--     OR session_id = @session_id::uuid)
+-- AND (@api_key_id::uuid = '00000000-0000-0000-0000-000000000000'
+--     OR api_key_id = @api_key_id::uuid)
+-- AND project_id = @project_id
+-- AND organization_id = @organization_id
+-- ORDER BY
+--     event_time DESC
+-- LIMIT $1;

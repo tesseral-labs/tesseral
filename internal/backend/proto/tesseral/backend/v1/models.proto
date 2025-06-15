@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package tesseral.backend.v1;
 
+import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 
 // Projects are the top-level object in Tesseral.
@@ -100,6 +101,9 @@ message Project {
 
   // The prefix used for API Key secret tokens.
   optional string api_key_secret_token_prefix = 28;
+
+  // Whether the Project has audit logging enabled.
+  optional bool audit_logs_enabled = 29;
 }
 
 message VaultDomainSettings {
@@ -529,4 +533,42 @@ message APIKeyRoleAssignment {
   string api_key_id = 2;
   // The Role ID.
   string role_id = 3;
+}
+
+// AuditLogEvent represents a record in the Project's audit log.
+message AuditLogEvent {
+  // The Audit Log Event ID. Starts with `audit_log_event_...`.
+  string id = 1;
+
+  // The Organization the event occurred within, if any.
+  string organization_id = 2;
+
+  // The User that performed the event, if any.
+  string actor_user_id = 3;
+
+  // The Session that performed the event, if any.
+  string actor_session_id = 4;
+
+  // The API Key that performed the event, if any.
+  string actor_api_key_id = 5;
+
+  // The Backend API key that performed the event, if any.
+  string actor_backend_api_key_id = 8;
+
+  // The Intermediate Session that performed the action, if any.
+  string actor_intermediate_session_id = 9;
+
+  // When the event occurred.
+  google.protobuf.Timestamp event_time = 10;
+
+  // The name of the event.
+  string event_name = 11;
+
+  // The event payload JSON.
+  google.protobuf.Struct event_details = 12;
+
+  // Credentials for the actor performing the action. Input-only.
+  //
+  // Can be used as a shorthand for actor information when calling CreateAuditLogEvent.
+  string actor_credentials = 13;
 }

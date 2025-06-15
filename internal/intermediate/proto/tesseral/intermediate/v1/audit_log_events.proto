@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package tesseral.intermediate.v1;
+
+import "tesseral/intermediate/v1/intermediate.proto";
+
+message SessionCreated {
+  Session session = 1;
+}
+
+message UserCreated {
+  User user = 1;
+}
+
+message UserUpdated {
+  User user = 1;
+  User previous_user = 2;
+}

@@ -3,6 +3,7 @@ syntax = "proto3";
 package tesseral.frontend.v1;
 
 import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
 import "tesseral/frontend/v1/models.proto";
 
 service FrontendService {
@@ -303,6 +304,10 @@ service FrontendService {
 
   rpc ListAPIKeyRoleAssignments(ListAPIKeyRoleAssignmentsRequest) returns (ListAPIKeyRoleAssignmentsResponse) {
     option (google.api.http) = {get: "/frontend/v1/api-key-role-assignments"};
+  }
+
+  rpc ListAuditLogEvents(ListAuditLogEventsRequest) returns (ListAuditLogEventsResponse) {
+    option (google.api.http) = {get: "/frontend/v1/audit-log-events"};
   }
 }
 
@@ -743,3 +748,16 @@ message DeleteAPIKeyRoleAssignmentRequest {
 }
 
 message DeleteAPIKeyRoleAssignmentResponse {}
+
+message ListAuditLogEventsRequest {
+  string page_token = 1;
+  google.protobuf.Timestamp filter_start_time = 2;
+  google.protobuf.Timestamp filter_end_time = 3;
+  string filter_event_name = 4;
+  string filter_user_id = 5;
+}
+
+message ListAuditLogEventsResponse {
+  repeated AuditLogEvent audit_log_events = 1;
+  string next_page_token = 2;
+}

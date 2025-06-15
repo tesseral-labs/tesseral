@@ -61,6 +61,7 @@ func New(p NewStoreParams) *Store {
 		q:                                     queries.New(p.DB),
 		sessionSigningKeyKmsKeyID:             p.SessionSigningKeyKmsKeyID,
 		authenticatorAppSecretsKMSKeyID:       p.AuthenticatorAppSecretsKMSKeyID,
+		svixClient:                            p.SvixClient,
 	}
 
 	return store
@@ -90,4 +91,12 @@ func timestampOrNil(t *time.Time) *timestamppb.Timestamp {
 		return nil
 	}
 	return timestamppb.New(*t)
+}
+
+func refOrNil[T comparable](t T) *T {
+	var z T
+	if t == z {
+		return nil
+	}
+	return &t
 }

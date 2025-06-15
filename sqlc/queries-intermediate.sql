@@ -744,7 +744,21 @@ SET
     display_name = coalesce(sqlc.narg (display_name), display_name),
     profile_picture_url = coalesce(sqlc.narg (profile_picture_url), profile_picture_url)
 WHERE
-    id = @user_id
+    id = $1
 RETURNING
     *;
+
+-- name: CreateAuditLogEvent :one
+INSERT INTO audit_log_events (id, project_id, organization_id, actor_user_id, actor_session_id, resource_type, resource_id, event_name, event_time, event_details, actor_intermediate_session_id)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, coalesce(@event_details, '{}'::jsonb), $10)
+RETURNING
+    *;
+
+-- name: GetUserByID :one
+SELECT
+    *
+FROM
+    users
+WHERE
+    id = $1;
 

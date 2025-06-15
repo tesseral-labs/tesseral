@@ -65,6 +65,14 @@ func (s *Store) UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, req *b
 		return nil, fmt.Errorf("get organization: %w", err)
 	}
 
+	qPreviousMicrosoftTenantIDs, err := q.GetOrganizationMicrosoftTenantIDs(ctx, queries.GetOrganizationMicrosoftTenantIDsParams{
+		ProjectID:      authn.ProjectID(ctx),
+		OrganizationID: orgID,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("get organization microsoft tenant IDs: %w", err)
+	}
+
 	if err := q.DeleteOrganizationMicrosoftTenantIDs(ctx, orgID); err != nil {
 		return nil, fmt.Errorf("delete organization microsoft tenant IDs: %w", err)
 	}
@@ -87,12 +95,26 @@ func (s *Store) UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, req *b
 		return nil, fmt.Errorf("get organization microsoft tenant IDs: %w", err)
 	}
 
+	microsoftTenantIDs := parseOrganizationMicrosoftTenantIDs(qOrg, qMicrosoftTenantIDs)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.organizations.update_microsoft_tenant_ids",
+		EventDetails: &backendv1.OrganizationMicrosoftTenantIDsUpdated{
+			MicrosoftTenantIds:         microsoftTenantIDs.MicrosoftTenantIds,
+			PreviousMicrosoftTenantIds: parseOrganizationMicrosoftTenantIDs(qOrg, qPreviousMicrosoftTenantIDs).MicrosoftTenantIds,
+		},
+		OrganizationID: &qOrg.ID,
+		ResourceType:   queries.AuditLogEventResourceTypeOrganization,
+		ResourceID:     &qOrg.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("log audit event: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &backendv1.UpdateOrganizationMicrosoftTenantIDsResponse{
-		OrganizationMicrosoftTenantIds: parseOrganizationMicrosoftTenantIDs(qOrg, qMicrosoftTenantIDs),
+		OrganizationMicrosoftTenantIds: microsoftTenantIDs,
 	}, nil
 }
 

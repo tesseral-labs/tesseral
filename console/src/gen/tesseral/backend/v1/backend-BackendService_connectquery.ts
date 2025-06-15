@@ -406,6 +406,11 @@ export const listAPIKeyRoleAssignments = BackendService.method.listAPIKeyRoleAss
 export const authenticateAPIKey = BackendService.method.authenticateAPIKey;
 
 /**
+ * @generated from rpc tesseral.backend.v1.BackendService.CreateAuditLogEvent
+ */
+export const createAuditLogEvent = BackendService.method.createAuditLogEvent;
+
+/**
  * @generated from rpc tesseral.backend.v1.BackendService.DisableOrganizationLogins
  */
 export const disableOrganizationLogins = BackendService.method.disableOrganizationLogins;
