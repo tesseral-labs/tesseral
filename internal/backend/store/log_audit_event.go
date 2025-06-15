@@ -33,11 +33,17 @@ func (s *Store) logAuditEvent(ctx context.Context, q *queries.Queries, data logA
 		return queries.AuditLogEvent{}, fmt.Errorf("failed to marshal event details: %w", err)
 	}
 
-	var (
-		consoleUserID    *uuid.UUID
-		consoleSessionID *uuid.UUID
-		backendApiKeyID  *uuid.UUID
-	)
+	qEventParams := queries.CreateAuditLogEventParams{
+		ID:             eventID,
+		ProjectID:      authn.ProjectID(ctx),
+		OrganizationID: data.OrganizationID,
+		ResourceType:   refOrNil(data.ResourceType),
+		ResourceID:     data.ResourceID,
+		EventName:      data.EventName,
+		EventTime:      &eventTime,
+		EventDetails:   eventDetailsBytes,
+	}
+
 	contextData := authn.GetContextData(ctx)
 	switch {
 	case contextData.ProjectAPIKey != nil:
@@ -45,32 +51,19 @@ func (s *Store) logAuditEvent(ctx context.Context, q *queries.Queries, data logA
 		if err != nil {
 			return queries.AuditLogEvent{}, fmt.Errorf("parse backend api key id: %w", err)
 		}
-		backendApiKeyID = (*uuid.UUID)(&backendApiKeyUUID)
+		qEventParams.ActorBackendApiKeyID = (*uuid.UUID)(&backendApiKeyUUID)
 	case contextData.DogfoodSession != nil:
 		dogfoodUserUUID, err := idformat.User.Parse(contextData.DogfoodSession.UserID)
 		if err != nil {
 			return queries.AuditLogEvent{}, fmt.Errorf("parse dogfood session user id: %w", err)
 		}
-		consoleUserID = (*uuid.UUID)(&dogfoodUserUUID)
+		qEventParams.ActorConsoleUserID = (*uuid.UUID)(&dogfoodUserUUID)
+
 		dogfoodSessionUUID, err := idformat.Session.Parse(contextData.DogfoodSession.SessionID)
 		if err != nil {
 			return queries.AuditLogEvent{}, fmt.Errorf("parse dogfood session project id: %w", err)
 		}
-		consoleSessionID = (*uuid.UUID)(&dogfoodSessionUUID)
-	}
-
-	qEventParams := queries.CreateAuditLogEventParams{
-		ID:                    eventID,
-		ProjectID:             authn.ProjectID(ctx),
-		OrganizationID:        data.OrganizationID,
-		ActorConsoleUserID:    consoleUserID,
-		ActorConsoleSessionID: consoleSessionID,
-		ActorBackendApiKeyID:  backendApiKeyID,
-		ResourceType:          refOrNil(data.ResourceType),
-		ResourceID:            data.ResourceID,
-		EventName:             data.EventName,
-		EventTime:             &eventTime,
-		EventDetails:          eventDetailsBytes,
+		qEventParams.ActorSessionID = (*uuid.UUID)(&dogfoodSessionUUID)
 	}
 
 	qEvent, err := q.CreateAuditLogEvent(ctx, qEventParams)
