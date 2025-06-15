@@ -79,8 +79,7 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 
 	var nextPageToken string
 	if len(qAuditLogEvents) == limit+1 {
-		last := qAuditLogEvents[limit-1]
-		nextPageToken = s.pageEncoder.Marshal(last.EventTime)
+		nextPageToken = s.pageEncoder.Marshal(qAuditLogEvents[limit].ID)
 		auditLogEvents = auditLogEvents[:limit]
 	}
 

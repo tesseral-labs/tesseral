@@ -185,7 +185,6 @@ export function AuditLogEventsPage() {
 
   const {
     data: listAuditLogEventsResponses,
-    error,
     fetchNextPage,
     hasNextPage,
     isError,
@@ -261,17 +260,6 @@ export function AuditLogEventsPage() {
                     </TableRow>
                   ))}
                 </>
-              )}
-              {isError && (
-                <TableRow>
-                  <TableCell
-                    colSpan={4}
-                    className="text-center text-destructive"
-                  >
-                    Failed to load audit logs:{" "}
-                    {(error as Error)?.message ?? "Unknown error"}
-                  </TableCell>
-                </TableRow>
               )}
               {!isLoading && !isError && !auditLogEvents?.length && (
                 <TableRow>
