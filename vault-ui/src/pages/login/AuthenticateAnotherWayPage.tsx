@@ -7,6 +7,7 @@ import { useNavigate } from "react-router";
 import { z } from "zod";
 
 import { Title } from "@/components/Title";
+import { GithubIcon } from "@/components/login/GithubIcon";
 import { GoogleIcon } from "@/components/login/GoogleIcon";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { MicrosoftIcon } from "@/components/login/MicrosoftIcon";
@@ -28,6 +29,7 @@ import {
 import { Input } from "@/components/ui/input";
 import TextDivider from "@/components/ui/text-divider";
 import {
+  getGithubOAuthRedirectURL,
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
   issueEmailVerificationChallenge,
@@ -76,6 +78,17 @@ export function AuthenticateAnotherWayPage() {
   async function handleLogInWithMicrosoft() {
     const { url } = await getMicrosoftOAuthRedirectURLAsync({
       redirectUrl: `${window.location.origin}/microsoft-oauth-callback`,
+    });
+    window.location.href = url;
+  }
+
+  const { mutateAsync: getGithubOAuthRedirectURLAsync } = useMutation(
+    getGithubOAuthRedirectURL,
+  );
+
+  async function handleLogInWithGithub() {
+    const { url } = await getGithubOAuthRedirectURLAsync({
+      redirectUrl: `${window.location.origin}/github-oauth-callback`,
     });
     window.location.href = url;
   }
@@ -129,13 +142,22 @@ export function AuthenticateAnotherWayPage() {
               Log in with Microsoft
             </Button>
           )}
+          {organization?.logInWithGithub && (
+            <Button
+              className="w-full"
+              variant="outline"
+              onClick={handleLogInWithGithub}
+            >
+              <GithubIcon />
+              Log in with GitHub
+            </Button>
+          )}
 
           {organization?.logInWithEmail && (
             <>
               {(organization?.logInWithGoogle ||
-                organization?.logInWithMicrosoft) && (
-                <TextDivider>or</TextDivider>
-              )}
+                organization?.logInWithMicrosoft ||
+                organization?.logInWithGithub) && <TextDivider>or</TextDivider>}
 
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)}>
