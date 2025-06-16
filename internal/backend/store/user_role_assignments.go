@@ -219,7 +219,7 @@ func (s *Store) CreateUserRoleAssignment(ctx context.Context, req *backendv1.Cre
 
 	userRoleAssignment := parseUserRoleAssignment(qUserRoleAssignment)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
-		EventName: "tesseral.user_role_assignments.create",
+		EventName: "tesseral.users.assign_role",
 		EventDetails: &backendv1.UserRoleAssignmentCreated{
 			UserRoleAssignment: userRoleAssignment,
 		},
@@ -277,7 +277,7 @@ func (s *Store) DeleteUserRoleAssignment(ctx context.Context, req *backendv1.Del
 
 	userRoleAssignment := parseUserRoleAssignment(qUserRoleAssignment)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
-		EventName: "tesseral.user_role_assignments.delete",
+		EventName: "tesseral.users.unassign_role",
 		EventDetails: &backendv1.UserRoleAssignmentDeleted{
 			UserRoleAssignment: userRoleAssignment,
 		},

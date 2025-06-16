@@ -75,7 +75,7 @@ func (s *Store) CreateAPIKeyRoleAssignment(ctx context.Context, req *backendv1.C
 
 	apiKeyRoleAssignment := parseAPIKeyRoleAssignment(qAPIKeyRoleAssignment)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
-		EventName: "tesseral.api_key_role_assignments.create",
+		EventName: "tesseral.api_keys.assign_role",
 		EventDetails: &backendv1.APIKeyRoleAssignmentCreated{
 			RoleAssignment: apiKeyRoleAssignment,
 		},
@@ -137,7 +137,7 @@ func (s *Store) DeleteAPIKeyRoleAssignment(ctx context.Context, req *backendv1.D
 	}
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
-		EventName: "tesseral.api_key_role_assignments.delete",
+		EventName: "tesseral.api_keys.unassign_role",
 		EventDetails: &backendv1.APIKeyRoleAssignmentDeleted{
 			RoleAssignment: parseAPIKeyRoleAssignment(qAPIKeyRoleAssignment),
 		},
