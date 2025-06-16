@@ -1,22 +1,24 @@
-import { useMutation } from '@connectrpc/connect-query';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { LoaderCircleIcon } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router';
-import { Link, useSearchParams } from 'react-router-dom';
-import { z } from 'zod';
+import { useMutation } from "@connectrpc/connect-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { LoaderCircleIcon } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
+import { Link, useSearchParams } from "react-router-dom";
+import { z } from "zod";
 
-import { GoogleIcon } from '@/components/login/GoogleIcon';
-import { LoginFlowCard } from '@/components/login/LoginFlowCard';
-import { MicrosoftIcon } from '@/components/login/MicrosoftIcon';
-import { Button } from '@/components/ui/button';
+import { LoginFlowCard } from "@/components/login/LoginFlowCard";
+import { GithubIcon } from "@/components/login/icons/GithubIcon";
+import { GoogleIcon } from "@/components/login/icons/GoogleIcon";
+import { MicrosoftIcon } from "@/components/login/icons/MicrosoftIcon";
+import { Title } from "@/components/page/Title";
+import { Button } from "@/components/ui/button";
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -24,8 +26,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   createIntermediateSession,
   getGithubOAuthRedirectURL,
@@ -33,13 +35,11 @@ import {
   getMicrosoftOAuthRedirectURL,
   issueEmailVerificationChallenge,
   setEmailAsPrimaryLoginFactor,
-} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
+} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import {
   ProjectSettingsProvider,
   useProjectSettings,
-} from '@/lib/project-settings';
-import { Title } from '@/components/Title';
-import GithubIcon from '@/components/login/GithubIcon';
+} from "@/lib/project-settings";
 
 export function SignupPage() {
   return (
@@ -53,15 +53,12 @@ export function SignupPage() {
 
 function CenteredSignupPage({ children }: { children?: React.ReactNode }) {
   return (
-    <div className="bg-zinc-950 w-full min-h-screen mx-auto flex flex-col justify-center items-center py-8 relative">
-      <div className="absolute flex justify-center items-center blur-3xl w-full z-5">
-        <div className="relative rounded-full w-[750px] h-[750px] bg-indigo-600/30 blur-3xl m-auto" />
-      </div>
+    <div className="w-full min-h-screen mx-auto flex flex-col justify-center items-center py-8 relative">
       <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 flex justify-center z-10">
         <div className="mb-8">
           <img
             className="max-w-[180px]"
-            src="/images/tesseral-logo-white.svg"
+            src="/images/tesseral-logo-black.svg"
           />
         </div>
       </div>
@@ -92,11 +89,11 @@ function SignupPageContents() {
     }
 
     setRelayedSessionState(
-      searchParams.get('relayed-session-state') ?? undefined,
+      searchParams.get("relayed-session-state") ?? undefined,
     );
 
     const searchParamsCopy = new URLSearchParams(searchParams);
-    searchParamsCopy.delete('relayed-session-state');
+    searchParamsCopy.delete("relayed-session-state");
     setSearchParams(searchParamsCopy);
   }, [relayedSessionState, searchParams, setSearchParams]);
 
@@ -145,7 +142,7 @@ function SignupPageContents() {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      email: '',
+      email: "",
     },
   });
 
@@ -166,7 +163,7 @@ function SignupPageContents() {
       email: values.email,
     });
 
-    navigate('/verify-email');
+    navigate("/verify-email");
   }
 
   const hasAboveFoldMethod =
@@ -257,7 +254,7 @@ function SignupPageContents() {
         )}
 
         <p className="mt-4 text-xs text-muted-foreground">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <Link
             to="/login"
             className="cursor-pointer text-foreground underline underline-offset-2 decoration-muted-foreground"

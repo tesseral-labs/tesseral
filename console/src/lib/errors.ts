@@ -1,4 +1,4 @@
-import { ErrorDetail } from '@/gen/tesseral/common/v1/common_pb';
+import { ErrorDetail } from "@/gen/tesseral/common/v1/common_pb";
 
 interface ApiError {
   code: string;

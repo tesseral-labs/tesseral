@@ -13,5 +13,5 @@
     "lib": ["es2021", "dom"],
     "strict": true
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "**/*.js", "**/*.mjs", "**/*.jsx"]
 }
