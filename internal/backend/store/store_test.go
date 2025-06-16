@@ -42,12 +42,12 @@ func (s *BackendSuite) NewAuthContext(project storetestutil.Project) context.Con
 	})
 }
 
-func (s *BackendSuite) CreateProject() storetestutil.Project {
-	return s.console.CreateProject(s.T())
+func (s *BackendSuite) NewProject() storetestutil.Project {
+	return s.console.NewProject(s.T())
 }
 
-func (s *BackendSuite) CreateOrganization(params storetestutil.OrganizationParams) storetestutil.Organization {
-	return s.console.CreateOrganization(s.T(), params)
+func (s *BackendSuite) NewOrganization(params storetestutil.OrganizationParams) storetestutil.Organization {
+	return s.console.NewOrganization(s.T(), params)
 }
 
 func TestBackendSuite(t *testing.T) {

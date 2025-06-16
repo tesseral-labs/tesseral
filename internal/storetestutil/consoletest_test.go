@@ -11,10 +11,10 @@ func TestNewConsole(t *testing.T) {
 	pool := NewDB(t)
 	console := NewConsole(t, pool)
 
-	project := console.CreateProject(t)
+	project := console.NewProject(t)
 	require.NotEmpty(t, project.ProjectID, "project ID should not be empty")
 
-	organization := console.CreateOrganization(t, OrganizationParams{
+	organization := console.NewOrganization(t, OrganizationParams{
 		Project: project,
 		Organization: &backendv1.Organization{
 			DisplayName: "test",

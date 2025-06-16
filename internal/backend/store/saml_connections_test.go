@@ -11,13 +11,13 @@ import (
 func (s *BackendSuite) TestCreateSAMLConnection() {
 	s.T().Parallel()
 
-	project := s.CreateProject()
+	project := s.NewProject()
 
 	s.Run("SAML enabled", func() {
 		ctx := s.NewAuthContext(project)
 		require := s.Require()
 
-		organization := s.CreateOrganization(storetestutil.OrganizationParams{
+		organization := s.NewOrganization(storetestutil.OrganizationParams{
 			Project: project,
 			Organization: &backendv1.Organization{
 				DisplayName:   "test",
@@ -40,7 +40,7 @@ func (s *BackendSuite) TestCreateSAMLConnection() {
 		ctx := s.NewAuthContext(project)
 		require := s.Require()
 
-		organization := s.CreateOrganization(storetestutil.OrganizationParams{
+		organization := s.NewOrganization(storetestutil.OrganizationParams{
 			Project: project,
 			Organization: &backendv1.Organization{
 				DisplayName:   "test",
@@ -66,13 +66,13 @@ func (s *BackendSuite) TestCreateSAMLConnection() {
 func (s *BackendSuite) TestGetSAMLConnection() {
 	s.T().Parallel()
 
-	project := s.CreateProject()
+	project := s.NewProject()
 
 	s.Run("SAML connection exists", func() {
 		ctx := s.NewAuthContext(project)
 		require := s.Require()
 
-		organization := s.CreateOrganization(storetestutil.OrganizationParams{
+		organization := s.NewOrganization(storetestutil.OrganizationParams{
 			Project: project,
 			Organization: &backendv1.Organization{
 				DisplayName:   "test",

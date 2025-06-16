@@ -80,7 +80,7 @@ type Project struct {
 	UserID    string
 }
 
-func (c *Console) CreateProject(t *testing.T) Project {
+func (c *Console) NewProject(t *testing.T) Project {
 	projectName := fmt.Sprintf("test-%d", rand.IntN(1<<20))
 
 	intermediateSession := &intermediatev1.IntermediateSession{
@@ -157,7 +157,7 @@ type Organization struct {
 	UserID         string
 }
 
-func (c *Console) CreateOrganization(t *testing.T, params OrganizationParams) Organization {
+func (c *Console) NewOrganization(t *testing.T, params OrganizationParams) Organization {
 	bkstore := bkstore.New(bkstore.NewStoreParams{
 		DB:                        c.pool,
 		KMS:                       c.kms.Client,
