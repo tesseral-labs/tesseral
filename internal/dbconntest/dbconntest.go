@@ -20,10 +20,10 @@ func Open(t *testing.T) *pgxpool.Pool {
 		postgres.WithUsername("testuser"),
 		postgres.WithPassword("testpass"),
 		postgres.BasicWaitStrategies())
+	testcontainers.CleanupContainer(t, container)
 	if err != nil {
 		t.Fatalf("run postgres container: %v", err)
 	}
-	testcontainers.CleanupContainer(t, container)
 
 	dsn, err := container.ConnectionString(ctx, "sslmode=disable")
 	if err != nil {
