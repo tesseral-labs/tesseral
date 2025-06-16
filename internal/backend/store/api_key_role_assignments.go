@@ -53,10 +53,11 @@ func (s *Store) CreateAPIKeyRoleAssignment(ctx context.Context, req *backendv1.C
 		return nil, fmt.Errorf("get role: %w", err)
 	}
 
-	if _, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
+	qOrg, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
 		ID:        qAPIKey.OrganizationID,
 		ProjectID: authn.ProjectID(ctx),
-	}); err != nil {
+	})
+	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("api key not found", fmt.Errorf("get organization: %w", err))
 		}
@@ -78,7 +79,7 @@ func (s *Store) CreateAPIKeyRoleAssignment(ctx context.Context, req *backendv1.C
 		EventDetails: &backendv1.APIKeyRoleAssignmentCreated{
 			RoleAssignment: apiKeyRoleAssignment,
 		},
-		OrganizationID: &qAPIKey.ID,
+		OrganizationID: &qOrg.ID,
 		ResourceType:   queries.AuditLogEventResourceTypeApiKey,
 		ResourceID:     &qAPIKeyRoleAssignment.ApiKeyID,
 	}); err != nil {
