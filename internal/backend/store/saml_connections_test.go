@@ -11,13 +11,13 @@ import (
 func (tester *BackendSuite) TestCreateSAMLConnection() {
 	tester.T().Parallel()
 
-	project := tester.CreateProject(tester.T())
+	project := tester.CreateProject()
 
 	tester.Run("SAML enabled", func() {
-		ctx := tester.NewAuthContext(tester.T(), project)
+		ctx := tester.NewAuthContext(project)
 		require := tester.Require()
 
-		organization := tester.CreateOrganization(tester.T(), storetestutil.OrganizationParams{
+		organization := tester.CreateOrganization(storetestutil.OrganizationParams{
 			Project: project,
 			Organization: &backendv1.Organization{
 				DisplayName:   "test",
@@ -37,10 +37,10 @@ func (tester *BackendSuite) TestCreateSAMLConnection() {
 	})
 
 	tester.Run("SAML disabled", func() {
-		ctx := tester.NewAuthContext(tester.T(), project)
+		ctx := tester.NewAuthContext(project)
 		require := tester.Require()
 
-		organization := tester.CreateOrganization(tester.T(), storetestutil.OrganizationParams{
+		organization := tester.CreateOrganization(storetestutil.OrganizationParams{
 			Project: project,
 			Organization: &backendv1.Organization{
 				DisplayName:   "test",
@@ -66,13 +66,13 @@ func (tester *BackendSuite) TestCreateSAMLConnection() {
 func (tester *BackendSuite) TestGetSAMLConnection() {
 	tester.T().Parallel()
 
-	project := tester.CreateProject(tester.T())
+	project := tester.CreateProject()
 
 	tester.Run("SAML connection exists", func() {
-		ctx := tester.NewAuthContext(tester.T(), project)
+		ctx := tester.NewAuthContext(project)
 		require := tester.Require()
 
-		organization := tester.CreateOrganization(tester.T(), storetestutil.OrganizationParams{
+		organization := tester.CreateOrganization(storetestutil.OrganizationParams{
 			Project: project,
 			Organization: &backendv1.Organization{
 				DisplayName:   "test",
@@ -104,7 +104,7 @@ func (tester *BackendSuite) TestGetSAMLConnection() {
 	})
 
 	tester.Run("SAML connection does not exist", func() {
-		ctx := tester.NewAuthContext(tester.T(), project)
+		ctx := tester.NewAuthContext(project)
 		require := tester.Require()
 
 		res, err := tester.Store.GetSAMLConnection(ctx, &backendv1.GetSAMLConnectionRequest{

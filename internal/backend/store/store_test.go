@@ -14,45 +14,40 @@ import (
 
 type BackendSuite struct {
 	suite.Suite
-	*tester
+	Store   *store.Store
+	console *storetestutil.Console
 }
 
 func (s *BackendSuite) SetupSuite() {
-	s.tester = newTester(s.T())
-}
+	db := storetestutil.NewDB(s.T())
+	console := storetestutil.NewConsole(s.T(), db)
+	kms := storetestutil.NewKMS(s.T())
 
-type tester struct {
-	Store *store.Store
-	*storetestutil.Console
-}
-
-func newTester(t *testing.T) *tester {
-	t.Helper()
-
-	db := storetestutil.NewDB(t)
-	console := storetestutil.NewConsole(t, db)
-	kms := storetestutil.NewKMS(t)
-	store := store.New(store.NewStoreParams{
+	s.console = console
+	s.Store = store.New(store.NewStoreParams{
 		DB:                        db,
-		S3:                        storetestutil.NewS3Client(t),
+		S3:                        storetestutil.NewS3Client(s.T()),
 		KMS:                       kms.Client,
 		SessionSigningKeyKmsKeyID: kms.SessionSigningKeyID,
 		DogfoodProjectID:          console.DogfoodProjectID,
 		ConsoleDomain:             console.ConsoleDomain,
 	})
-
-	return &tester{
-		Store:   store,
-		Console: console,
-	}
 }
 
-func (tester *tester) NewAuthContext(t *testing.T, project storetestutil.Project) context.Context {
-	return authn.NewDogfoodSessionContext(t.Context(), authn.DogfoodSessionContextData{
+func (s *BackendSuite) NewAuthContext(project storetestutil.Project) context.Context {
+	return authn.NewDogfoodSessionContext(s.T().Context(), authn.DogfoodSessionContextData{
 		ProjectID: project.ProjectID,
 		UserID:    project.UserID,
 		SessionID: idformat.Session.Format(uuid.New()),
 	})
+}
+
+func (s *BackendSuite) CreateProject() storetestutil.Project {
+	return s.console.CreateProject(s.T())
+}
+
+func (s *BackendSuite) CreateOrganization(params storetestutil.OrganizationParams) storetestutil.Organization {
+	return s.console.CreateOrganization(s.T(), params)
 }
 
 func TestBackendSuite(t *testing.T) {
