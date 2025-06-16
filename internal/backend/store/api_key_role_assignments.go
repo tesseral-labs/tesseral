@@ -53,11 +53,10 @@ func (s *Store) CreateAPIKeyRoleAssignment(ctx context.Context, req *backendv1.C
 		return nil, fmt.Errorf("get role: %w", err)
 	}
 
-	qOrg, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
+	if _, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
 		ID:        qAPIKey.OrganizationID,
 		ProjectID: authn.ProjectID(ctx),
-	})
-	if err != nil {
+	}); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("api key not found", fmt.Errorf("get organization: %w", err))
 		}
@@ -79,9 +78,9 @@ func (s *Store) CreateAPIKeyRoleAssignment(ctx context.Context, req *backendv1.C
 		EventDetails: &backendv1.APIKeyRoleAssignmentCreated{
 			RoleAssignment: apiKeyRoleAssignment,
 		},
-		OrganizationID: &qOrg.ID,
-		ResourceType:   queries.AuditLogEventResourceTypeApiKeyRoleAssignment,
-		ResourceID:     &qAPIKeyRoleAssignment.ID,
+		OrganizationID: &qAPIKey.ID,
+		ResourceType:   queries.AuditLogEventResourceTypeApiKey,
+		ResourceID:     &qAPIKeyRoleAssignment.ApiKeyID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
@@ -142,8 +141,8 @@ func (s *Store) DeleteAPIKeyRoleAssignment(ctx context.Context, req *backendv1.D
 			RoleAssignment: parseAPIKeyRoleAssignment(qAPIKeyRoleAssignment),
 		},
 		OrganizationID: &qAPIKey.OrganizationID,
-		ResourceType:   queries.AuditLogEventResourceTypeApiKeyRoleAssignment,
-		ResourceID:     &qAPIKeyRoleAssignment.ID,
+		ResourceType:   queries.AuditLogEventResourceTypeApiKey,
+		ResourceID:     &qAPIKeyRoleAssignment.ApiKeyID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
 	}

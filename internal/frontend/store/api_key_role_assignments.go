@@ -71,8 +71,8 @@ func (s *Store) CreateAPIKeyRoleAssignment(ctx context.Context, req *frontendv1.
 		EventDetails: &frontendv1.APIKeyRoleAssignmentCreated{
 			RoleAssignment: apiKeyRoleAssignment,
 		},
-		ResourceType: queries.AuditLogEventResourceTypeApiKeyRoleAssignment,
-		ResourceID:   &qAPIKeyRoleAssignment.ID,
+		ResourceType: queries.AuditLogEventResourceTypeApiKey,
+		ResourceID:   &qAPIKeyRoleAssignment.ApiKeyID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
@@ -121,8 +121,8 @@ func (s *Store) DeleteAPIKeyRoleAssignment(ctx context.Context, req *frontendv1.
 		EventDetails: &frontendv1.APIKeyRoleAssignmentDeleted{
 			RoleAssignment: parseAPIKeyRoleAssignment(qAPIKeyRoleAssignment),
 		},
-		ResourceType: queries.AuditLogEventResourceTypeApiKeyRoleAssignment,
-		ResourceID:   &qAPIKeyRoleAssignment.ID,
+		ResourceType: queries.AuditLogEventResourceTypeApiKey,
+		ResourceID:   &qAPIKeyRoleAssignment.ApiKeyID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
 	}

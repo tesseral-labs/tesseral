@@ -232,8 +232,8 @@ func (s *Store) CreateUserRoleAssignment(ctx context.Context, req *frontendv1.Cr
 		EventDetails: &frontendv1.UserRoleAssignmentCreated{
 			UserRoleAssignment: userRoleAssignment,
 		},
-		ResourceType: queries.AuditLogEventResourceTypeUserRoleAssignment,
-		ResourceID:   &qUserRoleAssignment.ID,
+		ResourceType: queries.AuditLogEventResourceTypeUser,
+		ResourceID:   &qUserRoleAssignment.UserID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
@@ -283,8 +283,8 @@ func (s *Store) DeleteUserRoleAssignment(ctx context.Context, req *frontendv1.De
 		EventDetails: &frontendv1.UserRoleAssignmentDeleted{
 			UserRoleAssignment: parseUserRoleAssignment(qUserRoleAssignment),
 		},
-		ResourceType: queries.AuditLogEventResourceTypeUserRoleAssignment,
-		ResourceID:   &qUserRoleAssignment.ID,
+		ResourceType: queries.AuditLogEventResourceTypeUser,
+		ResourceID:   &qUserRoleAssignment.UserID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
