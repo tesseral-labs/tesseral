@@ -42,10 +42,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
+  getAPIKey,
   getUser,
   listAuditLogEvents,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
-import { getAPIKey } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 import { ListAuditLogEventsRequest } from "@/gen/tesseral/frontend/v1/frontend_pb";
 import { AuditLogEvent } from "@/gen/tesseral/frontend/v1/models_pb";
 
@@ -290,22 +290,7 @@ export function AuditLogEventsPage() {
                         {event.eventName}
                       </TableCell>
                       <TableCell>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <span>{renderActor(event)}</span>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            {event.actorUserId && (
-                              <p>User ID: {event.actorUserId}</p>
-                            )}
-                            {event.actorSessionId && (
-                              <p>Session ID: {event.actorSessionId}</p>
-                            )}
-                            {event.actorApiKeyId && (
-                              <p>API Key ID: {event.actorApiKeyId}</p>
-                            )}
-                          </TooltipContent>
-                        </Tooltip>
+                        <span>{renderActor(event)}</span>
                       </TableCell>
                       <TableCell>
                         <Tooltip>
