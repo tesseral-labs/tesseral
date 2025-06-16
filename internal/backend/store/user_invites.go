@@ -168,6 +168,19 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *backendv1.CreateUserI
 		return nil, apierror.NewFailedPreconditionError("email daily quota exceeded", fmt.Errorf("email daily quota exceeded"))
 	}
 
+	userInvite := parseUserInvite(qUserInvite)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.user_invites.create",
+		EventDetails: &backendv1.UserInviteCreated{
+			UserInvite: userInvite,
+		},
+		OrganizationID: &qOrg.ID,
+		ResourceType:   queries.AuditLogEventResourceTypeUserInvite,
+		ResourceID:     &qUserInvite.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
@@ -178,7 +191,7 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *backendv1.CreateUserI
 		}
 	}
 
-	return &backendv1.CreateUserInviteResponse{UserInvite: parseUserInvite(qUserInvite)}, nil
+	return &backendv1.CreateUserInviteResponse{UserInvite: userInvite}, nil
 }
 
 func (s *Store) DeleteUserInvite(ctx context.Context, req *backendv1.DeleteUserInviteRequest) (*backendv1.DeleteUserInviteResponse, error) {
@@ -193,10 +206,11 @@ func (s *Store) DeleteUserInvite(ctx context.Context, req *backendv1.DeleteUserI
 		return nil, fmt.Errorf("parse user invite id: %w", err)
 	}
 
-	if _, err := q.GetUserInvite(ctx, queries.GetUserInviteParams{
+	qUserInvite, err := q.GetUserInvite(ctx, queries.GetUserInviteParams{
 		ID:        userInviteID,
 		ProjectID: authn.ProjectID(ctx),
-	}); err != nil {
+	})
+	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("user invite not found", fmt.Errorf("get user invite: %w", err))
 		}
@@ -206,6 +220,18 @@ func (s *Store) DeleteUserInvite(ctx context.Context, req *backendv1.DeleteUserI
 
 	if err := q.DeleteUserInvite(ctx, userInviteID); err != nil {
 		return nil, fmt.Errorf("delete user invite: %w", err)
+	}
+
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.user_invites.delete",
+		EventDetails: &backendv1.UserInviteDeleted{
+			UserInvite: parseUserInvite(qUserInvite),
+		},
+		OrganizationID: &qUserInvite.OrganizationID,
+		ResourceType:   queries.AuditLogEventResourceTypeUserInvite,
+		ResourceID:     &qUserInvite.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
 	if err := commit(); err != nil {

@@ -196,6 +196,9 @@ const (
 	// FrontendServiceListAPIKeyRoleAssignmentsProcedure is the fully-qualified name of the
 	// FrontendService's ListAPIKeyRoleAssignments RPC.
 	FrontendServiceListAPIKeyRoleAssignmentsProcedure = "/tesseral.frontend.v1.FrontendService/ListAPIKeyRoleAssignments"
+	// FrontendServiceListAuditLogEventsProcedure is the fully-qualified name of the FrontendService's
+	// ListAuditLogEvents RPC.
+	FrontendServiceListAuditLogEventsProcedure = "/tesseral.frontend.v1.FrontendService/ListAuditLogEvents"
 )
 
 // FrontendServiceClient is a client for the tesseral.frontend.v1.FrontendService service.
@@ -273,6 +276,7 @@ type FrontendServiceClient interface {
 	CreateAPIKeyRoleAssignment(context.Context, *connect.Request[v1.CreateAPIKeyRoleAssignmentRequest]) (*connect.Response[v1.CreateAPIKeyRoleAssignmentResponse], error)
 	DeleteAPIKeyRoleAssignment(context.Context, *connect.Request[v1.DeleteAPIKeyRoleAssignmentRequest]) (*connect.Response[v1.DeleteAPIKeyRoleAssignmentResponse], error)
 	ListAPIKeyRoleAssignments(context.Context, *connect.Request[v1.ListAPIKeyRoleAssignmentsRequest]) (*connect.Response[v1.ListAPIKeyRoleAssignmentsResponse], error)
+	ListAuditLogEvents(context.Context, *connect.Request[v1.ListAuditLogEventsRequest]) (*connect.Response[v1.ListAuditLogEventsResponse], error)
 }
 
 // NewFrontendServiceClient constructs a client for the tesseral.frontend.v1.FrontendService
@@ -622,6 +626,12 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(frontendServiceMethods.ByName("ListAPIKeyRoleAssignments")),
 			connect.WithClientOptions(opts...),
 		),
+		listAuditLogEvents: connect.NewClient[v1.ListAuditLogEventsRequest, v1.ListAuditLogEventsResponse](
+			httpClient,
+			baseURL+FrontendServiceListAuditLogEventsProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("ListAuditLogEvents")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -683,6 +693,7 @@ type frontendServiceClient struct {
 	createAPIKeyRoleAssignment            *connect.Client[v1.CreateAPIKeyRoleAssignmentRequest, v1.CreateAPIKeyRoleAssignmentResponse]
 	deleteAPIKeyRoleAssignment            *connect.Client[v1.DeleteAPIKeyRoleAssignmentRequest, v1.DeleteAPIKeyRoleAssignmentResponse]
 	listAPIKeyRoleAssignments             *connect.Client[v1.ListAPIKeyRoleAssignmentsRequest, v1.ListAPIKeyRoleAssignmentsResponse]
+	listAuditLogEvents                    *connect.Client[v1.ListAuditLogEventsRequest, v1.ListAuditLogEventsResponse]
 }
 
 // Logout calls tesseral.frontend.v1.FrontendService.Logout.
@@ -970,6 +981,11 @@ func (c *frontendServiceClient) ListAPIKeyRoleAssignments(ctx context.Context, r
 	return c.listAPIKeyRoleAssignments.CallUnary(ctx, req)
 }
 
+// ListAuditLogEvents calls tesseral.frontend.v1.FrontendService.ListAuditLogEvents.
+func (c *frontendServiceClient) ListAuditLogEvents(ctx context.Context, req *connect.Request[v1.ListAuditLogEventsRequest]) (*connect.Response[v1.ListAuditLogEventsResponse], error) {
+	return c.listAuditLogEvents.CallUnary(ctx, req)
+}
+
 // FrontendServiceHandler is an implementation of the tesseral.frontend.v1.FrontendService service.
 type FrontendServiceHandler interface {
 	Logout(context.Context, *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error)
@@ -1045,6 +1061,7 @@ type FrontendServiceHandler interface {
 	CreateAPIKeyRoleAssignment(context.Context, *connect.Request[v1.CreateAPIKeyRoleAssignmentRequest]) (*connect.Response[v1.CreateAPIKeyRoleAssignmentResponse], error)
 	DeleteAPIKeyRoleAssignment(context.Context, *connect.Request[v1.DeleteAPIKeyRoleAssignmentRequest]) (*connect.Response[v1.DeleteAPIKeyRoleAssignmentResponse], error)
 	ListAPIKeyRoleAssignments(context.Context, *connect.Request[v1.ListAPIKeyRoleAssignmentsRequest]) (*connect.Response[v1.ListAPIKeyRoleAssignmentsResponse], error)
+	ListAuditLogEvents(context.Context, *connect.Request[v1.ListAuditLogEventsRequest]) (*connect.Response[v1.ListAuditLogEventsResponse], error)
 }
 
 // NewFrontendServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -1390,6 +1407,12 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		connect.WithSchema(frontendServiceMethods.ByName("ListAPIKeyRoleAssignments")),
 		connect.WithHandlerOptions(opts...),
 	)
+	frontendServiceListAuditLogEventsHandler := connect.NewUnaryHandler(
+		FrontendServiceListAuditLogEventsProcedure,
+		svc.ListAuditLogEvents,
+		connect.WithSchema(frontendServiceMethods.ByName("ListAuditLogEvents")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/tesseral.frontend.v1.FrontendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case FrontendServiceLogoutProcedure:
@@ -1504,6 +1527,8 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 			frontendServiceDeleteAPIKeyRoleAssignmentHandler.ServeHTTP(w, r)
 		case FrontendServiceListAPIKeyRoleAssignmentsProcedure:
 			frontendServiceListAPIKeyRoleAssignmentsHandler.ServeHTTP(w, r)
+		case FrontendServiceListAuditLogEventsProcedure:
+			frontendServiceListAuditLogEventsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -1735,4 +1760,8 @@ func (UnimplementedFrontendServiceHandler) DeleteAPIKeyRoleAssignment(context.Co
 
 func (UnimplementedFrontendServiceHandler) ListAPIKeyRoleAssignments(context.Context, *connect.Request[v1.ListAPIKeyRoleAssignmentsRequest]) (*connect.Response[v1.ListAPIKeyRoleAssignmentsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.ListAPIKeyRoleAssignments is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) ListAuditLogEvents(context.Context, *connect.Request[v1.ListAuditLogEventsRequest]) (*connect.Response[v1.ListAuditLogEventsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.ListAuditLogEvents is not implemented"))
 }

@@ -118,6 +118,17 @@ func (s *Store) UpdatePasskey(ctx context.Context, req *backendv1.UpdatePasskeyR
 		return nil, fmt.Errorf("get passkey: %w", err)
 	}
 
+	qUser, err := q.GetUser(ctx, queries.GetUserParams{
+		ID:        qPasskey.UserID,
+		ProjectID: authn.ProjectID(ctx),
+	})
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("user not found", fmt.Errorf("get user: %w", err))
+		}
+		return nil, fmt.Errorf("get user: %w", err)
+	}
+
 	var updates queries.UpdatePasskeyParams
 	updates.ID = qPasskey.ID
 
@@ -130,11 +141,25 @@ func (s *Store) UpdatePasskey(ctx context.Context, req *backendv1.UpdatePasskeyR
 		return nil, fmt.Errorf("update passkey: %w", err)
 	}
 
+	passkey := parsePasskey(qUpdatedPasskey)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.passkeys.update",
+		EventDetails: &backendv1.PasskeyUpdated{
+			Passkey:         passkey,
+			PreviousPasskey: parsePasskey(qPasskey),
+		},
+		OrganizationID: &qUser.OrganizationID,
+		ResourceType:   queries.AuditLogEventResourceTypePasskey,
+		ResourceID:     &qUpdatedPasskey.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &backendv1.UpdatePasskeyResponse{Passkey: parsePasskey(qUpdatedPasskey)}, nil
+	return &backendv1.UpdatePasskeyResponse{Passkey: passkey}, nil
 }
 
 func (s *Store) DeletePasskey(ctx context.Context, req *backendv1.DeletePasskeyRequest) (*backendv1.DeletePasskeyResponse, error) {
@@ -149,10 +174,11 @@ func (s *Store) DeletePasskey(ctx context.Context, req *backendv1.DeletePasskeyR
 		return nil, fmt.Errorf("parse passkey id: %w", err)
 	}
 
-	if _, err := q.GetPasskey(ctx, queries.GetPasskeyParams{
+	qPasskey, err := q.GetPasskey(ctx, queries.GetPasskeyParams{
 		ID:        passkeyID,
 		ProjectID: authn.ProjectID(ctx),
-	}); err != nil {
+	})
+	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("passkey not found", fmt.Errorf("get passkey: %w", err))
 		}
@@ -160,8 +186,31 @@ func (s *Store) DeletePasskey(ctx context.Context, req *backendv1.DeletePasskeyR
 		return nil, fmt.Errorf("get passkey: %w", err)
 	}
 
+	qUser, err := q.GetUser(ctx, queries.GetUserParams{
+		ID:        qPasskey.UserID,
+		ProjectID: authn.ProjectID(ctx),
+	})
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("user not found", fmt.Errorf("get user: %w", err))
+		}
+		return nil, fmt.Errorf("get user: %w", err)
+	}
+
 	if err := q.DeletePasskey(ctx, passkeyID); err != nil {
 		return nil, fmt.Errorf("delete passkey: %w", err)
+	}
+
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.passkeys.delete",
+		EventDetails: &backendv1.PasskeyDeleted{
+			Passkey: parsePasskey(qPasskey),
+		},
+		OrganizationID: &qUser.OrganizationID,
+		ResourceType:   queries.AuditLogEventResourceTypePasskey,
+		ResourceID:     &qPasskey.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
 	if err := commit(); err != nil {

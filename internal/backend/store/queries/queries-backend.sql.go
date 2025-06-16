@@ -106,6 +106,70 @@ func (q *Queries) CreateAPIKeyRoleAssignment(ctx context.Context, arg CreateAPIK
 	return i, err
 }
 
+const createAuditLogEvent = `-- name: CreateAuditLogEvent :one
+INSERT INTO audit_log_events (id, project_id, organization_id, actor_user_id, actor_session_id, actor_api_key_id, actor_console_user_id, actor_console_session_id, actor_backend_api_key_id, actor_intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, coalesce($15, '{}'::jsonb))
+RETURNING
+    id, project_id, organization_id, actor_user_id, actor_session_id, actor_api_key_id, actor_console_user_id, actor_console_session_id, actor_backend_api_key_id, actor_intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details
+`
+
+type CreateAuditLogEventParams struct {
+	ID                         uuid.UUID
+	ProjectID                  uuid.UUID
+	OrganizationID             *uuid.UUID
+	ActorUserID                *uuid.UUID
+	ActorSessionID             *uuid.UUID
+	ActorApiKeyID              *uuid.UUID
+	ActorConsoleUserID         *uuid.UUID
+	ActorConsoleSessionID      *uuid.UUID
+	ActorBackendApiKeyID       *uuid.UUID
+	ActorIntermediateSessionID *uuid.UUID
+	ResourceType               *AuditLogEventResourceType
+	ResourceID                 *uuid.UUID
+	EventName                  string
+	EventTime                  *time.Time
+	EventDetails               interface{}
+}
+
+func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEventParams) (AuditLogEvent, error) {
+	row := q.db.QueryRow(ctx, createAuditLogEvent,
+		arg.ID,
+		arg.ProjectID,
+		arg.OrganizationID,
+		arg.ActorUserID,
+		arg.ActorSessionID,
+		arg.ActorApiKeyID,
+		arg.ActorConsoleUserID,
+		arg.ActorConsoleSessionID,
+		arg.ActorBackendApiKeyID,
+		arg.ActorIntermediateSessionID,
+		arg.ResourceType,
+		arg.ResourceID,
+		arg.EventName,
+		arg.EventTime,
+		arg.EventDetails,
+	)
+	var i AuditLogEvent
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.OrganizationID,
+		&i.ActorUserID,
+		&i.ActorSessionID,
+		&i.ActorApiKeyID,
+		&i.ActorConsoleUserID,
+		&i.ActorConsoleSessionID,
+		&i.ActorBackendApiKeyID,
+		&i.ActorIntermediateSessionID,
+		&i.ResourceType,
+		&i.ResourceID,
+		&i.EventName,
+		&i.EventTime,
+		&i.EventDetails,
+	)
+	return i, err
+}
+
 const createBackendAPIKey = `-- name: CreateBackendAPIKey :one
 INSERT INTO backend_api_keys (id, project_id, display_name, secret_token_sha256)
     VALUES ($1, $2, $3, $4)
@@ -786,6 +850,99 @@ func (q *Queries) DeleteVaultDomainSettings(ctx context.Context, projectID uuid.
 	return err
 }
 
+const deriveAuditLogEventContextForAPIKeyID = `-- name: DeriveAuditLogEventContextForAPIKeyID :one
+SELECT
+    api_keys.id AS api_key_id,
+    organizations.id AS organization_id
+FROM
+    api_keys
+    JOIN organizations ON api_keys.organization_id = organizations.id
+    JOIN projects ON organizations.project_id = projects.id
+WHERE
+    api_keys.id = $1
+    AND projects.id = $2
+`
+
+type DeriveAuditLogEventContextForAPIKeyIDParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+type DeriveAuditLogEventContextForAPIKeyIDRow struct {
+	ApiKeyID       uuid.UUID
+	OrganizationID uuid.UUID
+}
+
+func (q *Queries) DeriveAuditLogEventContextForAPIKeyID(ctx context.Context, arg DeriveAuditLogEventContextForAPIKeyIDParams) (DeriveAuditLogEventContextForAPIKeyIDRow, error) {
+	row := q.db.QueryRow(ctx, deriveAuditLogEventContextForAPIKeyID, arg.ID, arg.ProjectID)
+	var i DeriveAuditLogEventContextForAPIKeyIDRow
+	err := row.Scan(&i.ApiKeyID, &i.OrganizationID)
+	return i, err
+}
+
+const deriveAuditLogEventContextForSessionID = `-- name: DeriveAuditLogEventContextForSessionID :one
+SELECT
+    sessions.id AS session_id,
+    users.id AS user_id,
+    organizations.id AS organization_id
+FROM
+    sessions
+    JOIN users ON sessions.user_id = users.id
+    JOIN organizations ON users.organization_id = organizations.id
+    JOIN projects ON organizations.project_id = projects.id
+WHERE
+    sessions.id = $1
+    AND projects.id = $2
+`
+
+type DeriveAuditLogEventContextForSessionIDParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+type DeriveAuditLogEventContextForSessionIDRow struct {
+	SessionID      uuid.UUID
+	UserID         uuid.UUID
+	OrganizationID uuid.UUID
+}
+
+func (q *Queries) DeriveAuditLogEventContextForSessionID(ctx context.Context, arg DeriveAuditLogEventContextForSessionIDParams) (DeriveAuditLogEventContextForSessionIDRow, error) {
+	row := q.db.QueryRow(ctx, deriveAuditLogEventContextForSessionID, arg.ID, arg.ProjectID)
+	var i DeriveAuditLogEventContextForSessionIDRow
+	err := row.Scan(&i.SessionID, &i.UserID, &i.OrganizationID)
+	return i, err
+}
+
+const deriveAuditLogEventContextForUserID = `-- name: DeriveAuditLogEventContextForUserID :one
+SELECT
+    users.id AS user_id,
+    organizations.id AS organization_id
+FROM
+    users
+    JOIN organizations ON users.organization_id = organizations.id
+    JOIN projects ON organizations.project_id = projects.id
+WHERE
+    users.id = $1
+    AND projects.id = $2
+`
+
+type DeriveAuditLogEventContextForUserIDParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+type DeriveAuditLogEventContextForUserIDRow struct {
+	UserID         uuid.UUID
+	OrganizationID uuid.UUID
+}
+
+func (q *Queries) DeriveAuditLogEventContextForUserID(ctx context.Context, arg DeriveAuditLogEventContextForUserIDParams) (DeriveAuditLogEventContextForUserIDRow, error) {
+	row := q.db.QueryRow(ctx, deriveAuditLogEventContextForUserID, arg.ID, arg.ProjectID)
+	var i DeriveAuditLogEventContextForUserIDRow
+	err := row.Scan(&i.UserID, &i.OrganizationID)
+	return i, err
+}
+
 const disableOrganizationLogins = `-- name: DisableOrganizationLogins :exec
 UPDATE
     organizations
@@ -1397,7 +1554,7 @@ func (q *Queries) GetPasskey(ctx context.Context, arg GetPasskeyParams) (Passkey
 
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix, audit_logs_enabled
 FROM
     projects
 WHERE
@@ -1440,6 +1597,7 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.GithubOauthClientSecretCiphertext,
 		&i.ApiKeysEnabled,
 		&i.ApiKeySecretTokenPrefix,
+		&i.AuditLogsEnabled,
 	)
 	return i, err
 }
@@ -2255,7 +2413,7 @@ func (q *Queries) ListPasskeys(ctx context.Context, arg ListPasskeysParams) ([]P
 
 const listProjects = `-- name: ListProjects :many
 SELECT
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix, audit_logs_enabled
 FROM
     projects
 ORDER BY
@@ -2305,6 +2463,7 @@ func (q *Queries) ListProjects(ctx context.Context, limit int32) ([]Project, err
 			&i.GithubOauthClientSecretCiphertext,
 			&i.ApiKeysEnabled,
 			&i.ApiKeySecretTokenPrefix,
+			&i.AuditLogsEnabled,
 		); err != nil {
 			return nil, err
 		}
@@ -3092,11 +3251,12 @@ SET
     after_signup_redirect_uri = $16,
     cookie_domain = $17,
     api_keys_enabled = $21,
-    api_key_secret_token_prefix = $22
+    api_key_secret_token_prefix = $22,
+    audit_logs_enabled = $23
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix, audit_logs_enabled
 `
 
 type UpdateProjectParams struct {
@@ -3122,6 +3282,7 @@ type UpdateProjectParams struct {
 	GithubOauthClientSecretCiphertext    []byte
 	ApiKeysEnabled                       bool
 	ApiKeySecretTokenPrefix              *string
+	AuditLogsEnabled                     bool
 }
 
 func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (Project, error) {
@@ -3148,6 +3309,7 @@ func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (P
 		arg.GithubOauthClientSecretCiphertext,
 		arg.ApiKeysEnabled,
 		arg.ApiKeySecretTokenPrefix,
+		arg.AuditLogsEnabled,
 	)
 	var i Project
 	err := row.Scan(
@@ -3183,6 +3345,7 @@ func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (P
 		&i.GithubOauthClientSecretCiphertext,
 		&i.ApiKeysEnabled,
 		&i.ApiKeySecretTokenPrefix,
+		&i.AuditLogsEnabled,
 	)
 	return i, err
 }
@@ -3195,7 +3358,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix, audit_logs_enabled
 `
 
 type UpdateProjectEmailSendFromDomainParams struct {
@@ -3239,6 +3402,7 @@ func (q *Queries) UpdateProjectEmailSendFromDomain(ctx context.Context, arg Upda
 		&i.GithubOauthClientSecretCiphertext,
 		&i.ApiKeysEnabled,
 		&i.ApiKeySecretTokenPrefix,
+		&i.AuditLogsEnabled,
 	)
 	return i, err
 }
@@ -3251,7 +3415,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix, audit_logs_enabled
 `
 
 type UpdateProjectOrganizationIDParams struct {
@@ -3295,6 +3459,7 @@ func (q *Queries) UpdateProjectOrganizationID(ctx context.Context, arg UpdatePro
 		&i.GithubOauthClientSecretCiphertext,
 		&i.ApiKeysEnabled,
 		&i.ApiKeySecretTokenPrefix,
+		&i.AuditLogsEnabled,
 	)
 	return i, err
 }
@@ -3360,7 +3525,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix, audit_logs_enabled
 `
 
 type UpdateProjectVaultDomainParams struct {
@@ -3405,6 +3570,7 @@ func (q *Queries) UpdateProjectVaultDomain(ctx context.Context, arg UpdateProjec
 		&i.GithubOauthClientSecretCiphertext,
 		&i.ApiKeysEnabled,
 		&i.ApiKeySecretTokenPrefix,
+		&i.AuditLogsEnabled,
 	)
 	return i, err
 }

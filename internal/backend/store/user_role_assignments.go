@@ -190,10 +190,11 @@ func (s *Store) CreateUserRoleAssignment(ctx context.Context, req *backendv1.Cre
 		return nil, fmt.Errorf("get role: %w", err)
 	}
 
-	if _, err := q.GetUser(ctx, queries.GetUserParams{
+	qUser, err := q.GetUser(ctx, queries.GetUserParams{
 		ProjectID: authn.ProjectID(ctx),
 		ID:        userID,
-	}); err != nil {
+	})
+	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("user not found", fmt.Errorf("get user: %w", err))
 		}
@@ -216,6 +217,19 @@ func (s *Store) CreateUserRoleAssignment(ctx context.Context, req *backendv1.Cre
 		return nil, fmt.Errorf("get user role assignment by user and role: %w", err)
 	}
 
+	userRoleAssignment := parseUserRoleAssignment(qUserRoleAssignment)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.users.assign_role",
+		EventDetails: &backendv1.UserRoleAssignmentCreated{
+			UserRoleAssignment: userRoleAssignment,
+		},
+		OrganizationID: &qUser.OrganizationID,
+		ResourceType:   queries.AuditLogEventResourceTypeUser,
+		ResourceID:     &qUser.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
@@ -235,18 +249,43 @@ func (s *Store) DeleteUserRoleAssignment(ctx context.Context, req *backendv1.Del
 		return nil, apierror.NewInvalidArgumentError("invalid user role assignment id", fmt.Errorf("parse user role assignment id: %w", err))
 	}
 
-	if _, err := q.GetUserRoleAssignment(ctx, queries.GetUserRoleAssignmentParams{
+	qUserRoleAssignment, err := q.GetUserRoleAssignment(ctx, queries.GetUserRoleAssignmentParams{
 		ProjectID: authn.ProjectID(ctx),
 		ID:        id,
-	}); err != nil {
+	})
+	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("user role assignment not found", fmt.Errorf("get user role assignment: %w", err))
 		}
 		return nil, fmt.Errorf("get user role assignment: %w", err)
 	}
 
+	qUser, err := q.GetUser(ctx, queries.GetUserParams{
+		ProjectID: authn.ProjectID(ctx),
+		ID:        qUserRoleAssignment.UserID,
+	})
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("user not found", fmt.Errorf("get user: %w", err))
+		}
+		return nil, fmt.Errorf("get user: %w", err)
+	}
+
 	if err := q.DeleteUserRoleAssignment(ctx, id); err != nil {
 		return nil, fmt.Errorf("delete user role assignment: %w", err)
+	}
+
+	userRoleAssignment := parseUserRoleAssignment(qUserRoleAssignment)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.users.unassign_role",
+		EventDetails: &backendv1.UserRoleAssignmentDeleted{
+			UserRoleAssignment: userRoleAssignment,
+		},
+		OrganizationID: &qUser.OrganizationID,
+		ResourceType:   queries.AuditLogEventResourceTypeUser,
+		ResourceID:     &qUserRoleAssignment.UserID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
 	if err := commit(); err != nil {

@@ -107,12 +107,25 @@ func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *frontendv1.Re
 		return nil, fmt.Errorf("delete user authenticator app challenge: %w", err)
 	}
 
-	if _, err := q.UpdateUserAuthenticatorApp(ctx, queries.UpdateUserAuthenticatorAppParams{
+	qUser, err := q.UpdateUserAuthenticatorApp(ctx, queries.UpdateUserAuthenticatorAppParams{
 		ID:                                  authn.UserID(ctx),
 		AuthenticatorAppSecretCiphertext:    qUserAuthenticatorAppChallenge.AuthenticatorAppSecretCiphertext,
 		AuthenticatorAppRecoveryCodeSha256s: recoveryCodeSHA256s,
-	}); err != nil {
+	})
+	if err != nil {
 		return nil, fmt.Errorf("update user authenticator app: %w", err)
+	}
+
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.users.register_authenticator_app",
+		EventDetails: &frontendv1.UserAuthenticatorAppRegistered{
+			User: parseUser(qUser),
+		},
+		OrganizationID: &qUser.OrganizationID,
+		ResourceType:   queries.AuditLogEventResourceTypeUser,
+		ResourceID:     &qUser.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("log audit event: %w", err)
 	}
 
 	if err := commit(); err != nil {

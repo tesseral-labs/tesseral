@@ -240,6 +240,47 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /frontend/v1/audit-log-events:
+        get:
+            tags:
+                - FrontendService
+            operationId: FrontendService_ListAuditLogEvents
+            parameters:
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+                - name: filterStartTime
+                  in: query
+                  schema:
+                    type: string
+                    format: date-time
+                - name: filterEndTime
+                  in: query
+                  schema:
+                    type: string
+                    format: date-time
+                - name: filterEventName
+                  in: query
+                  schema:
+                    type: string
+                - name: filterUserId
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListAuditLogEventsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/google-hosted-domains:
         get:
             tags:
@@ -1393,6 +1434,34 @@ components:
                 roleId:
                     type: string
                     description: The Role
+        AuditLogEvent:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: The Audit Log Event ID. Starts with `audit_log_event_...`.
+                actorUserId:
+                    type: string
+                    description: The User that performed the event, if any.
+                actorSessionId:
+                    type: string
+                    description: The Session that performed the event, if any.
+                actorApiKeyId:
+                    type: string
+                    description: The API Key that performed the event, if any.
+                actorIntermediateSessionId:
+                    type: string
+                    description: The Intermediate Session that performed the action, if any.
+                eventTime:
+                    type: string
+                    description: When the event occurred.
+                    format: date-time
+                eventName:
+                    type: string
+                    description: The name of the event.
+                eventDetails:
+                    type: object
+                    description: The event payload JSON.
         CreateAPIKeyRequest:
             type: object
             properties:
@@ -1560,6 +1629,15 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/APIKey'
+                nextPageToken:
+                    type: string
+        ListAuditLogEventsResponse:
+            type: object
+            properties:
+                auditLogEvents:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/AuditLogEvent'
                 nextPageToken:
                     type: string
         ListMyPasskeysResponse:
@@ -1758,6 +1836,8 @@ components:
                     type: boolean
                 apiKeySecretTokenPrefix:
                     type: string
+                auditLogsEnabled:
+                    type: boolean
         RefreshRequest:
             type: object
             properties:

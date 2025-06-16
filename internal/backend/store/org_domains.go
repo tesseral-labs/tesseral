@@ -65,6 +65,14 @@ func (s *Store) UpdateOrganizationDomains(ctx context.Context, req *backendv1.Up
 		return nil, fmt.Errorf("get organization: %w", err)
 	}
 
+	qPreviousDomains, err := q.GetOrganizationDomains(ctx, queries.GetOrganizationDomainsParams{
+		ProjectID:      authn.ProjectID(ctx),
+		OrganizationID: orgID,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("get organization google hosted domains: %w", err)
+	}
+
 	if err := q.DeleteOrganizationDomains(ctx, orgID); err != nil {
 		return nil, fmt.Errorf("delete organization google hosted domains: %w", err)
 	}
@@ -87,12 +95,26 @@ func (s *Store) UpdateOrganizationDomains(ctx context.Context, req *backendv1.Up
 		return nil, fmt.Errorf("get organization google hosted domains: %w", err)
 	}
 
+	organizationDomains := parseOrganizationDomains(qOrg, qDomains)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.organizations.update_domains",
+		EventDetails: &backendv1.OrganizationDomainsUpdated{
+			Domains:         organizationDomains.Domains,
+			PreviousDomains: parseOrganizationDomains(qOrg, qPreviousDomains).Domains,
+		},
+		OrganizationID: &qOrg.ID,
+		ResourceType:   queries.AuditLogEventResourceTypeOrganization,
+		ResourceID:     &qOrg.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &backendv1.UpdateOrganizationDomainsResponse{
-		OrganizationDomains: parseOrganizationDomains(qOrg, qDomains),
+		OrganizationDomains: organizationDomains,
 	}, nil
 }
 

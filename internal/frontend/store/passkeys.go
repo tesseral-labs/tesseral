@@ -69,10 +69,11 @@ func (s *Store) DeleteMyPasskey(ctx context.Context, req *frontendv1.DeleteMyPas
 		return nil, fmt.Errorf("parse passkey id: %w", err)
 	}
 
-	if _, err := q.GetUserPasskey(ctx, queries.GetUserPasskeyParams{
+	qPasskey, err := q.GetUserPasskey(ctx, queries.GetUserPasskeyParams{
 		UserID: authn.UserID(ctx),
 		ID:     passkeyID,
-	}); err != nil {
+	})
+	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("passkey not found", fmt.Errorf("get user passkey: %w", err))
 		}
@@ -82,6 +83,17 @@ func (s *Store) DeleteMyPasskey(ctx context.Context, req *frontendv1.DeleteMyPas
 
 	if err := q.DeletePasskey(ctx, passkeyID); err != nil {
 		return nil, fmt.Errorf("delete passkey: %w", err)
+	}
+
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.passkeys.delete",
+		EventDetails: &frontendv1.PasskeyDeleted{
+			Passkey: parsePasskey(qPasskey),
+		},
+		ResourceType: queries.AuditLogEventResourceTypePasskey,
+		ResourceID:   &qPasskey.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
 	if err := commit(); err != nil {
@@ -153,12 +165,24 @@ func (s *Store) RegisterPasskey(ctx context.Context, req *frontendv1.RegisterPas
 		return nil, fmt.Errorf("create passkey: %w", err)
 	}
 
+	passkey := parsePasskey(qPasskey)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.passkeys.create",
+		EventDetails: &frontendv1.PasskeyCreated{
+			Passkey: passkey,
+		},
+		ResourceType: queries.AuditLogEventResourceTypePasskey,
+		ResourceID:   &qPasskey.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &frontendv1.RegisterPasskeyResponse{
-		Passkey: parsePasskey(qPasskey),
+		Passkey: passkey,
 	}, nil
 }
 

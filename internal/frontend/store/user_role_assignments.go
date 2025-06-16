@@ -226,11 +226,23 @@ func (s *Store) CreateUserRoleAssignment(ctx context.Context, req *frontendv1.Cr
 		return nil, fmt.Errorf("get user role assignment by user and role: %w", err)
 	}
 
+	userRoleAssignment := parseUserRoleAssignment(qUserRoleAssignment)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.users.assign_role",
+		EventDetails: &frontendv1.UserRoleAssignmentCreated{
+			UserRoleAssignment: userRoleAssignment,
+		},
+		ResourceType: queries.AuditLogEventResourceTypeUser,
+		ResourceID:   &qUserRoleAssignment.UserID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &frontendv1.CreateUserRoleAssignmentResponse{UserRoleAssignment: parseUserRoleAssignment(qUserRoleAssignment)}, nil
+	return &frontendv1.CreateUserRoleAssignmentResponse{UserRoleAssignment: userRoleAssignment}, nil
 }
 
 func (s *Store) DeleteUserRoleAssignment(ctx context.Context, req *frontendv1.DeleteUserRoleAssignmentRequest) (*frontendv1.DeleteUserRoleAssignmentResponse, error) {
@@ -250,11 +262,12 @@ func (s *Store) DeleteUserRoleAssignment(ctx context.Context, req *frontendv1.De
 	}
 
 	orgID := authn.OrganizationID(ctx)
-	if _, err := q.GetUserRoleAssignment(ctx, queries.GetUserRoleAssignmentParams{
+	qUserRoleAssignment, err := q.GetUserRoleAssignment(ctx, queries.GetUserRoleAssignmentParams{
 		ProjectID:      authn.ProjectID(ctx),
 		OrganizationID: &orgID,
 		ID:             id,
-	}); err != nil {
+	})
+	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("user role assignment not found", fmt.Errorf("get user role assignment: %w", err))
 		}
@@ -263,6 +276,17 @@ func (s *Store) DeleteUserRoleAssignment(ctx context.Context, req *frontendv1.De
 
 	if err := q.DeleteUserRoleAssignment(ctx, id); err != nil {
 		return nil, fmt.Errorf("delete user role assignment: %w", err)
+	}
+
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.users.unassign_role",
+		EventDetails: &frontendv1.UserRoleAssignmentDeleted{
+			UserRoleAssignment: parseUserRoleAssignment(qUserRoleAssignment),
+		},
+		ResourceType: queries.AuditLogEventResourceTypeUser,
+		ResourceID:   &qUserRoleAssignment.UserID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
 	if err := commit(); err != nil {

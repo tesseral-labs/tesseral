@@ -240,6 +240,11 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		updates.ApiKeysEnabled = *req.Project.ApiKeysEnabled
 	}
 
+	updates.AuditLogsEnabled = qProject.AuditLogsEnabled
+	if req.Project.AuditLogsEnabled != nil {
+		updates.AuditLogsEnabled = *req.Project.AuditLogsEnabled
+	}
+
 	updates.ApiKeySecretTokenPrefix = qProject.ApiKeySecretTokenPrefix
 	if req.Project.ApiKeySecretTokenPrefix != nil {
 		if len(*req.Project.ApiKeySecretTokenPrefix) > 64 {
@@ -425,5 +430,6 @@ func (s *Store) parseProject(qProject *queries.Project, qProjectTrustedDomains [
 		EmailSendFromDomain:        qProject.EmailSendFromDomain,
 		ApiKeysEnabled:             &qProject.ApiKeysEnabled,
 		ApiKeySecretTokenPrefix:    qProject.ApiKeySecretTokenPrefix,
+		AuditLogsEnabled:           refOrNil(qProject.AuditLogsEnabled),
 	}
 }

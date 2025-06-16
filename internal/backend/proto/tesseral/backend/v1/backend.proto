@@ -351,6 +351,13 @@ service BackendService {
     };
   }
 
+  rpc CreateAuditLogEvent(CreateAuditLogEventRequest) returns (CreateAuditLogEventResponse) {
+    option (google.api.http) = {
+      post: "/v1/audit-log-events"
+      body: "audit_log_event"
+    };
+  }
+
   rpc DisableOrganizationLogins(DisableOrganizationLoginsRequest) returns (DisableOrganizationLoginsResponse) {}
   rpc DisableProjectLogins(DisableProjectLoginsRequest) returns (DisableProjectLoginsResponse) {}
   rpc EnableOrganizationLogins(EnableOrganizationLoginsRequest) returns (EnableOrganizationLoginsResponse) {}
@@ -1182,4 +1189,12 @@ message AuthenticateAPIKeyResponse {
   string api_key_id = 1;
   string organization_id = 2;
   repeated string actions = 3;
+}
+
+message CreateAuditLogEventRequest {
+  AuditLogEvent audit_log_event = 1;
+}
+
+message CreateAuditLogEventResponse {
+  AuditLogEvent audit_log_event = 1;
 }

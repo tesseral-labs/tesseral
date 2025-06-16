@@ -78,6 +78,7 @@ const (
 	BackendService_DeleteAPIKeyRoleAssignment_FullMethodName            = "/tesseral.backend.v1.BackendService/DeleteAPIKeyRoleAssignment"
 	BackendService_ListAPIKeyRoleAssignments_FullMethodName             = "/tesseral.backend.v1.BackendService/ListAPIKeyRoleAssignments"
 	BackendService_AuthenticateAPIKey_FullMethodName                    = "/tesseral.backend.v1.BackendService/AuthenticateAPIKey"
+	BackendService_CreateAuditLogEvent_FullMethodName                   = "/tesseral.backend.v1.BackendService/CreateAuditLogEvent"
 	BackendService_DisableOrganizationLogins_FullMethodName             = "/tesseral.backend.v1.BackendService/DisableOrganizationLogins"
 	BackendService_DisableProjectLogins_FullMethodName                  = "/tesseral.backend.v1.BackendService/DisableProjectLogins"
 	BackendService_EnableOrganizationLogins_FullMethodName              = "/tesseral.backend.v1.BackendService/EnableOrganizationLogins"
@@ -222,6 +223,7 @@ type BackendServiceClient interface {
 	DeleteAPIKeyRoleAssignment(ctx context.Context, in *DeleteAPIKeyRoleAssignmentRequest, opts ...grpc.CallOption) (*DeleteAPIKeyRoleAssignmentResponse, error)
 	ListAPIKeyRoleAssignments(ctx context.Context, in *ListAPIKeyRoleAssignmentsRequest, opts ...grpc.CallOption) (*ListAPIKeyRoleAssignmentsResponse, error)
 	AuthenticateAPIKey(ctx context.Context, in *AuthenticateAPIKeyRequest, opts ...grpc.CallOption) (*AuthenticateAPIKeyResponse, error)
+	CreateAuditLogEvent(ctx context.Context, in *CreateAuditLogEventRequest, opts ...grpc.CallOption) (*CreateAuditLogEventResponse, error)
 	DisableOrganizationLogins(ctx context.Context, in *DisableOrganizationLoginsRequest, opts ...grpc.CallOption) (*DisableOrganizationLoginsResponse, error)
 	DisableProjectLogins(ctx context.Context, in *DisableProjectLoginsRequest, opts ...grpc.CallOption) (*DisableProjectLoginsResponse, error)
 	EnableOrganizationLogins(ctx context.Context, in *EnableOrganizationLoginsRequest, opts ...grpc.CallOption) (*EnableOrganizationLoginsResponse, error)
@@ -848,6 +850,16 @@ func (c *backendServiceClient) AuthenticateAPIKey(ctx context.Context, in *Authe
 	return out, nil
 }
 
+func (c *backendServiceClient) CreateAuditLogEvent(ctx context.Context, in *CreateAuditLogEventRequest, opts ...grpc.CallOption) (*CreateAuditLogEventResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateAuditLogEventResponse)
+	err := c.cc.Invoke(ctx, BackendService_CreateAuditLogEvent_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *backendServiceClient) DisableOrganizationLogins(ctx context.Context, in *DisableOrganizationLoginsRequest, opts ...grpc.CallOption) (*DisableOrganizationLoginsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DisableOrganizationLoginsResponse)
@@ -1224,6 +1236,7 @@ type BackendServiceServer interface {
 	DeleteAPIKeyRoleAssignment(context.Context, *DeleteAPIKeyRoleAssignmentRequest) (*DeleteAPIKeyRoleAssignmentResponse, error)
 	ListAPIKeyRoleAssignments(context.Context, *ListAPIKeyRoleAssignmentsRequest) (*ListAPIKeyRoleAssignmentsResponse, error)
 	AuthenticateAPIKey(context.Context, *AuthenticateAPIKeyRequest) (*AuthenticateAPIKeyResponse, error)
+	CreateAuditLogEvent(context.Context, *CreateAuditLogEventRequest) (*CreateAuditLogEventResponse, error)
 	DisableOrganizationLogins(context.Context, *DisableOrganizationLoginsRequest) (*DisableOrganizationLoginsResponse, error)
 	DisableProjectLogins(context.Context, *DisableProjectLoginsRequest) (*DisableProjectLoginsResponse, error)
 	EnableOrganizationLogins(context.Context, *EnableOrganizationLoginsRequest) (*EnableOrganizationLoginsResponse, error)
@@ -1436,6 +1449,9 @@ func (UnimplementedBackendServiceServer) ListAPIKeyRoleAssignments(context.Conte
 }
 func (UnimplementedBackendServiceServer) AuthenticateAPIKey(context.Context, *AuthenticateAPIKeyRequest) (*AuthenticateAPIKeyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthenticateAPIKey not implemented")
+}
+func (UnimplementedBackendServiceServer) CreateAuditLogEvent(context.Context, *CreateAuditLogEventRequest) (*CreateAuditLogEventResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAuditLogEvent not implemented")
 }
 func (UnimplementedBackendServiceServer) DisableOrganizationLogins(context.Context, *DisableOrganizationLoginsRequest) (*DisableOrganizationLoginsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DisableOrganizationLogins not implemented")
@@ -2598,6 +2614,24 @@ func _BackendService_AuthenticateAPIKey_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_CreateAuditLogEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateAuditLogEventRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).CreateAuditLogEvent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_CreateAuditLogEvent_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).CreateAuditLogEvent(ctx, req.(*CreateAuditLogEventRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BackendService_DisableOrganizationLogins_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DisableOrganizationLoginsRequest)
 	if err := dec(in); err != nil {
@@ -3308,6 +3342,10 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AuthenticateAPIKey",
 			Handler:    _BackendService_AuthenticateAPIKey_Handler,
+		},
+		{
+			MethodName: "CreateAuditLogEvent",
+			Handler:    _BackendService_CreateAuditLogEvent_Handler,
 		},
 		{
 			MethodName: "DisableOrganizationLogins",

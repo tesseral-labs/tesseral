@@ -50,5 +50,6 @@ func parseProject(qProject *queries.Project) *frontendv1.Project {
 		VaultDomain:               qProject.VaultDomain,
 		ApiKeysEnabled:            qProject.ApiKeysEnabled && qProject.EntitledBackendApiKeys,
 		ApiKeySecretTokenPrefix:   derefOrEmpty(qProject.ApiKeySecretTokenPrefix),
+		AuditLogsEnabled:          qProject.AuditLogsEnabled,
 	}
 }

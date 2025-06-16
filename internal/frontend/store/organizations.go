@@ -153,6 +153,19 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 		return nil, fmt.Errorf("update organization: %w", fmt.Errorf("update organization: %w", err))
 	}
 
+	organization := parseOrganization(qProject, qUpdatedOrg)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.organizations.update",
+		EventDetails: &frontendv1.OrganizationUpdated{
+			Organization:         organization,
+			PreviousOrganization: parseOrganization(qProject, qOrg),
+		},
+		ResourceType: queries.AuditLogEventResourceTypeOrganization,
+		ResourceID:   &qOrg.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
 	// Commit the transaction
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit transaction: %w", err)
@@ -164,7 +177,7 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 	}
 
 	return &frontendv1.UpdateOrganizationResponse{
-		Organization: parseOrganization(qProject, qUpdatedOrg),
+		Organization: organization,
 	}, nil
 }
 

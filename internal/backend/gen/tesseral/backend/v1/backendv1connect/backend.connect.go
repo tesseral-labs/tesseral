@@ -208,6 +208,9 @@ const (
 	// BackendServiceAuthenticateAPIKeyProcedure is the fully-qualified name of the BackendService's
 	// AuthenticateAPIKey RPC.
 	BackendServiceAuthenticateAPIKeyProcedure = "/tesseral.backend.v1.BackendService/AuthenticateAPIKey"
+	// BackendServiceCreateAuditLogEventProcedure is the fully-qualified name of the BackendService's
+	// CreateAuditLogEvent RPC.
+	BackendServiceCreateAuditLogEventProcedure = "/tesseral.backend.v1.BackendService/CreateAuditLogEvent"
 	// BackendServiceDisableOrganizationLoginsProcedure is the fully-qualified name of the
 	// BackendService's DisableOrganizationLogins RPC.
 	BackendServiceDisableOrganizationLoginsProcedure = "/tesseral.backend.v1.BackendService/DisableOrganizationLogins"
@@ -402,6 +405,7 @@ type BackendServiceClient interface {
 	DeleteAPIKeyRoleAssignment(context.Context, *connect.Request[v1.DeleteAPIKeyRoleAssignmentRequest]) (*connect.Response[v1.DeleteAPIKeyRoleAssignmentResponse], error)
 	ListAPIKeyRoleAssignments(context.Context, *connect.Request[v1.ListAPIKeyRoleAssignmentsRequest]) (*connect.Response[v1.ListAPIKeyRoleAssignmentsResponse], error)
 	AuthenticateAPIKey(context.Context, *connect.Request[v1.AuthenticateAPIKeyRequest]) (*connect.Response[v1.AuthenticateAPIKeyResponse], error)
+	CreateAuditLogEvent(context.Context, *connect.Request[v1.CreateAuditLogEventRequest]) (*connect.Response[v1.CreateAuditLogEventResponse], error)
 	DisableOrganizationLogins(context.Context, *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error)
 	DisableProjectLogins(context.Context, *connect.Request[v1.DisableProjectLoginsRequest]) (*connect.Response[v1.DisableProjectLoginsResponse], error)
 	EnableOrganizationLogins(context.Context, *connect.Request[v1.EnableOrganizationLoginsRequest]) (*connect.Response[v1.EnableOrganizationLoginsResponse], error)
@@ -795,6 +799,12 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("AuthenticateAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
+		createAuditLogEvent: connect.NewClient[v1.CreateAuditLogEventRequest, v1.CreateAuditLogEventResponse](
+			httpClient,
+			baseURL+BackendServiceCreateAuditLogEventProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("CreateAuditLogEvent")),
+			connect.WithClientOptions(opts...),
+		),
 		disableOrganizationLogins: connect.NewClient[v1.DisableOrganizationLoginsRequest, v1.DisableOrganizationLoginsResponse](
 			httpClient,
 			baseURL+BackendServiceDisableOrganizationLoginsProcedure,
@@ -1015,6 +1025,7 @@ type backendServiceClient struct {
 	deleteAPIKeyRoleAssignment            *connect.Client[v1.DeleteAPIKeyRoleAssignmentRequest, v1.DeleteAPIKeyRoleAssignmentResponse]
 	listAPIKeyRoleAssignments             *connect.Client[v1.ListAPIKeyRoleAssignmentsRequest, v1.ListAPIKeyRoleAssignmentsResponse]
 	authenticateAPIKey                    *connect.Client[v1.AuthenticateAPIKeyRequest, v1.AuthenticateAPIKeyResponse]
+	createAuditLogEvent                   *connect.Client[v1.CreateAuditLogEventRequest, v1.CreateAuditLogEventResponse]
 	disableOrganizationLogins             *connect.Client[v1.DisableOrganizationLoginsRequest, v1.DisableOrganizationLoginsResponse]
 	disableProjectLogins                  *connect.Client[v1.DisableProjectLoginsRequest, v1.DisableProjectLoginsResponse]
 	enableOrganizationLogins              *connect.Client[v1.EnableOrganizationLoginsRequest, v1.EnableOrganizationLoginsResponse]
@@ -1342,6 +1353,11 @@ func (c *backendServiceClient) AuthenticateAPIKey(ctx context.Context, req *conn
 	return c.authenticateAPIKey.CallUnary(ctx, req)
 }
 
+// CreateAuditLogEvent calls tesseral.backend.v1.BackendService.CreateAuditLogEvent.
+func (c *backendServiceClient) CreateAuditLogEvent(ctx context.Context, req *connect.Request[v1.CreateAuditLogEventRequest]) (*connect.Response[v1.CreateAuditLogEventResponse], error) {
+	return c.createAuditLogEvent.CallUnary(ctx, req)
+}
+
 // DisableOrganizationLogins calls tesseral.backend.v1.BackendService.DisableOrganizationLogins.
 func (c *backendServiceClient) DisableOrganizationLogins(ctx context.Context, req *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error) {
 	return c.disableOrganizationLogins.CallUnary(ctx, req)
@@ -1588,6 +1604,7 @@ type BackendServiceHandler interface {
 	DeleteAPIKeyRoleAssignment(context.Context, *connect.Request[v1.DeleteAPIKeyRoleAssignmentRequest]) (*connect.Response[v1.DeleteAPIKeyRoleAssignmentResponse], error)
 	ListAPIKeyRoleAssignments(context.Context, *connect.Request[v1.ListAPIKeyRoleAssignmentsRequest]) (*connect.Response[v1.ListAPIKeyRoleAssignmentsResponse], error)
 	AuthenticateAPIKey(context.Context, *connect.Request[v1.AuthenticateAPIKeyRequest]) (*connect.Response[v1.AuthenticateAPIKeyResponse], error)
+	CreateAuditLogEvent(context.Context, *connect.Request[v1.CreateAuditLogEventRequest]) (*connect.Response[v1.CreateAuditLogEventResponse], error)
 	DisableOrganizationLogins(context.Context, *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error)
 	DisableProjectLogins(context.Context, *connect.Request[v1.DisableProjectLoginsRequest]) (*connect.Response[v1.DisableProjectLoginsResponse], error)
 	EnableOrganizationLogins(context.Context, *connect.Request[v1.EnableOrganizationLoginsRequest]) (*connect.Response[v1.EnableOrganizationLoginsResponse], error)
@@ -1977,6 +1994,12 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("AuthenticateAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceCreateAuditLogEventHandler := connect.NewUnaryHandler(
+		BackendServiceCreateAuditLogEventProcedure,
+		svc.CreateAuditLogEvent,
+		connect.WithSchema(backendServiceMethods.ByName("CreateAuditLogEvent")),
+		connect.WithHandlerOptions(opts...),
+	)
 	backendServiceDisableOrganizationLoginsHandler := connect.NewUnaryHandler(
 		BackendServiceDisableOrganizationLoginsProcedure,
 		svc.DisableOrganizationLogins,
@@ -2253,6 +2276,8 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceListAPIKeyRoleAssignmentsHandler.ServeHTTP(w, r)
 		case BackendServiceAuthenticateAPIKeyProcedure:
 			backendServiceAuthenticateAPIKeyHandler.ServeHTTP(w, r)
+		case BackendServiceCreateAuditLogEventProcedure:
+			backendServiceCreateAuditLogEventHandler.ServeHTTP(w, r)
 		case BackendServiceDisableOrganizationLoginsProcedure:
 			backendServiceDisableOrganizationLoginsHandler.ServeHTTP(w, r)
 		case BackendServiceDisableProjectLoginsProcedure:
@@ -2548,6 +2573,10 @@ func (UnimplementedBackendServiceHandler) ListAPIKeyRoleAssignments(context.Cont
 
 func (UnimplementedBackendServiceHandler) AuthenticateAPIKey(context.Context, *connect.Request[v1.AuthenticateAPIKeyRequest]) (*connect.Response[v1.AuthenticateAPIKeyResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.AuthenticateAPIKey is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) CreateAuditLogEvent(context.Context, *connect.Request[v1.CreateAuditLogEventRequest]) (*connect.Response[v1.CreateAuditLogEventResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.CreateAuditLogEvent is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) DisableOrganizationLogins(context.Context, *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error) {

@@ -119,7 +119,8 @@ SET
     after_signup_redirect_uri = $16,
     cookie_domain = $17,
     api_keys_enabled = $21,
-    api_key_secret_token_prefix = $22
+    api_key_secret_token_prefix = $22,
+    audit_logs_enabled = $23
 WHERE
     id = $1
 RETURNING
@@ -1131,4 +1132,48 @@ WHERE api_key_role_assignments.api_key_id = api_keys.id
     AND api_keys.organization_id = organizations.id
     AND api_key_role_assignments.id = $1
     AND organizations.project_id = $2;
+
+-- name: CreateAuditLogEvent :one
+INSERT INTO audit_log_events (id, project_id, organization_id, actor_user_id, actor_session_id, actor_api_key_id, actor_console_user_id, actor_console_session_id, actor_backend_api_key_id, actor_intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, coalesce(@event_details, '{}'::jsonb))
+RETURNING
+    *;
+
+-- name: DeriveAuditLogEventContextForSessionID :one
+SELECT
+    sessions.id AS session_id,
+    users.id AS user_id,
+    organizations.id AS organization_id
+FROM
+    sessions
+    JOIN users ON sessions.user_id = users.id
+    JOIN organizations ON users.organization_id = organizations.id
+    JOIN projects ON organizations.project_id = projects.id
+WHERE
+    sessions.id = $1
+    AND projects.id = @project_id;
+
+-- name: DeriveAuditLogEventContextForAPIKeyID :one
+SELECT
+    api_keys.id AS api_key_id,
+    organizations.id AS organization_id
+FROM
+    api_keys
+    JOIN organizations ON api_keys.organization_id = organizations.id
+    JOIN projects ON organizations.project_id = projects.id
+WHERE
+    api_keys.id = $1
+    AND projects.id = @project_id;
+
+-- name: DeriveAuditLogEventContextForUserID :one
+SELECT
+    users.id AS user_id,
+    organizations.id AS organization_id
+FROM
+    users
+    JOIN organizations ON users.organization_id = organizations.id
+    JOIN projects ON organizations.project_id = projects.id
+WHERE
+    users.id = $1
+    AND projects.id = @project_id;
 

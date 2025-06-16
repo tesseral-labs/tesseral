@@ -13,6 +13,55 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type AuditLogEventResourceType string
+
+const (
+	AuditLogEventResourceTypeApiKey         AuditLogEventResourceType = "api_key"
+	AuditLogEventResourceTypeOrganization   AuditLogEventResourceType = "organization"
+	AuditLogEventResourceTypePasskey        AuditLogEventResourceType = "passkey"
+	AuditLogEventResourceTypeRole           AuditLogEventResourceType = "role"
+	AuditLogEventResourceTypeSamlConnection AuditLogEventResourceType = "saml_connection"
+	AuditLogEventResourceTypeScimApiKey     AuditLogEventResourceType = "scim_api_key"
+	AuditLogEventResourceTypeSession        AuditLogEventResourceType = "session"
+	AuditLogEventResourceTypeUser           AuditLogEventResourceType = "user"
+	AuditLogEventResourceTypeUserInvite     AuditLogEventResourceType = "user_invite"
+)
+
+func (e *AuditLogEventResourceType) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = AuditLogEventResourceType(s)
+	case string:
+		*e = AuditLogEventResourceType(s)
+	default:
+		return fmt.Errorf("unsupported scan type for AuditLogEventResourceType: %T", src)
+	}
+	return nil
+}
+
+type NullAuditLogEventResourceType struct {
+	AuditLogEventResourceType AuditLogEventResourceType
+	Valid                     bool // Valid is true if AuditLogEventResourceType is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullAuditLogEventResourceType) Scan(value interface{}) error {
+	if value == nil {
+		ns.AuditLogEventResourceType, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.AuditLogEventResourceType.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullAuditLogEventResourceType) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.AuditLogEventResourceType), nil
+}
+
 type AuthMethod string
 
 const (
@@ -169,6 +218,24 @@ type ApiKeyRoleAssignment struct {
 	CreateTime *time.Time
 }
 
+type AuditLogEvent struct {
+	ID                         uuid.UUID
+	ProjectID                  uuid.UUID
+	OrganizationID             *uuid.UUID
+	ActorUserID                *uuid.UUID
+	ActorSessionID             *uuid.UUID
+	ActorApiKeyID              *uuid.UUID
+	ActorConsoleUserID         *uuid.UUID
+	ActorConsoleSessionID      *uuid.UUID
+	ActorBackendApiKeyID       *uuid.UUID
+	ActorIntermediateSessionID *uuid.UUID
+	ResourceType               *AuditLogEventResourceType
+	ResourceID                 *uuid.UUID
+	EventName                  string
+	EventTime                  *time.Time
+	EventDetails               []byte
+}
+
 type BackendApiKey struct {
 	ID                uuid.UUID
 	ProjectID         uuid.UUID
@@ -312,6 +379,7 @@ type Project struct {
 	GithubOauthClientSecretCiphertext    []byte
 	ApiKeysEnabled                       bool
 	ApiKeySecretTokenPrefix              *string
+	AuditLogsEnabled                     bool
 }
 
 type ProjectEmailQuotaDailyUsage struct {

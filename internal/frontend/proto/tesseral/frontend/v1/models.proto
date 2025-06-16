@@ -21,6 +21,7 @@ message Project {
   string vault_domain = 8;
   bool api_keys_enabled = 14;
   string api_key_secret_token_prefix = 15;
+  bool audit_logs_enabled = 16;
 }
 
 message Organization {
@@ -79,6 +80,10 @@ message Session {
   google.protobuf.Timestamp expire_time = 4;
   bool revoked = 5;
   PrimaryAuthFactor primary_auth_factor = 6;
+  google.protobuf.Timestamp last_active_time = 7;
+  string project_id = 8;
+  string organization_id = 9;
+  string impersonator_email = 10;
 }
 
 enum PrimaryAuthFactor {
@@ -88,6 +93,7 @@ enum PrimaryAuthFactor {
   PRIMARY_AUTH_FACTOR_MICROSOFT = 3;
   PRIMARY_AUTH_FACTOR_SAML = 4;
   PRIMARY_AUTH_FACTOR_IMPERSONATION = 5;
+  PRIMARY_AUTH_FACTOR_GITHUB = 6;
 }
 
 message SAMLConnection {
@@ -216,4 +222,30 @@ message APIKeyRoleAssignment {
   string api_key_id = 2;
   // The Role
   string role_id = 3;
+}
+
+message AuditLogEvent {
+  // The Audit Log Event ID. Starts with `audit_log_event_...`.
+  string id = 1;
+
+  // The User that performed the event, if any.
+  string actor_user_id = 2;
+
+  // The Session that performed the event, if any.
+  string actor_session_id = 3;
+
+  // The API Key that performed the event, if any.
+  string actor_api_key_id = 4;
+
+  // The Intermediate Session that performed the action, if any.
+  string actor_intermediate_session_id = 5;
+
+  // When the event occurred.
+  google.protobuf.Timestamp event_time = 6;
+
+  // The name of the event.
+  string event_name = 7;
+
+  // The event payload JSON.
+  google.protobuf.Struct event_details = 8;
 }

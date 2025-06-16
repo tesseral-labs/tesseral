@@ -118,12 +118,24 @@ func (s *Store) CreateSCIMAPIKey(ctx context.Context, req *frontendv1.CreateSCIM
 		return nil, fmt.Errorf("create scim api key: %w", err)
 	}
 
+	scimAPIKey := parseSCIMAPIKey(qSCIMAPIKey)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.scim_api_keys.create",
+		EventDetails: &frontendv1.SCIMAPIKeyCreated{
+			ScimApiKey: scimAPIKey,
+		},
+		ResourceType: queries.AuditLogEventResourceTypeScimApiKey,
+		ResourceID:   &qSCIMAPIKey.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	scimAPIKey := parseSCIMAPIKey(qSCIMAPIKey)
 	scimAPIKey.SecretToken = idformat.SCIMAPIKeySecretToken.Format(token)
+
 	return &frontendv1.CreateSCIMAPIKeyResponse{ScimApiKey: scimAPIKey}, nil
 }
 
@@ -169,11 +181,24 @@ func (s *Store) UpdateSCIMAPIKey(ctx context.Context, req *frontendv1.UpdateSCIM
 		return nil, fmt.Errorf("update scim api key: %w", err)
 	}
 
+	scimAPIKey := parseSCIMAPIKey(qUpdatedSCIMAPIKey)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.scim_api_keys.update",
+		EventDetails: &frontendv1.SCIMAPIKeyUpdated{
+			ScimApiKey:         scimAPIKey,
+			PreviousScimApiKey: parseSCIMAPIKey(qSCIMAPIKey),
+		},
+		ResourceType: queries.AuditLogEventResourceTypeScimApiKey,
+		ResourceID:   &qSCIMAPIKey.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &frontendv1.UpdateSCIMAPIKeyResponse{ScimApiKey: parseSCIMAPIKey(qUpdatedSCIMAPIKey)}, nil
+	return &frontendv1.UpdateSCIMAPIKeyResponse{ScimApiKey: scimAPIKey}, nil
 }
 
 func (s *Store) DeleteSCIMAPIKey(ctx context.Context, req *frontendv1.DeleteSCIMAPIKeyRequest) (*frontendv1.DeleteSCIMAPIKeyResponse, error) {
@@ -213,6 +238,17 @@ func (s *Store) DeleteSCIMAPIKey(ctx context.Context, req *frontendv1.DeleteSCIM
 		return nil, fmt.Errorf("delete scim api key: %w", err)
 	}
 
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.scim_api_keys.delete",
+		EventDetails: &frontendv1.SCIMAPIKeyDeleted{
+			ScimApiKey: parseSCIMAPIKey(qSCIMAPIKey),
+		},
+		ResourceType: queries.AuditLogEventResourceTypeScimApiKey,
+		ResourceID:   &qSCIMAPIKey.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
@@ -237,10 +273,11 @@ func (s *Store) RevokeSCIMAPIKey(ctx context.Context, req *frontendv1.RevokeSCIM
 	}
 
 	// authz
-	if _, err := q.GetSCIMAPIKey(ctx, queries.GetSCIMAPIKeyParams{
+	qSCIMAPIKey, err := q.GetSCIMAPIKey(ctx, queries.GetSCIMAPIKeyParams{
 		OrganizationID: authn.OrganizationID(ctx),
 		ID:             scimAPIKeyID,
-	}); err != nil {
+	})
+	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, apierror.NewNotFoundError("scim api key not found", fmt.Errorf("get scim api key: %w", err))
 		}
@@ -248,16 +285,29 @@ func (s *Store) RevokeSCIMAPIKey(ctx context.Context, req *frontendv1.RevokeSCIM
 		return nil, fmt.Errorf("get scim api key: %w", err)
 	}
 
-	qSCIMAPIKey, err := q.RevokeSCIMAPIKey(ctx, scimAPIKeyID)
+	qUpdatedSCIMAPIKey, err := q.RevokeSCIMAPIKey(ctx, scimAPIKeyID)
 	if err != nil {
 		return nil, fmt.Errorf("revoke scim api key: %w", err)
+	}
+
+	scimAPIKey := parseSCIMAPIKey(qUpdatedSCIMAPIKey)
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.scim_api_keys.revoke",
+		EventDetails: &frontendv1.SCIMAPIKeyRevoked{
+			ScimApiKey:         scimAPIKey,
+			PreviousScimApiKey: parseSCIMAPIKey(qSCIMAPIKey),
+		},
+		ResourceType: queries.AuditLogEventResourceTypeScimApiKey,
+		ResourceID:   &qSCIMAPIKey.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &frontendv1.RevokeSCIMAPIKeyResponse{ScimApiKey: parseSCIMAPIKey(qSCIMAPIKey)}, nil
+	return &frontendv1.RevokeSCIMAPIKeyResponse{ScimApiKey: scimAPIKey}, nil
 }
 
 func parseSCIMAPIKey(qSCIMAPIKey queries.ScimApiKey) *frontendv1.SCIMAPIKey {
