@@ -13,9 +13,8 @@ func TestOpen(t *testing.T) {
 	ctx := context.Background()
 	require.NoError(t, pool.Ping(ctx), "failed to ping the database")
 
-	_, err := pool.Exec(ctx, "CREATE TABLE IF NOT EXISTS test_table (id SERIAL PRIMARY KEY, name TEXT)")
-	require.NoError(t, err, "failed to create test table")
-
-	_, err = pool.Exec(ctx, "INSERT INTO test_table (name) VALUES ('test')")
-	require.NoError(t, err, "failed to insert into test table")
+	// Assert the `users` table exists after migrations
+	res, err := pool.Query(ctx, "SELECT * FROM users")
+	res.Close()
+	require.NoError(t, err, "failed to query users table")
 }

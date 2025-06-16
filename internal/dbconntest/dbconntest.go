@@ -2,8 +2,14 @@ package dbconntest
 
 import (
 	"context"
+	"os"
+	"path/filepath"
+	"runtime"
 	"testing"
 
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/pgx/v5"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
@@ -30,6 +36,30 @@ func Open(t *testing.T) *pgxpool.Pool {
 		t.Fatalf("get connection string: %v", err)
 	}
 
+	// Migrate the database schema
+	pgx := &pgx.Postgres{}
+	db, err := pgx.Open(dsn)
+	if err != nil {
+		t.Fatalf("open pgx connection: %v", err)
+	}
+	defer db.Close()
+
+	_, currentFile, _, ok := runtime.Caller(0)
+	if !ok {
+		t.Fatal("failed to get current file path")
+	}
+
+	migrationsDir := filepath.Join(currentFile, "../../../cmd/openauthctl/migrations")
+	m, err := migrate.NewWithDatabaseInstance("file://"+migrationsDir, "pgx", db)
+	if err != nil {
+		t.Fatalf("create migrate instance: %v", err)
+	}
+	err = m.Up()
+	if err != nil {
+		t.Fatalf("run migrations: %v", err)
+	}
+
+	// Create a pgx pool for use in tests
 	pool, err := pgxpool.New(ctx, dsn)
 	if err != nil {
 		t.Fatalf("create pgx pool: %v", err)
@@ -38,6 +68,17 @@ func Open(t *testing.T) *pgxpool.Pool {
 	t.Cleanup(func() {
 		pool.Close()
 	})
+
+	// Seed the database
+	seedScript := filepath.Join(currentFile, "../../../.local/db/seed.sql")
+	seedContent, err := os.ReadFile(seedScript)
+	if err != nil {
+		t.Fatalf("read seed script: %v", err)
+	}
+	_, err = pool.Exec(ctx, string(seedContent))
+	if err != nil {
+		t.Fatalf("execute seed script: %v", err)
+	}
 
 	return pool
 }
