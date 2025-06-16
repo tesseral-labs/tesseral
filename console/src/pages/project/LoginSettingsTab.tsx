@@ -305,7 +305,7 @@ const EditLoginMethodsButton = () => {
   const handleSubmit = async (values: z.infer<typeof loginMethodsSchema>) => {
     if (!values.logInWithEmail) {
       if (
-        !getProjectResponse?.project?.logInWithPassword &&
+        !values.logInWithPassword &&
         !getProjectResponse?.project?.logInWithGoogle &&
         !getProjectResponse?.project?.logInWithMicrosoft
       ) {
