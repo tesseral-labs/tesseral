@@ -1,4 +1,4 @@
-package dbconntest
+package storetestutil
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 )
 
 func TestOpen(t *testing.T) {
-	pool := Open(t)
+	pool := NewDB(t)
 
 	ctx := context.Background()
 	require.NoError(t, pool.Ping(ctx), "failed to ping the database")

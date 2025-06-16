@@ -1,4 +1,4 @@
-package dbconntest
+package storetestutil
 
 import (
 	"path/filepath"
@@ -16,7 +16,7 @@ import (
 // Matches docker-compose.yaml
 const imageName = "postgres:15.8"
 
-func Open(t *testing.T) *pgxpool.Pool {
+func NewDB(t *testing.T) *pgxpool.Pool {
 	container, err := postgres.Run(t.Context(), imageName,
 		postgres.WithDatabase("testdb"),
 		postgres.WithUsername("testuser"),

@@ -1,21 +1,20 @@
-package consoletest
+package storetestutil
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
-	"github.com/tesseral-labs/tesseral/internal/dbconntest"
 )
 
-func TestCreate(t *testing.T) {
-	pool := dbconntest.Open(t)
-	store := New(t, pool)
+func TestNewConsole(t *testing.T) {
+	pool := NewDB(t)
+	console := NewConsole(t, pool)
 
-	project := store.CreateProject(t)
+	project := console.CreateProject(t)
 	require.NotEmpty(t, project.ProjectID, "project ID should not be empty")
 
-	organization := store.CreateOrganization(t, OrganizationParams{
+	organization := console.CreateOrganization(t, OrganizationParams{
 		Project: project,
 		Organization: &backendv1.Organization{
 			DisplayName: "test",

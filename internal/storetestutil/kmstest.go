@@ -1,4 +1,4 @@
-package kmstest
+package storetestutil
 
 import (
 	"strings"
@@ -14,7 +14,7 @@ type KMS struct {
 	SessionSigningKeyID string
 }
 
-func New(t *testing.T) *KMS {
+func NewKMS(t *testing.T) *KMS {
 	const awsRegion = "us-east-1"
 
 	container, err := testcontainers.GenericContainer(
