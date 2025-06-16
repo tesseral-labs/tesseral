@@ -8,23 +8,23 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/storetestutil"
 )
 
-func (tester *BackendSuite) TestCreateSAMLConnection() {
-	tester.T().Parallel()
+func (s *BackendSuite) TestCreateSAMLConnection() {
+	s.T().Parallel()
 
-	project := tester.CreateProject()
+	project := s.CreateProject()
 
-	tester.Run("SAML enabled", func() {
-		ctx := tester.NewAuthContext(project)
-		require := tester.Require()
+	s.Run("SAML enabled", func() {
+		ctx := s.NewAuthContext(project)
+		require := s.Require()
 
-		organization := tester.CreateOrganization(storetestutil.OrganizationParams{
+		organization := s.CreateOrganization(storetestutil.OrganizationParams{
 			Project: project,
 			Organization: &backendv1.Organization{
 				DisplayName:   "test",
 				LogInWithSaml: refOrNil(true),
 			},
 		})
-		_, err := tester.Store.CreateSAMLConnection(ctx, &backendv1.CreateSAMLConnectionRequest{
+		_, err := s.Store.CreateSAMLConnection(ctx, &backendv1.CreateSAMLConnectionRequest{
 			SamlConnection: &backendv1.SAMLConnection{
 				SpAcsUrl:       "https://example.com/saml/acs",
 				SpEntityId:     "https://example.com/saml/sp",
@@ -36,18 +36,18 @@ func (tester *BackendSuite) TestCreateSAMLConnection() {
 		require.NoError(err, "failed to create SAML connection")
 	})
 
-	tester.Run("SAML disabled", func() {
-		ctx := tester.NewAuthContext(project)
-		require := tester.Require()
+	s.Run("SAML disabled", func() {
+		ctx := s.NewAuthContext(project)
+		require := s.Require()
 
-		organization := tester.CreateOrganization(storetestutil.OrganizationParams{
+		organization := s.CreateOrganization(storetestutil.OrganizationParams{
 			Project: project,
 			Organization: &backendv1.Organization{
 				DisplayName:   "test",
 				LogInWithSaml: refOrNil(false), // SAML not enabled
 			},
 		})
-		_, err := tester.Store.CreateSAMLConnection(ctx, &backendv1.CreateSAMLConnectionRequest{
+		_, err := s.Store.CreateSAMLConnection(ctx, &backendv1.CreateSAMLConnectionRequest{
 			SamlConnection: &backendv1.SAMLConnection{
 				SpAcsUrl:       "https://example.com/saml/acs",
 				SpEntityId:     "https://example.com/saml/sp",
@@ -63,23 +63,23 @@ func (tester *BackendSuite) TestCreateSAMLConnection() {
 	})
 }
 
-func (tester *BackendSuite) TestGetSAMLConnection() {
-	tester.T().Parallel()
+func (s *BackendSuite) TestGetSAMLConnection() {
+	s.T().Parallel()
 
-	project := tester.CreateProject()
+	project := s.CreateProject()
 
-	tester.Run("SAML connection exists", func() {
-		ctx := tester.NewAuthContext(project)
-		require := tester.Require()
+	s.Run("SAML connection exists", func() {
+		ctx := s.NewAuthContext(project)
+		require := s.Require()
 
-		organization := tester.CreateOrganization(storetestutil.OrganizationParams{
+		organization := s.CreateOrganization(storetestutil.OrganizationParams{
 			Project: project,
 			Organization: &backendv1.Organization{
 				DisplayName:   "test",
 				LogInWithSaml: refOrNil(true),
 			},
 		})
-		samlConnection, err := tester.Store.CreateSAMLConnection(ctx, &backendv1.CreateSAMLConnectionRequest{
+		samlConnection, err := s.Store.CreateSAMLConnection(ctx, &backendv1.CreateSAMLConnectionRequest{
 			SamlConnection: &backendv1.SAMLConnection{
 				IdpRedirectUrl: "https://idp.example.com/saml/redirect",
 				IdpEntityId:    "https://idp.example.com/saml/idp",
@@ -88,7 +88,7 @@ func (tester *BackendSuite) TestGetSAMLConnection() {
 		})
 		require.NoError(err, "failed to create SAML connection")
 
-		res, err := tester.Store.GetSAMLConnection(ctx, &backendv1.GetSAMLConnectionRequest{
+		res, err := s.Store.GetSAMLConnection(ctx, &backendv1.GetSAMLConnectionRequest{
 			Id: samlConnection.SamlConnection.Id,
 		})
 		require.NoError(err, "failed to get SAML connection")
@@ -103,11 +103,11 @@ func (tester *BackendSuite) TestGetSAMLConnection() {
 		require.NotEmpty(res.SamlConnection.UpdateTime, "expected SAML connection UpdatedAt to be set")
 	})
 
-	tester.Run("SAML connection does not exist", func() {
-		ctx := tester.NewAuthContext(project)
-		require := tester.Require()
+	s.Run("SAML connection does not exist", func() {
+		ctx := s.NewAuthContext(project)
+		require := s.Require()
 
-		res, err := tester.Store.GetSAMLConnection(ctx, &backendv1.GetSAMLConnectionRequest{
+		res, err := s.Store.GetSAMLConnection(ctx, &backendv1.GetSAMLConnectionRequest{
 			Id: idformat.SAMLConnection.Format(uuid.New()),
 		})
 
