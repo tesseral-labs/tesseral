@@ -1,6 +1,5 @@
 create type audit_log_event_resource_type as enum (
     'api_key',
-    'api_key_role_assignment',
     'organization',
     'passkey',
     'role',
@@ -8,8 +7,7 @@ create type audit_log_event_resource_type as enum (
     'scim_api_key',
     'session',
     'user',
-    'user_invite',
-    'user_role_assignment'
+    'user_invite'
 );
 
 create table audit_log_events (

@@ -16,17 +16,15 @@ import (
 type AuditLogEventResourceType string
 
 const (
-	AuditLogEventResourceTypeApiKey               AuditLogEventResourceType = "api_key"
-	AuditLogEventResourceTypeApiKeyRoleAssignment AuditLogEventResourceType = "api_key_role_assignment"
-	AuditLogEventResourceTypeOrganization         AuditLogEventResourceType = "organization"
-	AuditLogEventResourceTypePasskey              AuditLogEventResourceType = "passkey"
-	AuditLogEventResourceTypeRole                 AuditLogEventResourceType = "role"
-	AuditLogEventResourceTypeSamlConnection       AuditLogEventResourceType = "saml_connection"
-	AuditLogEventResourceTypeScimApiKey           AuditLogEventResourceType = "scim_api_key"
-	AuditLogEventResourceTypeSession              AuditLogEventResourceType = "session"
-	AuditLogEventResourceTypeUser                 AuditLogEventResourceType = "user"
-	AuditLogEventResourceTypeUserInvite           AuditLogEventResourceType = "user_invite"
-	AuditLogEventResourceTypeUserRoleAssignment   AuditLogEventResourceType = "user_role_assignment"
+	AuditLogEventResourceTypeApiKey         AuditLogEventResourceType = "api_key"
+	AuditLogEventResourceTypeOrganization   AuditLogEventResourceType = "organization"
+	AuditLogEventResourceTypePasskey        AuditLogEventResourceType = "passkey"
+	AuditLogEventResourceTypeRole           AuditLogEventResourceType = "role"
+	AuditLogEventResourceTypeSamlConnection AuditLogEventResourceType = "saml_connection"
+	AuditLogEventResourceTypeScimApiKey     AuditLogEventResourceType = "scim_api_key"
+	AuditLogEventResourceTypeSession        AuditLogEventResourceType = "session"
+	AuditLogEventResourceTypeUser           AuditLogEventResourceType = "user"
+	AuditLogEventResourceTypeUserInvite     AuditLogEventResourceType = "user_invite"
 )
 
 func (e *AuditLogEventResourceType) Scan(src interface{}) error {
