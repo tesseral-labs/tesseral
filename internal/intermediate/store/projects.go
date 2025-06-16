@@ -452,7 +452,7 @@ func (s *Store) createProjectForCurrentUser(ctx context.Context, q *queries.Quer
 
 func parseProject(qProject queries.Project) *intermediatev1.Project {
 	return &intermediatev1.Project{
-		Id:             qProject.ID.String(),
+		Id:             qProject.ID.String(), // why does this call String() and not Format()?
 		OrganizationId: idformat.Organization.Format(*qProject.OrganizationID),
 		CreateTime:     timestamppb.New(*qProject.CreateTime),
 		UpdateTime:     timestamppb.New(*qProject.UpdateTime),

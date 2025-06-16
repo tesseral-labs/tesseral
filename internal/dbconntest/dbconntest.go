@@ -1,7 +1,6 @@
 package dbconntest
 
 import (
-	"context"
 	"path/filepath"
 	"runtime"
 	"testing"
@@ -18,9 +17,7 @@ import (
 const imageName = "postgres:15.8"
 
 func Open(t *testing.T) *pgxpool.Pool {
-	ctx := context.Background()
-
-	container, err := postgres.Run(ctx, imageName,
+	container, err := postgres.Run(t.Context(), imageName,
 		postgres.WithDatabase("testdb"),
 		postgres.WithUsername("testuser"),
 		postgres.WithPassword("testpass"),
@@ -30,7 +27,7 @@ func Open(t *testing.T) *pgxpool.Pool {
 		t.Fatalf("run postgres container: %v", err)
 	}
 
-	dsn, err := container.ConnectionString(ctx, "sslmode=disable")
+	dsn, err := container.ConnectionString(t.Context(), "sslmode=disable")
 	if err != nil {
 		t.Fatalf("get connection string: %v", err)
 	}
@@ -59,7 +56,7 @@ func Open(t *testing.T) *pgxpool.Pool {
 	}
 
 	// Create a pgx pool for use in tests
-	pool, err := pgxpool.New(ctx, dsn)
+	pool, err := pgxpool.New(t.Context(), dsn)
 	if err != nil {
 		t.Fatalf("create pgx pool: %v", err)
 	}

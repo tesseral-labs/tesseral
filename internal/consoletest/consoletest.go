@@ -1,29 +1,44 @@
 package consoletest
 
 import (
-	"context"
 	"fmt"
+	"math/rand/v2"
 	"testing"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
+	bkauthn "github.com/tesseral-labs/tesseral/internal/backend/authn"
+	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
+	bkstore "github.com/tesseral-labs/tesseral/internal/backend/store"
+	intauthn "github.com/tesseral-labs/tesseral/internal/intermediate/authn"
+	intermediatev1 "github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1"
+	intstore "github.com/tesseral-labs/tesseral/internal/intermediate/store"
+	"github.com/tesseral-labs/tesseral/internal/kmstest"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
 type Console struct {
-	pool             *pgxpool.Pool
+	pool *pgxpool.Pool
+	kms  *kmstest.KMS
+
 	DogfoodProjectID *uuid.UUID
+	DogfoodUserID    string
 }
 
 func New(t *testing.T, pool *pgxpool.Pool) *Console {
-	console := &Console{pool: pool}
-	console.DogfoodProjectID = console.seed(t)
+	console := &Console{pool: pool, kms: kmstest.New(t)}
+	console.seed(t)
 	return console
 }
 
-func (c *Console) seed(t *testing.T) *uuid.UUID {
+func (c *Console) seed(t *testing.T) {
 	dogfoodProjectID := uuid.New()
+	dogfoodUserID := uuid.New()
+
 	c.DogfoodProjectID = &dogfoodProjectID
+	c.DogfoodUserID = idformat.User.Format(dogfoodUserID)
 
 	sql := fmt.Sprintf(`
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
@@ -45,61 +60,101 @@ UPDATE projects SET organization_id = '7a76decb-6d79-49ce-9449-34fcc53151df'::uu
 -- Create project UI settings for the dogfood project
 INSERT INTO project_ui_settings (id, project_id)
   VALUES (gen_random_uuid(), '%s'::uuid);
-	`, dogfoodProjectID.String(), dogfoodProjectID.String(), dogfoodProjectID.String(), dogfoodProjectID.String(), dogfoodProjectID.String(), dogfoodProjectID.String())
 
-	_, err := c.pool.Exec(context.Background(), sql)
+-- Create a user in the dogfood project
+INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
+  VALUES ('%s'::uuid, 'root@app.tesseral.example.com', crypt('password', gen_salt('bf', 14)), '%s', true);
+`,
+		dogfoodProjectID.String(),
+		dogfoodProjectID.String(),
+		dogfoodProjectID.String(),
+		dogfoodProjectID.String(),
+		dogfoodProjectID.String(),
+		dogfoodProjectID.String(),
+		dogfoodUserID.String(),
+		"7a76decb-6d79-49ce-9449-34fcc53151df",
+	)
+
+	_, err := c.pool.Exec(t.Context(), sql)
 	if err != nil {
 		t.Fatalf("failed to seed database: %v", err)
 	}
-
-	return &dogfoodProjectID
-}
-
-type ProjectParams struct {
-	Name          string
-	LoginWithSaml bool
 }
 
 type Project struct {
-	ProjectID     string
-	BackendAPIKey string
+	ProjectID string
+	UserID    string
 }
 
-func (c *Console) CreateProject(t *testing.T, params ProjectParams) Project {
-	projectID := uuid.New()
-	projectBackingOrganizationID := uuid.New()
-	backendAPIKey := uuid.New()
+func (c *Console) CreateProject(t *testing.T) Project {
+	projectName := fmt.Sprintf("test-%d", rand.IntN(1<<20))
 
-	sql := fmt.Sprintf(`
-INSERT INTO projects (id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, vault_domain, email_send_from_domain, redirect_uri, cookie_domain)
-	VALUES ('%s'::uuid, 'Test Project', true, true, true, true, %t, true, true, 'vault.%s.tesseral.example.com', 'vault.%s.tesseral.example.com', 'https://%s.tesseral.example.com', '%s.tesseral.example.com');
-
-INSERT INTO backend_api_keys (id, project_id, secret_token_sha256, display_name)
-  VALUES (gen_random_uuid(), '%s', digest(uuid_send('%s'::uuid), 'sha256'), 'test');
-
--- Backing organization
-INSERT INTO organizations (id, display_name, project_id, log_in_with_saml, scim_enabled, log_in_with_email)
-VALUES ('%s'::uuid, '%s Backing Organization', '%s', false, false, true);
-
-update projects set organization_id = '%s'::uuid where id = '%s'::uuid;
-	`, projectID.String(), params.LoginWithSaml, params.Name, params.Name, params.Name, params.Name, projectID.String(), backendAPIKey.String(),
-		projectBackingOrganizationID.String(), params.Name, projectID.String(), projectBackingOrganizationID.String(), projectID.String())
-
-	_, err := c.pool.Exec(context.Background(), sql)
+	intermediateSession := &intermediatev1.IntermediateSession{
+		Id:                idformat.IntermediateSession.Format(uuid.New()),
+		ProjectId:         idformat.Project.Format(*c.DogfoodProjectID),
+		Email:             "root@app.tesseral.example.com",
+		EmailVerified:     true,
+		OrganizationId:    idformat.Organization.Format(uuid.MustParse("7a76decb-6d79-49ce-9449-34fcc53151df")),
+		PrimaryAuthFactor: intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_EMAIL,
+	}
+	intstore := intstore.New(intstore.NewStoreParams{
+		DB:                        c.pool,
+		KMS:                       c.kms.Client,
+		SessionSigningKeyKmsKeyID: c.kms.SessionSigningKeyID,
+		S3:                        s3.NewFromConfig(*aws.NewConfig()),
+		DogfoodProjectID:          c.DogfoodProjectID,
+	})
+	ctx := intauthn.NewContext(t.Context(), intermediateSession, idformat.Project.Format(*c.DogfoodProjectID))
+	project, err := intstore.CreateProject(ctx, &intermediatev1.CreateProjectRequest{
+		DisplayName: projectName,
+		RedirectUri: fmt.Sprintf("https://%s.tesseral.example.com", projectName),
+	})
 	if err != nil {
 		t.Fatalf("failed to create test project: %v", err)
 	}
 
+	_, err = c.pool.Exec(t.Context(), `
+UPDATE projects SET
+	log_in_with_google = true,
+	log_in_with_microsoft = true,
+	log_in_with_github = true,
+	log_in_with_email = true,
+	log_in_with_password = true,
+	log_in_with_saml = true,
+	log_in_with_authenticator_app = true,
+	log_in_with_passkey = true
+WHERE id = $1::uuid;
+`,
+		project.Project.Id,
+	)
+	if err != nil {
+		t.Fatalf("failed to update test project: %v", err)
+	}
+
+	userID := uuid.New()
+	userEmail := fmt.Sprintf("user-%d@%s.tesseral.example.com", rand.IntN(1<<20), projectName)
+
+	_, err = c.pool.Exec(t.Context(), `
+INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
+  VALUES ($1::uuid, $2, crypt('password', gen_salt('bf', 14)), (SELECT organization_id FROM projects WHERE id=$3::uuid), true);
+`,
+		userID.String(),
+		userEmail,
+		project.Project.Id,
+	)
+	if err != nil {
+		t.Fatalf("failed to create test user: %v", err)
+	}
+
 	return Project{
-		ProjectID:     idformat.Project.Format(projectID),
-		BackendAPIKey: idformat.BackendAPIKey.Format(backendAPIKey),
+		ProjectID: idformat.Project.Format(uuid.MustParse(project.Project.Id)),
+		UserID:    idformat.User.Format(userID),
 	}
 }
 
 type OrganizationParams struct {
-	ProjectID     string
-	Name          string
-	LoginWithSaml bool
+	Project
+	*backendv1.Organization
 }
 
 type Organization struct {
@@ -109,43 +164,39 @@ type Organization struct {
 }
 
 func (c *Console) CreateOrganization(t *testing.T, params OrganizationParams) Organization {
-	projectUUID, err := idformat.Project.Parse(params.ProjectID)
-	if err != nil {
-		t.Fatalf("parse project ID: %v", err)
-	}
+	bkstore := bkstore.New(bkstore.NewStoreParams{
+		DB:                        c.pool,
+		KMS:                       c.kms.Client,
+		SessionSigningKeyKmsKeyID: c.kms.SessionSigningKeyID,
+		S3:                        s3.NewFromConfig(*aws.NewConfig()),
+		DogfoodProjectID:          c.DogfoodProjectID,
+	})
+	ctx := bkauthn.NewDogfoodSessionContext(t.Context(), bkauthn.DogfoodSessionContextData{
+		ProjectID: params.ProjectID,
+		UserID:    params.UserID,
+		SessionID: idformat.Session.Format(uuid.New()),
+	})
 
-	organizationID := uuid.New()
-	userID := uuid.New()
-	userEmail := fmt.Sprintf("%s@%s.example.com", userID.String(), params.Name)
-
-	_, err = c.pool.Exec(context.Background(), `
-INSERT INTO organizations (id, display_name, project_id, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, scim_enabled)
-  VALUES ($1::uuid, $2, $3::uuid, true, false, true, true, $4, true, true, true);
-`,
-		organizationID.String(),
-		params.Name,
-		uuid.UUID(projectUUID).String(),
-		params.LoginWithSaml,
-	)
+	organization, err := bkstore.CreateOrganization(ctx, &backendv1.CreateOrganizationRequest{
+		Organization: params.Organization,
+	})
 	if err != nil {
 		t.Fatalf("failed to create test organization: %v", err)
 	}
 
-	_, err = c.pool.Exec(context.Background(), `
-INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
-  VALUES ($1::uuid, $2, crypt('password', gen_salt('bf', 14)), $3::uuid, true);
-`,
-		userID.String(),
-		userEmail,
-		organizationID.String(),
-	)
+	user, err := bkstore.CreateUser(ctx, &backendv1.CreateUserRequest{
+		User: &backendv1.User{
+			OrganizationId: organization.Organization.Id,
+			Email:          fmt.Sprintf("user-%d@example.com", rand.IntN(1<<20)),
+		},
+	})
 	if err != nil {
-		t.Fatalf("failed to create test user: %v", err)
+		t.Fatalf("failed to create user in organization: %v", err)
 	}
 
 	return Organization{
 		ProjectID:      params.ProjectID,
-		OrganizationID: idformat.Organization.Format(organizationID),
-		UserID:         idformat.User.Format(userID),
+		OrganizationID: organization.Organization.Id,
+		UserID:         user.User.Id,
 	}
 }
