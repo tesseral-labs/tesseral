@@ -9,5 +9,13 @@ import (
 
 func TestOpen(t *testing.T) {
 	pool := Open(t)
-	require.NoError(t, pool.Ping(context.Background()), "failed to ping the database")
+
+	ctx := context.Background()
+	require.NoError(t, pool.Ping(ctx), "failed to ping the database")
+
+	_, err := pool.Exec(ctx, "CREATE TABLE IF NOT EXISTS test_table (id SERIAL PRIMARY KEY, name TEXT)")
+	require.NoError(t, err, "failed to create test table")
+
+	_, err = pool.Exec(ctx, "INSERT INTO test_table (name) VALUES ('test')")
+	require.NoError(t, err, "failed to insert into test table")
 }
