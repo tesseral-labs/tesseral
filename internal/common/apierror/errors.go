@@ -9,6 +9,8 @@ var errAlreadyExists = "already_exists"
 var errFailedPrecondition = "failed_precondition"
 var errInvalidArgument = "invalid_argument"
 var errNotFound = "not_found"
+var errPasswordsUnavailableForEmail = "passwords_unavailable_for_email"
+var errIncorrectPassword = "incorrect_password"
 var errPasswordCompromised = "password_compromised"
 var errPermissionDenied = "permission_denied"
 var errUnauthenticated = "unauthenticated"
@@ -108,6 +110,34 @@ func NewUnauthenticatedApiKeyError(description string, sourceError error) error 
 	apiErr := New(errUnauthenticatedApiKey, sourceError)
 
 	err := connect.NewError(connect.CodeInvalidArgument, apiErr)
+
+	// Add details to the connect error
+	if detail, detailErr := connect.NewErrorDetail(&commonv1.ErrorDetail{
+		Description: description,
+	}); detailErr == nil {
+		err.AddDetail(detail)
+	}
+
+	return err
+}
+
+func NewPasswordsUnavailableForEmailError(description string, sourceError error) error {
+	apiErr := New(errPasswordsUnavailableForEmail, sourceError)
+	err := connect.NewError(connect.CodeFailedPrecondition, apiErr)
+
+	// Add details to the connect error
+	if detail, detailErr := connect.NewErrorDetail(&commonv1.ErrorDetail{
+		Description: description,
+	}); detailErr == nil {
+		err.AddDetail(detail)
+	}
+
+	return err
+}
+
+func NewIncorrectPasswordError(description string, sourceError error) error {
+	apiErr := New(errIncorrectPassword, sourceError)
+	err := connect.NewError(connect.CodeFailedPrecondition, apiErr)
 
 	// Add details to the connect error
 	if detail, detailErr := connect.NewErrorDetail(&commonv1.ErrorDetail{

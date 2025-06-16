@@ -202,6 +202,13 @@ service IntermediateService {
     };
   }
 
+  rpc SetPasswordAsPrimaryLoginFactor(SetPasswordAsPrimaryLoginFactorRequest) returns (SetPasswordAsPrimaryLoginFactorResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/set-password-as-primary-login-factor"
+      body: "*"
+    };
+  }
+
   rpc ExchangeSessionForIntermediateSession(ExchangeSessionForIntermediateSessionRequest) returns (ExchangeSessionForIntermediateSessionResponse) {
     option (google.api.http) = {
       post: "/intermediate/v1/exchange-session-for-intermediate-session"
@@ -249,6 +256,7 @@ message Session {
 enum PrimaryAuthFactor {
   PRIMARY_AUTH_FACTOR_UNSPECIFIED = 0;
   PRIMARY_AUTH_FACTOR_EMAIL = 1;
+  PRIMARY_AUTH_FACTOR_PASSWORD = 5;
   PRIMARY_AUTH_FACTOR_GOOGLE = 2;
   PRIMARY_AUTH_FACTOR_MICROSOFT = 3;
   PRIMARY_AUTH_FACTOR_GITHUB = 4;
@@ -459,6 +467,7 @@ message RegisterPasswordResponse {}
 message VerifyPasswordRequest {
   string organization_id = 1;
   string password = 2;
+  string email = 3;
 }
 
 message VerifyPasswordResponse {}
@@ -545,6 +554,10 @@ message VerifyPasskeyResponse {}
 message SetEmailAsPrimaryLoginFactorRequest {}
 
 message SetEmailAsPrimaryLoginFactorResponse {}
+
+message SetPasswordAsPrimaryLoginFactorRequest {}
+
+message SetPasswordAsPrimaryLoginFactorResponse {}
 
 message ExchangeSessionForIntermediateSessionRequest {
   string refresh_token = 1;

@@ -39,6 +39,33 @@ func (s *Store) SetEmailAsPrimaryLoginFactor(ctx context.Context, req *intermedi
 	return &intermediatev1.SetEmailAsPrimaryLoginFactorResponse{}, nil
 }
 
+func (s *Store) SetPasswordAsPrimaryLoginFactor(ctx context.Context, req *intermediatev1.SetPasswordAsPrimaryLoginFactorRequest) (*intermediatev1.SetPasswordAsPrimaryLoginFactorResponse, error) {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("begin transaction: %w", err)
+	}
+	defer rollback()
+
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get intermediate session by id: %w", err)
+	}
+
+	primaryAuthFactor := queries.PrimaryAuthFactorPassword
+	if _, err := q.UpdateIntermediateSessionPrimaryAuthFactor(ctx, queries.UpdateIntermediateSessionPrimaryAuthFactorParams{
+		ID:                qIntermediateSession.ID,
+		PrimaryAuthFactor: &primaryAuthFactor,
+	}); err != nil {
+		return nil, fmt.Errorf("update intermediate session primary auth factor: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return &intermediatev1.SetPasswordAsPrimaryLoginFactorResponse{}, nil
+}
+
 func (s *Store) getIntermediateSessionEmailVerified(ctx context.Context, q *queries.Queries, id uuid.UUID) (bool, error) {
 	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, id)
 	if err != nil {
@@ -123,6 +150,8 @@ func parseIntermediateSession(qIntermediateSession queries.IntermediateSession, 
 		switch *qIntermediateSession.PrimaryAuthFactor {
 		case queries.PrimaryAuthFactorEmail:
 			primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_EMAIL
+		case queries.PrimaryAuthFactorPassword:
+			primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_PASSWORD
 		case queries.PrimaryAuthFactorGoogle:
 			primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GOOGLE
 		case queries.PrimaryAuthFactorMicrosoft:

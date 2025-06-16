@@ -49,6 +49,7 @@ const (
 	IntermediateService_RegisterAuthenticatorApp_FullMethodName              = "/tesseral.intermediate.v1.IntermediateService/RegisterAuthenticatorApp"
 	IntermediateService_VerifyAuthenticatorApp_FullMethodName                = "/tesseral.intermediate.v1.IntermediateService/VerifyAuthenticatorApp"
 	IntermediateService_SetEmailAsPrimaryLoginFactor_FullMethodName          = "/tesseral.intermediate.v1.IntermediateService/SetEmailAsPrimaryLoginFactor"
+	IntermediateService_SetPasswordAsPrimaryLoginFactor_FullMethodName       = "/tesseral.intermediate.v1.IntermediateService/SetPasswordAsPrimaryLoginFactor"
 	IntermediateService_ExchangeSessionForIntermediateSession_FullMethodName = "/tesseral.intermediate.v1.IntermediateService/ExchangeSessionForIntermediateSession"
 	IntermediateService_CreateProject_FullMethodName                         = "/tesseral.intermediate.v1.IntermediateService/CreateProject"
 	IntermediateService_OnboardingCreateProjects_FullMethodName              = "/tesseral.intermediate.v1.IntermediateService/OnboardingCreateProjects"
@@ -88,6 +89,7 @@ type IntermediateServiceClient interface {
 	RegisterAuthenticatorApp(ctx context.Context, in *RegisterAuthenticatorAppRequest, opts ...grpc.CallOption) (*RegisterAuthenticatorAppResponse, error)
 	VerifyAuthenticatorApp(ctx context.Context, in *VerifyAuthenticatorAppRequest, opts ...grpc.CallOption) (*VerifyAuthenticatorAppResponse, error)
 	SetEmailAsPrimaryLoginFactor(ctx context.Context, in *SetEmailAsPrimaryLoginFactorRequest, opts ...grpc.CallOption) (*SetEmailAsPrimaryLoginFactorResponse, error)
+	SetPasswordAsPrimaryLoginFactor(ctx context.Context, in *SetPasswordAsPrimaryLoginFactorRequest, opts ...grpc.CallOption) (*SetPasswordAsPrimaryLoginFactorResponse, error)
 	ExchangeSessionForIntermediateSession(ctx context.Context, in *ExchangeSessionForIntermediateSessionRequest, opts ...grpc.CallOption) (*ExchangeSessionForIntermediateSessionResponse, error)
 	CreateProject(ctx context.Context, in *CreateProjectRequest, opts ...grpc.CallOption) (*CreateProjectResponse, error)
 	OnboardingCreateProjects(ctx context.Context, in *OnboardingCreateProjectsRequest, opts ...grpc.CallOption) (*OnboardingCreateProjectsResponse, error)
@@ -401,6 +403,16 @@ func (c *intermediateServiceClient) SetEmailAsPrimaryLoginFactor(ctx context.Con
 	return out, nil
 }
 
+func (c *intermediateServiceClient) SetPasswordAsPrimaryLoginFactor(ctx context.Context, in *SetPasswordAsPrimaryLoginFactorRequest, opts ...grpc.CallOption) (*SetPasswordAsPrimaryLoginFactorResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SetPasswordAsPrimaryLoginFactorResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_SetPasswordAsPrimaryLoginFactor_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *intermediateServiceClient) ExchangeSessionForIntermediateSession(ctx context.Context, in *ExchangeSessionForIntermediateSessionRequest, opts ...grpc.CallOption) (*ExchangeSessionForIntermediateSessionResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ExchangeSessionForIntermediateSessionResponse)
@@ -465,6 +477,7 @@ type IntermediateServiceServer interface {
 	RegisterAuthenticatorApp(context.Context, *RegisterAuthenticatorAppRequest) (*RegisterAuthenticatorAppResponse, error)
 	VerifyAuthenticatorApp(context.Context, *VerifyAuthenticatorAppRequest) (*VerifyAuthenticatorAppResponse, error)
 	SetEmailAsPrimaryLoginFactor(context.Context, *SetEmailAsPrimaryLoginFactorRequest) (*SetEmailAsPrimaryLoginFactorResponse, error)
+	SetPasswordAsPrimaryLoginFactor(context.Context, *SetPasswordAsPrimaryLoginFactorRequest) (*SetPasswordAsPrimaryLoginFactorResponse, error)
 	ExchangeSessionForIntermediateSession(context.Context, *ExchangeSessionForIntermediateSessionRequest) (*ExchangeSessionForIntermediateSessionResponse, error)
 	CreateProject(context.Context, *CreateProjectRequest) (*CreateProjectResponse, error)
 	OnboardingCreateProjects(context.Context, *OnboardingCreateProjectsRequest) (*OnboardingCreateProjectsResponse, error)
@@ -567,6 +580,9 @@ func (UnimplementedIntermediateServiceServer) VerifyAuthenticatorApp(context.Con
 }
 func (UnimplementedIntermediateServiceServer) SetEmailAsPrimaryLoginFactor(context.Context, *SetEmailAsPrimaryLoginFactorRequest) (*SetEmailAsPrimaryLoginFactorResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetEmailAsPrimaryLoginFactor not implemented")
+}
+func (UnimplementedIntermediateServiceServer) SetPasswordAsPrimaryLoginFactor(context.Context, *SetPasswordAsPrimaryLoginFactorRequest) (*SetPasswordAsPrimaryLoginFactorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetPasswordAsPrimaryLoginFactor not implemented")
 }
 func (UnimplementedIntermediateServiceServer) ExchangeSessionForIntermediateSession(context.Context, *ExchangeSessionForIntermediateSessionRequest) (*ExchangeSessionForIntermediateSessionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ExchangeSessionForIntermediateSession not implemented")
@@ -1138,6 +1154,24 @@ func _IntermediateService_SetEmailAsPrimaryLoginFactor_Handler(srv interface{}, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _IntermediateService_SetPasswordAsPrimaryLoginFactor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetPasswordAsPrimaryLoginFactorRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).SetPasswordAsPrimaryLoginFactor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_SetPasswordAsPrimaryLoginFactor_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).SetPasswordAsPrimaryLoginFactor(ctx, req.(*SetPasswordAsPrimaryLoginFactorRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _IntermediateService_ExchangeSessionForIntermediateSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ExchangeSessionForIntermediateSessionRequest)
 	if err := dec(in); err != nil {
@@ -1318,6 +1352,10 @@ var IntermediateService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetEmailAsPrimaryLoginFactor",
 			Handler:    _IntermediateService_SetEmailAsPrimaryLoginFactor_Handler,
+		},
+		{
+			MethodName: "SetPasswordAsPrimaryLoginFactor",
+			Handler:    _IntermediateService_SetPasswordAsPrimaryLoginFactor_Handler,
 		},
 		{
 			MethodName: "ExchangeSessionForIntermediateSession",

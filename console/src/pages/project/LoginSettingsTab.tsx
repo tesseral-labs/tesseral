@@ -305,12 +305,13 @@ const EditLoginMethodsButton = () => {
   const handleSubmit = async (values: z.infer<typeof loginMethodsSchema>) => {
     if (!values.logInWithEmail) {
       if (
+        !values.logInWithPassword &&
         !getProjectResponse?.project?.logInWithGoogle &&
         !getProjectResponse?.project?.logInWithMicrosoft
       ) {
         form.setError('logInWithEmail', {
           message:
-            'At least one of Log in with Email, Log in with Google, or Log in with Microsoft must be enabled.',
+            'At least one of Log in with Email, Log in with Password, Log in with Google, or Log in with Microsoft must be enabled.',
         });
         return;
       }
