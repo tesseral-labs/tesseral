@@ -38,7 +38,6 @@ func Open(t *testing.T) *pgxpool.Pool {
 	if err != nil {
 		t.Fatalf("open pgx connection: %v", err)
 	}
-	defer db.Close()
 
 	_, currentFile, _, ok := runtime.Caller(0)
 	if !ok {
@@ -53,6 +52,10 @@ func Open(t *testing.T) *pgxpool.Pool {
 	err = m.Up()
 	if err != nil {
 		t.Fatalf("run migrations: %v", err)
+	}
+	err = db.Close()
+	if err != nil {
+		t.Fatalf("close pgx connection: %v", err)
 	}
 
 	// Create a pgx pool for use in tests
