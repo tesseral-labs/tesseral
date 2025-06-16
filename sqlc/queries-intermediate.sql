@@ -313,6 +313,7 @@ FROM
     JOIN organizations ON users.organization_id = organizations.id
 WHERE
     users.email = $1
+    AND users.password_bcrypt IS NOT NULL
     AND organizations.project_id = $2
     AND organizations.log_in_with_password = TRUE
     AND NOT organizations.logins_disabled;
