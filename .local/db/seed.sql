@@ -60,7 +60,7 @@ INSERT INTO project_ui_settings (id, project_id)
 
 -- Create a user in company1
 INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
-VALUES ('125edb51-a832-445f-b45b-cba6acc0fb75'::uuid, 'user1@company1.example.com', crypt('password', gen_salt('bf', 14)), '8648d50b-baa1-4929-be0f-bc7238f685ab', true);
+VALUES (gen_random_uuid(), 'user1@company1.example.com', crypt('password', gen_salt('bf', 14)), '8648d50b-baa1-4929-be0f-bc7238f685ab', true);
 
 -- create company1's session signing keys
 insert into session_signing_keys (id, project_id, public_key, private_key_cipher_text, expire_time)
@@ -71,10 +71,6 @@ values (
            decode('16b4dfd43beccde193bba4a02392fc2ac18ad45521caf94e55ee61e3957ba5d4e060c9cf2493597b2aa5d61642007f6d190b64fc3cfef43ec7aa8e3735276912424a6e6795a53a3516e2527f16a938f733346ab96db4aa1f8312026c666e5cb34e80803a09cee1ed52da411451b6d19230105ae0ef6bc9c2cc8ed02c30ae3d59abf67e4b33949353ceb35572dde287d4a197b63c69dbce3cb19177111fccb4e36de68fb1b9f4c60dfe9661026bca72c932f47e05b2dff6767eb3a38d62398ae62d56432e1079f621adc819ee5d93c526ce6ff1484c288103f6a2136c8892a43b33f2c4b386d17a1da81cb6f0d2476867d9d7829818ef0535afc4910eb53541f3', 'hex'),
            (select now() + interval '1 year')
        );
-
--- Create an organization for company1
-INSERT INTO organizations (id, display_name, project_id, log_in_with_saml, scim_enabled, log_in_with_email)
-VALUES ('3b1a04a1-0803-47af-bfdd-831349e2aac6'::uuid, 'ACME Corporation', '7abd6d2e-c314-456e-b9c5-bdbb62f0345f', true, false, true);
 
 -- Create company2's project
 insert into projects (id, log_in_with_email, log_in_with_password, log_in_with_google, log_in_with_microsoft, display_name, vault_domain, email_send_from_domain, redirect_uri, cookie_domain)

@@ -2,7 +2,6 @@ package dbconntest
 
 import (
 	"context"
-	"os"
 	"path/filepath"
 	"runtime"
 	"testing"
@@ -68,17 +67,6 @@ func Open(t *testing.T) *pgxpool.Pool {
 	t.Cleanup(func() {
 		pool.Close()
 	})
-
-	// Seed the database
-	seedScript := filepath.Join(currentFile, "../../../.local/db/seed.sql")
-	seedContent, err := os.ReadFile(seedScript)
-	if err != nil {
-		t.Fatalf("read seed script: %v", err)
-	}
-	_, err = pool.Exec(ctx, string(seedContent))
-	if err != nil {
-		t.Fatalf("execute seed script: %v", err)
-	}
 
 	return pool
 }
