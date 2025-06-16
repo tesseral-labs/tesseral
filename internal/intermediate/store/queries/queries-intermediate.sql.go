@@ -1539,6 +1539,64 @@ func (q *Queries) GetUserPasskeyCredentialIDs(ctx context.Context, userID uuid.U
 	return items, nil
 }
 
+const getUsersByForLogInWithPassword = `-- name: GetUsersByForLogInWithPassword :many
+SELECT
+    users.id, users.organization_id, users.password_bcrypt, users.google_user_id, users.microsoft_user_id, users.email, users.create_time, users.update_time, users.deactivate_time, users.is_owner, users.failed_password_attempts, users.password_lockout_expire_time, users.authenticator_app_secret_ciphertext, users.failed_authenticator_app_attempts, users.authenticator_app_lockout_expire_time, users.authenticator_app_recovery_code_sha256s, users.display_name, users.profile_picture_url, users.github_user_id
+FROM
+    users
+    JOIN organizations ON users.organization_id = organizations.id
+WHERE
+    users.email = $1
+    AND organizations.project_id = $2
+    AND organizations.log_in_with_password = TRUE
+    AND NOT organizations.logins_disabled
+`
+
+type GetUsersByForLogInWithPasswordParams struct {
+	Email     string
+	ProjectID uuid.UUID
+}
+
+func (q *Queries) GetUsersByForLogInWithPassword(ctx context.Context, arg GetUsersByForLogInWithPasswordParams) ([]User, error) {
+	rows, err := q.db.Query(ctx, getUsersByForLogInWithPassword, arg.Email, arg.ProjectID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []User
+	for rows.Next() {
+		var i User
+		if err := rows.Scan(
+			&i.ID,
+			&i.OrganizationID,
+			&i.PasswordBcrypt,
+			&i.GoogleUserID,
+			&i.MicrosoftUserID,
+			&i.Email,
+			&i.CreateTime,
+			&i.UpdateTime,
+			&i.DeactivateTime,
+			&i.IsOwner,
+			&i.FailedPasswordAttempts,
+			&i.PasswordLockoutExpireTime,
+			&i.AuthenticatorAppSecretCiphertext,
+			&i.FailedAuthenticatorAppAttempts,
+			&i.AuthenticatorAppLockoutExpireTime,
+			&i.AuthenticatorAppRecoveryCodeSha256s,
+			&i.DisplayName,
+			&i.ProfilePictureUrl,
+			&i.GithubUserID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const incrementProjectEmailDailyQuotaUsage = `-- name: IncrementProjectEmailDailyQuotaUsage :one
 INSERT INTO project_email_quota_daily_usage (project_id, date, quota_usage)
     VALUES ($1, CURRENT_DATE, 1)
@@ -3438,7 +3496,8 @@ SET
     google_user_id = coalesce($3, google_user_id),
     microsoft_user_id = coalesce($4, microsoft_user_id),
     display_name = coalesce($5, display_name),
-    profile_picture_url = coalesce($6, profile_picture_url)
+    profile_picture_url = coalesce($6, profile_picture_url),
+    password_bcrypt = coalesce($7, password_bcrypt)
 WHERE
     id = $1
 RETURNING
@@ -3452,6 +3511,7 @@ type UpdateUserDetailsParams struct {
 	MicrosoftUserID   *string
 	DisplayName       *string
 	ProfilePictureUrl *string
+	PasswordBcrypt    *string
 }
 
 func (q *Queries) UpdateUserDetails(ctx context.Context, arg UpdateUserDetailsParams) (User, error) {
@@ -3462,6 +3522,7 @@ func (q *Queries) UpdateUserDetails(ctx context.Context, arg UpdateUserDetailsPa
 		arg.MicrosoftUserID,
 		arg.DisplayName,
 		arg.ProfilePictureUrl,
+		arg.PasswordBcrypt,
 	)
 	var i User
 	err := row.Scan(
