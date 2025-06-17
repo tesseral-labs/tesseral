@@ -1,4 +1,5 @@
-import React, { useMemo } from "react";
+import { useMutation } from "@connectrpc/connect-query";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "react-router";
 
 import {
@@ -9,6 +10,12 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import {
+  getAPIKey,
+  getOrganization,
+  getPasskey,
+  getUser,
+} from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { titleCaseSlug } from "@/lib/utils";
 
 export function BreadcrumbBar() {
@@ -24,7 +31,7 @@ export function BreadcrumbBar() {
     } else {
       return parts.map((part, index) => {
         return {
-          label: titleCaseSlug(part, index === parts.length - 1),
+          label: part,
           path: `/${parts.slice(0, index + 1).join("/")}`,
         };
       });
@@ -49,7 +56,6 @@ export function BreadcrumbBar() {
               <BreadcrumbSlug
                 key={index}
                 breadcrumb={breadcrumb}
-                index={index}
                 last={index === breadcrumbs.length - 1}
               />
             ))}
@@ -60,24 +66,54 @@ export function BreadcrumbBar() {
   );
 }
 
+const organizationRegex = /org_([a-z0-9-]+)/;
+const userRegex = /user_([a-z0-9-]+)/;
+
 function BreadcrumbSlug({
   breadcrumb,
-  index,
   last = false,
 }: {
   breadcrumb: { label: string; path: string };
-  index: number;
   last?: boolean;
 }) {
+  const getOrganizationMutation = useMutation(getOrganization);
+  const getUserMutation = useMutation(getUser);
+
+  const [label, setLabel] = useState(titleCaseSlug(breadcrumb.label));
+
+  async function fetchBreadcrumbLabel() {
+    if (organizationRegex.test(breadcrumb.label)) {
+      const { organization } = await getOrganizationMutation.mutateAsync({
+        id: breadcrumb.label,
+      });
+      if (organization) {
+        setLabel(organization.displayName);
+      }
+    }
+
+    if (userRegex.test(breadcrumb.label)) {
+      const { user } = await getUserMutation.mutateAsync({
+        id: breadcrumb.label,
+      });
+      if (user) {
+        setLabel(user.email);
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (breadcrumb && label && label.includes("_")) {
+      fetchBreadcrumbLabel();
+    }
+  }, [breadcrumb, label]);
+
   return (
     <>
       <BreadcrumbSeparator />
       {last ? (
-        <BreadcrumbPage>{breadcrumb.label}</BreadcrumbPage>
+        <BreadcrumbPage>{label}</BreadcrumbPage>
       ) : (
-        <BreadcrumbLink href={breadcrumb.path}>
-          {breadcrumb.label}
-        </BreadcrumbLink>
+        <BreadcrumbLink href={breadcrumb.path}>{label}</BreadcrumbLink>
       )}
     </>
   );
