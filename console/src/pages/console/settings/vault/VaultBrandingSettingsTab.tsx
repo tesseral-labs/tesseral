@@ -211,7 +211,11 @@ export function VaultBrandingSettingsTab() {
     }
 
     try {
-      if (logoUploadUrl && logo) {
+      if (
+        logoUploadUrl &&
+        logo &&
+        logo !== getProjectUISettingsResponse?.projectUiSettings?.logoUrl
+      ) {
         const response = await fetch(logoUploadUrl, {
           body: logoFile,
           method: "PUT",
@@ -231,7 +235,12 @@ export function VaultBrandingSettingsTab() {
     }
 
     try {
-      if (darkModeLogoUploadUrl && darkModeLogo) {
+      if (
+        darkModeLogoUploadUrl &&
+        darkModeLogo &&
+        darkModeLogo !==
+          getProjectUISettingsResponse?.projectUiSettings?.darkModeLogoUrl
+      ) {
         const response = await fetch(darkModeLogoUploadUrl, {
           body: darkModeLogoFile,
           method: "PUT",
