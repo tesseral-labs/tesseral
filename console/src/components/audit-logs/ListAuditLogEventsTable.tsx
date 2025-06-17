@@ -609,13 +609,6 @@ function AuditLogEventActorDetails({ event }: { event: ConsoleAuditLogEvent }) {
           >
             {getFrontendUserResponse.user.email}
           </div>
-          <Link
-            className="inline-flex items-center gap-1 text-xs font-mono px-2 py-1 rounded border text-muted-foreground hover:text-foreground bg-white"
-            to={`/organizations/${event.organizationId}/users/${getFrontendUserResponse.user.id}`}
-          >
-            {getFrontendUserResponse.user.id}{" "}
-            <ExternalLink className="h-3 w-3" />
-          </Link>
         </div>
       )}
       {!getApiKeyResponse?.apiKey &&
