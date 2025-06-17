@@ -28,11 +28,11 @@ export function OrganizationAuthentication() {
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         <OrganizationBasicAuthCard />
 
-        {getProjectResponse?.project?.logInWithGoogle ||
+        {(getProjectResponse?.project?.logInWithGoogle ||
           getProjectResponse?.project?.logInWithGithub ||
-          (getProjectResponse?.project?.logInWithMicrosoft && (
-            <OrganizationOAuthCard />
-          ))}
+          getProjectResponse?.project?.logInWithMicrosoft) && (
+          <OrganizationOAuthCard />
+        )}
 
         {getProjectResponse?.project?.logInWithAuthenticatorApp ||
           (getProjectResponse?.project?.logInWithPasskey && (
