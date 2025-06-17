@@ -5,7 +5,14 @@ import {
   useQuery,
 } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Edit, Plus, Settings, Trash, TriangleAlert } from "lucide-react";
+import {
+  Edit,
+  LoaderCircle,
+  Plus,
+  Settings,
+  Trash,
+  TriangleAlert,
+} from "lucide-react";
 import { DateTime } from "luxon";
 import React, { MouseEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -262,8 +269,16 @@ function CreateRoleButton() {
               <Button variant="secondary" onClick={handleCancel}>
                 Cancel
               </Button>
-              <Button disabled={!form.formState.isDirty} type="submit">
-                Create Role
+              <Button
+                disabled={
+                  !form.formState.isDirty || createRoleMutation.isPending
+                }
+                type="submit"
+              >
+                {createRoleMutation.isPending && (
+                  <LoaderCircle className="animate-spin" />
+                )}
+                {createRoleMutation.isPending ? "Creating Role" : "Create Role"}
               </Button>
             </DialogFooter>
           </form>

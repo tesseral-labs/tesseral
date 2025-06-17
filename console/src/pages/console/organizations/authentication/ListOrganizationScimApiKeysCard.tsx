@@ -3,6 +3,7 @@ import { useInfiniteQuery, useMutation } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ExternalLink,
+  LoaderCircle,
   Plus,
   Settings,
   Trash,
@@ -273,8 +274,18 @@ function CreateScimApiKeyButton() {
               <Button variant="outline" onClick={handleCancel}>
                 Cancel
               </Button>
-              <Button disabled={!form.formState.isDirty} type="submit">
-                Create SCIM API Key
+              <Button
+                disabled={
+                  !form.formState.isDirty || createScimApiKeyMutation.isPending
+                }
+                type="submit"
+              >
+                {createScimApiKeyMutation.isPending && (
+                  <LoaderCircle className="animate-spin" />
+                )}
+                {createScimApiKeyMutation.isPending
+                  ? "Creating SCIM API Key"
+                  : "Create SCIM API Key"}
               </Button>
             </DialogFooter>
           </form>

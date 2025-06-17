@@ -10,6 +10,7 @@ import {
   Crown,
   ExternalLink,
   Info,
+  LoaderCircle,
   Plus,
   Settings,
   ShieldBan,
@@ -493,8 +494,19 @@ function CreateBackendApiKeyButton() {
               <Button variant="outline" onClick={handleCancel}>
                 Cancel
               </Button>
-              <Button disabled={!form.formState.isDirty} type="submit">
-                Create Backend API Key
+              <Button
+                disabled={
+                  !form.formState.isDirty ||
+                  createBackendApiKeyMutation.isPending
+                }
+                type="submit"
+              >
+                {createBackendApiKeyMutation.isPending && (
+                  <LoaderCircle className="animate-spin" />
+                )}
+                {createBackendApiKeyMutation.isPending
+                  ? "Creating Backend API Key"
+                  : "Create Backend API Key"}
               </Button>
             </DialogFooter>
           </form>

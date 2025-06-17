@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ExternalLink,
   KeyRound,
+  LoaderCircle,
   Logs,
   Plus,
   Settings,
@@ -567,8 +568,16 @@ function CreateUserButton() {
               <Button variant="outline" onClick={handleCancel}>
                 Cancel
               </Button>
-              <Button disabled={!form.formState.isDirty} type="submit">
-                Create User
+              <Button
+                disabled={
+                  !form.formState.isDirty || createUserMutation.isPending
+                }
+                type="submit"
+              >
+                {createUserMutation.isPending && (
+                  <LoaderCircle className="animate-spin" />
+                )}
+                {createUserMutation.isPending ? "Creating User" : "Create User"}
               </Button>
             </DialogFooter>
           </form>

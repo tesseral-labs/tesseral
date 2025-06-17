@@ -4,7 +4,14 @@ import {
   useQuery,
 } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Edit, Plus, Settings, Trash, TriangleAlert } from "lucide-react";
+import {
+  Edit,
+  LoaderCircle,
+  Plus,
+  Settings,
+  Trash,
+  TriangleAlert,
+} from "lucide-react";
 import React, { MouseEvent, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -221,8 +228,18 @@ function CreateProjectActionButton() {
               <Button variant="outline" onClick={handleCancel}>
                 Cancel
               </Button>
-              <Button disabled={!form.formState.isDirty} type="submit">
-                Create Action
+              <Button
+                disabled={
+                  !form.formState.isDirty || createActionMutation.isPending
+                }
+                type="submit"
+              >
+                {createActionMutation.isPending && (
+                  <LoaderCircle className="animate-spin" />
+                )}
+                {createActionMutation.isPending
+                  ? "Creating Action"
+                  : "Create Action"}
               </Button>
             </DialogFooter>
           </form>

@@ -486,8 +486,19 @@ function CreatePublishableKeyButton() {
               <Button onClick={() => setOpen(false)} variant="outline">
                 Cancel
               </Button>
-              <Button disabled={!form.formState.isDirty} type="submit">
-                Create API Key
+              <Button
+                disabled={
+                  !form.formState.isDirty ||
+                  createPublishableKeyMutation.isPending
+                }
+                type="submit"
+              >
+                {createPublishableKeyMutation.isPending && (
+                  <LoaderCircle className="animate-spin" />
+                )}
+                {createPublishableKeyMutation.isPending
+                  ? "Creating Publishable Key"
+                  : "Create Publishable Key"}
               </Button>
             </DialogFooter>
           </form>

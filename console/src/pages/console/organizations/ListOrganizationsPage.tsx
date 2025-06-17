@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ExternalLink,
   Key,
+  LoaderCircle,
   Logs,
   Plus,
   Settings,
@@ -411,8 +412,19 @@ function CreateOrganizationButton() {
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={!form.formState.isDirty}>
-                Create Organization
+              <Button
+                type="submit"
+                disabled={
+                  !form.formState.isDirty ||
+                  createOrganizationMutation.isPending
+                }
+              >
+                {createOrganizationMutation.isPending && (
+                  <LoaderCircle className="animate-spin" />
+                )}
+                {createOrganizationMutation.isPending
+                  ? "Creating Organization"
+                  : "Create Organization"}
               </Button>
             </DialogFooter>
           </form>
