@@ -405,8 +405,18 @@ function ManageProjectActionButtion({ action }: { action: Action }) {
                 <Button variant="outline" onClick={handleCancel}>
                   Cancel
                 </Button>
-                <Button disabled={!form.formState.isDirty} type="submit">
-                  Update Action
+                <Button
+                  disabled={
+                    !form.formState.isDirty || updateActionMutation.isPending
+                  }
+                  type="submit"
+                >
+                  {updateActionMutation.isPending && (
+                    <LoaderCircle className="animate-spin" />
+                  )}
+                  {updateActionMutation.isPending
+                    ? "Updating Action"
+                    : "Update Action"}
                 </Button>
               </DialogFooter>
             </form>

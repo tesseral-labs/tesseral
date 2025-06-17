@@ -445,8 +445,18 @@ function ManageRoleButton({ roleId }: { roleId: string }) {
                 <Button variant="outline" onClick={handleCancel}>
                   Cancel
                 </Button>
-                <Button disabled={!form.formState.isDirty} type="submit">
-                  Update Role
+                <Button
+                  disabled={
+                    !form.formState.isDirty || updateRoleMutation.isPending
+                  }
+                  type="submit"
+                >
+                  {updateRoleMutation.isPending && (
+                    <LoaderCircle className="animate-spin" />
+                  )}
+                  {updateRoleMutation.isPending
+                    ? "Updating Role"
+                    : "Update Role"}
                 </Button>
               </DialogFooter>
             </form>
