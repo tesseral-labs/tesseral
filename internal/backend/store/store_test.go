@@ -5,9 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
@@ -15,45 +13,18 @@ import (
 )
 
 var (
-	deps *packageDeps
+	deps *storetestutil.StoreDependencies
 )
 
-type packageDeps struct {
-	db      *pgxpool.Pool
-	s3      *s3.Client
-	kms     *storetestutil.KMS
-	console *storetestutil.Console
-}
-
 func TestMain(m *testing.M) {
-	packageDeps, cleanup := initPackageDeps()
+	storeDeps, cleanup := storetestutil.NewStoreDependencies()
 	defer cleanup()
 
-	deps = packageDeps
+	deps = storeDeps
 	exitCode := m.Run()
 	cleanup()
 
 	os.Exit(exitCode)
-}
-
-func initPackageDeps() (*packageDeps, func()) {
-	db, cleanupDB := storetestutil.NewDB()
-	kms, cleanupKms := storetestutil.NewKMS()
-	s3, cleanupS3 := storetestutil.NewS3()
-	console := storetestutil.NewConsole(db, kms)
-
-	cleanup := func() {
-		cleanupS3()
-		cleanupKms()
-		cleanupDB()
-	}
-
-	return &packageDeps{
-		db:      db,
-		s3:      s3,
-		kms:     kms,
-		console: console,
-	}, cleanup
 }
 
 type tester struct {
@@ -63,17 +34,15 @@ type tester struct {
 }
 
 func Init(t *testing.T) (context.Context, *tester) {
-	t.Helper()
-
 	store := New(NewStoreParams{
-		DB:                        deps.db,
-		S3:                        deps.s3,
-		KMS:                       deps.kms.Client,
-		SessionSigningKeyKmsKeyID: deps.kms.SessionSigningKeyID,
-		DogfoodProjectID:          deps.console.DogfoodProjectID,
-		ConsoleDomain:             deps.console.ConsoleDomain,
+		DB:                        deps.DB,
+		S3:                        deps.S3,
+		KMS:                       deps.KMS.Client,
+		SessionSigningKeyKmsKeyID: deps.KMS.SessionSigningKeyID,
+		DogfoodProjectID:          deps.Console.DogfoodProjectID,
+		ConsoleDomain:             deps.Console.ConsoleDomain,
 	})
-	project := deps.console.NewProject(t)
+	project := deps.Console.NewProject(t)
 	ctx := authn.NewDogfoodSessionContext(t.Context(), authn.DogfoodSessionContextData{
 		ProjectID: project.ProjectID,
 		UserID:    project.UserID,
@@ -82,7 +51,7 @@ func Init(t *testing.T) (context.Context, *tester) {
 
 	return ctx, &tester{
 		Store:   store,
-		console: deps.console,
+		console: deps.Console,
 		Project: project,
 	}
 }
