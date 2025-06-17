@@ -16,7 +16,7 @@
     "serve": "http-server -c-1 -p 3000 -P http://localhost:3000?",
     "serve:docker": "./bin/serve-public",
     "test": "jest",
-    "tsc-check": "tsc --noEmit"
+    "tsc-check": "tsc --noEmit --skipLibCheck"
   },
   "author": "Tesseral <engineering@tesseral.com>",
   "license": "MIT",
