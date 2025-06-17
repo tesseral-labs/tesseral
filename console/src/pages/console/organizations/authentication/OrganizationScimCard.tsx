@@ -71,8 +71,8 @@ export function OrganizationScimCard() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)}>
-        <Card>
+      <form className="flex-grow" onSubmit={form.handleSubmit(handleSubmit)}>
+        <Card className="h-full">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Users />
