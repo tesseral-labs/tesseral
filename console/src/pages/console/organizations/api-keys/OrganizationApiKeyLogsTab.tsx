@@ -10,7 +10,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ConsoleListAuditLogEventsRequest } from "@/gen/tesseral/backend/v1/backend_pb";
-import { AuditLogEventResourceType } from "@/gen/tesseral/backend/v1/models_pb";
 
 export function OrganizationApiKeyLogsTab() {
   const { apiKeyId } = useParams();

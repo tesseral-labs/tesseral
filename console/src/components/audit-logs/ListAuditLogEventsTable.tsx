@@ -288,20 +288,6 @@ function AuditLogEventRow({
   expandedRows: Record<string, boolean>;
   toggleRow: (eventId: string) => void;
 }) {
-  function parseActor(event: AuditLogEvent): string {
-    if (event.actorUserId) {
-      return event.actorUserId;
-    }
-    if (event.actorApiKeyId) {
-      return event.actorApiKeyId;
-    }
-    if (event.actorBackendApiKeyId) {
-      return event.actorBackendApiKeyId;
-    }
-
-    return "System";
-  }
-
   return (
     <TableRow onClick={() => toggleRow(event.id)} className="cursor-pointer">
       <TableCell className="align-middle">
@@ -338,8 +324,11 @@ function AuditLogEventActor({
   const getSessionMutation = useMutation(getSession);
   const getUserMutation = useMutation(getUser);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [apiKeyActor, setApiKeyActor] = useState<Record<string, any>>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [sessionActor, setSessionActor] = useState<Record<string, any>>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [userActor, setUserActor] = useState<Record<string, any>>();
 
   useEffect(() => {
@@ -356,7 +345,7 @@ function AuditLogEventActor({
             createTime: timestampDate(apiKey.createTime!).toISOString(),
             updateTime: timestampDate(apiKey.updateTime!).toISOString(),
           };
-
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           delete (apiKeyActor as any).$typeName;
           setApiKeyActor(apiKeyActor);
         }
@@ -371,6 +360,7 @@ function AuditLogEventActor({
             createTime: timestampDate(backendApiKey.createTime!).toISOString(),
             updateTime: timestampDate(backendApiKey.updateTime!).toISOString(),
           };
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           delete (backendApiKeyActor as any).$typeName;
           setApiKeyActor(backendApiKeyActor);
         }
@@ -387,6 +377,7 @@ function AuditLogEventActor({
               session.lastActiveTime!,
             ).toISOString(),
           };
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           delete (sessionActor as any).$typeName;
           setSessionActor(session);
 
@@ -399,6 +390,7 @@ function AuditLogEventActor({
             createTime: timestampDate(user.createTime!).toISOString(),
             updateTime: timestampDate(user.updateTime!).toISOString(),
           };
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           delete (userActor as any).$typeName;
           setUserActor(userActor);
         }
@@ -412,12 +404,19 @@ function AuditLogEventActor({
             createTime: timestampDate(user.createTime!).toISOString(),
             updateTime: timestampDate(user.updateTime!).toISOString(),
           };
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           delete (userActor as any).$typeName;
           setUserActor(userActor);
         }
       })();
     }
-  }, [auditLogEvent]);
+  }, [
+    auditLogEvent,
+    getApiKeyMutation,
+    getBackendAPIKeyMutation,
+    getSessionMutation,
+    getUserMutation,
+  ]);
 
   return (
     <>

@@ -1,4 +1,3 @@
-import { useInfiniteQuery } from "@connectrpc/connect-query";
 import { Logs } from "lucide-react";
 import React from "react";
 
@@ -9,8 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { consoleListAuditLogEvents } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
-import { AuditLogEventResourceType } from "@/gen/tesseral/backend/v1/models_pb";
 
 export function ListBackendApiKeyAuditLogsCard() {
   return (
