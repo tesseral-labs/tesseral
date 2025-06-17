@@ -12,18 +12,10 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import {
   Form,
   FormDescription,
@@ -39,81 +31,17 @@ import {
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { updateOrganization } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 
-export function OrganizationSamlCard() {
-  const { organizationId } = useParams();
-  const { data: getOrganizationResponse } = useQuery(getOrganization, {
-    id: organizationId,
-  });
-  const { data: getProjectResponse } = useQuery(getProject);
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Shield />
-          SAML SSO
-        </CardTitle>
-        <CardDescription>
-          Configure SAML authentication for{" "}
-          <span className="font-semibold">
-            {getOrganizationResponse?.organization?.displayName}
-          </span>
-          .
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {getProjectResponse?.project?.logInWithSaml ? (
-            <>
-              <div className="flex justify-between items-center gap-4">
-                <div>
-                  <div className="font-semibold text-sm">Log in with SAML</div>
-                  <div className="text-xs text-muted-foreground">
-                    Allows users to log into this organization with SAML-based
-                    identity providers.
-                  </div>
-                </div>
-                <Switch
-                  checked={getOrganizationResponse?.organization?.logInWithSaml}
-                  disabled
-                />
-              </div>
-
-              <ConfigureOrganizationSaml />
-            </>
-          ) : (
-            <>
-              <div className="text-sm text-muted-foreground">
-                SAML authentication is not enabled for this project. Please
-                enable SAML at the project level to configure it for this
-                organization.
-              </div>
-
-              <Link to="/settings/authentication/saml">
-                <Button className="w-full" variant="outline">
-                  Manage Project SAML Settings
-                </Button>
-              </Link>
-            </>
-          )}
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
 const schema = z.object({
   logInWithSaml: z.boolean().default(false),
 });
 
-function ConfigureOrganizationSaml() {
+export function OrganizationSamlCard() {
   const { organizationId } = useParams();
   const { data: getOrganizationResponse, refetch } = useQuery(getOrganization, {
     id: organizationId,
   });
+  const { data: getProjectResponse } = useQuery(getProject);
   const updateOrganizationMutation = useMutation(updateOrganization);
-
-  const [open, setOpen] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(schema),
@@ -122,13 +50,6 @@ function ConfigureOrganizationSaml() {
         getOrganizationResponse?.organization?.logInWithSaml || false,
     },
   });
-
-  function handleCancel(e: MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    e.stopPropagation();
-    setOpen(false);
-    return false;
-  }
 
   async function handleSubmit(data: z.infer<typeof schema>) {
     await updateOrganizationMutation.mutateAsync({
@@ -139,7 +60,6 @@ function ConfigureOrganizationSaml() {
     });
     await refetch();
     form.reset();
-    setOpen(false);
     toast.success("SAML configuration updated successfully.");
   }
 
@@ -152,54 +72,67 @@ function ConfigureOrganizationSaml() {
   }, [getOrganizationResponse, form]);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" className="w-full">
-          Configure SAML
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Configure SAML</DialogTitle>
-          <DialogDescription>
-            Configure SAML authentication for{" "}
-            <span className="font-semibold">
-              {getOrganizationResponse?.organization?.displayName}
-            </span>
-            . This will allow users to log in using SAML-based identity
-            providers.
-          </DialogDescription>
-        </DialogHeader>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)}>
-            <FormField
-              control={form.control}
-              name="logInWithSaml"
-              render={({ field }) => (
-                <FormItem className="flex items-center justify-between gap-4">
-                  <div>
-                    <FormLabel>Log in with SAML</FormLabel>
-                    <FormDescription>
-                      Allows users to log into this organization with SAML-based
-                      identity providers.
-                    </FormDescription>
-                    <FormMessage />
+    <Form {...form}>
+      <form className="flex-grow" onSubmit={form.handleSubmit(handleSubmit)}>
+        <Card className="h-full">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Shield />
+              SAML SSO
+            </CardTitle>
+            <CardDescription>
+              Configure SAML authentication for{" "}
+              <span className="font-semibold">
+                {getOrganizationResponse?.organization?.displayName}
+              </span>
+              .
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {getProjectResponse?.project?.logInWithSaml ? (
+                <FormField
+                  control={form.control}
+                  name="logInWithSaml"
+                  render={({ field }) => (
+                    <FormItem className="flex items-center justify-between gap-4">
+                      <div>
+                        <FormLabel>Log in with SAML</FormLabel>
+                        <FormDescription>
+                          Allows users to log into this organization with
+                          SAML-based identity providers.
+                        </FormDescription>
+                        <FormMessage />
+                      </div>
+                      <Switch
+                        id="logInWithSaml"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormItem>
+                  )}
+                />
+              ) : (
+                <>
+                  <div className="text-sm text-muted-foreground">
+                    SAML authentication is not enabled for this project. Please
+                    enable SAML at the project level to configure it for this
+                    organization.
                   </div>
-                  <Switch
-                    id="logInWithSaml"
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormItem>
-              )}
-            />
 
-            <DialogFooter className="mt-4 justify-end">
-              <Button variant="outline" onClick={handleCancel}>
-                Cancel
-              </Button>
+                  <Link to="/settings/authentication/saml">
+                    <Button className="w-full" variant="outline">
+                      Manage Project SAML Settings
+                    </Button>
+                  </Link>
+                </>
+              )}
+            </div>
+          </CardContent>
+          {getProjectResponse?.project?.logInWithSaml && (
+            <CardFooter className="mt-4">
               <Button
+                className="w-full"
                 type="submit"
                 disabled={
                   !form.formState.isDirty ||
@@ -213,10 +146,10 @@ function ConfigureOrganizationSaml() {
                   ? "Saving changes"
                   : "Save changes"}
               </Button>
-            </DialogFooter>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+            </CardFooter>
+          )}
+        </Card>
+      </form>
+    </Form>
   );
 }

@@ -41,91 +41,18 @@ import {
   updateOrganization,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 
-export function OrganizationBasicAuthCard() {
-  const { organizationId } = useParams();
-  const { data: getOrganizationResponse } = useQuery(getOrganization, {
-    id: organizationId,
-  });
-  const { data: getProjectResponse } = useQuery(getProject);
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Lock />
-          Basic Authentication
-        </CardTitle>
-        <CardDescription>
-          Configure basic authentication for your{" "}
-          <span className="font-semibold">
-            {getOrganizationResponse?.organization?.displayName}
-          </span>
-          .
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="flex-grow">
-        <div className="space-y-4">
-          {getProjectResponse?.project?.logInWithEmail && (
-            <div className="flex justify-between items-center gap-4">
-              <div>
-                <div className="font-semibold text-sm">
-                  Log in with Magic Link
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  Allows users to log into this organization using an email
-                  magic link.
-                </div>
-              </div>
-              <Switch
-                checked={getOrganizationResponse?.organization?.logInWithEmail}
-                disabled
-              />
-            </div>
-          )}
-        </div>
-        <div className="space-y-4">
-          {getProjectResponse?.project?.logInWithPassword && (
-            <div className="flex justify-between items-center gap-4">
-              <div>
-                <div className="font-semibold text-sm">
-                  Log in with Password
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  Allows users to log into this organization using an email and
-                  password.
-                </div>
-              </div>
-              <Switch
-                checked={
-                  getOrganizationResponse?.organization?.logInWithPassword
-                }
-                disabled
-              />
-            </div>
-          )}
-        </div>
-      </CardContent>
-      <CardFooter className="mt-4">
-        <ConfigureOrganizationBasicAuthButton />
-      </CardFooter>
-    </Card>
-  );
-}
-
 const schema = z.object({
   logInWithEmail: z.boolean().optional(),
   logInWithPassword: z.boolean().optional(),
 });
 
-function ConfigureOrganizationBasicAuthButton() {
+export function OrganizationBasicAuthCard() {
   const { organizationId } = useParams();
   const { data: getOrganizationResponse, refetch } = useQuery(getOrganization, {
     id: organizationId,
   });
   const { data: getProjectResponse } = useQuery(getProject);
   const updateOrganizationMutation = useMutation(updateOrganization);
-
-  const [open, setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -137,13 +64,6 @@ function ConfigureOrganizationBasicAuthButton() {
     },
   });
 
-  function handleCancel(e: MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    e.stopPropagation();
-    setOpen(false);
-    return false;
-  }
-
   async function handleSubmit(data: z.infer<typeof schema>) {
     await updateOrganizationMutation.mutateAsync({
       id: organizationId,
@@ -154,25 +74,27 @@ function ConfigureOrganizationBasicAuthButton() {
     });
     refetch();
     form.reset(data);
-    setOpen(false);
     toast.success("Basic authentication settings updated successfully");
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="w-full" variant="outline">
-          Configure Basic Authentication
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Configure Basic Authentication</DialogTitle>
-          <DialogDescription></DialogDescription>
-        </DialogHeader>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)}>
+    <Form {...form}>
+      <form className="flex-grow" onSubmit={form.handleSubmit(handleSubmit)}>
+        <Card className="h-full">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Lock />
+              Basic Authentication
+            </CardTitle>
+            <CardDescription>
+              Configure basic authentication for your{" "}
+              <span className="font-semibold">
+                {getOrganizationResponse?.organization?.displayName}
+              </span>
+              .
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex-grow">
             <div className="space-y-4">
               {getProjectResponse?.project?.logInWithEmail && (
                 <FormField
@@ -223,29 +145,25 @@ function ConfigureOrganizationBasicAuthButton() {
                 />
               )}
             </div>
-
-            <DialogFooter className="mt-8 justify-end gap-2">
-              <Button variant="outline" onClick={handleCancel}>
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                disabled={
-                  !form.formState.isDirty ||
-                  updateOrganizationMutation.isPending
-                }
-              >
-                {updateOrganizationMutation.isPending && (
-                  <LoaderCircle className="animate-spin" />
-                )}
-                {updateOrganizationMutation.isPending
-                  ? "Saving changes"
-                  : "Save changes"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+          </CardContent>
+          <CardFooter className="mt-4">
+            <Button
+              className="w-full"
+              disabled={
+                !form.formState.isDirty || updateOrganizationMutation.isPending
+              }
+              type="submit"
+            >
+              {updateOrganizationMutation.isPending && (
+                <LoaderCircle className="animate-spin" />
+              )}
+              {updateOrganizationMutation.isPending
+                ? "Saving changes"
+                : "Save changes"}
+            </Button>
+          </CardFooter>
+        </Card>
+      </form>
+    </Form>
   );
 }

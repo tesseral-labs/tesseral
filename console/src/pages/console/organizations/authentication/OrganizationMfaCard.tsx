@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Fingerprint, LoaderCircle } from "lucide-react";
-import React, { MouseEvent, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
 import { toast } from "sonner";
@@ -16,15 +16,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -41,106 +32,19 @@ import {
   updateOrganization,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 
-export function OrganizationMFACard() {
-  const { organizationId } = useParams();
-  const { data: getOrganizationResponse } = useQuery(getOrganization, {
-    id: organizationId,
-  });
-  const { data: getProjectResponse } = useQuery(getProject);
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Fingerprint />
-          Multi-Factor Authentication (MFA)
-        </CardTitle>
-        <CardDescription>
-          Configure Multi-Factor Authentication for{" "}
-          <span className="font-semibold">
-            {getOrganizationResponse?.organization?.displayName}
-          </span>
-          .
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="flex-grow">
-        <div className="space-y-4">
-          {(getProjectResponse?.project?.logInWithAuthenticatorApp ||
-            getProjectResponse?.project?.logInWithPasskey) && (
-            <div className="flex justify-between items-center gap-4">
-              <div>
-                <div className="font-semibold text-sm">Require MFA</div>
-                <div className="text-xs text-muted-foreground">
-                  Require users to complete Multi-Factor Authentication when
-                  logging into this Organization.
-                </div>
-              </div>
-              <Switch
-                checked={getOrganizationResponse?.organization?.requireMfa}
-                disabled
-              />
-            </div>
-          )}
-          {getProjectResponse?.project?.logInWithAuthenticatorApp && (
-            <div className="flex justify-between items-center gap-4">
-              <div>
-                <div className="font-semibold text-sm">
-                  Log in with Authenticator App
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  Allows users to log into this organization using a TOTP-based
-                  Authenticator App.
-                </div>
-              </div>
-              <Switch
-                checked={
-                  getOrganizationResponse?.organization
-                    ?.logInWithAuthenticatorApp
-                }
-                disabled
-              />
-            </div>
-          )}
-          {getProjectResponse?.project?.logInWithPasskey && (
-            <div className="flex justify-between items-center gap-4">
-              <div>
-                <div className="font-semibold text-sm">Log in with Passkey</div>
-                <div className="text-xs text-muted-foreground">
-                  Allows users to log into this organization using Passkeys.
-                </div>
-              </div>
-              <Switch
-                checked={
-                  getOrganizationResponse?.organization?.logInWithPasskey
-                }
-                disabled
-              />
-            </div>
-          )}
-        </div>
-      </CardContent>
-      <CardFooter className="mt-4">
-        <ConfigureOrganizationMfaButton />
-      </CardFooter>
-    </Card>
-  );
-}
-
 const schema = z.object({
   logInWithAuthenticatorApp: z.boolean(),
   logInWithPasskey: z.boolean(),
   requireMfa: z.boolean(),
 });
 
-function ConfigureOrganizationMfaButton() {
+export function OrganizationMFACard() {
   const { organizationId } = useParams();
   const { data: getOrganizationResponse, refetch } = useQuery(getOrganization, {
     id: organizationId,
   });
   const { data: getProjectResponse } = useQuery(getProject);
   const updateOrganizationMutation = useMutation(updateOrganization);
-
-  const [open, setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -154,13 +58,6 @@ function ConfigureOrganizationMfaButton() {
     },
   });
 
-  function handleCancel(e: MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    e.stopPropagation();
-    setOpen(false);
-    return false;
-  }
-
   async function handleSubmit(data: z.infer<typeof schema>) {
     await updateOrganizationMutation.mutateAsync({
       id: organizationId,
@@ -172,7 +69,6 @@ function ConfigureOrganizationMfaButton() {
     });
     form.reset(data);
     await refetch();
-    setOpen(false);
     toast.success("MFA configuration updated successfully.");
   }
 
@@ -190,26 +86,23 @@ function ConfigureOrganizationMfaButton() {
   }, [getOrganizationResponse, form]);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="w-full" variant="outline">
-          Configure MFA
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Configure MFA</DialogTitle>
-          <DialogDescription>
-            Configure Multi-Factor Authentication settings for{" "}
-            <span className="font-semibold">
-              {getOrganizationResponse?.organization?.displayName}
-            </span>
-            .
-          </DialogDescription>
-        </DialogHeader>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)}>
+    <Form {...form}>
+      <form className="flex-grow" onSubmit={form.handleSubmit(handleSubmit)}>
+        <Card className="h-full">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Fingerprint />
+              Multi-Factor Authentication (MFA)
+            </CardTitle>
+            <CardDescription>
+              Configure Multi-Factor Authentication for{" "}
+              <span className="font-semibold">
+                {getOrganizationResponse?.organization?.displayName}
+              </span>
+              .
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex-grow">
             <div className="space-y-4">
               {(getProjectResponse?.project?.logInWithAuthenticatorApp ||
                 getProjectResponse?.project?.logInWithPasskey) && (
@@ -285,28 +178,24 @@ function ConfigureOrganizationMfaButton() {
                 />
               )}
             </div>
-            <DialogFooter className="mt-8 justify-end gap-2">
-              <Button variant="outline" onClick={handleCancel}>
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                disabled={
-                  !form.formState.isDirty ||
-                  updateOrganizationMutation.isPending
-                }
-              >
-                {updateOrganizationMutation.isPending && (
-                  <LoaderCircle className="animate-spin" />
-                )}
-                {updateOrganizationMutation.isPending
-                  ? "Saving changes"
-                  : "Save changes"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+          </CardContent>
+          <CardFooter className="mt-4">
+            <Button
+              className="w-full"
+              disabled={
+                !form.formState.isDirty || updateOrganizationMutation.isPending
+              }
+            >
+              {updateOrganizationMutation.isPending && (
+                <LoaderCircle className="animate-spin" />
+              )}
+              {updateOrganizationMutation.isPending
+                ? "Saving changes"
+                : "Save changes"}
+            </Button>
+          </CardFooter>
+        </Card>
+      </form>
+    </Form>
   );
 }
