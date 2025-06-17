@@ -15,18 +15,16 @@ type KMS struct {
 }
 
 func NewKMS(t *testing.T) *KMS {
-	const awsRegion = "us-east-1"
-
 	container, err := testcontainers.GenericContainer(
 		t.Context(),
 		testcontainers.GenericContainerRequest{
 			ContainerRequest: testcontainers.ContainerRequest{
-				Name:         "local-kms",
+				Name:         "tesseral-test-local-kms",
 				Image:        "nsmithuk/local-kms:latest",
 				ExposedPorts: []string{"4566/tcp"},
 				Env: map[string]string{
 					"PORT":       "4566",
-					"AWS_REGION": awsRegion,
+					"AWS_REGION": awsTestRegion,
 				},
 				Files: []testcontainers.ContainerFile{
 					{
@@ -91,7 +89,7 @@ Aliases:
 	}
 	cfg := kms.Options{
 		EndpointResolver: kms.EndpointResolverFromURL(endpoint),
-		Region:           awsRegion,
+		Region:           awsTestRegion,
 	}
 	return &KMS{
 		Client:              kms.New(cfg),

@@ -26,7 +26,7 @@ func (s *BackendSuite) SetupSuite() {
 	s.console = console
 	s.Store = store.New(store.NewStoreParams{
 		DB:                        db,
-		S3:                        storetestutil.NewS3Client(s.T()),
+		S3:                        storetestutil.NewS3(s.T()),
 		KMS:                       kms.Client,
 		SessionSigningKeyKmsKeyID: kms.SessionSigningKeyID,
 		DogfoodProjectID:          console.DogfoodProjectID,
