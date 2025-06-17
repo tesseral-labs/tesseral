@@ -585,3 +585,23 @@ enum AuditLogEventResourceType {
   AUDIT_LOG_EVENT_RESOURCE_TYPE_USER_INVITE = 8;
   AUDIT_LOG_EVENT_RESOURCE_TYPE_USER = 9;
 }
+
+// ConsoleAuditLogEvent represents a record in the Project's
+// console audit log as delivered to the console via RPC-only list methods.
+message ConsoleAuditLogEvent {
+  string id = 1;
+  string organization_id = 2;
+  string actor_user_id = 3;
+  string actor_session_id = 4;
+  string actor_api_key_id = 5;
+  string actor_backend_api_key_id = 8;
+  string actor_intermediate_session_id = 9;
+
+  string actor_console_user_id = 10;
+  string actor_console_session_id = 11;
+
+  // When the event occurred.
+  google.protobuf.Timestamp event_time = 12;
+  string event_name = 13;
+  google.protobuf.Struct event_details = 14;
+}

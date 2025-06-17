@@ -23,15 +23,17 @@ import {
   consoleListAuditLogEvents,
   getAPIKey,
   getBackendAPIKey,
+  getUser,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { ConsoleListAuditLogEventsRequest } from "@/gen/tesseral/backend/v1/backend_pb";
 import {
   APIKey,
-  AuditLogEvent,
   BackendAPIKey,
+  ConsoleAuditLogEvent,
+  User,
 } from "@/gen/tesseral/backend/v1/models_pb";
-import { getUser } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
-import { User } from "@/gen/tesseral/frontend/v1/models_pb";
+import { getUser as getFrontendUser } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
+import { User as FrontendUser } from "@/gen/tesseral/frontend/v1/models_pb";
 import { cn } from "@/lib/utils";
 
 import { ValueCopier } from "../core/ValueCopier";
@@ -290,7 +292,7 @@ function AuditLogEventRow({
   expandedRows,
   toggleRow,
 }: {
-  event: AuditLogEvent;
+  event: ConsoleAuditLogEvent;
   expandedRows: Record<string, boolean>;
   toggleRow: (eventId: string) => void;
 }) {
@@ -323,11 +325,51 @@ function AuditLogEventRow({
 function AuditLogEventActor({
   event: auditLogEvent,
 }: {
-  event: AuditLogEvent;
+  event: ConsoleAuditLogEvent;
 }) {
-  const getApiKeyMutation = useMutation(getAPIKey);
-  const getBackendAPIKeyMutation = useMutation(getBackendAPIKey);
-  const getUserMutation = useMutation(getUser);
+  const {
+    actorApiKeyId,
+    actorBackendApiKeyId,
+    actorConsoleUserId,
+    actorUserId,
+  } = auditLogEvent;
+
+  const { data: getApiKeyResponse } = useQuery(
+    getAPIKey,
+    {
+      id: actorApiKeyId,
+    },
+    {
+      enabled: !!actorApiKeyId,
+    },
+  );
+  const { data: getBackendApiKeyResponse } = useQuery(
+    getBackendAPIKey,
+    {
+      id: actorBackendApiKeyId,
+    },
+    {
+      enabled: !!actorBackendApiKeyId,
+    },
+  );
+  const { data: getFrontendUserResponse } = useQuery(
+    getFrontendUser,
+    {
+      id: actorConsoleUserId,
+    },
+    {
+      enabled: !!actorConsoleUserId,
+    },
+  );
+  const { data: getUserResponse } = useQuery(
+    getUser,
+    {
+      id: actorUserId,
+    },
+    {
+      enabled: !!actorUserId,
+    },
+  );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [apiKeyActor, setApiKeyActor] = useState<Record<string, any>>();
@@ -338,60 +380,60 @@ function AuditLogEventActor({
   const [userActor, setUserActor] = useState<Record<string, any>>();
 
   useEffect(() => {
-    if (auditLogEvent) {
-      (async () => {
-        if (auditLogEvent.actorApiKeyId) {
-          const { apiKey } = await getApiKeyMutation.mutateAsync({
-            id: auditLogEvent.actorApiKeyId,
-          });
-          if (!apiKey) return;
-
-          const apiKeyActor = {
-            ...apiKey,
-            createTime: timestampDate(apiKey.createTime!).toISOString(),
-            updateTime: timestampDate(apiKey.updateTime!).toISOString(),
-          };
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          delete (apiKeyActor as any).$typeName;
-          setApiKeyActor(apiKeyActor);
-        }
-        if (auditLogEvent.actorBackendApiKeyId) {
-          const { backendApiKey } = await getBackendAPIKeyMutation.mutateAsync({
-            id: auditLogEvent.actorBackendApiKeyId,
-          });
-          if (!backendApiKey) return;
-
-          const backendApiKeyActor = {
-            ...backendApiKey,
-            createTime: timestampDate(backendApiKey.createTime!).toISOString(),
-            updateTime: timestampDate(backendApiKey.updateTime!).toISOString(),
-          };
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          delete (backendApiKeyActor as any).$typeName;
-          setBackendApiKeyActor(backendApiKeyActor);
-        }
-        if (auditLogEvent.actorUserId) {
-          const { user } = await getUserMutation.mutateAsync({
-            id: auditLogEvent.actorUserId,
-          });
-          if (!user) return;
-          const userActor = {
-            ...user,
-            createTime: timestampDate(user.createTime!).toISOString(),
-            updateTime: timestampDate(user.updateTime!).toISOString(),
-          };
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          delete (userActor as any).$typeName;
-          setUserActor(userActor);
-        }
-      })();
+    if (getApiKeyResponse?.apiKey) {
+      const apiKey = getApiKeyResponse.apiKey;
+      const apiKeyActor = {
+        ...apiKey,
+        createTime: timestampDate(apiKey.createTime!).toISOString(),
+        updateTime: timestampDate(apiKey.updateTime!).toISOString(),
+      };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (apiKeyActor as any).$typeName;
+      setApiKeyActor(apiKeyActor);
     }
-  }, [
-    auditLogEvent,
-    getApiKeyMutation,
-    getBackendAPIKeyMutation,
-    getUserMutation,
-  ]);
+  }, [getApiKeyResponse, setApiKeyActor]);
+
+  useEffect(() => {
+    if (getBackendApiKeyResponse?.backendApiKey) {
+      const backendApiKey = getBackendApiKeyResponse.backendApiKey;
+      const backendApiKeyActor = {
+        ...backendApiKey,
+        createTime: timestampDate(backendApiKey.createTime!).toISOString(),
+        updateTime: timestampDate(backendApiKey.updateTime!).toISOString(),
+      };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (backendApiKeyActor as any).$typeName;
+      setBackendApiKeyActor(backendApiKeyActor);
+    }
+  }, [getBackendApiKeyResponse, setBackendApiKeyActor]);
+
+  useEffect(() => {
+    if (getFrontendUserResponse?.user) {
+      const user = getFrontendUserResponse.user;
+      const userActor = {
+        ...user,
+        createTime: timestampDate(user.createTime!).toISOString(),
+        updateTime: timestampDate(user.updateTime!).toISOString(),
+      };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (userActor as any).$typeName;
+      setUserActor(userActor);
+    }
+  }, [getFrontendUserResponse, setUserActor]);
+
+  useEffect(() => {
+    if (getUserResponse?.user) {
+      const user = getUserResponse.user;
+      const userActor = {
+        ...user,
+        createTime: timestampDate(user.createTime!).toISOString(),
+        updateTime: timestampDate(user.updateTime!).toISOString(),
+      };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (userActor as any).$typeName;
+      setUserActor(userActor);
+    }
+  }, [getUserResponse, setUserActor]);
 
   return (
     <>
@@ -418,7 +460,11 @@ function AuditLogEventActor({
   );
 }
 
-export function AuditLogEventDetails({ event }: { event: AuditLogEvent }) {
+export function AuditLogEventDetails({
+  event,
+}: {
+  event: ConsoleAuditLogEvent;
+}) {
   return (
     <TableRow className="bg-muted/40">
       <TableCell colSpan={4} className="p-4">
@@ -451,96 +497,133 @@ export function AuditLogEventDetails({ event }: { event: AuditLogEvent }) {
   );
 }
 
-function AuditLogEventActorDetails({ event }: { event: AuditLogEvent }) {
-  const { actorApiKeyId, actorBackendApiKeyId, actorUserId } = event;
+function AuditLogEventActorDetails({ event }: { event: ConsoleAuditLogEvent }) {
+  const {
+    actorApiKeyId,
+    actorBackendApiKeyId,
+    actorConsoleUserId,
+    actorUserId,
+  } = event;
 
-  const getApiKeyMutation = useMutation(getAPIKey);
-  const getBackendApiKeyMutation = useMutation(getBackendAPIKey);
-  const getUserMutation = useMutation(getUser);
-
-  const [apiKey, setApiKey] = useState<APIKey>();
-  const [backendApiKey, setBackendApiKey] = useState<BackendAPIKey>();
-  const [user, setUser] = useState<User>();
-
-  useEffect(() => {
-    if (actorApiKeyId && !apiKey && !getApiKeyMutation.isPending) {
-      getApiKeyMutation
-        .mutateAsync({ id: actorApiKeyId })
-        .then((response) => response.apiKey)
-        .then((apiKey) => setApiKey(apiKey));
-    }
-  }, [actorApiKeyId, apiKey, getApiKeyMutation]);
-
-  useEffect(() => {
-    if (
-      actorBackendApiKeyId &&
-      !backendApiKey &&
-      !getBackendApiKeyMutation.isPending
-    ) {
-      getBackendApiKeyMutation
-        .mutateAsync({ id: actorBackendApiKeyId })
-        .then((response) => response.backendApiKey)
-        .then((backendApiKey) => setBackendApiKey(backendApiKey));
-    }
-  }, [actorBackendApiKeyId, backendApiKey, getBackendApiKeyMutation]);
-
-  useEffect(() => {
-    if (actorUserId && !user && !getUserMutation.isPending) {
-      getUserMutation
-        .mutateAsync({ id: actorUserId })
-        .then((response) => response.user)
-        .then((user) => setUser(user));
-    }
-  }, [actorUserId, getUserMutation, user]);
+  const { data: getApiKeyResponse } = useQuery(
+    getAPIKey,
+    {
+      id: actorApiKeyId,
+    },
+    {
+      enabled: !!actorApiKeyId,
+    },
+  );
+  const { data: getBackendApiKeyResponse } = useQuery(
+    getBackendAPIKey,
+    {
+      id: actorBackendApiKeyId,
+    },
+    {
+      enabled: !!actorBackendApiKeyId,
+    },
+  );
+  const { data: getFrontendUserResponse } = useQuery(
+    getFrontendUser,
+    {
+      id: actorConsoleUserId,
+    },
+    {
+      enabled: !!actorConsoleUserId,
+    },
+  );
+  const { data: getUserResponse } = useQuery(
+    getUser,
+    {
+      id: actorUserId,
+    },
+    {
+      enabled: !!actorUserId,
+    },
+  );
 
   return (
     <div className="space-y-4">
-      {apiKey && (
+      {getApiKeyResponse?.apiKey && (
         <div className="space-y-1">
           <div className="font-semibold text-base">API Key</div>
           <Link
             className="inline-flex items-center gap-1 text-xs font-mono px-2 py-1 rounded border text-muted-foreground hover:text-foreground bg-white"
-            to={`/organizations/${apiKey.organizationId}/api-keys/${apiKey.id}`}
+            to={`/organizations/${getApiKeyResponse.apiKey.organizationId}/api-keys/${getApiKeyResponse.apiKey.id}`}
           >
-            {apiKey.id} <ExternalLink className="h-3 w-3" />
+            {getApiKeyResponse.apiKey.id} <ExternalLink className="h-3 w-3" />
           </Link>
         </div>
       )}
-      {backendApiKey && (
+      {getBackendApiKeyResponse?.backendApiKey && (
         <div className="space-y-1">
           <div className="font-semibold text-base">Backend API Key</div>
           <Link
             className="inline-flex items-center gap-1 text-xs font-mono px-2 py-1 rounded border text-muted-foreground hover:text-foreground bg-white"
-            to={`/settings/api-keys/${backendApiKey.id}`}
+            to={`/settings/api-keys/${getBackendApiKeyResponse.backendApiKey.id}`}
           >
-            {backendApiKey.id} <ExternalLink className="h-3 w-3" />
+            {getBackendApiKeyResponse.backendApiKey.id}{" "}
+            <ExternalLink className="h-3 w-3" />
           </Link>
         </div>
       )}
-      {user && (
+      {getUserResponse?.user && (
         <div className="space-y-1">
           <div className="font-semibold text-base">User</div>
-          {user.displayName && (
-            <div className="font-medium">{user.displayName}</div>
+          {getUserResponse.user.displayName && (
+            <div className="font-medium">
+              {getUserResponse.user.displayName}
+            </div>
           )}
           <div
             className={cn(
-              user.displayName ? "text-muted-foreground" : "font-medium",
+              getUserResponse.user.displayName
+                ? "text-muted-foreground"
+                : "font-medium",
             )}
           >
-            {user.email}
+            {getUserResponse.user.email}
           </div>
           <Link
             className="inline-flex items-center gap-1 text-xs font-mono px-2 py-1 rounded border text-muted-foreground hover:text-foreground bg-white"
-            to={`/organizations/${event.organizationId}/users/${user.id}`}
+            to={`/organizations/${event.organizationId}/users/${getUserResponse.user.id}`}
           >
-            {user.id} <ExternalLink className="h-3 w-3" />
+            {getUserResponse.user.id} <ExternalLink className="h-3 w-3" />
           </Link>
         </div>
       )}
-      {!apiKey && !backendApiKey && !user && (
-        <div className="text-muted-foreground text-sm">System</div>
+      {getFrontendUserResponse?.user && (
+        <div className="space-y-1">
+          <div className="font-semibold text-base">User</div>
+          {getFrontendUserResponse.user.displayName && (
+            <div className="font-medium">
+              {getFrontendUserResponse.user.displayName}
+            </div>
+          )}
+          <div
+            className={cn(
+              getFrontendUserResponse.user.displayName
+                ? "text-muted-foreground"
+                : "font-medium",
+            )}
+          >
+            {getFrontendUserResponse.user.email}
+          </div>
+          <Link
+            className="inline-flex items-center gap-1 text-xs font-mono px-2 py-1 rounded border text-muted-foreground hover:text-foreground bg-white"
+            to={`/organizations/${event.organizationId}/users/${getFrontendUserResponse.user.id}`}
+          >
+            {getFrontendUserResponse.user.id}{" "}
+            <ExternalLink className="h-3 w-3" />
+          </Link>
+        </div>
       )}
+      {!getApiKeyResponse?.apiKey &&
+        !getBackendApiKeyResponse?.backendApiKey &&
+        !getFrontendUserResponse?.user &&
+        !getUserResponse?.user && (
+          <div className="text-muted-foreground text-sm">System</div>
+        )}
     </div>
   );
 }

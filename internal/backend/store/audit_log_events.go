@@ -249,9 +249,9 @@ func (s *Store) ConsoleListCustomAuditLogEvents(ctx context.Context, req *backen
 		return nil, fmt.Errorf("list audit log events: %w", err)
 	}
 
-	var auditLogEvents []*backendv1.AuditLogEvent
+	var auditLogEvents []*backendv1.ConsoleAuditLogEvent
 	for _, qAuditLogEvent := range qAuditLogEvents {
-		event := parseAuditLogEvent(qAuditLogEvent)
+		event := parseConsoleAuditLogEvent(qAuditLogEvent)
 		auditLogEvents = append(auditLogEvents, event)
 	}
 
@@ -403,6 +403,67 @@ func parseAuditLogEvent(qAuditLogEvent queries.AuditLogEvent) *backendv1.AuditLo
 	return &backendv1.AuditLogEvent{
 		Id:                         idformat.AuditLogEvent.Format(qAuditLogEvent.ID),
 		OrganizationId:             organizationID,
+		ActorUserId:                userID,
+		ActorSessionId:             sessionID,
+		ActorApiKeyId:              apiKeyID,
+		ActorBackendApiKeyId:       backendApiKeyID,
+		ActorIntermediateSessionId: intermediateSessionID,
+		EventName:                  qAuditLogEvent.EventName,
+		EventTime:                  timestamppb.New(*qAuditLogEvent.EventTime),
+		EventDetails:               &eventDetails,
+	}
+}
+
+func parseConsoleAuditLogEvent(qAuditLogEvent queries.AuditLogEvent) *backendv1.ConsoleAuditLogEvent {
+	var eventDetails structpb.Struct
+	if err := protojson.Unmarshal(qAuditLogEvent.EventDetails, &eventDetails); err != nil {
+		panic(fmt.Errorf("unmarshal event details: %w", err))
+	}
+
+	var organizationID string
+	if qAuditLogEvent.OrganizationID != nil {
+		organizationID = idformat.Organization.Format(*qAuditLogEvent.OrganizationID)
+	}
+
+	var userID string
+	if qAuditLogEvent.ActorUserID != nil {
+		userID = idformat.User.Format(*qAuditLogEvent.ActorUserID)
+	}
+
+	var consoleUserID string
+	if qAuditLogEvent.ActorConsoleUserID != nil {
+		consoleUserID = idformat.User.Format(*qAuditLogEvent.ActorConsoleUserID)
+	}
+
+	var sessionID string
+	if qAuditLogEvent.ActorSessionID != nil {
+		sessionID = idformat.Session.Format(*qAuditLogEvent.ActorSessionID)
+	}
+	var consoleSessionID string
+	if qAuditLogEvent.ActorConsoleSessionID != nil {
+		consoleSessionID = idformat.Session.Format(*qAuditLogEvent.ActorConsoleSessionID)
+	}
+
+	var apiKeyID string
+	if qAuditLogEvent.ActorApiKeyID != nil {
+		apiKeyID = idformat.APIKey.Format(*qAuditLogEvent.ActorApiKeyID)
+	}
+
+	var backendApiKeyID string
+	if qAuditLogEvent.ActorBackendApiKeyID != nil {
+		backendApiKeyID = idformat.BackendAPIKey.Format(*qAuditLogEvent.ActorBackendApiKeyID)
+	}
+
+	var intermediateSessionID string
+	if qAuditLogEvent.ActorIntermediateSessionID != nil {
+		intermediateSessionID = idformat.IntermediateSession.Format(*qAuditLogEvent.ActorIntermediateSessionID)
+	}
+
+	return &backendv1.ConsoleAuditLogEvent{
+		Id:                         idformat.AuditLogEvent.Format(qAuditLogEvent.ID),
+		OrganizationId:             organizationID,
+		ActorConsoleUserId:         consoleUserID,
+		ActorConsoleSessionId:      consoleSessionID,
 		ActorUserId:                userID,
 		ActorSessionId:             sessionID,
 		ActorApiKeyId:              apiKeyID,

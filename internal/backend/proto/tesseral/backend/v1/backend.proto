@@ -1217,7 +1217,7 @@ message ConsoleListAuditLogEventsRequest {
 }
 
 message ConsoleListAuditLogEventsResponse {
-  repeated AuditLogEvent audit_log_events = 1;
+  repeated ConsoleAuditLogEvent audit_log_events = 1;
   string next_page_token = 2;
 }
 
