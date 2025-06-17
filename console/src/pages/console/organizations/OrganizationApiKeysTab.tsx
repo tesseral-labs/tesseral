@@ -45,9 +45,14 @@ import {
 
 import { ListOrganizationApiKeysCard } from "./api-keys/ListOrganizationApiKeysCard";
 
+const schema = z.object({
+  apiKeysEnabled: z.boolean(),
+});
+
 export function OrganizationApiKeysTab() {
   const { organizationId } = useParams();
-  const { data: getOrganizationResponse } = useQuery(getOrganization, {
+
+  const { data: getOrganizationResponse, refetch } = useQuery(getOrganization, {
     id: organizationId,
   });
   const { data: getProjectResponse } = useQuery(getProject);
@@ -58,6 +63,27 @@ export function OrganizationApiKeysTab() {
   const createStripeCheckoutLinkMutation = useMutation(
     createStripeCheckoutLink,
   );
+  const updateOrganizationMutation = useMutation(updateOrganization);
+
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      apiKeysEnabled:
+        getOrganizationResponse?.organization?.apiKeysEnabled || false,
+    },
+  });
+
+  async function handleSubmit(data: z.infer<typeof schema>) {
+    await updateOrganizationMutation.mutateAsync({
+      id: organizationId,
+      organization: {
+        apiKeysEnabled: data.apiKeysEnabled,
+      },
+    });
+    await refetch();
+    form.reset(data);
+    toast.success("Managed API Keys configuration updated successfully.");
+  }
 
   async function handleUpgrade() {
     const { url } = await createStripeCheckoutLinkMutation.mutateAsync({});
@@ -112,178 +138,89 @@ export function OrganizationApiKeysTab() {
       {getProjectEntitlementsResponse?.entitledBackendApiKeys && (
         <div className="space-y-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Key />
-                  Managed API Keys
-                </CardTitle>
-                <CardDescription>
-                  Managed API Keys allow your customers to authenticate to your
-                  service without a session.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {getProjectResponse?.project?.apiKeysEnabled ? (
-                    <div className="flex justify-between items-center gap-4">
-                      <div>
-                        <div className="font-semibold text-sm">
-                          Managed API Keys enabled
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(handleSubmit)}>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Key />
+                      Managed API Keys
+                    </CardTitle>
+                    <CardDescription>
+                      Managed API Keys allow your customers to authenticate to
+                      your service without a session.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {getProjectResponse?.project?.apiKeysEnabled ? (
+                        <FormField
+                          control={form.control}
+                          name="apiKeysEnabled"
+                          render={({ field }) => (
+                            <FormItem className="flex items-center justify-between gap-4">
+                              <div>
+                                <FormLabel>Managed API Keys enabled</FormLabel>
+                                <FormDescription>
+                                  Allows Organizations to created Managed API
+                                  Keys to authenticate to your service.
+                                </FormDescription>
+                                <FormMessage />
+                              </div>
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      ) : (
+                        <div className="flex justify-between items-center gap-4">
+                          <div>
+                            <div className="font-semibold text-sm">
+                              Managed API Keys
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              Managed API Keys are not available for your
+                              Project.
+                            </div>
+                          </div>
+                          <span className="text-sm font-medium text-destructive">
+                            Disabled
+                          </span>
                         </div>
-                        <div className="text-xs text-muted-foreground">
-                          Allows Organizations to created Managed API Keys to
-                          authenticate to your service.
-                        </div>
-                      </div>
-                      <Switch
-                        checked={
-                          getOrganizationResponse?.organization?.apiKeysEnabled
-                        }
-                        disabled
-                      />
+                      )}
                     </div>
-                  ) : (
-                    <div className="flex justify-between items-center gap-4">
-                      <div>
-                        <div className="font-semibold text-sm">
-                          Managed API Keys
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          Managed API Keys are not enabled for this
-                          organization.
-                        </div>
-                      </div>
-                      <span className="text-sm font-medium text-destructive">
-                        Disabled
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-              <CardFooter className="mt-4">
-                <ConfigureOrganizationApiKeys />
-              </CardFooter>
-            </Card>
+                  </CardContent>
+                  <CardFooter className="mt-4">
+                    <Button
+                      className="w-full"
+                      disabled={
+                        !form.formState.isDirty ||
+                        updateOrganizationMutation.isPending
+                      }
+                      type="submit"
+                    >
+                      {updateOrganizationMutation.isPending && (
+                        <LoaderCircle className="animate-spin" />
+                      )}
+                      {updateOrganizationMutation.isPending
+                        ? "Saving changes"
+                        : "Save changes"}
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </form>
+            </Form>
           </div>
 
-          <ListOrganizationApiKeysCard />
+          {getOrganizationResponse?.organization?.apiKeysEnabled && (
+            <ListOrganizationApiKeysCard />
+          )}
         </div>
       )}
     </>
-  );
-}
-
-const schema = z.object({
-  apiKeysEnabled: z.boolean(),
-});
-
-function ConfigureOrganizationApiKeys() {
-  const { organizationId } = useParams();
-
-  const { data: getOrganizationResponse, refetch } = useQuery(getOrganization, {
-    id: organizationId,
-  });
-  const updateOrganizationMutation = useMutation(updateOrganization);
-
-  const [open, setOpen] = useState(false);
-
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      apiKeysEnabled:
-        getOrganizationResponse?.organization?.apiKeysEnabled || false,
-    },
-  });
-
-  function handleCancel(e: MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    e.stopPropagation();
-    setOpen(false);
-    return false;
-  }
-
-  async function handleSubmit(data: z.infer<typeof schema>) {
-    await updateOrganizationMutation.mutateAsync({
-      id: organizationId,
-      organization: {
-        apiKeysEnabled: data.apiKeysEnabled,
-      },
-    });
-    await refetch();
-    form.reset(data);
-    setOpen(false);
-    toast.success("Managed API Keys configuration updated successfully.");
-  }
-
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="w-full" variant="outline">
-          Configure API Keys
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Configure API Keys</DialogTitle>
-          <DialogDescription>
-            Configure the API Keys for{" "}
-            <span className="font-semibold">
-              {getOrganizationResponse?.organization?.displayName}
-            </span>
-            .
-          </DialogDescription>
-        </DialogHeader>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)}>
-            <div className="space-y-4">
-              <FormField
-                control={form.control}
-                name="apiKeysEnabled"
-                render={({ field }) => (
-                  <FormItem className="flex items-center justify-between gap-4">
-                    <div>
-                      <FormLabel>Managed API Keys enabled</FormLabel>
-                      <FormDescription>
-                        Allows Organizations to created Managed API Keys to
-                        authenticate to your service.
-                      </FormDescription>
-                      <FormMessage />
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <DialogFooter className="mt-8 justify-end gap-2">
-              <Button variant="outline" onClick={handleCancel}>
-                Cancel
-              </Button>
-              <Button
-                disabled={
-                  !form.formState.isDirty ||
-                  updateOrganizationMutation.isPending
-                }
-                type="submit"
-              >
-                {updateOrganizationMutation.isPending && (
-                  <LoaderCircle className="animate-spin" />
-                )}
-                {updateOrganizationMutation.isPending
-                  ? "Saving changes"
-                  : "Save changes"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
   );
 }
