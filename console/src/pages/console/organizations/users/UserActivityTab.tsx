@@ -10,24 +10,23 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ConsoleListAuditLogEventsRequest } from "@/gen/tesseral/backend/v1/backend_pb";
-import { AuditLogEventResourceType } from "@/gen/tesseral/backend/v1/models_pb";
 
-export function OrganizationApiKeyLogsTab() {
-  const { apiKeyId } = useParams();
+export function UserActivityTab() {
+  const { userId } = useParams();
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>API Key Logs</CardTitle>
+        <CardTitle>User Activity</CardTitle>
         <CardDescription>
-          View the logs for API key usage, including requests and responses.
+          View Logs of actions taken by this User.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <ListAuditLogEventsTable
           listParams={
             {
-              actorApiKeyId: apiKeyId as string,
+              actorUserId: userId,
               pageToken: "",
             } as ConsoleListAuditLogEventsRequest
           }

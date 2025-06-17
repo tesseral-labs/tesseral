@@ -87,6 +87,76 @@ func (PrimaryAuthFactor) EnumDescriptor() ([]byte, []int) {
 	return file_tesseral_backend_v1_models_proto_rawDescGZIP(), []int{0}
 }
 
+type AuditLogEventResourceType int32
+
+const (
+	AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_UNSPECIFIED     AuditLogEventResourceType = 0
+	AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_API_KEY         AuditLogEventResourceType = 1
+	AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_ORGANIZATION    AuditLogEventResourceType = 2
+	AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_PASSKEY         AuditLogEventResourceType = 3
+	AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_ROLE            AuditLogEventResourceType = 4
+	AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SAML_CONNECTION AuditLogEventResourceType = 5
+	AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SCIM_API_KEY    AuditLogEventResourceType = 6
+	AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SESSION         AuditLogEventResourceType = 7
+	AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_USER_INVITE     AuditLogEventResourceType = 8
+	AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_USER            AuditLogEventResourceType = 9
+)
+
+// Enum value maps for AuditLogEventResourceType.
+var (
+	AuditLogEventResourceType_name = map[int32]string{
+		0: "AUDIT_LOG_EVENT_RESOURCE_TYPE_UNSPECIFIED",
+		1: "AUDIT_LOG_EVENT_RESOURCE_TYPE_API_KEY",
+		2: "AUDIT_LOG_EVENT_RESOURCE_TYPE_ORGANIZATION",
+		3: "AUDIT_LOG_EVENT_RESOURCE_TYPE_PASSKEY",
+		4: "AUDIT_LOG_EVENT_RESOURCE_TYPE_ROLE",
+		5: "AUDIT_LOG_EVENT_RESOURCE_TYPE_SAML_CONNECTION",
+		6: "AUDIT_LOG_EVENT_RESOURCE_TYPE_SCIM_API_KEY",
+		7: "AUDIT_LOG_EVENT_RESOURCE_TYPE_SESSION",
+		8: "AUDIT_LOG_EVENT_RESOURCE_TYPE_USER_INVITE",
+		9: "AUDIT_LOG_EVENT_RESOURCE_TYPE_USER",
+	}
+	AuditLogEventResourceType_value = map[string]int32{
+		"AUDIT_LOG_EVENT_RESOURCE_TYPE_UNSPECIFIED":     0,
+		"AUDIT_LOG_EVENT_RESOURCE_TYPE_API_KEY":         1,
+		"AUDIT_LOG_EVENT_RESOURCE_TYPE_ORGANIZATION":    2,
+		"AUDIT_LOG_EVENT_RESOURCE_TYPE_PASSKEY":         3,
+		"AUDIT_LOG_EVENT_RESOURCE_TYPE_ROLE":            4,
+		"AUDIT_LOG_EVENT_RESOURCE_TYPE_SAML_CONNECTION": 5,
+		"AUDIT_LOG_EVENT_RESOURCE_TYPE_SCIM_API_KEY":    6,
+		"AUDIT_LOG_EVENT_RESOURCE_TYPE_SESSION":         7,
+		"AUDIT_LOG_EVENT_RESOURCE_TYPE_USER_INVITE":     8,
+		"AUDIT_LOG_EVENT_RESOURCE_TYPE_USER":            9,
+	}
+)
+
+func (x AuditLogEventResourceType) Enum() *AuditLogEventResourceType {
+	p := new(AuditLogEventResourceType)
+	*p = x
+	return p
+}
+
+func (x AuditLogEventResourceType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (AuditLogEventResourceType) Descriptor() protoreflect.EnumDescriptor {
+	return file_tesseral_backend_v1_models_proto_enumTypes[1].Descriptor()
+}
+
+func (AuditLogEventResourceType) Type() protoreflect.EnumType {
+	return &file_tesseral_backend_v1_models_proto_enumTypes[1]
+}
+
+func (x AuditLogEventResourceType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use AuditLogEventResourceType.Descriptor instead.
+func (AuditLogEventResourceType) EnumDescriptor() ([]byte, []int) {
+	return file_tesseral_backend_v1_models_proto_rawDescGZIP(), []int{1}
+}
+
 // Projects are the top-level object in Tesseral.
 //
 // Everything in Tesseral happens within the context of a Project.
@@ -3140,7 +3210,37 @@ var file_tesseral_backend_v1_models_proto_rawDesc = string([]byte{
 	0x49, 0x4d, 0x41, 0x52, 0x59, 0x5f, 0x41, 0x55, 0x54, 0x48, 0x5f, 0x46, 0x41, 0x43, 0x54, 0x4f,
 	0x52, 0x5f, 0x53, 0x41, 0x4d, 0x4c, 0x10, 0x04, 0x12, 0x25, 0x0a, 0x21, 0x50, 0x52, 0x49, 0x4d,
 	0x41, 0x52, 0x59, 0x5f, 0x41, 0x55, 0x54, 0x48, 0x5f, 0x46, 0x41, 0x43, 0x54, 0x4f, 0x52, 0x5f,
-	0x49, 0x4d, 0x50, 0x45, 0x52, 0x53, 0x4f, 0x4e, 0x41, 0x54, 0x49, 0x4f, 0x4e, 0x10, 0x05, 0x42,
+	0x49, 0x4d, 0x50, 0x45, 0x52, 0x53, 0x4f, 0x4e, 0x41, 0x54, 0x49, 0x4f, 0x4e, 0x10, 0x05, 0x2a,
+	0xdd, 0x03, 0x0a, 0x19, 0x41, 0x75, 0x64, 0x69, 0x74, 0x4c, 0x6f, 0x67, 0x45, 0x76, 0x65, 0x6e,
+	0x74, 0x52, 0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x54, 0x79, 0x70, 0x65, 0x12, 0x2d, 0x0a,
+	0x29, 0x41, 0x55, 0x44, 0x49, 0x54, 0x5f, 0x4c, 0x4f, 0x47, 0x5f, 0x45, 0x56, 0x45, 0x4e, 0x54,
+	0x5f, 0x52, 0x45, 0x53, 0x4f, 0x55, 0x52, 0x43, 0x45, 0x5f, 0x54, 0x59, 0x50, 0x45, 0x5f, 0x55,
+	0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45, 0x44, 0x10, 0x00, 0x12, 0x29, 0x0a, 0x25,
+	0x41, 0x55, 0x44, 0x49, 0x54, 0x5f, 0x4c, 0x4f, 0x47, 0x5f, 0x45, 0x56, 0x45, 0x4e, 0x54, 0x5f,
+	0x52, 0x45, 0x53, 0x4f, 0x55, 0x52, 0x43, 0x45, 0x5f, 0x54, 0x59, 0x50, 0x45, 0x5f, 0x41, 0x50,
+	0x49, 0x5f, 0x4b, 0x45, 0x59, 0x10, 0x01, 0x12, 0x2e, 0x0a, 0x2a, 0x41, 0x55, 0x44, 0x49, 0x54,
+	0x5f, 0x4c, 0x4f, 0x47, 0x5f, 0x45, 0x56, 0x45, 0x4e, 0x54, 0x5f, 0x52, 0x45, 0x53, 0x4f, 0x55,
+	0x52, 0x43, 0x45, 0x5f, 0x54, 0x59, 0x50, 0x45, 0x5f, 0x4f, 0x52, 0x47, 0x41, 0x4e, 0x49, 0x5a,
+	0x41, 0x54, 0x49, 0x4f, 0x4e, 0x10, 0x02, 0x12, 0x29, 0x0a, 0x25, 0x41, 0x55, 0x44, 0x49, 0x54,
+	0x5f, 0x4c, 0x4f, 0x47, 0x5f, 0x45, 0x56, 0x45, 0x4e, 0x54, 0x5f, 0x52, 0x45, 0x53, 0x4f, 0x55,
+	0x52, 0x43, 0x45, 0x5f, 0x54, 0x59, 0x50, 0x45, 0x5f, 0x50, 0x41, 0x53, 0x53, 0x4b, 0x45, 0x59,
+	0x10, 0x03, 0x12, 0x26, 0x0a, 0x22, 0x41, 0x55, 0x44, 0x49, 0x54, 0x5f, 0x4c, 0x4f, 0x47, 0x5f,
+	0x45, 0x56, 0x45, 0x4e, 0x54, 0x5f, 0x52, 0x45, 0x53, 0x4f, 0x55, 0x52, 0x43, 0x45, 0x5f, 0x54,
+	0x59, 0x50, 0x45, 0x5f, 0x52, 0x4f, 0x4c, 0x45, 0x10, 0x04, 0x12, 0x31, 0x0a, 0x2d, 0x41, 0x55,
+	0x44, 0x49, 0x54, 0x5f, 0x4c, 0x4f, 0x47, 0x5f, 0x45, 0x56, 0x45, 0x4e, 0x54, 0x5f, 0x52, 0x45,
+	0x53, 0x4f, 0x55, 0x52, 0x43, 0x45, 0x5f, 0x54, 0x59, 0x50, 0x45, 0x5f, 0x53, 0x41, 0x4d, 0x4c,
+	0x5f, 0x43, 0x4f, 0x4e, 0x4e, 0x45, 0x43, 0x54, 0x49, 0x4f, 0x4e, 0x10, 0x05, 0x12, 0x2e, 0x0a,
+	0x2a, 0x41, 0x55, 0x44, 0x49, 0x54, 0x5f, 0x4c, 0x4f, 0x47, 0x5f, 0x45, 0x56, 0x45, 0x4e, 0x54,
+	0x5f, 0x52, 0x45, 0x53, 0x4f, 0x55, 0x52, 0x43, 0x45, 0x5f, 0x54, 0x59, 0x50, 0x45, 0x5f, 0x53,
+	0x43, 0x49, 0x4d, 0x5f, 0x41, 0x50, 0x49, 0x5f, 0x4b, 0x45, 0x59, 0x10, 0x06, 0x12, 0x29, 0x0a,
+	0x25, 0x41, 0x55, 0x44, 0x49, 0x54, 0x5f, 0x4c, 0x4f, 0x47, 0x5f, 0x45, 0x56, 0x45, 0x4e, 0x54,
+	0x5f, 0x52, 0x45, 0x53, 0x4f, 0x55, 0x52, 0x43, 0x45, 0x5f, 0x54, 0x59, 0x50, 0x45, 0x5f, 0x53,
+	0x45, 0x53, 0x53, 0x49, 0x4f, 0x4e, 0x10, 0x07, 0x12, 0x2d, 0x0a, 0x29, 0x41, 0x55, 0x44, 0x49,
+	0x54, 0x5f, 0x4c, 0x4f, 0x47, 0x5f, 0x45, 0x56, 0x45, 0x4e, 0x54, 0x5f, 0x52, 0x45, 0x53, 0x4f,
+	0x55, 0x52, 0x43, 0x45, 0x5f, 0x54, 0x59, 0x50, 0x45, 0x5f, 0x55, 0x53, 0x45, 0x52, 0x5f, 0x49,
+	0x4e, 0x56, 0x49, 0x54, 0x45, 0x10, 0x08, 0x12, 0x26, 0x0a, 0x22, 0x41, 0x55, 0x44, 0x49, 0x54,
+	0x5f, 0x4c, 0x4f, 0x47, 0x5f, 0x45, 0x56, 0x45, 0x4e, 0x54, 0x5f, 0x52, 0x45, 0x53, 0x4f, 0x55,
+	0x52, 0x43, 0x45, 0x5f, 0x54, 0x59, 0x50, 0x45, 0x5f, 0x55, 0x53, 0x45, 0x52, 0x10, 0x09, 0x42,
 	0xea, 0x01, 0x0a, 0x17, 0x63, 0x6f, 0x6d, 0x2e, 0x74, 0x65, 0x73, 0x73, 0x65, 0x72, 0x61, 0x6c,
 	0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x42, 0x0b, 0x4d, 0x6f, 0x64,
 	0x65, 0x6c, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x54, 0x67, 0x69, 0x74, 0x68,
@@ -3171,74 +3271,75 @@ func file_tesseral_backend_v1_models_proto_rawDescGZIP() []byte {
 	return file_tesseral_backend_v1_models_proto_rawDescData
 }
 
-var file_tesseral_backend_v1_models_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_tesseral_backend_v1_models_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_tesseral_backend_v1_models_proto_msgTypes = make([]protoimpl.MessageInfo, 24)
 var file_tesseral_backend_v1_models_proto_goTypes = []any{
 	(PrimaryAuthFactor)(0),                  // 0: tesseral.backend.v1.PrimaryAuthFactor
-	(*Project)(nil),                         // 1: tesseral.backend.v1.Project
-	(*VaultDomainSettings)(nil),             // 2: tesseral.backend.v1.VaultDomainSettings
-	(*VaultDomainSettingsDNSRecord)(nil),    // 3: tesseral.backend.v1.VaultDomainSettingsDNSRecord
-	(*ProjectUISettings)(nil),               // 4: tesseral.backend.v1.ProjectUISettings
-	(*Organization)(nil),                    // 5: tesseral.backend.v1.Organization
-	(*OrganizationDomains)(nil),             // 6: tesseral.backend.v1.OrganizationDomains
-	(*OrganizationGoogleHostedDomains)(nil), // 7: tesseral.backend.v1.OrganizationGoogleHostedDomains
-	(*OrganizationMicrosoftTenantIDs)(nil),  // 8: tesseral.backend.v1.OrganizationMicrosoftTenantIDs
-	(*BackendAPIKey)(nil),                   // 9: tesseral.backend.v1.BackendAPIKey
-	(*PublishableKey)(nil),                  // 10: tesseral.backend.v1.PublishableKey
-	(*User)(nil),                            // 11: tesseral.backend.v1.User
-	(*Session)(nil),                         // 12: tesseral.backend.v1.Session
-	(*Passkey)(nil),                         // 13: tesseral.backend.v1.Passkey
-	(*SAMLConnection)(nil),                  // 14: tesseral.backend.v1.SAMLConnection
-	(*SCIMAPIKey)(nil),                      // 15: tesseral.backend.v1.SCIMAPIKey
-	(*UserImpersonationToken)(nil),          // 16: tesseral.backend.v1.UserImpersonationToken
-	(*UserInvite)(nil),                      // 17: tesseral.backend.v1.UserInvite
-	(*RBACPolicy)(nil),                      // 18: tesseral.backend.v1.RBACPolicy
-	(*Action)(nil),                          // 19: tesseral.backend.v1.Action
-	(*Role)(nil),                            // 20: tesseral.backend.v1.Role
-	(*UserRoleAssignment)(nil),              // 21: tesseral.backend.v1.UserRoleAssignment
-	(*APIKey)(nil),                          // 22: tesseral.backend.v1.APIKey
-	(*APIKeyRoleAssignment)(nil),            // 23: tesseral.backend.v1.APIKeyRoleAssignment
-	(*AuditLogEvent)(nil),                   // 24: tesseral.backend.v1.AuditLogEvent
-	(*timestamppb.Timestamp)(nil),           // 25: google.protobuf.Timestamp
-	(*structpb.Struct)(nil),                 // 26: google.protobuf.Struct
+	(AuditLogEventResourceType)(0),          // 1: tesseral.backend.v1.AuditLogEventResourceType
+	(*Project)(nil),                         // 2: tesseral.backend.v1.Project
+	(*VaultDomainSettings)(nil),             // 3: tesseral.backend.v1.VaultDomainSettings
+	(*VaultDomainSettingsDNSRecord)(nil),    // 4: tesseral.backend.v1.VaultDomainSettingsDNSRecord
+	(*ProjectUISettings)(nil),               // 5: tesseral.backend.v1.ProjectUISettings
+	(*Organization)(nil),                    // 6: tesseral.backend.v1.Organization
+	(*OrganizationDomains)(nil),             // 7: tesseral.backend.v1.OrganizationDomains
+	(*OrganizationGoogleHostedDomains)(nil), // 8: tesseral.backend.v1.OrganizationGoogleHostedDomains
+	(*OrganizationMicrosoftTenantIDs)(nil),  // 9: tesseral.backend.v1.OrganizationMicrosoftTenantIDs
+	(*BackendAPIKey)(nil),                   // 10: tesseral.backend.v1.BackendAPIKey
+	(*PublishableKey)(nil),                  // 11: tesseral.backend.v1.PublishableKey
+	(*User)(nil),                            // 12: tesseral.backend.v1.User
+	(*Session)(nil),                         // 13: tesseral.backend.v1.Session
+	(*Passkey)(nil),                         // 14: tesseral.backend.v1.Passkey
+	(*SAMLConnection)(nil),                  // 15: tesseral.backend.v1.SAMLConnection
+	(*SCIMAPIKey)(nil),                      // 16: tesseral.backend.v1.SCIMAPIKey
+	(*UserImpersonationToken)(nil),          // 17: tesseral.backend.v1.UserImpersonationToken
+	(*UserInvite)(nil),                      // 18: tesseral.backend.v1.UserInvite
+	(*RBACPolicy)(nil),                      // 19: tesseral.backend.v1.RBACPolicy
+	(*Action)(nil),                          // 20: tesseral.backend.v1.Action
+	(*Role)(nil),                            // 21: tesseral.backend.v1.Role
+	(*UserRoleAssignment)(nil),              // 22: tesseral.backend.v1.UserRoleAssignment
+	(*APIKey)(nil),                          // 23: tesseral.backend.v1.APIKey
+	(*APIKeyRoleAssignment)(nil),            // 24: tesseral.backend.v1.APIKeyRoleAssignment
+	(*AuditLogEvent)(nil),                   // 25: tesseral.backend.v1.AuditLogEvent
+	(*timestamppb.Timestamp)(nil),           // 26: google.protobuf.Timestamp
+	(*structpb.Struct)(nil),                 // 27: google.protobuf.Struct
 }
 var file_tesseral_backend_v1_models_proto_depIdxs = []int32{
-	25, // 0: tesseral.backend.v1.Project.create_time:type_name -> google.protobuf.Timestamp
-	25, // 1: tesseral.backend.v1.Project.update_time:type_name -> google.protobuf.Timestamp
-	3,  // 2: tesseral.backend.v1.VaultDomainSettings.vault_domain_records:type_name -> tesseral.backend.v1.VaultDomainSettingsDNSRecord
-	3,  // 3: tesseral.backend.v1.VaultDomainSettings.email_send_from_records:type_name -> tesseral.backend.v1.VaultDomainSettingsDNSRecord
-	25, // 4: tesseral.backend.v1.ProjectUISettings.create_time:type_name -> google.protobuf.Timestamp
-	25, // 5: tesseral.backend.v1.ProjectUISettings.update_time:type_name -> google.protobuf.Timestamp
-	25, // 6: tesseral.backend.v1.Organization.create_time:type_name -> google.protobuf.Timestamp
-	25, // 7: tesseral.backend.v1.Organization.update_time:type_name -> google.protobuf.Timestamp
-	25, // 8: tesseral.backend.v1.BackendAPIKey.create_time:type_name -> google.protobuf.Timestamp
-	25, // 9: tesseral.backend.v1.BackendAPIKey.update_time:type_name -> google.protobuf.Timestamp
-	25, // 10: tesseral.backend.v1.PublishableKey.create_time:type_name -> google.protobuf.Timestamp
-	25, // 11: tesseral.backend.v1.PublishableKey.update_time:type_name -> google.protobuf.Timestamp
-	25, // 12: tesseral.backend.v1.User.create_time:type_name -> google.protobuf.Timestamp
-	25, // 13: tesseral.backend.v1.User.update_time:type_name -> google.protobuf.Timestamp
-	25, // 14: tesseral.backend.v1.Session.create_time:type_name -> google.protobuf.Timestamp
-	25, // 15: tesseral.backend.v1.Session.last_active_time:type_name -> google.protobuf.Timestamp
-	25, // 16: tesseral.backend.v1.Session.expire_time:type_name -> google.protobuf.Timestamp
+	26, // 0: tesseral.backend.v1.Project.create_time:type_name -> google.protobuf.Timestamp
+	26, // 1: tesseral.backend.v1.Project.update_time:type_name -> google.protobuf.Timestamp
+	4,  // 2: tesseral.backend.v1.VaultDomainSettings.vault_domain_records:type_name -> tesseral.backend.v1.VaultDomainSettingsDNSRecord
+	4,  // 3: tesseral.backend.v1.VaultDomainSettings.email_send_from_records:type_name -> tesseral.backend.v1.VaultDomainSettingsDNSRecord
+	26, // 4: tesseral.backend.v1.ProjectUISettings.create_time:type_name -> google.protobuf.Timestamp
+	26, // 5: tesseral.backend.v1.ProjectUISettings.update_time:type_name -> google.protobuf.Timestamp
+	26, // 6: tesseral.backend.v1.Organization.create_time:type_name -> google.protobuf.Timestamp
+	26, // 7: tesseral.backend.v1.Organization.update_time:type_name -> google.protobuf.Timestamp
+	26, // 8: tesseral.backend.v1.BackendAPIKey.create_time:type_name -> google.protobuf.Timestamp
+	26, // 9: tesseral.backend.v1.BackendAPIKey.update_time:type_name -> google.protobuf.Timestamp
+	26, // 10: tesseral.backend.v1.PublishableKey.create_time:type_name -> google.protobuf.Timestamp
+	26, // 11: tesseral.backend.v1.PublishableKey.update_time:type_name -> google.protobuf.Timestamp
+	26, // 12: tesseral.backend.v1.User.create_time:type_name -> google.protobuf.Timestamp
+	26, // 13: tesseral.backend.v1.User.update_time:type_name -> google.protobuf.Timestamp
+	26, // 14: tesseral.backend.v1.Session.create_time:type_name -> google.protobuf.Timestamp
+	26, // 15: tesseral.backend.v1.Session.last_active_time:type_name -> google.protobuf.Timestamp
+	26, // 16: tesseral.backend.v1.Session.expire_time:type_name -> google.protobuf.Timestamp
 	0,  // 17: tesseral.backend.v1.Session.primary_auth_factor:type_name -> tesseral.backend.v1.PrimaryAuthFactor
-	25, // 18: tesseral.backend.v1.Passkey.create_time:type_name -> google.protobuf.Timestamp
-	25, // 19: tesseral.backend.v1.Passkey.update_time:type_name -> google.protobuf.Timestamp
-	25, // 20: tesseral.backend.v1.SAMLConnection.create_time:type_name -> google.protobuf.Timestamp
-	25, // 21: tesseral.backend.v1.SAMLConnection.update_time:type_name -> google.protobuf.Timestamp
-	25, // 22: tesseral.backend.v1.SCIMAPIKey.create_time:type_name -> google.protobuf.Timestamp
-	25, // 23: tesseral.backend.v1.SCIMAPIKey.update_time:type_name -> google.protobuf.Timestamp
-	25, // 24: tesseral.backend.v1.UserImpersonationToken.create_time:type_name -> google.protobuf.Timestamp
-	25, // 25: tesseral.backend.v1.UserImpersonationToken.expire_time:type_name -> google.protobuf.Timestamp
-	25, // 26: tesseral.backend.v1.UserInvite.create_time:type_name -> google.protobuf.Timestamp
-	25, // 27: tesseral.backend.v1.UserInvite.update_time:type_name -> google.protobuf.Timestamp
-	19, // 28: tesseral.backend.v1.RBACPolicy.actions:type_name -> tesseral.backend.v1.Action
-	25, // 29: tesseral.backend.v1.Role.create_time:type_name -> google.protobuf.Timestamp
-	25, // 30: tesseral.backend.v1.Role.update_time:type_name -> google.protobuf.Timestamp
-	25, // 31: tesseral.backend.v1.APIKey.create_time:type_name -> google.protobuf.Timestamp
-	25, // 32: tesseral.backend.v1.APIKey.update_time:type_name -> google.protobuf.Timestamp
-	25, // 33: tesseral.backend.v1.APIKey.expire_time:type_name -> google.protobuf.Timestamp
-	25, // 34: tesseral.backend.v1.AuditLogEvent.event_time:type_name -> google.protobuf.Timestamp
-	26, // 35: tesseral.backend.v1.AuditLogEvent.event_details:type_name -> google.protobuf.Struct
+	26, // 18: tesseral.backend.v1.Passkey.create_time:type_name -> google.protobuf.Timestamp
+	26, // 19: tesseral.backend.v1.Passkey.update_time:type_name -> google.protobuf.Timestamp
+	26, // 20: tesseral.backend.v1.SAMLConnection.create_time:type_name -> google.protobuf.Timestamp
+	26, // 21: tesseral.backend.v1.SAMLConnection.update_time:type_name -> google.protobuf.Timestamp
+	26, // 22: tesseral.backend.v1.SCIMAPIKey.create_time:type_name -> google.protobuf.Timestamp
+	26, // 23: tesseral.backend.v1.SCIMAPIKey.update_time:type_name -> google.protobuf.Timestamp
+	26, // 24: tesseral.backend.v1.UserImpersonationToken.create_time:type_name -> google.protobuf.Timestamp
+	26, // 25: tesseral.backend.v1.UserImpersonationToken.expire_time:type_name -> google.protobuf.Timestamp
+	26, // 26: tesseral.backend.v1.UserInvite.create_time:type_name -> google.protobuf.Timestamp
+	26, // 27: tesseral.backend.v1.UserInvite.update_time:type_name -> google.protobuf.Timestamp
+	20, // 28: tesseral.backend.v1.RBACPolicy.actions:type_name -> tesseral.backend.v1.Action
+	26, // 29: tesseral.backend.v1.Role.create_time:type_name -> google.protobuf.Timestamp
+	26, // 30: tesseral.backend.v1.Role.update_time:type_name -> google.protobuf.Timestamp
+	26, // 31: tesseral.backend.v1.APIKey.create_time:type_name -> google.protobuf.Timestamp
+	26, // 32: tesseral.backend.v1.APIKey.update_time:type_name -> google.protobuf.Timestamp
+	26, // 33: tesseral.backend.v1.APIKey.expire_time:type_name -> google.protobuf.Timestamp
+	26, // 34: tesseral.backend.v1.AuditLogEvent.event_time:type_name -> google.protobuf.Timestamp
+	27, // 35: tesseral.backend.v1.AuditLogEvent.event_details:type_name -> google.protobuf.Struct
 	36, // [36:36] is the sub-list for method output_type
 	36, // [36:36] is the sub-list for method input_type
 	36, // [36:36] is the sub-list for extension type_name
@@ -3263,7 +3364,7 @@ func file_tesseral_backend_v1_models_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_tesseral_backend_v1_models_proto_rawDesc), len(file_tesseral_backend_v1_models_proto_rawDesc)),
-			NumEnums:      1,
+			NumEnums:      2,
 			NumMessages:   24,
 			NumExtensions: 0,
 			NumServices:   0,

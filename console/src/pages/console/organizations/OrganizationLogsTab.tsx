@@ -1,16 +1,41 @@
 import React from "react";
+import { useParams } from "react-router";
+
+import { ListAuditLogEventsTable } from "@/components/audit-logs/ListAuditLogEventsTable";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ConsoleListAuditLogEventsRequest } from "@/gen/tesseral/backend/v1/backend_pb";
+import { AuditLogEventResourceType } from "@/gen/tesseral/backend/v1/models_pb";
 
 export function OrganizationLogs() {
+  const { organizationId } = useParams();
+
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-4">Organization Logs</h2>
-      <p className="text-muted-foreground">
-        View and manage logs for your organization.
-      </p>
-      {/* Placeholder for logs content */}
-      <div className="mt-6">
-        <p>Logs management will be implemented here.</p>
-      </div>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Organization Logs</CardTitle>
+        <CardDescription>
+          View Logs associated with this Organization
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ListAuditLogEventsTable
+          listParams={
+            {
+              resourceType: AuditLogEventResourceType.ORGANIZATION,
+              resourceId: organizationId,
+              pageToken: "",
+            } as ConsoleListAuditLogEventsRequest
+          }
+        />
+      </CardContent>
+    </Card>
   );
 }

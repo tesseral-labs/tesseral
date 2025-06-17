@@ -12,7 +12,7 @@ import { ListOrganizationsPage } from "@/pages/console/organizations/ListOrganiz
 import { OrganizationDetailsTab } from "@/pages/console/organizations/OrganizationDetailsTab";
 import { OrganizationPage } from "@/pages/console/organizations/OrganizationPage";
 import { OrganizationUsersTab } from "@/pages/console/organizations/OrganizationUsersTab";
-import { UserDetails } from "@/pages/console/organizations/users/UserDetailsTab";
+import { UserDetailsTab } from "@/pages/console/organizations/users/UserDetailsTab";
 import { UserPage } from "@/pages/console/organizations/users/UserPage";
 
 import { API_URL } from "./config";
@@ -25,10 +25,11 @@ import { OrganizationApiKeyLogsTab } from "./pages/console/organizations/api-key
 import { OrganizationApiKeyPage } from "./pages/console/organizations/api-keys/OrganizationApiKeyPage";
 import { OrganizationSamlConnectionPage } from "./pages/console/organizations/saml-connections/OrganizationSamlConnectionPage";
 import { OrganizationScimApiKeyPage } from "./pages/console/organizations/scim-api-keys/OrganizationScimApiKeyPage";
-import { UserLogs } from "./pages/console/organizations/users/UserLogsTab";
-import { UserPasskeys } from "./pages/console/organizations/users/UserPasskeysTab";
-import { UserRoles } from "./pages/console/organizations/users/UserRolesTab";
-import { UserSessions } from "./pages/console/organizations/users/UserSessionsTab";
+import { UserActivityTab } from "./pages/console/organizations/users/UserActivityTab";
+import { UserHistoryTab } from "./pages/console/organizations/users/UserHistoryTab";
+import { UserPasskeysTab } from "./pages/console/organizations/users/UserPasskeysTab";
+import { UserRolesTab } from "./pages/console/organizations/users/UserRolesTab";
+import { UserSessionsTab } from "./pages/console/organizations/users/UserSessionsTab";
 import { PasskeyPage } from "./pages/console/organizations/users/passkeys/PasskeyPage";
 import { SessionPage } from "./pages/console/organizations/users/sessions/SessionPage";
 import { AccessSettingsPage } from "./pages/console/settings/AccessSettingsPage";
@@ -41,6 +42,7 @@ import { AuthenticationSettingsPage } from "./pages/console/settings/authenticat
 import { VaultBrandingSettingsTab } from "./pages/console/settings/vault/VaultBrandingSettingsTab";
 import { VaultDetailsTab } from "./pages/console/settings/vault/VaultDetailsTab";
 import { VaultDomainSettingsTab } from "./pages/console/settings/vault/VaultDomainSettingsTab";
+import { StripeCheckoutSuccessPage } from "./pages/console/stripe/StripeCheckoutSuccessPage";
 import { AuthenticateAnotherWayPage } from "./pages/login/AuthenticateAnotherWayPage";
 import { ChooseProjectPage } from "./pages/login/ChooseProjectPage";
 import { CreateProjectPage } from "./pages/login/CreateProjectPage";
@@ -106,11 +108,12 @@ function AppWithinQueryClient() {
               path="organizations/:organizationId/users/:userId"
               element={<UserPage />}
             >
-              <Route path="" element={<UserDetails />} />
-              <Route path="sessions" element={<UserSessions />} />
-              <Route path="roles" element={<UserRoles />} />
-              <Route path="passkeys" element={<UserPasskeys />} />
-              <Route path="logs" element={<UserLogs />} />
+              <Route path="" element={<UserDetailsTab />} />
+              <Route path="sessions" element={<UserSessionsTab />} />
+              <Route path="roles" element={<UserRolesTab />} />
+              <Route path="passkeys" element={<UserPasskeysTab />} />
+              <Route path="history" element={<UserHistoryTab />} />
+              <Route path="activity" element={<UserActivityTab />} />
             </Route>
 
             <Route
@@ -164,6 +167,11 @@ function AppWithinQueryClient() {
                 <Route path="branding" element={<VaultBrandingSettingsTab />} />
               </Route>
             </Route>
+
+            <Route
+              path="stripe-checkout-success"
+              element={<StripeCheckoutSuccessPage />}
+            />
           </Route>
 
           {/* Login and Signup Routes */}

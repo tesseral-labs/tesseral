@@ -289,6 +289,12 @@ const (
 	// BackendServiceGetProjectWebhookManagementURLProcedure is the fully-qualified name of the
 	// BackendService's GetProjectWebhookManagementURL RPC.
 	BackendServiceGetProjectWebhookManagementURLProcedure = "/tesseral.backend.v1.BackendService/GetProjectWebhookManagementURL"
+	// BackendServiceConsoleListAuditLogEventsProcedure is the fully-qualified name of the
+	// BackendService's ConsoleListAuditLogEvents RPC.
+	BackendServiceConsoleListAuditLogEventsProcedure = "/tesseral.backend.v1.BackendService/ConsoleListAuditLogEvents"
+	// BackendServiceConsoleListAuditLogEventNamesProcedure is the fully-qualified name of the
+	// BackendService's ConsoleListAuditLogEventNames RPC.
+	BackendServiceConsoleListAuditLogEventNamesProcedure = "/tesseral.backend.v1.BackendService/ConsoleListAuditLogEventNames"
 )
 
 // BackendServiceClient is a client for the tesseral.backend.v1.BackendService service.
@@ -432,6 +438,8 @@ type BackendServiceClient interface {
 	GetProjectEntitlements(context.Context, *connect.Request[v1.GetProjectEntitlementsRequest]) (*connect.Response[v1.GetProjectEntitlementsResponse], error)
 	CreateStripeCheckoutLink(context.Context, *connect.Request[v1.CreateStripeCheckoutLinkRequest]) (*connect.Response[v1.CreateStripeCheckoutLinkResponse], error)
 	GetProjectWebhookManagementURL(context.Context, *connect.Request[v1.GetProjectWebhookManagementURLRequest]) (*connect.Response[v1.GetProjectWebhookManagementURLResponse], error)
+	ConsoleListAuditLogEvents(context.Context, *connect.Request[v1.ConsoleListAuditLogEventsRequest]) (*connect.Response[v1.ConsoleListAuditLogEventsResponse], error)
+	ConsoleListAuditLogEventNames(context.Context, *connect.Request[v1.ConsoleListAuditLogEventNamesRequest]) (*connect.Response[v1.ConsoleListAuditLogEventNamesResponse], error)
 }
 
 // NewBackendServiceClient constructs a client for the tesseral.backend.v1.BackendService service.
@@ -961,6 +969,18 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("GetProjectWebhookManagementURL")),
 			connect.WithClientOptions(opts...),
 		),
+		consoleListAuditLogEvents: connect.NewClient[v1.ConsoleListAuditLogEventsRequest, v1.ConsoleListAuditLogEventsResponse](
+			httpClient,
+			baseURL+BackendServiceConsoleListAuditLogEventsProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("ConsoleListAuditLogEvents")),
+			connect.WithClientOptions(opts...),
+		),
+		consoleListAuditLogEventNames: connect.NewClient[v1.ConsoleListAuditLogEventNamesRequest, v1.ConsoleListAuditLogEventNamesResponse](
+			httpClient,
+			baseURL+BackendServiceConsoleListAuditLogEventNamesProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("ConsoleListAuditLogEventNames")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -1052,6 +1072,8 @@ type backendServiceClient struct {
 	getProjectEntitlements                *connect.Client[v1.GetProjectEntitlementsRequest, v1.GetProjectEntitlementsResponse]
 	createStripeCheckoutLink              *connect.Client[v1.CreateStripeCheckoutLinkRequest, v1.CreateStripeCheckoutLinkResponse]
 	getProjectWebhookManagementURL        *connect.Client[v1.GetProjectWebhookManagementURLRequest, v1.GetProjectWebhookManagementURLResponse]
+	consoleListAuditLogEvents             *connect.Client[v1.ConsoleListAuditLogEventsRequest, v1.ConsoleListAuditLogEventsResponse]
+	consoleListAuditLogEventNames         *connect.Client[v1.ConsoleListAuditLogEventNamesRequest, v1.ConsoleListAuditLogEventNamesResponse]
 }
 
 // GetProject calls tesseral.backend.v1.BackendService.GetProject.
@@ -1490,6 +1512,17 @@ func (c *backendServiceClient) GetProjectWebhookManagementURL(ctx context.Contex
 	return c.getProjectWebhookManagementURL.CallUnary(ctx, req)
 }
 
+// ConsoleListAuditLogEvents calls tesseral.backend.v1.BackendService.ConsoleListAuditLogEvents.
+func (c *backendServiceClient) ConsoleListAuditLogEvents(ctx context.Context, req *connect.Request[v1.ConsoleListAuditLogEventsRequest]) (*connect.Response[v1.ConsoleListAuditLogEventsResponse], error) {
+	return c.consoleListAuditLogEvents.CallUnary(ctx, req)
+}
+
+// ConsoleListAuditLogEventNames calls
+// tesseral.backend.v1.BackendService.ConsoleListAuditLogEventNames.
+func (c *backendServiceClient) ConsoleListAuditLogEventNames(ctx context.Context, req *connect.Request[v1.ConsoleListAuditLogEventNamesRequest]) (*connect.Response[v1.ConsoleListAuditLogEventNamesResponse], error) {
+	return c.consoleListAuditLogEventNames.CallUnary(ctx, req)
+}
+
 // BackendServiceHandler is an implementation of the tesseral.backend.v1.BackendService service.
 type BackendServiceHandler interface {
 	// Get the current project.
@@ -1631,6 +1664,8 @@ type BackendServiceHandler interface {
 	GetProjectEntitlements(context.Context, *connect.Request[v1.GetProjectEntitlementsRequest]) (*connect.Response[v1.GetProjectEntitlementsResponse], error)
 	CreateStripeCheckoutLink(context.Context, *connect.Request[v1.CreateStripeCheckoutLinkRequest]) (*connect.Response[v1.CreateStripeCheckoutLinkResponse], error)
 	GetProjectWebhookManagementURL(context.Context, *connect.Request[v1.GetProjectWebhookManagementURLRequest]) (*connect.Response[v1.GetProjectWebhookManagementURLResponse], error)
+	ConsoleListAuditLogEvents(context.Context, *connect.Request[v1.ConsoleListAuditLogEventsRequest]) (*connect.Response[v1.ConsoleListAuditLogEventsResponse], error)
+	ConsoleListAuditLogEventNames(context.Context, *connect.Request[v1.ConsoleListAuditLogEventNamesRequest]) (*connect.Response[v1.ConsoleListAuditLogEventNamesResponse], error)
 }
 
 // NewBackendServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -2156,6 +2191,18 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("GetProjectWebhookManagementURL")),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceConsoleListAuditLogEventsHandler := connect.NewUnaryHandler(
+		BackendServiceConsoleListAuditLogEventsProcedure,
+		svc.ConsoleListAuditLogEvents,
+		connect.WithSchema(backendServiceMethods.ByName("ConsoleListAuditLogEvents")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceConsoleListAuditLogEventNamesHandler := connect.NewUnaryHandler(
+		BackendServiceConsoleListAuditLogEventNamesProcedure,
+		svc.ConsoleListAuditLogEventNames,
+		connect.WithSchema(backendServiceMethods.ByName("ConsoleListAuditLogEventNames")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/tesseral.backend.v1.BackendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case BackendServiceGetProjectProcedure:
@@ -2330,6 +2377,10 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceCreateStripeCheckoutLinkHandler.ServeHTTP(w, r)
 		case BackendServiceGetProjectWebhookManagementURLProcedure:
 			backendServiceGetProjectWebhookManagementURLHandler.ServeHTTP(w, r)
+		case BackendServiceConsoleListAuditLogEventsProcedure:
+			backendServiceConsoleListAuditLogEventsHandler.ServeHTTP(w, r)
+		case BackendServiceConsoleListAuditLogEventNamesProcedure:
+			backendServiceConsoleListAuditLogEventNamesHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -2681,4 +2732,12 @@ func (UnimplementedBackendServiceHandler) CreateStripeCheckoutLink(context.Conte
 
 func (UnimplementedBackendServiceHandler) GetProjectWebhookManagementURL(context.Context, *connect.Request[v1.GetProjectWebhookManagementURLRequest]) (*connect.Response[v1.GetProjectWebhookManagementURLResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetProjectWebhookManagementURL is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) ConsoleListAuditLogEvents(context.Context, *connect.Request[v1.ConsoleListAuditLogEventsRequest]) (*connect.Response[v1.ConsoleListAuditLogEventsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.ConsoleListAuditLogEvents is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) ConsoleListAuditLogEventNames(context.Context, *connect.Request[v1.ConsoleListAuditLogEventNamesRequest]) (*connect.Response[v1.ConsoleListAuditLogEventNamesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.ConsoleListAuditLogEventNames is not implemented"))
 }

@@ -398,8 +398,6 @@ function CreateApiKeyButton() {
                           {...field}
                           onValueChange={(value) => {
                             field.onChange(value);
-
-                            console.log(value);
                           }}
                         >
                           <SelectTrigger className="w-[180px]">

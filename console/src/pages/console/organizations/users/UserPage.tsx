@@ -100,11 +100,24 @@ export function UserPage() {
         </Tab>
         <Tab
           active={
-            pathname === `/organizations/${organizationId}/users/${userId}/logs`
+            pathname ===
+            `/organizations/${organizationId}/users/${userId}/history`
           }
         >
-          <Link to={`/organizations/${organizationId}/users/${userId}/logs`}>
-            Audit Logs
+          <Link to={`/organizations/${organizationId}/users/${userId}/history`}>
+            User History
+          </Link>
+        </Tab>
+        <Tab
+          active={
+            pathname ===
+            `/organizations/${organizationId}/users/${userId}/activity`
+          }
+        >
+          <Link
+            to={`/organizations/${organizationId}/users/${userId}/activity`}
+          >
+            User Activity
           </Link>
         </Tab>
       </Tabs>

@@ -45,8 +45,6 @@ import {
   updateBackendAPIKey,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 
-import { ListBackendApiKeyAuditLogsCard } from "./ListBackendApiKeyAuditLogsCard";
-
 const schema = z.object({
   displayName: z.string().min(1, "Display name is required"),
 });
@@ -167,7 +165,7 @@ export function BackendApiKeyPage() {
         </form>
       </Form>
 
-      <ListBackendApiKeyAuditLogsCard />
+      {/* <ListBackendApiKeyAuditLogsCard /> */}
 
       <DangerZoneCard />
     </PageContent>

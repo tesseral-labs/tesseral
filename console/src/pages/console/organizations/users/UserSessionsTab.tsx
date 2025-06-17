@@ -31,7 +31,7 @@ import {
 import { PrimaryAuthFactor } from "@/gen/tesseral/backend/v1/models_pb";
 import { toTitleCase } from "@/lib/utils";
 
-export function UserSessions() {
+export function UserSessionsTab() {
   const { organizationId, userId } = useParams();
   const { data: getUserResponse } = useQuery(getUser, {
     id: userId,

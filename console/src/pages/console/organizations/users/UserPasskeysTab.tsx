@@ -60,7 +60,7 @@ import {
 import { Passkey } from "@/gen/tesseral/backend/v1/models_pb";
 import { AAGUIDS } from "@/lib/passkeys";
 
-export function UserPasskeys() {
+export function UserPasskeysTab() {
   const { organizationId, userId } = useParams();
 
   const {

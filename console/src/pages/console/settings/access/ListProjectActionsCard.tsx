@@ -293,8 +293,6 @@ function ManageProjectActionButtion({ action }: { action: Action }) {
     // Get a fresh copy of the RBAC policy before updating actions
     await refetch();
 
-    console.log("data.name", data.name);
-
     const updatedActions = (
       getRBACPolicyResponse?.rbacPolicy?.actions || []
     ).map((qAction) => (qAction.name === action.name ? data : qAction));

@@ -392,6 +392,9 @@ service BackendService {
   rpc CreateStripeCheckoutLink(CreateStripeCheckoutLinkRequest) returns (CreateStripeCheckoutLinkResponse);
 
   rpc GetProjectWebhookManagementURL(GetProjectWebhookManagementURLRequest) returns (GetProjectWebhookManagementURLResponse);
+
+  rpc ConsoleListAuditLogEvents(ConsoleListAuditLogEventsRequest) returns (ConsoleListAuditLogEventsResponse);
+  rpc ConsoleListAuditLogEventNames(ConsoleListAuditLogEventNamesRequest) returns (ConsoleListAuditLogEventNamesResponse);
 }
 
 message GetProjectRequest {}
@@ -1197,4 +1200,36 @@ message CreateAuditLogEventRequest {
 
 message CreateAuditLogEventResponse {
   AuditLogEvent audit_log_event = 1;
+}
+
+message ConsoleListAuditLogEventsRequest {
+  string page_token = 1;
+  string organization_id = 2;
+  string actor_user_id = 3;
+  string actor_session_id = 4;
+  string actor_api_key_id = 5;
+  string actor_backend_api_key_id = 6;
+  AuditLogEventResourceType resource_type = 7;
+  string resource_id = 8;
+  google.protobuf.Timestamp filter_start_time = 9;
+  google.protobuf.Timestamp filter_end_time = 10;
+  string filter_event_name = 11;
+}
+
+message ConsoleListAuditLogEventsResponse {
+  repeated AuditLogEvent audit_log_events = 1;
+  string next_page_token = 2;
+}
+
+message ConsoleListAuditLogEventNamesRequest {
+  string organization_id = 1;
+  string actor_api_key_id = 2;
+  string actor_backend_api_key_id = 3;
+  string actor_session_id = 4;
+  string actor_user_id = 5;
+  AuditLogEventResourceType resource_type = 6;
+}
+
+message ConsoleListAuditLogEventNamesResponse {
+  repeated string event_names = 1;
 }

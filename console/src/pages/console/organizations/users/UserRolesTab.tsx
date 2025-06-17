@@ -74,7 +74,7 @@ import {
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { UserRoleAssignment } from "@/gen/tesseral/backend/v1/models_pb";
 
-export function UserRoles() {
+export function UserRolesTab() {
   const { userId } = useParams();
   const { data: getUserResponse } = useQuery(getUser, {
     id: userId,

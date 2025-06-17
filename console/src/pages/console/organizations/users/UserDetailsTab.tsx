@@ -59,7 +59,7 @@ const schmema = z.object({
   profilePictureUrl: z.string().optional(),
 });
 
-export function UserDetails() {
+export function UserDetailsTab() {
   const { userId } = useParams();
   const { data: getProjectResponse } = useQuery(getProject);
   const { data: getUserResponse, refetch } = useQuery(getUser, {

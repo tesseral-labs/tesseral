@@ -1,19 +1,39 @@
 import React from "react";
+import { useParams } from "react-router";
+
+import { ListAuditLogEventsTable } from "@/components/audit-logs/ListAuditLogEventsTable";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ConsoleListAuditLogEventsRequest } from "@/gen/tesseral/backend/v1/backend_pb";
 
 export function SessionAuditLogsCard() {
+  const { sessionId } = useParams();
+
   return (
-    <div className="card">
-      <div className="card-header">
-        <h2 className="card-title">Session Audit Logs</h2>
-        <p className="card-description">
-          View and manage session audit logs for users in your organization.
-        </p>
-      </div>
-      <div className="card-content">
-        <p className="text-muted-foreground text-sm">
-          No session audit logs available at the moment.
-        </p>
-      </div>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Session Logs</CardTitle>
+        <CardDescription>
+          View Logs associated with this Session
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ListAuditLogEventsTable
+          listParams={
+            {
+              actorSessionId: sessionId,
+              pageToken: "",
+            } as ConsoleListAuditLogEventsRequest
+          }
+        />
+      </CardContent>
+    </Card>
   );
 }
