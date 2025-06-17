@@ -27,8 +27,17 @@ export function OrganizationAuthentication() {
     <div className="space-y-8">
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         <OrganizationBasicAuthCard />
-        <OrganizationOAuthCard />
-        <OrganizationMFACard />
+
+        {getProjectResponse?.project?.logInWithGoogle ||
+          getProjectResponse?.project?.logInWithGithub ||
+          (getProjectResponse?.project?.logInWithMicrosoft && (
+            <OrganizationOAuthCard />
+          ))}
+
+        {getProjectResponse?.project?.logInWithAuthenticatorApp ||
+          (getProjectResponse?.project?.logInWithPasskey && (
+            <OrganizationMFACard />
+          ))}
         <OrganizationSamlCard />
         <OrganizationScimCard />
       </div>
