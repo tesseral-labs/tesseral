@@ -14,9 +14,8 @@ import (
 func TestCreateSAMLConnection_SAMLEnabled(t *testing.T) {
 	t.Parallel()
 
-	project := storeT.NewProject(t)
+	ctx, project := storeT.Init(t)
 	require := require.New(t)
-	ctx := storeT.NewAuthContext(t, project)
 
 	organization := storeT.NewOrganization(t, storetestutil.OrganizationParams{
 		Project: project,
@@ -40,9 +39,8 @@ func TestCreateSAMLConnection_SAMLEnabled(t *testing.T) {
 func TestCreateSAMLConnection_SAMLDisabled(t *testing.T) {
 	t.Parallel()
 
-	project := storeT.NewProject(t)
+	ctx, project := storeT.Init(t)
 	require := require.New(t)
-	ctx := storeT.NewAuthContext(t, project)
 
 	organization := storeT.NewOrganization(t, storetestutil.OrganizationParams{
 		Project: project,
@@ -69,9 +67,8 @@ func TestCreateSAMLConnection_SAMLDisabled(t *testing.T) {
 func TestGetSAMLConnection_Exists(t *testing.T) {
 	t.Parallel()
 
-	project := storeT.NewProject(t)
+	ctx, project := storeT.Init(t)
 	require := require.New(t)
-	ctx := storeT.NewAuthContext(t, project)
 
 	organization := storeT.NewOrganization(t, storetestutil.OrganizationParams{
 		Project: project,
@@ -107,9 +104,8 @@ func TestGetSAMLConnection_Exists(t *testing.T) {
 func TestGetSAMLConnection_DoesNotExist(t *testing.T) {
 	t.Parallel()
 
-	project := storeT.NewProject(t)
+	ctx, _ := storeT.Init(t)
 	require := require.New(t)
-	ctx := storeT.NewAuthContext(t, project)
 
 	res, err := storeT.GetSAMLConnection(ctx, &backendv1.GetSAMLConnectionRequest{
 		Id: idformat.SAMLConnection.Format(uuid.New()),

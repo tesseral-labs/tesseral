@@ -59,16 +59,17 @@ func newTester() (*tester, func()) {
 	}, cleanup
 }
 
-func (s *tester) NewAuthContext(t *testing.T, project storetestutil.Project) context.Context {
-	return authn.NewDogfoodSessionContext(t.Context(), authn.DogfoodSessionContextData{
+func (s *tester) Init(t *testing.T) (context.Context, storetestutil.Project) {
+	t.Helper()
+
+	project := s.console.NewProject(t)
+	ctx := authn.NewDogfoodSessionContext(t.Context(), authn.DogfoodSessionContextData{
 		ProjectID: project.ProjectID,
 		UserID:    project.UserID,
 		SessionID: idformat.Session.Format(uuid.New()),
 	})
-}
 
-func (s *tester) NewProject(t *testing.T) storetestutil.Project {
-	return s.console.NewProject(t)
+	return ctx, project
 }
 
 func (s *tester) NewOrganization(t *testing.T, params storetestutil.OrganizationParams) storetestutil.Organization {
