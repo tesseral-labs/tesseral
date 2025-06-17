@@ -1,4 +1,4 @@
-package store_test
+package store
 
 import (
 	"testing"
@@ -105,12 +105,4 @@ func TestGetSAMLConnection_DoesNotExist(t *testing.T) {
 	require.ErrorAs(err, &connectErr)
 	require.Equal(connect.CodeNotFound, connectErr.Code(), "expected error when getting non-existent SAML connection")
 	require.Nil(res, "expected no SAML connection to be returned")
-}
-
-func refOrNil[T comparable](t T) *T {
-	var z T
-	if t == z {
-		return nil
-	}
-	return &t
 }
