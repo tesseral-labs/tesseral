@@ -1,18 +1,20 @@
-import { useMutation } from '@connectrpc/connect-query';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { LoaderCircleIcon } from 'lucide-react';
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { useMutation } from "@connectrpc/connect-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { LoaderCircleIcon } from "lucide-react";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
+import { z } from "zod";
 
-import { LoginFlowCard } from '@/components/login/LoginFlowCard';
-import { Button } from '@/components/ui/button';
+import { Title } from "@/components/Title";
+import { LoginFlowCard } from "@/components/login/LoginFlowCard";
+import { Button } from "@/components/ui/button";
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -21,25 +23,23 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { onboardingCreateProjects } from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
-import { useNavigate } from 'react-router';
-import { Title } from '@/components/Title';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { onboardingCreateProjects } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 
 const schema = z.object({
   displayName: z.string().nonempty(),
   productionAppUrl: z.string().url(),
-  localhostAppUrl: z.string().url().startsWith('http://localhost:'),
+  localhostAppUrl: z.string().url().startsWith("http://localhost:"),
 });
 
 export function CreateOrganizationPage() {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      displayName: '',
-      productionAppUrl: '',
-      localhostAppUrl: '',
+      displayName: "",
+      productionAppUrl: "",
+      localhostAppUrl: "",
     },
   });
 
@@ -58,7 +58,7 @@ export function CreateOrganizationPage() {
       devUrl: values.localhostAppUrl,
     });
 
-    navigate('/');
+    navigate("/");
   }
 
   return (

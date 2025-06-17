@@ -1,6 +1,8 @@
-import { API_URL, DOGFOOD_PROJECT_ID } from '@/config';
-import React, { createContext, useEffect, useMemo, useState } from 'react';
-import { parseAccessToken } from './parse-access-token';
+import React, { createContext, useEffect, useMemo, useState } from "react";
+
+import { API_URL, DOGFOOD_PROJECT_ID } from "@/config";
+
+import { parseAccessToken } from "./parse-access-token";
 
 const Context = createContext<string | undefined>(undefined);
 
@@ -22,7 +24,7 @@ function useAccessTokenInternal(): string | undefined {
   const [accessToken, setAccessToken] = useState(() => {
     return getCookie(`tesseral_${DOGFOOD_PROJECT_ID}_access_token`);
   });
-  const accessTokenLikelyValid = useAccessTokenLikelyValid(accessToken ?? '');
+  const accessTokenLikelyValid = useAccessTokenLikelyValid(accessToken ?? "");
 
   // whenever the access token is invalid or near-expired, refresh it
   useEffect(() => {
@@ -32,12 +34,12 @@ function useAccessTokenInternal(): string | undefined {
 
     (async () => {
       const response = await fetch(`${API_URL}/api/frontend/v1/refresh`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({}),
-        credentials: 'include',
+        credentials: "include",
       });
 
       if (response.status === 401) {
@@ -55,7 +57,7 @@ function useAccessTokenInternal(): string | undefined {
 
       const { accessToken } = await response.json();
       if (!accessToken) {
-        setError('No access token returned from /api/frontend/refresh');
+        setError("No access token returned from /api/frontend/refresh");
         return;
       }
       setAccessToken(accessToken);
@@ -95,7 +97,7 @@ function useDebouncedNow(updatePeriodMillis: number): number {
 
 function getCookie(key: string): string | undefined {
   return document.cookie
-    .split('; ')
-    .find((row) => row.startsWith(key + '='))
-    ?.split('=')[1];
+    .split("; ")
+    .find((row) => row.startsWith(key + "="))
+    ?.split("=")[1];
 }

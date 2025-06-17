@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
-import { toast } from 'sonner';
-import { useNavigate } from 'react-router';
-import React from 'react';
+import { useEffect } from "react";
+import React from "react";
+import { useNavigate } from "react-router";
+import { toast } from "sonner";
 
 export function StripeCheckoutSuccessPage() {
   const navigate = useNavigate();
@@ -10,10 +10,10 @@ export function StripeCheckoutSuccessPage() {
     const id = setTimeout(() => {
       toast.success("Your payment has been processed successfully.");
       navigate("/");
-    })
+    });
 
     return () => clearTimeout(id);
   }, [navigate]);
 
-  return <></>
+  return <></>;
 }
