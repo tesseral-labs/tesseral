@@ -63,7 +63,7 @@ func (s *Store) logAuditEvent(ctx context.Context, q *queries.Queries, data logA
 		if err != nil {
 			return queries.AuditLogEvent{}, fmt.Errorf("parse dogfood session project id: %w", err)
 		}
-		qEventParams.ActorSessionID = (*uuid.UUID)(&dogfoodSessionUUID)
+		qEventParams.ActorConsoleSessionID = (*uuid.UUID)(&dogfoodSessionUUID)
 	}
 
 	qEvent, err := q.CreateAuditLogEvent(ctx, qEventParams)
