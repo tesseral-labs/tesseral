@@ -1,7 +1,7 @@
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, Trash, TriangleAlert } from "lucide-react";
+import { ArrowLeft, LoaderCircle, Trash, TriangleAlert } from "lucide-react";
 import { DateTime } from "luxon";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -134,8 +134,19 @@ export function BackendApiKeyPage() {
                 Update the details of this Backend API Key.
               </CardDescription>
               <CardAction>
-                <Button type="submit" disabled={!form.formState.isDirty}>
-                  Save Changes
+                <Button
+                  type="submit"
+                  disabled={
+                    !form.formState.isDirty ||
+                    updateBackendApiKeyMutation.isPending
+                  }
+                >
+                  {updateBackendApiKeyMutation.isPending && (
+                    <LoaderCircle className="animate-spin" />
+                  )}
+                  {updateBackendApiKeyMutation.isPending
+                    ? "Saving Changes"
+                    : "Save Changes"}
                 </Button>
               </CardAction>
             </CardHeader>

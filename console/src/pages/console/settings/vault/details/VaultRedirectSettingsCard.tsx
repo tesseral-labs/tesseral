@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Split } from "lucide-react";
+import { LoaderCircle, Split } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -264,8 +264,18 @@ function ConfigureVaultRedirectSettingsButton() {
               <Button type="button" variant="outline" onClick={handleCancel}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={!form.formState.isDirty}>
-                Save Changes
+              <Button
+                type="submit"
+                disabled={
+                  !form.formState.isDirty || updateProjectMutation.isPending
+                }
+              >
+                {updateProjectMutation.isPending && (
+                  <LoaderCircle className="animate-spin" />
+                )}
+                {updateProjectMutation.isPending
+                  ? "Saving changes"
+                  : "Save changes"}
               </Button>
             </DialogFooter>
           </form>

@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Lock } from "lucide-react";
+import { LoaderCircle, Lock } from "lucide-react";
 import React, { MouseEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -214,8 +214,18 @@ function ConfigureBasicAuthenticationButton() {
               <Button variant="outline" onClick={handleCancel}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={!form.formState.isDirty}>
-                Save Changes
+              <Button
+                type="submit"
+                disabled={
+                  !form.formState.isDirty || updateProjectMutation.isPending
+                }
+              >
+                {updateProjectMutation.isPending && (
+                  <LoaderCircle className="animate-spin" />
+                )}
+                {updateProjectMutation.isPending
+                  ? "Saving Changes"
+                  : "Save Changes"}
               </Button>
             </DialogFooter>
           </form>

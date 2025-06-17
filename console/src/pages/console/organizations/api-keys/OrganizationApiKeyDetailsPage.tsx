@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ShieldBan, Trash, TriangleAlert } from "lucide-react";
+import { LoaderCircle, ShieldBan, Trash, TriangleAlert } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router";
@@ -91,8 +91,18 @@ export function OrganizationApiKeyDetailsTab() {
                 View and manage the details of your API key.
               </CardDescription>
               <CardAction>
-                <Button disabled={!form.formState.isDirty} type="submit">
-                  Save changes
+                <Button
+                  disabled={
+                    !form.formState.isDirty || updateApiKeyMutation.isPending
+                  }
+                  type="submit"
+                >
+                  {updateApiKeyMutation.isPending && (
+                    <LoaderCircle className="animate-spin" />
+                  )}
+                  {updateApiKeyMutation.isPending
+                    ? "Saving changes"
+                    : "Save changes"}
                 </Button>
               </CardAction>
             </CardHeader>

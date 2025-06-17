@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, Crown, Key } from "lucide-react";
+import { ArrowRight, Crown, Key, LoaderCircle } from "lucide-react";
 import React, { MouseEvent, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
@@ -265,8 +265,19 @@ function ConfigureOrganizationApiKeys() {
               <Button variant="outline" onClick={handleCancel}>
                 Cancel
               </Button>
-              <Button disabled={!form.formState.isDirty} type="submit">
-                Save changes
+              <Button
+                disabled={
+                  !form.formState.isDirty ||
+                  updateOrganizationMutation.isPending
+                }
+                type="submit"
+              >
+                {updateOrganizationMutation.isPending && (
+                  <LoaderCircle className="animate-spin" />
+                )}
+                {updateOrganizationMutation.isPending
+                  ? "Saving changes"
+                  : "Save changes"}
               </Button>
             </DialogFooter>
           </form>

@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Fingerprint } from "lucide-react";
+import { Fingerprint, LoaderCircle } from "lucide-react";
 import React, { MouseEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -209,7 +209,12 @@ export function ConfigureMfaButton() {
                   !form.formState.isDirty || updateProjectMutation.isPending
                 }
               >
-                Save Changes
+                {updateProjectMutation.isPending && (
+                  <LoaderCircle className="animate-spin" />
+                )}
+                {updateProjectMutation.isPending
+                  ? "Saving changes"
+                  : "Save changes"}
               </Button>
             </DialogFooter>
           </form>

@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Workflow } from "lucide-react";
+import { LoaderCircle, Workflow } from "lucide-react";
 import React, { MouseEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -174,8 +174,19 @@ function ConfigureVaultBehaviorSettingsButton() {
               <Button variant="outline" onClick={handleCancel}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={!form.formState.isDirty}>
-                Save Changes
+              <Button
+                type="submit"
+                disabled={
+                  !form.formState.isDirty ||
+                  updateProjectUiSettingsMutation.isPending
+                }
+              >
+                {updateProjectUiSettingsMutation.isPending && (
+                  <LoaderCircle className="animate-spin" />
+                )}
+                {updateProjectUiSettingsMutation.isPending
+                  ? "Saving changes"
+                  : "Save changes"}
               </Button>
             </DialogFooter>
           </form>

@@ -1,7 +1,7 @@
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, Trash, TriangleAlert } from "lucide-react";
+import { ArrowLeft, LoaderCircle, Trash, TriangleAlert } from "lucide-react";
 import { DateTime } from "luxon";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -138,8 +138,19 @@ export function OrganizationScimApiKeyPage() {
                 Update basic information about this SCIM API Key.
               </CardDescription>
               <CardAction>
-                <Button type="submit" disabled={!form.formState.isDirty}>
-                  Save changes
+                <Button
+                  type="submit"
+                  disabled={
+                    !form.formState.isDirty ||
+                    updateScimApiKeyMutation.isPending
+                  }
+                >
+                  {updateScimApiKeyMutation.isPending && (
+                    <LoaderCircle className="animate-spin" />
+                  )}
+                  {updateScimApiKeyMutation.isPending
+                    ? "Saving changes"
+                    : "Save changes"}
                 </Button>
               </CardAction>
             </CardHeader>

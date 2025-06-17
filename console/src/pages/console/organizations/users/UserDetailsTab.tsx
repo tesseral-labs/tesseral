@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   AlertTriangle,
+  LoaderCircle,
   Trash,
   TriangleAlert,
   VenetianMask,
@@ -128,8 +129,18 @@ export function UserDetailsTab() {
                 .
               </CardDescription>
               <CardAction>
-                <Button type="submit" disabled={!form.formState.isDirty}>
-                  Save changes
+                <Button
+                  type="submit"
+                  disabled={
+                    !form.formState.isDirty || updateUserMutation.isPending
+                  }
+                >
+                  {updateUserMutation.isPending && (
+                    <LoaderCircle className="animate-spin" />
+                  )}
+                  {updateUserMutation.isPending
+                    ? "Saving changes"
+                    : "Save changes"}
                 </Button>
               </CardAction>
             </CardHeader>

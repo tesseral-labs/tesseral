@@ -1,7 +1,7 @@
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, Trash, TriangleAlert } from "lucide-react";
+import { ArrowLeft, LoaderCircle, Trash, TriangleAlert } from "lucide-react";
 import { DateTime } from "luxon";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -186,8 +186,19 @@ export function OrganizationSamlConnectionPage() {
                 customer's Identity Provider ("IDP").
               </CardDescription>
               <CardAction>
-                <Button type="submit" disabled={!form.formState.isDirty}>
-                  Save Changes
+                <Button
+                  type="submit"
+                  disabled={
+                    !form.formState.isDirty ||
+                    updateSamlConnectionMutation.isPending
+                  }
+                >
+                  {updateSamlConnectionMutation.isPending && (
+                    <LoaderCircle className="animate-spin" />
+                  )}
+                  {updateSamlConnectionMutation.isPending
+                    ? "Saving changes"
+                    : "Save changes"}
                 </Button>
               </CardAction>
             </CardHeader>

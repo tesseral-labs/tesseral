@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Trash, TriangleAlert } from "lucide-react";
+import { LoaderCircle, Trash, TriangleAlert } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router";
@@ -90,8 +90,19 @@ export function OrganizationDetailsTab() {
                 {getOrganizationResponse?.organization?.displayName}.
               </CardDescription>
               <CardAction>
-                <Button disabled={!form.formState.isDirty} type="submit">
-                  Save changes
+                <Button
+                  disabled={
+                    !form.formState.isDirty ||
+                    updateOrganizationMutation.isPending
+                  }
+                  type="submit"
+                >
+                  {updateOrganizationMutation.isPending && (
+                    <LoaderCircle className="animate-spin" />
+                  )}
+                  {updateOrganizationMutation.isPending
+                    ? "Saving changes"
+                    : "Save changes"}
                 </Button>
               </CardAction>
             </CardHeader>

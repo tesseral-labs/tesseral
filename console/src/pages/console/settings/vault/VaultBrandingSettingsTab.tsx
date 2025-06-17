@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Check,
+  LoaderCircle,
   Moon,
   SquareSplitHorizontal,
   SquareSquare,
@@ -309,16 +310,22 @@ export function VaultBrandingSettingsTab() {
                     type="submit"
                     size="sm"
                     disabled={
-                      !form.formState.isDirty &&
-                      logo ===
-                        getProjectUISettingsResponse?.projectUiSettings
-                          ?.logoUrl &&
-                      darkModeLogo ===
-                        getProjectUISettingsResponse?.projectUiSettings
-                          ?.darkModeLogoUrl
+                      (!form.formState.isDirty &&
+                        logo ===
+                          getProjectUISettingsResponse?.projectUiSettings
+                            ?.logoUrl &&
+                        darkModeLogo ===
+                          getProjectUISettingsResponse?.projectUiSettings
+                            ?.darkModeLogoUrl) ||
+                      updateProjectUISettingsMutation.isPending
                     }
                   >
-                    Save Changes
+                    {updateProjectUISettingsMutation.isPending && (
+                      <LoaderCircle className="animate-spin" />
+                    )}
+                    {updateProjectUISettingsMutation.isPending
+                      ? "Saving Changes"
+                      : "Save Changes"}
                   </Button>
                 </CardAction>
               </CardHeader>
