@@ -78,7 +78,6 @@ Aliases:
 				WaitingFor: wait.ForLog("Local KMS started on 0.0.0.0:4566"),
 			},
 			Started: true,
-			Reuse:   true,
 		},
 	)
 	testcontainers.CleanupContainer(t, container)
