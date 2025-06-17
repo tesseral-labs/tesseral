@@ -207,7 +207,7 @@ function ConfigureVaultCookieDomainButton() {
             <HoverCard>
               <HoverCardTrigger className="w-full">
                 <Button disabled className="w-full" variant="outline" size="sm">
-                  Configure Trusted Domains
+                  Configure Vault Cookie Domains
                 </Button>
               </HoverCardTrigger>
               <HoverCardContent className="bg-primary text-white text-xs">
