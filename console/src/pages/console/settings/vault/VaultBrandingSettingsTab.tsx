@@ -300,11 +300,11 @@ export function VaultBrandingSettingsTab() {
                     type="submit"
                     size="sm"
                     disabled={
-                      !form.formState.isDirty ||
-                      logo !==
+                      !form.formState.isDirty &&
+                      logo ===
                         getProjectUISettingsResponse?.projectUiSettings
-                          ?.logoUrl ||
-                      darkModeLogo !==
+                          ?.logoUrl &&
+                      darkModeLogo ===
                         getProjectUISettingsResponse?.projectUiSettings
                           ?.darkModeLogoUrl
                     }
@@ -497,15 +497,13 @@ export function VaultBrandingSettingsTab() {
                       </div>
 
                       <FormControl>
-                        <>
-                          <Input
-                            className="max-w-sm"
-                            type="file"
-                            accept="image/*"
-                            ref={logoPickerRef}
-                            onChange={handleLogoChange}
-                          />
-                        </>
+                        <Input
+                          className="max-w-sm"
+                          type="file"
+                          accept="image/*"
+                          ref={logoPickerRef}
+                          onChange={handleLogoChange}
+                        />
                       </FormControl>
                     </FormItem>
                   )}
@@ -567,15 +565,13 @@ export function VaultBrandingSettingsTab() {
                             )}
                           </div>
                           <FormControl>
-                            <>
-                              <Input
-                                className="max-w-sm"
-                                type="file"
-                                accept="image/*"
-                                ref={darkModeLogoPickerRef}
-                                onChange={handleDarkModeLogoChange}
-                              />
-                            </>
+                            <Input
+                              className="max-w-sm"
+                              type="file"
+                              accept="image/*"
+                              ref={darkModeLogoPickerRef}
+                              onChange={handleDarkModeLogoChange}
+                            />
                           </FormControl>
                         </FormItem>
                       )}
