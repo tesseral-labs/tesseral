@@ -57,7 +57,7 @@ export function MfaSettingsCard() {
       </CardHeader>
       <CardContent className="flex-grow">
         <div className="space-y-4">
-          <div className="flex justify-between gap-4">
+          <div className="flex items-center justify-between gap-4">
             <div className="font-semibold text-sm">Authenticator Apps</div>
             <div>
               {getProjectResponse?.project?.logInWithAuthenticatorApp ? (
@@ -67,7 +67,7 @@ export function MfaSettingsCard() {
               )}
             </div>
           </div>
-          <div className="flex justify-between gap-4">
+          <div className="flex items-center justify-between gap-4">
             <div className="font-semibold text-sm">Passkeys</div>
             <div>
               {getProjectResponse?.project?.logInWithPasskey ? (

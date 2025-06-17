@@ -57,7 +57,7 @@ export function EnterpriseSettingsCard() {
       </CardHeader>
       <CardContent className="flex-grow">
         <div className="space-y-4">
-          <div className="flex justify-between gap-4">
+          <div className="flex items-center justify-between gap-4">
             <div className="font-semibold text-sm">SAML SSO</div>
             <div>
               {getProjectResponse?.project?.logInWithSaml ? (
@@ -67,7 +67,7 @@ export function EnterpriseSettingsCard() {
               )}
             </div>
           </div>
-          <div className="flex justify-between gap-4">
+          <div className="flex items-center justify-between gap-4">
             <div className="font-semibold text-sm">SCIM Provisioning</div>
             <div>
               <Badge>Always Enabled</Badge>

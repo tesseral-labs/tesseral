@@ -33,7 +33,7 @@ export function OAuthSettingsCard() {
       </CardHeader>
       <CardContent className="flex-grow">
         <div className="space-y-4 w-full">
-          <div className="w-full flex justify-between gap-4">
+          <div className="w-full flex items-center justify-between gap-4">
             <div className="font-semibold text-sm space-x-6">
               <span>Google</span>
               {getProjectResponse?.project?.logInWithGoogle ? (
@@ -44,7 +44,7 @@ export function OAuthSettingsCard() {
             </div>
             <ConfigureGoogleOAuthButton />
           </div>
-          <div className="w-full flex justify-between gap-4">
+          <div className="w-full flex items-center justify-between gap-4">
             <div className="font-semibold text-sm space-x-6">
               <span>Microsoft</span>
               {getProjectResponse?.project?.logInWithMicrosoft ? (
@@ -55,7 +55,7 @@ export function OAuthSettingsCard() {
             </div>
             <ConfigureMicrosoftOAuthButton />
           </div>
-          <div className="w-full flex justify-between gap-4">
+          <div className="w-full flex items-center justify-between gap-4">
             <div className="font-semibold text-sm space-x-6">
               <span>GitHub</span>
               {getProjectResponse?.project?.logInWithGithub ? (

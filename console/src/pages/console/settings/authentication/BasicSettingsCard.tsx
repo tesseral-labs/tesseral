@@ -57,7 +57,7 @@ export function BasicSettingsCard() {
       </CardHeader>
       <CardContent className="flex-grow">
         <div className="space-y-4">
-          <div className="flex justify-between gap-4">
+          <div className="flex items-center justify-between gap-4">
             <div className="font-semibold text-sm">Email Magic Links</div>
             <div>
               {getProjectResponse?.project?.logInWithEmail ? (
@@ -67,7 +67,7 @@ export function BasicSettingsCard() {
               )}
             </div>
           </div>
-          <div className="flex justify-between gap-4">
+          <div className="flex items-center justify-between gap-4">
             <div className="font-semibold text-sm">Password Authentication</div>
             <div>
               {getProjectResponse?.project?.logInWithPassword ? (

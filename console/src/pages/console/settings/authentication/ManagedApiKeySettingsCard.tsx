@@ -116,7 +116,7 @@ export function ManagedApiKeySettingsCard() {
             </CardHeader>
             <CardContent className="flex-grow">
               <div className="space-y-4">
-                <div className="flex justify-between gap-4">
+                <div className="flex items-center justify-between gap-4">
                   <div className="font-semibold text-sm">Managed API Keys</div>
                   <div>
                     {getProjectResponse?.project?.apiKeysEnabled ? (
