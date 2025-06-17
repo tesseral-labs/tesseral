@@ -1,8 +1,6 @@
 name: console-ci
 on:
   push:
-    paths:
-      - "console/src/**"
 permissions:
   contents: read
 jobs:
