@@ -4,13 +4,7 @@ import {
   useMutation,
   useQuery,
 } from "@connectrpc/connect-query";
-import {
-  ExternalLink,
-  Plus,
-  Settings,
-  Trash,
-  TriangleAlert,
-} from "lucide-react";
+import { AlignLeft, Plus, Settings, Trash, TriangleAlert } from "lucide-react";
 import { DateTime } from "luxon";
 import React, { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
@@ -266,7 +260,7 @@ function ManageSamlConnectionButton({
               className="flex items-center gap-2"
               to={`/organizations/${organizationId}/saml-connections/${samlConnection.id}`}
             >
-              <ExternalLink />
+              <AlignLeft />
               <span>SAML Connection Details</span>
             </Link>
           </DropdownMenuItem>

@@ -1,6 +1,6 @@
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { useInfiniteQuery, useQuery } from "@connectrpc/connect-query";
-import { Copy, ExternalLink } from "lucide-react";
+import { AlignLeft, Copy } from "lucide-react";
 import { DateTime } from "luxon";
 import React from "react";
 import { Link, useParams } from "react-router";
@@ -140,7 +140,7 @@ export function UserSessionsTab() {
                           to={`/organizations/${organizationId}/users/${userId}/sessions/${session.id}`}
                         >
                           <Button variant="outline" size="sm">
-                            <ExternalLink />
+                            <AlignLeft />
                             Session Details
                           </Button>
                         </Link>

@@ -2,7 +2,7 @@ import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { useInfiniteQuery, useMutation } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  ExternalLink,
+  AlignLeft,
   LoaderCircle,
   Plus,
   Settings,
@@ -335,7 +335,7 @@ function ManageScimApiKeyButton({ scimApiKey }: { scimApiKey: SCIMAPIKey }) {
               to={`/organizations/${organizationId}/scim-api-keys/${scimApiKey.id}`}
               className="flex items-center gap-2"
             >
-              <ExternalLink />
+              <AlignLeft />
               <span>Details</span>
             </Link>
           </DropdownMenuItem>

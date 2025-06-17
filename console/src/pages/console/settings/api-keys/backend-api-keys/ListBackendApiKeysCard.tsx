@@ -6,9 +6,9 @@ import {
 } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  AlignLeft,
   ArrowRight,
   Crown,
-  ExternalLink,
   Info,
   LoaderCircle,
   Plus,
@@ -339,7 +339,7 @@ function ManageBackendApiKeyButton({
               className="flex items-center gap-2"
               to={`/settings/api-keys/backend-api-keys/${backendApiKey.id}`}
             >
-              <ExternalLink />
+              <AlignLeft />
               Details
             </Link>
           </DropdownMenuItem>

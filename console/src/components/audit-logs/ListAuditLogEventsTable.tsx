@@ -335,6 +335,9 @@ function AuditLogEventActor({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [apiKeyActor, setApiKeyActor] = useState<Record<string, any>>();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [backendApiKeyActor, setBackendApiKeyActor] =
+    useState<Record<string, any>>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [sessionActor, setSessionActor] = useState<Record<string, any>>();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [userActor, setUserActor] = useState<Record<string, any>>();
@@ -370,7 +373,7 @@ function AuditLogEventActor({
           };
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           delete (backendApiKeyActor as any).$typeName;
-          setApiKeyActor(backendApiKeyActor);
+          setBackendApiKeyActor(backendApiKeyActor);
         }
         if (auditLogEvent.actorSessionId) {
           const { session } = await getSessionMutation.mutateAsync({
@@ -428,19 +431,24 @@ function AuditLogEventActor({
 
   return (
     <>
-      {apiKeyActor ? (
+      {apiKeyActor || backendApiKeyActor || sessionActor || userActor ? (
         <Badge variant="secondary">
-          <span className="font-mono">
-            {apiKeyActor.displayName || apiKeyActor.id}
-          </span>
-        </Badge>
-      ) : sessionActor && userActor ? (
-        <Badge variant="secondary">
-          <span className="font-mono">{userActor.email}</span>
-        </Badge>
-      ) : userActor ? (
-        <Badge variant="secondary">
-          <span className="font-mono">{userActor.email}</span>
+          {apiKeyActor && (
+            <span className="font-mono">
+              {apiKeyActor.displayName || apiKeyActor.id}
+            </span>
+          )}
+          {sessionActor && userActor && (
+            <span className="font-mono">{userActor.email}</span>
+          )}
+          {backendApiKeyActor && (
+            <span className="font-mono">
+              {backendApiKeyActor.displayName || backendApiKeyActor.id}
+            </span>
+          )}
+          {!sessionActor && userActor && (
+            <span className="font-mono">{userActor.email}</span>
+          )}
         </Badge>
       ) : (
         <Badge variant="outline">

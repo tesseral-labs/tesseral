@@ -5,7 +5,7 @@ import {
   useQuery,
 } from "@connectrpc/connect-query";
 import {
-  ExternalLink,
+  AlignLeft,
   Settings,
   ShieldBan,
   ShieldPlus,
@@ -257,7 +257,7 @@ function ManagePasskeyButton({ passkey }: { passkey: Passkey }) {
               className="flex items-center gap-2"
               to={`/organizations/${organizationId}/users/${userId}/passkeys/${passkey.id}`}
             >
-              <ExternalLink />
+              <AlignLeft />
               Details
             </Link>
           </DropdownMenuItem>

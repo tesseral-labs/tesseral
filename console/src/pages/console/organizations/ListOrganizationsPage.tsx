@@ -6,7 +6,7 @@ import {
 } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  ExternalLink,
+  AlignLeft,
   Key,
   LoaderCircle,
   Logs,
@@ -263,7 +263,7 @@ function ManageOrganizationButton({
         <DropdownMenuItem>
           <Link to={`/organizations/${organization.id}`}>
             <div className="w-full flex items-center">
-              <ExternalLink className="inline mr-2" />
+              <AlignLeft className="inline mr-2" />
               Details
             </div>
           </Link>

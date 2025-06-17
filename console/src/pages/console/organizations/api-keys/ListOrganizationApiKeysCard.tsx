@@ -7,8 +7,8 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import {
+  AlignLeft,
   CalendarIcon,
-  ExternalLink,
   GlobeLock,
   LoaderCircle,
   Logs,
@@ -538,7 +538,7 @@ function ManageApiKeyButton({ apiKey }: { apiKey: APIKey }) {
               className="flex items-center gap-2"
               to={`/organizations/${organizationId}/api-keys/${apiKey.id}`}
             >
-              <ExternalLink />
+              <AlignLeft />
               <span>Details</span>
             </Link>
           </DropdownMenuItem>
