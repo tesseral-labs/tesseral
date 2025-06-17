@@ -25,7 +25,7 @@ export function WelcomeCard() {
     <Card
       className={cn(
         "col-span-1",
-        !isLoadingEntitlements &&
+        isLoadingEntitlements ||
           getProjectEntitlementsResponse?.entitledBackendApiKeys
           ? "lg:col-span-2"
           : "",
