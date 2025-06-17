@@ -6,6 +6,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/testcontainers/testcontainers-go"
+	"github.com/testcontainers/testcontainers-go/wait"
 )
 
 type KMS struct {
@@ -74,6 +75,7 @@ Aliases:
 						ContainerFilePath: "/init/seed.yaml",
 					},
 				},
+				WaitingFor: wait.ForLog("Local KMS started on 0.0.0.0:4566"),
 			},
 			Started: true,
 			Reuse:   true,

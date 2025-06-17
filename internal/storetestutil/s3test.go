@@ -5,6 +5,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/testcontainers/testcontainers-go"
+	"github.com/testcontainers/testcontainers-go/wait"
 )
 
 func NewS3(t *testing.T) *s3.Client {
@@ -20,6 +21,7 @@ func NewS3(t *testing.T) *s3.Client {
 					"root":              "containers3root",
 					"retainFilesOnExit": "false",
 				},
+				WaitingFor: wait.ForLog("Tomcat started on ports"),
 			},
 			Started: true,
 		},
