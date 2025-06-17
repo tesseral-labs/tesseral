@@ -10,6 +10,7 @@ import {
   CalendarIcon,
   ExternalLink,
   GlobeLock,
+  LoaderCircle,
   Logs,
   Plus,
   Settings,
@@ -451,8 +452,18 @@ function CreateApiKeyButton() {
                 <Button variant="outline" onClick={() => setCreateOpen(false)}>
                   Cancel
                 </Button>
-                <Button disabled={!form.formState.isDirty} type="submit">
-                  Save
+                <Button
+                  disabled={
+                    !form.formState.isDirty || createApiKeyMutation.isPending
+                  }
+                  type="submit"
+                >
+                  {createApiKeyMutation.isPending && (
+                    <LoaderCircle className="animate-spin" />
+                  )}
+                  {createApiKeyMutation.isPending
+                    ? "Creating API Key"
+                    : "Create API Key"}
                 </Button>
               </DialogFooter>
             </form>
