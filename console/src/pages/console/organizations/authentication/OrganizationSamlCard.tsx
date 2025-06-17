@@ -88,7 +88,7 @@ export function OrganizationSamlCard() {
               .
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex-grow">
             <div className="space-y-4">
               {getProjectResponse?.project?.logInWithSaml ? (
                 <FormField
@@ -114,7 +114,7 @@ export function OrganizationSamlCard() {
                 />
               ) : (
                 <>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-sm text-muted-foreground flex-grow">
                     SAML authentication is not enabled for this project. Please
                     enable SAML at the project level to configure it for this
                     organization.

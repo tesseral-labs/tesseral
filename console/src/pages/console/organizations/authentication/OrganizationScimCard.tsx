@@ -86,7 +86,7 @@ export function OrganizationScimCard() {
               .
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex-grow">
             <div className="space-y-4">
               <FormField
                 control={form.control}
