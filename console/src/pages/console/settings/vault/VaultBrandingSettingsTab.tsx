@@ -41,6 +41,7 @@ import {
 } from "@/components/ui/tooltip";
 import { AuthCardPreview } from "@/components/vault-preview/AuthCardPreview";
 import {
+  getProject,
   getProjectUISettings,
   updateProjectUISettings,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
@@ -298,7 +299,15 @@ export function VaultBrandingSettingsTab() {
                   <Button
                     type="submit"
                     size="sm"
-                    disabled={!form.formState.isDirty}
+                    disabled={
+                      !form.formState.isDirty ||
+                      logo !==
+                        getProjectUISettingsResponse?.projectUiSettings
+                          ?.logoUrl ||
+                      darkModeLogo !==
+                        getProjectUISettingsResponse?.projectUiSettings
+                          ?.darkModeLogoUrl
+                    }
                   >
                     Save Changes
                   </Button>
