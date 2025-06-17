@@ -8,7 +8,11 @@ import (
 )
 
 func TestNewS3(t *testing.T) {
-	client := NewS3(t)
+	t.Parallel()
+
+	client, cleanup := NewS3()
+	t.Cleanup(cleanup)
+
 	res, err := client.ListBuckets(t.Context(), &s3.ListBucketsInput{})
 	require.NoError(t, err, "failed to list S3 buckets")
 	require.NotEmpty(t, res.Buckets, "S3 buckets should not be empty")

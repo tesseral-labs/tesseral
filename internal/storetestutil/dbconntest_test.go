@@ -8,7 +8,10 @@ import (
 )
 
 func TesNewDB(t *testing.T) {
-	pool := NewDB(t)
+	t.Parallel()
+
+	pool, cleanup := NewDB()
+	t.Cleanup(cleanup)
 
 	ctx := context.Background()
 	require.NoError(t, pool.Ping(ctx), "failed to ping the database")

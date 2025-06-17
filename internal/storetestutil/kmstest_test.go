@@ -9,7 +9,11 @@ import (
 )
 
 func TestNewKMS(t *testing.T) {
-	client := NewKMS(t)
+	t.Parallel()
+
+	client, cleanup := NewKMS()
+	t.Cleanup(cleanup)
+
 	_, err := client.CreateKey(t.Context(), &kms.CreateKeyInput{
 		KeySpec:  types.KeySpecEccNistP256,
 		KeyUsage: types.KeyUsageTypeSignVerify,

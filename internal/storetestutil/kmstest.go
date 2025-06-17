@@ -1,8 +1,9 @@
 package storetestutil
 
 import (
+	"context"
+	"log"
 	"strings"
-	"testing"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/testcontainers/testcontainers-go"
@@ -15,9 +16,9 @@ type KMS struct {
 	SessionSigningKeyID string
 }
 
-func NewKMS(t *testing.T) *KMS {
+func NewKMS() (*KMS, func()) {
 	container, err := testcontainers.GenericContainer(
-		t.Context(),
+		context.Background(),
 		testcontainers.GenericContainerRequest{
 			ContainerRequest: testcontainers.ContainerRequest{
 				Image:        "nsmithuk/local-kms:latest",
@@ -79,13 +80,17 @@ Aliases:
 			Started: true,
 		},
 	)
-	testcontainers.CleanupContainer(t, container)
-	if err != nil {
-		t.Fatalf("run local KMS container: %v", err)
+	cleanup := func() {
+		_ = testcontainers.TerminateContainer(container)
 	}
-	endpoint, err := container.PortEndpoint(t.Context(), "4566/tcp", "http")
 	if err != nil {
-		t.Fatalf("get local KMS endpoint: %v", err)
+		cleanup()
+		log.Panicf("run local KMS container: %v", err)
+	}
+	endpoint, err := container.PortEndpoint(context.Background(), "4566/tcp", "http")
+	if err != nil {
+		cleanup()
+		log.Panicf("get local KMS endpoint: %v", err)
 	}
 	cfg := kms.Options{
 		EndpointResolver: kms.EndpointResolverFromURL(endpoint),
@@ -94,5 +99,5 @@ Aliases:
 	return &KMS{
 		Client:              kms.New(cfg),
 		SessionSigningKeyID: "bc436485-5092-42b8-92a3-0aa8b93536dc",
-	}
+	}, cleanup
 }

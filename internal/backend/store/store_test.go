@@ -2,54 +2,72 @@ package store_test
 
 import (
 	"context"
+	"os"
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/stretchr/testify/suite"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	"github.com/tesseral-labs/tesseral/internal/backend/store"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/storetestutil"
 )
 
-type BackendSuite struct {
-	suite.Suite
-	Store   *store.Store
+var (
+	storeT *tester
+)
+
+type tester struct {
+	*store.Store
 	console *storetestutil.Console
 }
 
-func (s *BackendSuite) SetupSuite() {
-	db := storetestutil.NewDB(s.T())
-	console := storetestutil.NewConsole(s.T(), db)
-	kms := storetestutil.NewKMS(s.T())
+func TestMain(m *testing.M) {
+	tester, cleanup := newTester()
+	storeT = tester
+	exitCode := m.Run()
+	cleanup()
+	os.Exit(exitCode)
+}
 
-	s.console = console
-	s.Store = store.New(store.NewStoreParams{
+func newTester() (*tester, func()) {
+	db, cleanupDB := storetestutil.NewDB()
+	kms, cleanupKms := storetestutil.NewKMS()
+	s3, cleanupS3 := storetestutil.NewS3()
+
+	console := storetestutil.NewConsole(db, kms)
+	store := store.New(store.NewStoreParams{
 		DB:                        db,
-		S3:                        storetestutil.NewS3(s.T()),
-		KMS:                       kms.Client,
-		SessionSigningKeyKmsKeyID: kms.SessionSigningKeyID,
+		S3:                        s3,
+		KMS:                       console.KMS.Client,
+		SessionSigningKeyKmsKeyID: console.KMS.SessionSigningKeyID,
 		DogfoodProjectID:          console.DogfoodProjectID,
 		ConsoleDomain:             console.ConsoleDomain,
 	})
+
+	cleanup := func() {
+		cleanupS3()
+		cleanupKms()
+		cleanupDB()
+	}
+
+	return &tester{
+		Store:   store,
+		console: console,
+	}, cleanup
 }
 
-func (s *BackendSuite) NewAuthContext(project storetestutil.Project) context.Context {
-	return authn.NewDogfoodSessionContext(context.Background(), authn.DogfoodSessionContextData{
+func (s *tester) NewAuthContext(t *testing.T, project storetestutil.Project) context.Context {
+	return authn.NewDogfoodSessionContext(t.Context(), authn.DogfoodSessionContextData{
 		ProjectID: project.ProjectID,
 		UserID:    project.UserID,
 		SessionID: idformat.Session.Format(uuid.New()),
 	})
 }
 
-func (s *BackendSuite) NewProject() storetestutil.Project {
-	return s.console.NewProject(s.T())
+func (s *tester) NewProject(t *testing.T) storetestutil.Project {
+	return s.console.NewProject(t)
 }
 
-func (s *BackendSuite) NewOrganization(params storetestutil.OrganizationParams) storetestutil.Organization {
-	return s.console.NewOrganization(s.T(), params)
-}
-
-func TestBackendSuite(t *testing.T) {
-	suite.Run(t, new(BackendSuite))
+func (s *tester) NewOrganization(t *testing.T, params storetestutil.OrganizationParams) storetestutil.Organization {
+	return s.console.NewOrganization(t, params)
 }

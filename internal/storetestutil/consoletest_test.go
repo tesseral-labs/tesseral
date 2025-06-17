@@ -8,8 +8,15 @@ import (
 )
 
 func TestNewConsole(t *testing.T) {
-	pool := NewDB(t)
-	console := NewConsole(t, pool)
+	t.Parallel()
+
+	pool, cleanupDB := NewDB()
+	t.Cleanup(cleanupDB)
+
+	kms, cleanupKMS := NewKMS()
+	t.Cleanup(cleanupKMS)
+
+	console := NewConsole(pool, kms)
 
 	project := console.NewProject(t)
 	require.NotEmpty(t, project.ProjectID, "project ID should not be empty")

@@ -3,6 +3,7 @@ package storetestutil
 import (
 	"context"
 	"fmt"
+	"log"
 	"math/rand/v2"
 	"testing"
 
@@ -21,20 +22,20 @@ import (
 
 type Console struct {
 	pool *pgxpool.Pool
-	kms  *KMS
+	KMS  *KMS
 
 	DogfoodProjectID *uuid.UUID
 	DogfoodUserID    string
 	ConsoleDomain    string
 }
 
-func NewConsole(t *testing.T, pool *pgxpool.Pool) *Console {
-	console := &Console{pool: pool, kms: NewKMS(t)}
-	console.seed(t)
+func NewConsole(pool *pgxpool.Pool, kms *KMS) *Console {
+	console := &Console{pool: pool, KMS: kms}
+	console.seed()
 	return console
 }
 
-func (c *Console) seed(t *testing.T) {
+func (c *Console) seed() {
 	var (
 		dogfoodProjectID = uuid.MustParse("252491cc-76e3-4957-ab23-47d83c34f240")
 		dogfoodUserID    = uuid.MustParse("e071bbfe-6f27-4526-ab37-0ad251742836")
@@ -72,7 +73,7 @@ INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
 
 	_, err := c.pool.Exec(context.Background(), sql)
 	if err != nil {
-		t.Fatalf("failed to seed database: %v", err)
+		log.Panicf("failed to seed database: %v", err)
 	}
 }
 
@@ -94,12 +95,12 @@ func (c *Console) NewProject(t *testing.T) Project {
 	}
 	intstore := intstore.New(intstore.NewStoreParams{
 		DB:                        c.pool,
-		KMS:                       c.kms.Client,
-		SessionSigningKeyKmsKeyID: c.kms.SessionSigningKeyID,
+		KMS:                       c.KMS.Client,
+		SessionSigningKeyKmsKeyID: c.KMS.SessionSigningKeyID,
 		S3:                        s3.NewFromConfig(*aws.NewConfig()),
 		DogfoodProjectID:          c.DogfoodProjectID,
 	})
-	ctx := intauthn.NewContext(context.Background(), intermediateSession, idformat.Project.Format(*c.DogfoodProjectID))
+	ctx := intauthn.NewContext(t.Context(), intermediateSession, idformat.Project.Format(*c.DogfoodProjectID))
 	project, err := intstore.CreateProject(ctx, &intermediatev1.CreateProjectRequest{
 		DisplayName: projectName,
 		RedirectUri: fmt.Sprintf("https://%s.tesseral.example.com", projectName),
@@ -108,7 +109,7 @@ func (c *Console) NewProject(t *testing.T) Project {
 		t.Fatalf("failed to create test project: %v", err)
 	}
 
-	_, err = c.pool.Exec(context.Background(), `
+	_, err = c.pool.Exec(t.Context(), `
 UPDATE projects SET
 	log_in_with_google = true,
 	log_in_with_microsoft = true,
@@ -129,7 +130,7 @@ WHERE id = $1::uuid;
 	userID := uuid.New()
 	userEmail := fmt.Sprintf("user-%d@%s.tesseral.example.com", rand.IntN(1<<20), projectName)
 
-	_, err = c.pool.Exec(context.Background(), `
+	_, err = c.pool.Exec(t.Context(), `
 INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
   VALUES ($1::uuid, $2, crypt('password', gen_salt('bf', 14)), (SELECT organization_id FROM projects WHERE id=$3::uuid), true);
 `,
@@ -161,12 +162,12 @@ type Organization struct {
 func (c *Console) NewOrganization(t *testing.T, params OrganizationParams) Organization {
 	bkstore := bkstore.New(bkstore.NewStoreParams{
 		DB:                        c.pool,
-		KMS:                       c.kms.Client,
-		SessionSigningKeyKmsKeyID: c.kms.SessionSigningKeyID,
+		KMS:                       c.KMS.Client,
+		SessionSigningKeyKmsKeyID: c.KMS.SessionSigningKeyID,
 		S3:                        s3.NewFromConfig(*aws.NewConfig()),
 		DogfoodProjectID:          c.DogfoodProjectID,
 	})
-	ctx := bkauthn.NewDogfoodSessionContext(context.Background(), bkauthn.DogfoodSessionContextData{
+	ctx := bkauthn.NewDogfoodSessionContext(t.Context(), bkauthn.DogfoodSessionContextData{
 		ProjectID: params.ProjectID,
 		UserID:    params.UserID,
 		SessionID: idformat.Session.Format(uuid.New()),
