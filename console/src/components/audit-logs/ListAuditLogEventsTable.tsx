@@ -29,7 +29,6 @@ import {
   APIKey,
   AuditLogEvent,
   BackendAPIKey,
-  Session,
 } from "@/gen/tesseral/backend/v1/models_pb";
 import { getUser } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 import { User } from "@/gen/tesseral/frontend/v1/models_pb";
@@ -332,8 +331,8 @@ function AuditLogEventActor({
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [apiKeyActor, setApiKeyActor] = useState<Record<string, any>>();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [backendApiKeyActor, setBackendApiKeyActor] =
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     useState<Record<string, any>>();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [userActor, setUserActor] = useState<Record<string, any>>();
@@ -453,8 +452,7 @@ export function AuditLogEventDetails({ event }: { event: AuditLogEvent }) {
 }
 
 function AuditLogEventActorDetails({ event }: { event: AuditLogEvent }) {
-  const { actorApiKeyId, actorBackendApiKeyId, actorSessionId, actorUserId } =
-    event;
+  const { actorApiKeyId, actorBackendApiKeyId, actorUserId } = event;
 
   const getApiKeyMutation = useMutation(getAPIKey);
   const getBackendApiKeyMutation = useMutation(getBackendAPIKey);

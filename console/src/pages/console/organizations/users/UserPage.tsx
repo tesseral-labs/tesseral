@@ -7,7 +7,7 @@ import { Link, Outlet, useLocation, useParams } from "react-router";
 
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { PageContent } from "@/components/page";
-import { Tab, TabLink, Tabs } from "@/components/page/Tabs";
+import { TabLink, Tabs } from "@/components/page/Tabs";
 import { Title } from "@/components/page/Title";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

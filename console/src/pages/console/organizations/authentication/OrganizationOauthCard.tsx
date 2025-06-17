@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Key, LoaderCircle } from "lucide-react";
-import React, { MouseEvent, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
 import { toast } from "sonner";
@@ -16,15 +16,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -55,8 +46,6 @@ export function OrganizationOAuthCard() {
   const { data: getProjectResponse } = useQuery(getProject);
   const updateOrganizationMutation = useMutation(updateOrganization);
 
-  const [open, setOpen] = useState(false);
-
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -69,13 +58,6 @@ export function OrganizationOAuthCard() {
     },
   });
 
-  function handleCancel(e: MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    e.stopPropagation();
-    setOpen(false);
-    return false;
-  }
-
   async function handleSubmit(data: z.infer<typeof schema>) {
     await updateOrganizationMutation.mutateAsync({
       id: organizationId,
@@ -87,7 +69,6 @@ export function OrganizationOAuthCard() {
     });
     form.reset(data);
     await refetch();
-    setOpen(false);
     toast.success("OAuth settings updated successfully");
   }
 

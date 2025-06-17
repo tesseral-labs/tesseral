@@ -11,9 +11,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import {
-  getAPIKey,
   getOrganization,
-  getPasskey,
   getUser,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { titleCaseSlug } from "@/lib/utils";
@@ -81,27 +79,27 @@ function BreadcrumbSlug({
 
   const [label, setLabel] = useState(titleCaseSlug(breadcrumb.label));
 
-  async function fetchBreadcrumbLabel() {
-    if (organizationRegex.test(breadcrumb.label)) {
-      const { organization } = await getOrganizationMutation.mutateAsync({
-        id: breadcrumb.label,
-      });
-      if (organization) {
-        setLabel(organization.displayName);
-      }
-    }
-
-    if (userRegex.test(breadcrumb.label)) {
-      const { user } = await getUserMutation.mutateAsync({
-        id: breadcrumb.label,
-      });
-      if (user) {
-        setLabel(user.email);
-      }
-    }
-  }
-
   useEffect(() => {
+    async function fetchBreadcrumbLabel() {
+      if (organizationRegex.test(breadcrumb.label)) {
+        const { organization } = await getOrganizationMutation.mutateAsync({
+          id: breadcrumb.label,
+        });
+        if (organization) {
+          setLabel(organization.displayName);
+        }
+      }
+
+      if (userRegex.test(breadcrumb.label)) {
+        const { user } = await getUserMutation.mutateAsync({
+          id: breadcrumb.label,
+        });
+        if (user) {
+          setLabel(user.email);
+        }
+      }
+    }
+
     if (breadcrumb && label && label.includes("_")) {
       fetchBreadcrumbLabel();
     }
