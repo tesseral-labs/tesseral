@@ -19,9 +19,10 @@ import {
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 
 export function ApiKeysCard() {
-  const { data: getProjectEntitlementsResponse } = useQuery(
-    getProjectEntitlements,
-  );
+  const {
+    data: getProjectEntitlementsResponse,
+    isLoading: isLoadingEntitlements,
+  } = useQuery(getProjectEntitlements);
   const createStripeCheckoutLinkMutation = useMutation(
     createStripeCheckoutLink,
   );
@@ -67,33 +68,39 @@ export function ApiKeysCard() {
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
-              {getProjectEntitlementsResponse?.entitledBackendApiKeys ? (
-                <Badge>Enabled</Badge>
+              {isLoadingEntitlements ? (
+                <></>
               ) : (
-                <div
-                  className="bg-gradient-to-br from-violet-500 via-purple-500 to-blue-500 border-0 text-white w-full mt-4 p-4 rounded-md"
-                  onClick={handleUpgrade}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
+                <>
+                  {!getProjectEntitlementsResponse?.entitledBackendApiKeys ? (
+                    <div
+                      className="bg-gradient-to-br from-violet-500 via-purple-500 to-blue-500 border-0 text-white w-full mt-4 p-4 rounded-md"
+                      onClick={handleUpgrade}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
 
-                  <div className="flex flex-wrap w-full gap-4">
-                    <div className="w-full space-y-4 md:flex-grow">
-                      <div className="flex items-center space-x-3">
-                        <div className="p-2 rounded-full bg-white/20 backdrop-blur-sm">
-                          <Crown className="h-6 w-6 text-white" />
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-white">
-                            Upgrade to Growth
-                          </h3>
-                          <p className="text-xs text-white/80">
-                            Access Backend API Keys and more
-                          </p>
+                      <div className="flex flex-wrap w-full gap-4">
+                        <div className="w-full space-y-4 md:flex-grow">
+                          <div className="flex items-center space-x-3">
+                            <div className="p-2 rounded-full bg-white/20 backdrop-blur-sm">
+                              <Crown className="h-6 w-6 text-white" />
+                            </div>
+                            <div>
+                              <h3 className="font-semibold text-white">
+                                Upgrade to Growth
+                              </h3>
+                              <p className="text-xs text-white/80">
+                                Access Backend API Keys and more
+                              </p>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
+                  ) : (
+                    <Badge>Enabled</Badge>
+                  )}
+                </>
               )}
             </div>
           </div>
