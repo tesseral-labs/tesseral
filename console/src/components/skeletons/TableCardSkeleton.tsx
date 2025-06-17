@@ -1,7 +1,5 @@
 import React from "react";
 
-import { cn } from "@/lib/utils";
-
 import {
   Card,
   CardAction,
@@ -10,14 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../ui/table";
+import { TableSkeleton } from "./TableSkeleton";
 
 export function TableCardSkeleton({
   columns = 5,
@@ -40,43 +31,7 @@ export function TableCardSkeleton({
         )}
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              {Array.from({ length: columns }).map((_, index) => (
-                <TableHead
-                  className={cn(index === columns - 1 ? "text-right" : "")}
-                  key={index}
-                >
-                  <div
-                    className={cn(
-                      "h-4 w-24 bg-gray-200 animate-pulse rounded",
-                      index === columns - 1 ? "ml-auto" : "",
-                    )}
-                  />
-                </TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {Array.from({ length: rows }).map((_, rowIndex) => (
-              <TableRow key={rowIndex}>
-                {Array.from({ length: columns }).map((_, colIndex) => (
-                  <TableCell
-                    className={cn(colIndex === columns - 1 ? "text-right" : "")}
-                    key={colIndex}
-                  >
-                    {colIndex === columns - 1 ? (
-                      <div className="h-8 w-24 bg-gray-200 animate-pulse rounded-md ml-auto" />
-                    ) : (
-                      <div className="h-4 w-32 bg-gray-200 animate-pulse rounded" />
-                    )}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <TableSkeleton columns={columns} rows={rows} />
       </CardContent>
     </Card>
   );

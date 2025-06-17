@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { ValueCopier } from "@/components/core/ValueCopier";
+import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -94,14 +95,16 @@ import {
 import { BackendAPIKey } from "@/gen/tesseral/backend/v1/models_pb";
 
 export function ListBackendApiKeysCard() {
-  const { data: getProjectEntitlementsResponse } = useQuery(
-    getProjectEntitlements,
-  );
+  const {
+    data: getProjectEntitlementsResponse,
+    isLoading: isLoadingEntitlements,
+  } = useQuery(getProjectEntitlements);
   const {
     data: listBackendApiKeysResponses,
     fetchNextPage,
     hasNextPage,
     isFetching,
+    isLoading,
   } = useInfiniteQuery(
     listBackendAPIKeys,
     {
@@ -127,48 +130,49 @@ export function ListBackendApiKeysCard() {
 
   return (
     <>
-      {!getProjectEntitlementsResponse?.entitledBackendApiKeys && (
-        <div className="bg-gradient-to-br from-violet-500 via-purple-500 to-blue-500 border-0 text-white relative overflow-hidden shadow-xl p-8 rounded-lg">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
+      {!isLoadingEntitlements &&
+        !getProjectEntitlementsResponse?.entitledBackendApiKeys && (
+          <div className="bg-gradient-to-br from-violet-500 via-purple-500 to-blue-500 border-0 text-white relative overflow-hidden shadow-xl p-8 rounded-lg">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
 
-          <div className="flex flex-wrap w-full gap-8">
-            <div className="w-full space-y-4 md:flex-grow">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 rounded-full bg-white/20 backdrop-blur-sm">
-                  <Crown className="h-6 w-6 text-white" />
+            <div className="flex flex-wrap w-full gap-8">
+              <div className="w-full space-y-4 md:flex-grow">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 rounded-full bg-white/20 backdrop-blur-sm">
+                    <Crown className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-white">
+                      Upgrade to Growth
+                    </h3>
+                    <p className="text-xs text-white/80">
+                      Unlock advanced features
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-white">
-                    Upgrade to Growth
-                  </h3>
-                  <p className="text-xs text-white/80">
-                    Unlock advanced features
-                  </p>
-                </div>
+                <p className="font-semibold text-sm">
+                  Backend API Keys are available on the Growth Tier.
+                </p>
+                <p className="text-sm text-white/80">
+                  When you upgrade, you'll also unlock custom domains, Managed
+                  API Keys allow your customers to authenticate to your service
+                  without a session, and dedicated email support.
+                </p>
               </div>
-              <p className="font-semibold text-sm">
-                Backend API Keys are available on the Growth Tier.
-              </p>
-              <p className="text-sm text-white/80">
-                When you upgrade, you'll also unlock custom domains, Managed API
-                Keys allow your customers to authenticate to your service
-                without a session, and dedicated email support.
-              </p>
-            </div>
 
-            <div className="mt-8 md:mt-auto w-full">
-              <Button
-                className="bg-white text-purple-600 hover:bg-white/90 font-medium cursor-pointer"
-                onClick={handleUpgrade}
-                size="lg"
-              >
-                Upgrade Now
-                <ArrowRight className="h-4 w-4 ml-2" />
-              </Button>
+              <div className="mt-8 md:mt-auto w-full">
+                <Button
+                  className="bg-white text-purple-600 hover:bg-white/90 font-medium cursor-pointer"
+                  onClick={handleUpgrade}
+                  size="lg"
+                >
+                  Upgrade Now
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
       {getProjectEntitlementsResponse?.entitledBackendApiKeys && (
         <Card>
           <CardHeader>
@@ -182,79 +186,85 @@ export function ListBackendApiKeysCard() {
             </CardAction>
           </CardHeader>
           <CardContent>
-            {!backendApiKeys.length ? (
-              <div className="text-center text-muted-foreground text-sm py-4 mt-8">
-                No API keys found. Create a new key to get started.
-              </div>
+            {isLoading ? (
+              <TableSkeleton />
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>
-                      <div className="flex items-center">
-                        <span>ID</span>
-                        <HoverCard>
-                          <HoverCardTrigger asChild>
-                            <div className="inline-block ml-2 text-muted-foreground">
-                              <Info className="h-4 w-4" />
-                            </div>
-                          </HoverCardTrigger>
-                          <HoverCardContent className="bg-primary text-white space-y-4 text-sm">
-                            <p className="font-semibold">
-                              Not the secret token
-                            </p>
-                            <p className="text-xs">
-                              The secret token used to authenticate to the
-                              Backend API is only available immediately after
-                              creation, and is never shown again.
-                            </p>
-                          </HoverCardContent>
-                        </HoverCard>
-                      </div>
-                    </TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Created</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {backendApiKeys.map((key) => (
-                    <TableRow key={key.id}>
-                      <TableCell>
-                        <Link
-                          className="font-medium"
-                          to={`/settings/api-keys/backend-api-keys/${key.id}`}
-                        >
-                          {key.displayName || "—"}
-                        </Link>
-                      </TableCell>
-                      <TableCell>
-                        <ValueCopier
-                          value={key.id}
-                          label="Backend API Key ID"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        {key.revoked ? (
-                          <Badge variant="secondary">Revoked</Badge>
-                        ) : (
-                          <Badge>Active</Badge>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {key.createTime &&
-                          DateTime.fromJSDate(
-                            timestampDate(key.createTime),
-                          ).toRelative()}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <ManageBackendApiKeyButton backendApiKey={key} />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <>
+                {!backendApiKeys.length ? (
+                  <div className="text-center text-muted-foreground text-sm py-4 mt-8">
+                    No API keys found. Create a new key to get started.
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>
+                          <div className="flex items-center">
+                            <span>ID</span>
+                            <HoverCard>
+                              <HoverCardTrigger asChild>
+                                <div className="inline-block ml-2 text-muted-foreground">
+                                  <Info className="h-4 w-4" />
+                                </div>
+                              </HoverCardTrigger>
+                              <HoverCardContent className="bg-primary text-white space-y-4 text-sm">
+                                <p className="font-semibold">
+                                  Not the secret token
+                                </p>
+                                <p className="text-xs">
+                                  The secret token used to authenticate to the
+                                  Backend API is only available immediately
+                                  after creation, and is never shown again.
+                                </p>
+                              </HoverCardContent>
+                            </HoverCard>
+                          </div>
+                        </TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Created</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {backendApiKeys.map((key) => (
+                        <TableRow key={key.id}>
+                          <TableCell>
+                            <Link
+                              className="font-medium"
+                              to={`/settings/api-keys/backend-api-keys/${key.id}`}
+                            >
+                              {key.displayName || "—"}
+                            </Link>
+                          </TableCell>
+                          <TableCell>
+                            <ValueCopier
+                              value={key.id}
+                              label="Backend API Key ID"
+                            />
+                          </TableCell>
+                          <TableCell>
+                            {key.revoked ? (
+                              <Badge variant="secondary">Revoked</Badge>
+                            ) : (
+                              <Badge>Active</Badge>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {key.createTime &&
+                              DateTime.fromJSDate(
+                                timestampDate(key.createTime),
+                              ).toRelative()}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <ManageBackendApiKeyButton backendApiKey={key} />
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </>
             )}
           </CardContent>
           {hasNextPage && (

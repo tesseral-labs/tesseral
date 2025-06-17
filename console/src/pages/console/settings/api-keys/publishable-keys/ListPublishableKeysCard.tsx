@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -84,6 +85,7 @@ export function ListPublishableKeysCard() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isLoading,
   } = useInfiniteQuery(
     listPublishableKeys,
     {
@@ -113,61 +115,77 @@ export function ListPublishableKeysCard() {
         </CardAction>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Key</TableHead>
-              <TableHead>Mode</TableHead>
-              <TableHead>Created</TableHead>
-              <TableHead>Updated</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {publishableKeys.map((publishableKey) => (
-              <TableRow key={publishableKey.id}>
-                <TableCell className="font-medium">
-                  {publishableKey.displayName}
-                </TableCell>
-                <TableCell>
-                  <div
-                    className="px-2 py-1 bg-muted text-muted-foreground rounded inline hover:text-foreground cursor-pointer font-mono text-xs"
-                    onClick={() => {
-                      navigator.clipboard.writeText(publishableKey.id);
-                      toast.success("Publishable Key copied to clipboard");
-                    }}
-                  >
-                    {publishableKey.id}
-                    <Copy className="inline h-4 w-4 ml-2" />
-                  </div>
-                </TableCell>
-                <TableCell>
-                  {publishableKey.devMode ? (
-                    <Badge variant="secondary">Development</Badge>
-                  ) : (
-                    <Badge>Production</Badge>
-                  )}
-                </TableCell>
-                <TableCell>
-                  {publishableKey.createTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(publishableKey.createTime),
-                    ).toRelative()}
-                </TableCell>
-                <TableCell>
-                  {publishableKey.updateTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(publishableKey.updateTime),
-                    ).toRelative()}
-                </TableCell>
-                <TableCell className="text-right">
-                  <ManagePublishableKeyButton publishableKey={publishableKey} />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        {isLoading ? (
+          <TableSkeleton columns={6} />
+        ) : (
+          <>
+            {publishableKeys.length === 0 ? (
+              <div className="text-center text-muted-foreground text-sm py-6">
+                No Publishable Keys found
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Key</TableHead>
+                    <TableHead>Mode</TableHead>
+                    <TableHead>Created</TableHead>
+                    <TableHead>Updated</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {publishableKeys.map((publishableKey) => (
+                    <TableRow key={publishableKey.id}>
+                      <TableCell className="font-medium">
+                        {publishableKey.displayName}
+                      </TableCell>
+                      <TableCell>
+                        <div
+                          className="px-2 py-1 bg-muted text-muted-foreground rounded inline hover:text-foreground cursor-pointer font-mono text-xs"
+                          onClick={() => {
+                            navigator.clipboard.writeText(publishableKey.id);
+                            toast.success(
+                              "Publishable Key copied to clipboard",
+                            );
+                          }}
+                        >
+                          {publishableKey.id}
+                          <Copy className="inline h-4 w-4 ml-2" />
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {publishableKey.devMode ? (
+                          <Badge variant="secondary">Development</Badge>
+                        ) : (
+                          <Badge>Production</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {publishableKey.createTime &&
+                          DateTime.fromJSDate(
+                            timestampDate(publishableKey.createTime),
+                          ).toRelative()}
+                      </TableCell>
+                      <TableCell>
+                        {publishableKey.updateTime &&
+                          DateTime.fromJSDate(
+                            timestampDate(publishableKey.updateTime),
+                          ).toRelative()}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <ManagePublishableKeyButton
+                          publishableKey={publishableKey}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </>
+        )}
       </CardContent>
       {hasNextPage && (
         <CardFooter className="flex justify-center">
