@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestOpen(t *testing.T) {
+func TesNewDB(t *testing.T) {
 	pool := NewDB(t)
 
 	ctx := context.Background()
