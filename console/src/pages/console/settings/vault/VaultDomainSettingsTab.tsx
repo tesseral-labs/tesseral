@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
-import { ArrowRight, CheckCircle2, Crown } from "lucide-react";
+import { ArrowRight, Crown } from "lucide-react";
 import React from "react";
 
 import { Button } from "@/components/ui/button";

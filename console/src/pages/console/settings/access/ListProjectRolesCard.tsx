@@ -37,6 +37,7 @@ import {
   CardAction,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -170,6 +171,17 @@ export function ListProjectRolesCard() {
           </>
         )}
       </CardContent>
+      {hasNextPage && (
+        <CardFooter className="mt-8">
+          <Button
+            variant="outline"
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+          >
+            LoadMore
+          </Button>
+        </CardFooter>
+      )}
     </Card>
   );
 }
