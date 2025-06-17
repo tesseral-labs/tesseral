@@ -141,7 +141,7 @@ export function OrganizationSamlCard() {
                   : "Save changes"}
               </Button>
             ) : (
-              <Link className="w-full" to="/settings/authentication/saml">
+              <Link className="w-full" to="/settings/authentication">
                 <Button className="w-full" variant="outline">
                   Manage Project SAML Settings
                 </Button>
