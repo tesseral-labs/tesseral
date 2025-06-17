@@ -119,18 +119,12 @@ export function OrganizationSamlCard() {
                     enable SAML at the project level to configure it for this
                     organization.
                   </div>
-
-                  <Link to="/settings/authentication/saml">
-                    <Button className="w-full" variant="outline">
-                      Manage Project SAML Settings
-                    </Button>
-                  </Link>
                 </>
               )}
             </div>
           </CardContent>
-          {getProjectResponse?.project?.logInWithSaml && (
-            <CardFooter className="mt-4">
+          <CardFooter className="mt-4">
+            {getProjectResponse?.project?.logInWithSaml ? (
               <Button
                 className="w-full"
                 type="submit"
@@ -146,8 +140,14 @@ export function OrganizationSamlCard() {
                   ? "Saving changes"
                   : "Save changes"}
               </Button>
-            </CardFooter>
-          )}
+            ) : (
+              <Link className="w-full" to="/settings/authentication/saml">
+                <Button className="w-full" variant="outline">
+                  Manage Project SAML Settings
+                </Button>
+              </Link>
+            )}
+          </CardFooter>
         </Card>
       </form>
     </Form>
