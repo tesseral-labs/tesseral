@@ -24,6 +24,7 @@ import { Link } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { SecretCopier } from "@/components/core/SecretCopier";
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 import {
@@ -436,7 +437,9 @@ function CreateBackendApiKeyButton() {
   );
   const createBackendApiKeyMutation = useMutation(createBackendAPIKey);
 
+  const [backendApiKey, setBackendApiKey] = useState<BackendAPIKey>();
   const [open, setOpen] = useState(false);
+  const [secretOpen, setSecretOpen] = useState(false);
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -452,76 +455,124 @@ function CreateBackendApiKeyButton() {
     return false;
   }
 
+  function handleDone(e: MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    e.stopPropagation();
+    setSecretOpen(false);
+    setOpen(false);
+    return false;
+  }
+
   async function handleSubmit(data: z.infer<typeof schema>) {
-    await createBackendApiKeyMutation.mutateAsync({
+    const { backendApiKey } = await createBackendApiKeyMutation.mutateAsync({
       backendApiKey: {
         displayName: data.displayName,
       },
     });
-    form.reset(data);
-    await refetch();
-    setOpen(false);
-    toast.success("Backend API Key created successfully");
+    if (backendApiKey) {
+      form.reset();
+      await refetch();
+      setBackendApiKey(backendApiKey);
+      setOpen(false);
+      setSecretOpen(true);
+      toast.success("Backend API Key created successfully");
+    } else {
+      toast.error("Failed to create Backend API Key. Please try again.");
+    }
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>
-          <Plus />
-          Create Backend API Key
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Create Backend API Key</DialogTitle>
-          <DialogDescription>
-            Backend API keys are how your backend can automate operations in
-            Tesseral using the Tesseral Backend API.
-          </DialogDescription>
-        </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)}>
-            <div className="space-y-6">
-              <FormField
-                control={form.control}
-                name="displayName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Display Name</FormLabel>
-                    <FormDescription>
-                      A human-readable name for the backend API key.
-                    </FormDescription>
-                    <FormMessage />
-                    <FormControl>
-                      <Input placeholder="My Backend API Key" {...field} />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+    <>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button>
+            <Plus />
+            Create Backend API Key
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create Backend API Key</DialogTitle>
+            <DialogDescription>
+              Backend API keys are how your backend can automate operations in
+              Tesseral using the Tesseral Backend API.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleSubmit)}>
+              <div className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="displayName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Display Name</FormLabel>
+                      <FormDescription>
+                        A human-readable name for the backend API key.
+                      </FormDescription>
+                      <FormMessage />
+                      <FormControl>
+                        <Input placeholder="My Backend API Key" {...field} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <DialogFooter className="mt-8">
+                <Button variant="outline" onClick={handleCancel}>
+                  Cancel
+                </Button>
+                <Button
+                  disabled={
+                    !form.formState.isDirty ||
+                    createBackendApiKeyMutation.isPending
+                  }
+                  type="submit"
+                >
+                  {createBackendApiKeyMutation.isPending && (
+                    <LoaderCircle className="animate-spin" />
+                  )}
+                  {createBackendApiKeyMutation.isPending
+                    ? "Creating Backend API Key"
+                    : "Create Backend API Key"}
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+      {backendApiKey && (
+        <Dialog open={secretOpen} onOpenChange={setSecretOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Backend API Key Created</DialogTitle>
+              <DialogDescription>
+                Backend API Key was created successfully.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <span className="text-sm font-semibold">
+                  Backend API Key Secret Token
+                </span>
+                <SecretCopier
+                  placeholder="tesseral_secret_key_•••••••••••••••••••••••••"
+                  secret={backendApiKey.secretToken || ""}
+                />
+              </div>
+              <div className="text-muted-foreground text-sm">
+                Store this secret as TESSERAL_API_KEY in your secrets manager.
+                You will not be able to see this secret token again later.
+              </div>
             </div>
             <DialogFooter className="mt-8">
-              <Button variant="outline" onClick={handleCancel}>
-                Cancel
-              </Button>
-              <Button
-                disabled={
-                  !form.formState.isDirty ||
-                  createBackendApiKeyMutation.isPending
-                }
-                type="submit"
-              >
-                {createBackendApiKeyMutation.isPending && (
-                  <LoaderCircle className="animate-spin" />
-                )}
-                {createBackendApiKeyMutation.isPending
-                  ? "Creating Backend API Key"
-                  : "Create Backend API Key"}
+              <Button variant="outline" onClick={handleDone}>
+                Close
               </Button>
             </DialogFooter>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
   );
 }

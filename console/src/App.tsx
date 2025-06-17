@@ -20,7 +20,7 @@ import { OrganizationApiKeysTab } from "./pages/console/organizations/Organizati
 import { OrganizationAuthentication } from "./pages/console/organizations/OrganizationAuthenticationTab";
 import { OrganizationLogs } from "./pages/console/organizations/OrganizationLogsTab";
 import { OrganizationApiKeyRolesTab } from "./pages/console/organizations/api-keys/OrganizationAPIKeyRolesTab";
-import { OrganizationApiKeyDetailsTab } from "./pages/console/organizations/api-keys/OrganizationApiKeyDetailsPage";
+import { OrganizationApiKeyDetailsTab } from "./pages/console/organizations/api-keys/OrganizationApiKeyDetailsTab";
 import { OrganizationApiKeyLogsTab } from "./pages/console/organizations/api-keys/OrganizationApiKeyLogsTab";
 import { OrganizationApiKeyPage } from "./pages/console/organizations/api-keys/OrganizationApiKeyPage";
 import { OrganizationSamlConnectionPage } from "./pages/console/organizations/saml-connections/OrganizationSamlConnectionPage";

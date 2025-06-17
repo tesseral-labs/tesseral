@@ -7,6 +7,7 @@ import { Link, useParams } from "react-router";
 
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { PageContent } from "@/components/page";
+import { Title } from "@/components/page/Title";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getSession } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
@@ -22,6 +23,8 @@ export function SessionPage() {
 
   return (
     <PageContent>
+      <Title title={`Session ${sessionId}`} />
+
       <div>
         <Link to={`/organizations/${organizationId}/users/${userId}/sessions`}>
           <Button variant="ghost" size="sm">

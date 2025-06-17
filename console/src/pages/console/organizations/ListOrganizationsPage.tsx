@@ -25,6 +25,7 @@ import { z } from "zod";
 
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { PageContent } from "@/components/page";
+import { Title } from "@/components/page/Title";
 import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 import {
   AlertDialog,
@@ -111,6 +112,8 @@ export function ListOrganizationsPage() {
 
   return (
     <PageContent>
+      <Title title="Organizations" />
+
       <div className="flex justify-between items-center gap-x-8">
         <div>
           <h1 className="font-semibold text-xl">Organizations</h1>

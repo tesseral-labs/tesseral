@@ -23,8 +23,6 @@ import {
   consoleListAuditLogEvents,
   getAPIKey,
   getBackendAPIKey,
-  getSession,
-  getUser,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { ConsoleListAuditLogEventsRequest } from "@/gen/tesseral/backend/v1/backend_pb";
 import {
@@ -32,8 +30,9 @@ import {
   AuditLogEvent,
   BackendAPIKey,
   Session,
-  User,
 } from "@/gen/tesseral/backend/v1/models_pb";
+import { getUser } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
+import { User } from "@/gen/tesseral/frontend/v1/models_pb";
 import { cn } from "@/lib/utils";
 
 import { ValueCopier } from "../core/ValueCopier";
@@ -329,7 +328,6 @@ function AuditLogEventActor({
 }) {
   const getApiKeyMutation = useMutation(getAPIKey);
   const getBackendAPIKeyMutation = useMutation(getBackendAPIKey);
-  const getSessionMutation = useMutation(getSession);
   const getUserMutation = useMutation(getUser);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -337,8 +335,6 @@ function AuditLogEventActor({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [backendApiKeyActor, setBackendApiKeyActor] =
     useState<Record<string, any>>();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [sessionActor, setSessionActor] = useState<Record<string, any>>();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [userActor, setUserActor] = useState<Record<string, any>>();
 
@@ -375,36 +371,6 @@ function AuditLogEventActor({
           delete (backendApiKeyActor as any).$typeName;
           setBackendApiKeyActor(backendApiKeyActor);
         }
-        if (auditLogEvent.actorSessionId) {
-          const { session } = await getSessionMutation.mutateAsync({
-            id: auditLogEvent.actorSessionId,
-          });
-          if (!session) return;
-          const sessionActor = {
-            ...session,
-            createTime: timestampDate(session.createTime!).toISOString(),
-            expireTime: timestampDate(session.expireTime!).toISOString(),
-            lastActiveTime: timestampDate(
-              session.lastActiveTime!,
-            ).toISOString(),
-          };
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          delete (sessionActor as any).$typeName;
-          setSessionActor(session);
-
-          const { user } = await getUserMutation.mutateAsync({
-            id: session.userId,
-          });
-          if (!user) return;
-          const userActor = {
-            ...user,
-            createTime: timestampDate(user.createTime!).toISOString(),
-            updateTime: timestampDate(user.updateTime!).toISOString(),
-          };
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          delete (userActor as any).$typeName;
-          setUserActor(userActor);
-        }
         if (auditLogEvent.actorUserId) {
           const { user } = await getUserMutation.mutateAsync({
             id: auditLogEvent.actorUserId,
@@ -425,30 +391,24 @@ function AuditLogEventActor({
     auditLogEvent,
     getApiKeyMutation,
     getBackendAPIKeyMutation,
-    getSessionMutation,
     getUserMutation,
   ]);
 
   return (
     <>
-      {apiKeyActor || backendApiKeyActor || sessionActor || userActor ? (
+      {apiKeyActor || backendApiKeyActor || userActor ? (
         <Badge variant="secondary">
           {apiKeyActor && (
             <span className="font-mono">
               {apiKeyActor.displayName || apiKeyActor.id}
             </span>
           )}
-          {sessionActor && userActor && (
-            <span className="font-mono">{userActor.email}</span>
-          )}
           {backendApiKeyActor && (
             <span className="font-mono">
               {backendApiKeyActor.displayName || backendApiKeyActor.id}
             </span>
           )}
-          {!sessionActor && userActor && (
-            <span className="font-mono">{userActor.email}</span>
-          )}
+          {userActor && <span className="font-mono">{userActor.email}</span>}
         </Badge>
       ) : (
         <Badge variant="outline">
@@ -498,12 +458,10 @@ function AuditLogEventActorDetails({ event }: { event: AuditLogEvent }) {
 
   const getApiKeyMutation = useMutation(getAPIKey);
   const getBackendApiKeyMutation = useMutation(getBackendAPIKey);
-  const getSessionMutation = useMutation(getSession);
   const getUserMutation = useMutation(getUser);
 
   const [apiKey, setApiKey] = useState<APIKey>();
   const [backendApiKey, setBackendApiKey] = useState<BackendAPIKey>();
-  const [session, setSession] = useState<Session>();
   const [user, setUser] = useState<User>();
 
   useEffect(() => {
@@ -529,15 +487,6 @@ function AuditLogEventActorDetails({ event }: { event: AuditLogEvent }) {
   }, [actorBackendApiKeyId, backendApiKey, getBackendApiKeyMutation]);
 
   useEffect(() => {
-    if (actorSessionId && !session && !getSessionMutation.isPending) {
-      getSessionMutation
-        .mutateAsync({ id: actorSessionId })
-        .then((response) => response.session)
-        .then((session) => setSession(session));
-    }
-  }, [actorSessionId, getSessionMutation, session]);
-
-  useEffect(() => {
     if (actorUserId && !user && !getUserMutation.isPending) {
       getUserMutation
         .mutateAsync({ id: actorUserId })
@@ -545,15 +494,6 @@ function AuditLogEventActorDetails({ event }: { event: AuditLogEvent }) {
         .then((user) => setUser(user));
     }
   }, [actorUserId, getUserMutation, user]);
-
-  useEffect(() => {
-    if (session && session.userId && !user && !getUserMutation.isPending) {
-      getUserMutation
-        .mutateAsync({ id: session.userId })
-        .then((response) => response.user)
-        .then((user) => setUser(user));
-    }
-  }, [getUserMutation, session, user]);
 
   return (
     <div className="space-y-4">
@@ -594,24 +534,13 @@ function AuditLogEventActorDetails({ event }: { event: AuditLogEvent }) {
           </div>
           <Link
             className="inline-flex items-center gap-1 text-xs font-mono px-2 py-1 rounded border text-muted-foreground hover:text-foreground bg-white"
-            to={`/organizations/${user.organizationId}/users/${user.id}`}
+            to={`/organizations/${event.organizationId}/users/${user.id}`}
           >
             {user.id} <ExternalLink className="h-3 w-3" />
           </Link>
         </div>
       )}
-      {session && user && (
-        <div className="space-y-1">
-          <div className="font-semibold text-base">Session</div>
-          <Link
-            className="inline-flex items-center gap-1 text-xs font-mono px-2 py-1 rounded border text-muted-foreground hover:text-foreground bg-white"
-            to={`/organizations/${user.organizationId}/users/${session.userId}/sessions/${session.id}`}
-          >
-            {session.id} <ExternalLink className="h-3 w-3" />
-          </Link>
-        </div>
-      )}
-      {!apiKey && !session && !user && (
+      {!apiKey && !backendApiKey && !user && (
         <div className="text-muted-foreground text-sm">System</div>
       )}
     </div>

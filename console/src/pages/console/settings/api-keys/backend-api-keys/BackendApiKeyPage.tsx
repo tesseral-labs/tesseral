@@ -11,6 +11,7 @@ import { z } from "zod";
 
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { PageContent } from "@/components/page";
+import { Title } from "@/components/page/Title";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -86,6 +87,8 @@ export function BackendApiKeyPage() {
 
   return (
     <PageContent>
+      <Title title={`Backend API Key ${backendApiKeyId}`} />
+
       <div>
         <Link to="/settings/api-keys">
           <Button variant="ghost" size="sm">

@@ -11,6 +11,7 @@ import { z } from "zod";
 
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { PageContent } from "@/components/page";
+import { Title } from "@/components/page/Title";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -105,6 +106,8 @@ export function OrganizationSamlConnectionPage() {
 
   return (
     <PageContent>
+      <Title title={`SAML Connection ${samlConnectionId}`} />
+
       <div>
         <Link to={`/organizations/${organizationId}/authentication`}>
           <Button variant="ghost" size="sm">

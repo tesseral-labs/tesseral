@@ -14,6 +14,7 @@ import { toast } from "sonner";
 
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { PageContent } from "@/components/page";
+import { Title } from "@/components/page/Title";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -49,6 +50,8 @@ export function PasskeyPage() {
 
   return (
     <PageContent>
+      <Title title={`Passkey ${passkeyId}`} />
+
       <div>
         <Link to={`/organizations/${organizationId}/users/${userId}/passkeys`}>
           <Button variant="ghost" size="sm">

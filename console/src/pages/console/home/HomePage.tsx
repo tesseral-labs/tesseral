@@ -11,6 +11,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import { PageContent } from "@/components/page";
+import { Title } from "@/components/page/Title";
 import {
   Card,
   CardContent,
@@ -38,6 +39,8 @@ export function HomePage() {
 
   return (
     <PageContent>
+      <Title title="Home" />
+
       <div className={"grid grid-cols-1 lg:grid-cols-3 gap-8"}>
         <WelcomeCard />
         <VisitVaultCard />

@@ -8,6 +8,7 @@ import { Link, Outlet, useLocation, useParams } from "react-router";
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { PageContent } from "@/components/page";
 import { Tab, Tabs } from "@/components/page/Tabs";
+import { Title } from "@/components/page/Title";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getAPIKey } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
@@ -22,6 +23,8 @@ export function OrganizationApiKeyPage() {
 
   return (
     <PageContent>
+      <Title title={`API Key ${apiKeyId}`} />
+
       <div>
         <Link to={`/organizations/${organizationId}/api-keys`}>
           <Button variant="ghost" size="sm">

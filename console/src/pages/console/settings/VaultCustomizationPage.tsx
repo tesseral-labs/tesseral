@@ -5,6 +5,7 @@ import { Link, Outlet, useLocation } from "react-router";
 
 import { PageContent } from "@/components/page";
 import { TabLink, Tabs } from "@/components/page/Tabs";
+import { Title } from "@/components/page/Title";
 import { Button } from "@/components/ui/button";
 import { getProject } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 
@@ -15,6 +16,8 @@ export function VaultCustomizationPage() {
 
   return (
     <PageContent>
+      <Title title="Vault Customization Settings" />
+
       <div className="flex justify-between gap-8">
         <div>
           <h1 className="text-2xl font-semibold flex items-center gap-2">

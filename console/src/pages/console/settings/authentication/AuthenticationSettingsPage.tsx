@@ -1,6 +1,7 @@
 import React from "react";
 
 import { PageContent } from "@/components/page";
+import { Title } from "@/components/page/Title";
 
 import { BasicSettingsCard } from "./BasicSettingsCard";
 import { EnterpriseSettingsCard } from "./EnterpriseSettingsCard";
@@ -11,6 +12,8 @@ import { OAuthSettingsCard } from "./OauthSettingsCard";
 export function AuthenticationSettingsPage() {
   return (
     <PageContent>
+      <Title title="Authentication Settings" />
+
       <div>
         <h1 className="text-xl font-semibold">Authentication Settings</h1>
         <p className="text-muted-foreground text-sm">

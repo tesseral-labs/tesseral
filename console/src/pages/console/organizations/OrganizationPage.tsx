@@ -8,6 +8,7 @@ import { Link, Outlet, useLocation, useParams } from "react-router";
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { PageContent } from "@/components/page";
 import { TabLink, Tabs } from "@/components/page/Tabs";
+import { Title } from "@/components/page/Title";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getOrganization } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
@@ -22,6 +23,12 @@ export function OrganizationPage() {
 
   return (
     <PageContent>
+      <Title
+        title={
+          getOrganizationResponse?.organization?.displayName || "Organization"
+        }
+      />
+
       <div>
         <Link to="/organizations">
           <Button variant="ghost" size="sm">

@@ -8,6 +8,7 @@ import { Link, Outlet, useLocation, useParams } from "react-router";
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { PageContent } from "@/components/page";
 import { Tab, TabLink, Tabs } from "@/components/page/Tabs";
+import { Title } from "@/components/page/Title";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getUser } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
@@ -21,6 +22,8 @@ export function UserPage() {
 
   return (
     <PageContent>
+      <Title title={getUserResponse?.user?.email || "User"} />
+
       <div>
         <Link to={`/organizations/${organizationId}/users`}>
           <Button variant="ghost" size="sm">
