@@ -16,6 +16,7 @@ export function BreadcrumbBar() {
 
   const breadcrumbs: {
     label: string;
+    path: string;
   }[] = useMemo(() => {
     const parts = pathname.split("/").filter(Boolean);
     if (parts.length === 0) {
@@ -24,6 +25,7 @@ export function BreadcrumbBar() {
       return parts.map((part, index) => {
         return {
           label: titleCaseSlug(part, index === parts.length - 1),
+          path: `/${parts.slice(0, index + 1).join("/")}`,
         };
       });
     }
@@ -44,22 +46,39 @@ export function BreadcrumbBar() {
               )}
             </BreadcrumbItem>
             {breadcrumbs.map((breadcrumb, index) => (
-              <>
-                <BreadcrumbSeparator />
-                {index === breadcrumbs.length - 1 ? (
-                  <BreadcrumbPage key={index}>
-                    {breadcrumb.label}
-                  </BreadcrumbPage>
-                ) : (
-                  <BreadcrumbItem key={index}>
-                    {breadcrumb.label}
-                  </BreadcrumbItem>
-                )}
-              </>
+              <BreadcrumbSlug
+                key={index}
+                breadcrumb={breadcrumb}
+                index={index}
+                last={index === breadcrumbs.length - 1}
+              />
             ))}
           </BreadcrumbList>
         </Breadcrumb>
       </div>
     </div>
+  );
+}
+
+function BreadcrumbSlug({
+  breadcrumb,
+  index,
+  last = false,
+}: {
+  breadcrumb: { label: string; path: string };
+  index: number;
+  last?: boolean;
+}) {
+  return (
+    <>
+      <BreadcrumbSeparator />
+      {last ? (
+        <BreadcrumbPage>{breadcrumb.label}</BreadcrumbPage>
+      ) : (
+        <BreadcrumbLink href={breadcrumb.path}>
+          {breadcrumb.label}
+        </BreadcrumbLink>
+      )}
+    </>
   );
 }
