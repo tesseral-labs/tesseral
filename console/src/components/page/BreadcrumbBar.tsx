@@ -1,4 +1,4 @@
-import { useMutation } from "@connectrpc/connect-query";
+import { useQuery } from "@connectrpc/connect-query";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "react-router";
 
@@ -74,36 +74,44 @@ function BreadcrumbSlug({
   breadcrumb: { label: string; path: string };
   last?: boolean;
 }) {
-  const getOrganizationMutation = useMutation(getOrganization);
-  const getUserMutation = useMutation(getUser);
+  const [organizationId, setOrganizationId] = useState<string>();
+  const [userId, setUserId] = useState<string>();
 
-  const [label, setLabel] = useState(titleCaseSlug(breadcrumb.label));
+  const { data: getOrganizationResponse } = useQuery(
+    getOrganization,
+    {
+      id: organizationId,
+    },
+    {
+      enabled: !!organizationId,
+    },
+  );
+  const { data: getUserResponse } = useQuery(
+    getUser,
+    {
+      id: userId,
+    },
+    {
+      enabled: !!userId,
+    },
+  );
+
+  const label = useMemo(
+    () =>
+      getOrganizationResponse?.organization?.displayName ||
+      getUserResponse?.user?.email ||
+      titleCaseSlug(breadcrumb.label),
+    [getOrganizationResponse, getUserResponse, breadcrumb.label],
+  );
 
   useEffect(() => {
-    async function fetchBreadcrumbLabel() {
-      if (organizationRegex.test(breadcrumb.label)) {
-        const { organization } = await getOrganizationMutation.mutateAsync({
-          id: breadcrumb.label,
-        });
-        if (organization) {
-          setLabel(organization.displayName);
-        }
-      }
-
-      if (userRegex.test(breadcrumb.label)) {
-        const { user } = await getUserMutation.mutateAsync({
-          id: breadcrumb.label,
-        });
-        if (user) {
-          setLabel(user.email);
-        }
-      }
+    if (organizationRegex.test(breadcrumb.label)) {
+      setOrganizationId(breadcrumb.label);
     }
-
-    if (breadcrumb && label && label.includes("_")) {
-      fetchBreadcrumbLabel();
+    if (userRegex.test(breadcrumb.label)) {
+      setUserId(breadcrumb.label);
     }
-  }, [breadcrumb, getOrganizationMutation, getUserMutation, label]);
+  }, [breadcrumb, setOrganizationId, setUserId]);
 
   return (
     <>
