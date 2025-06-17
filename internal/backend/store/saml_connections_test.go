@@ -12,11 +12,10 @@ func (s *BackendSuite) TestCreateSAMLConnection() {
 	s.T().Parallel()
 
 	project := s.NewProject()
+	ctx := s.NewAuthContext(project)
+	require := s.Require()
 
 	s.Run("SAML enabled", func() {
-		ctx := s.NewAuthContext(project)
-		require := s.Require()
-
 		organization := s.NewOrganization(storetestutil.OrganizationParams{
 			Project: project,
 			Organization: &backendv1.Organization{
@@ -37,9 +36,6 @@ func (s *BackendSuite) TestCreateSAMLConnection() {
 	})
 
 	s.Run("SAML disabled", func() {
-		ctx := s.NewAuthContext(project)
-		require := s.Require()
-
 		organization := s.NewOrganization(storetestutil.OrganizationParams{
 			Project: project,
 			Organization: &backendv1.Organization{
@@ -67,11 +63,10 @@ func (s *BackendSuite) TestGetSAMLConnection() {
 	s.T().Parallel()
 
 	project := s.NewProject()
+	ctx := s.NewAuthContext(project)
+	require := s.Require()
 
 	s.Run("SAML connection exists", func() {
-		ctx := s.NewAuthContext(project)
-		require := s.Require()
-
 		organization := s.NewOrganization(storetestutil.OrganizationParams{
 			Project: project,
 			Organization: &backendv1.Organization{
@@ -104,9 +99,6 @@ func (s *BackendSuite) TestGetSAMLConnection() {
 	})
 
 	s.Run("SAML connection does not exist", func() {
-		ctx := s.NewAuthContext(project)
-		require := s.Require()
-
 		res, err := s.Store.GetSAMLConnection(ctx, &backendv1.GetSAMLConnectionRequest{
 			Id: idformat.SAMLConnection.Format(uuid.New()),
 		})

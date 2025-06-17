@@ -1,6 +1,7 @@
 package storetestutil
 
 import (
+	"context"
 	"fmt"
 	"math/rand/v2"
 	"testing"
@@ -69,7 +70,7 @@ INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
   VALUES ('e071bbfe-6f27-4526-ab37-0ad251742836'::uuid, 'root@app.tesseral.example.com', crypt('password', gen_salt('bf', 14)), '7a76decb-6d79-49ce-9449-34fcc53151df', true);
 `
 
-	_, err := c.pool.Exec(t.Context(), sql)
+	_, err := c.pool.Exec(context.Background(), sql)
 	if err != nil {
 		t.Fatalf("failed to seed database: %v", err)
 	}
@@ -98,7 +99,7 @@ func (c *Console) NewProject(t *testing.T) Project {
 		S3:                        s3.NewFromConfig(*aws.NewConfig()),
 		DogfoodProjectID:          c.DogfoodProjectID,
 	})
-	ctx := intauthn.NewContext(t.Context(), intermediateSession, idformat.Project.Format(*c.DogfoodProjectID))
+	ctx := intauthn.NewContext(context.Background(), intermediateSession, idformat.Project.Format(*c.DogfoodProjectID))
 	project, err := intstore.CreateProject(ctx, &intermediatev1.CreateProjectRequest{
 		DisplayName: projectName,
 		RedirectUri: fmt.Sprintf("https://%s.tesseral.example.com", projectName),
@@ -107,7 +108,7 @@ func (c *Console) NewProject(t *testing.T) Project {
 		t.Fatalf("failed to create test project: %v", err)
 	}
 
-	_, err = c.pool.Exec(t.Context(), `
+	_, err = c.pool.Exec(context.Background(), `
 UPDATE projects SET
 	log_in_with_google = true,
 	log_in_with_microsoft = true,
@@ -128,7 +129,7 @@ WHERE id = $1::uuid;
 	userID := uuid.New()
 	userEmail := fmt.Sprintf("user-%d@%s.tesseral.example.com", rand.IntN(1<<20), projectName)
 
-	_, err = c.pool.Exec(t.Context(), `
+	_, err = c.pool.Exec(context.Background(), `
 INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
   VALUES ($1::uuid, $2, crypt('password', gen_salt('bf', 14)), (SELECT organization_id FROM projects WHERE id=$3::uuid), true);
 `,
@@ -165,7 +166,7 @@ func (c *Console) NewOrganization(t *testing.T, params OrganizationParams) Organ
 		S3:                        s3.NewFromConfig(*aws.NewConfig()),
 		DogfoodProjectID:          c.DogfoodProjectID,
 	})
-	ctx := bkauthn.NewDogfoodSessionContext(t.Context(), bkauthn.DogfoodSessionContextData{
+	ctx := bkauthn.NewDogfoodSessionContext(context.Background(), bkauthn.DogfoodSessionContextData{
 		ProjectID: params.ProjectID,
 		UserID:    params.UserID,
 		SessionID: idformat.Session.Format(uuid.New()),

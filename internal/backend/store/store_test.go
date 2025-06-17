@@ -35,7 +35,7 @@ func (s *BackendSuite) SetupSuite() {
 }
 
 func (s *BackendSuite) NewAuthContext(project storetestutil.Project) context.Context {
-	return authn.NewDogfoodSessionContext(s.T().Context(), authn.DogfoodSessionContextData{
+	return authn.NewDogfoodSessionContext(context.Background(), authn.DogfoodSessionContextData{
 		ProjectID: project.ProjectID,
 		UserID:    project.UserID,
 		SessionID: idformat.Session.Format(uuid.New()),
