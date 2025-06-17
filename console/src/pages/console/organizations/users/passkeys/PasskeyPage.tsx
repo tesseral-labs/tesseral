@@ -229,7 +229,7 @@ function DangerZoneCard() {
 
   return (
     <>
-      <Card className="border-red-200 bg-red-50">
+      <Card className="bg-red-50/50 border-red-200">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-destructive">
             <TriangleAlert className="w-4 h-4" />
