@@ -7,32 +7,33 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
+	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/storetestutil"
 )
 
 var (
-	storeT *tester
+	deps *packageDeps
 )
 
-type tester struct {
-	*store.Store
+type packageDeps struct {
+	store   *store.Store
 	console *storetestutil.Console
 }
 
 func TestMain(m *testing.M) {
-	tester, cleanup := newTester()
+	packageDeps, cleanup := initPackageDeps()
 	defer cleanup()
 
-	storeT = tester
+	deps = packageDeps
 	exitCode := m.Run()
 	cleanup()
 
 	os.Exit(exitCode)
 }
 
-func newTester() (*tester, func()) {
+func initPackageDeps() (*packageDeps, func()) {
 	db, cleanupDB := storetestutil.NewDB()
 	kms, cleanupKms := storetestutil.NewKMS()
 	s3, cleanupS3 := storetestutil.NewS3()
@@ -53,25 +54,38 @@ func newTester() (*tester, func()) {
 		cleanupDB()
 	}
 
-	return &tester{
-		Store:   store,
+	return &packageDeps{
+		store:   store,
 		console: console,
 	}, cleanup
 }
 
-func (s *tester) Init(t *testing.T) (context.Context, storetestutil.Project) {
+type tester struct {
+	Store   *store.Store
+	console *storetestutil.Console
+	Project storetestutil.Project
+}
+
+func Init(t *testing.T) (context.Context, *tester) {
 	t.Helper()
 
-	project := s.console.NewProject(t)
+	project := deps.console.NewProject(t)
 	ctx := authn.NewDogfoodSessionContext(t.Context(), authn.DogfoodSessionContextData{
 		ProjectID: project.ProjectID,
 		UserID:    project.UserID,
 		SessionID: idformat.Session.Format(uuid.New()),
 	})
 
-	return ctx, project
+	return ctx, &tester{
+		Store:   deps.store,
+		console: deps.console,
+		Project: project,
+	}
 }
 
-func (s *tester) NewOrganization(t *testing.T, params storetestutil.OrganizationParams) storetestutil.Organization {
-	return s.console.NewOrganization(t, params)
+func (s *tester) NewOrganization(t *testing.T, organization *backendv1.Organization) storetestutil.Organization {
+	return s.console.NewOrganization(t, storetestutil.OrganizationParams{
+		Project:      s.Project,
+		Organization: organization,
+	})
 }

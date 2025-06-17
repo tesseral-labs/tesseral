@@ -8,23 +8,19 @@ import (
 	"github.com/stretchr/testify/require"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
-	"github.com/tesseral-labs/tesseral/internal/storetestutil"
 )
 
 func TestCreateSAMLConnection_SAMLEnabled(t *testing.T) {
 	t.Parallel()
 
-	ctx, project := storeT.Init(t)
+	ctx, u := Init(t)
 	require := require.New(t)
 
-	organization := storeT.NewOrganization(t, storetestutil.OrganizationParams{
-		Project: project,
-		Organization: &backendv1.Organization{
-			DisplayName:   "test",
-			LogInWithSaml: refOrNil(true),
-		},
+	organization := u.NewOrganization(t, &backendv1.Organization{
+		DisplayName:   "test",
+		LogInWithSaml: refOrNil(true),
 	})
-	_, err := storeT.CreateSAMLConnection(ctx, &backendv1.CreateSAMLConnectionRequest{
+	_, err := u.Store.CreateSAMLConnection(ctx, &backendv1.CreateSAMLConnectionRequest{
 		SamlConnection: &backendv1.SAMLConnection{
 			SpAcsUrl:       "https://example.com/saml/acs",
 			SpEntityId:     "https://example.com/saml/sp",
@@ -39,17 +35,14 @@ func TestCreateSAMLConnection_SAMLEnabled(t *testing.T) {
 func TestCreateSAMLConnection_SAMLDisabled(t *testing.T) {
 	t.Parallel()
 
-	ctx, project := storeT.Init(t)
+	ctx, u := Init(t)
 	require := require.New(t)
 
-	organization := storeT.NewOrganization(t, storetestutil.OrganizationParams{
-		Project: project,
-		Organization: &backendv1.Organization{
-			DisplayName:   "test",
-			LogInWithSaml: refOrNil(false), // SAML not enabled
-		},
+	organization := u.NewOrganization(t, &backendv1.Organization{
+		DisplayName:   "test",
+		LogInWithSaml: refOrNil(false), // SAML not enabled
 	})
-	_, err := storeT.CreateSAMLConnection(ctx, &backendv1.CreateSAMLConnectionRequest{
+	_, err := u.Store.CreateSAMLConnection(ctx, &backendv1.CreateSAMLConnectionRequest{
 		SamlConnection: &backendv1.SAMLConnection{
 			SpAcsUrl:       "https://example.com/saml/acs",
 			SpEntityId:     "https://example.com/saml/sp",
@@ -67,17 +60,14 @@ func TestCreateSAMLConnection_SAMLDisabled(t *testing.T) {
 func TestGetSAMLConnection_Exists(t *testing.T) {
 	t.Parallel()
 
-	ctx, project := storeT.Init(t)
+	ctx, u := Init(t)
 	require := require.New(t)
 
-	organization := storeT.NewOrganization(t, storetestutil.OrganizationParams{
-		Project: project,
-		Organization: &backendv1.Organization{
-			DisplayName:   "test",
-			LogInWithSaml: refOrNil(true),
-		},
+	organization := u.NewOrganization(t, &backendv1.Organization{
+		DisplayName:   "test",
+		LogInWithSaml: refOrNil(true),
 	})
-	samlConnection, err := storeT.CreateSAMLConnection(ctx, &backendv1.CreateSAMLConnectionRequest{
+	samlConnection, err := u.Store.CreateSAMLConnection(ctx, &backendv1.CreateSAMLConnectionRequest{
 		SamlConnection: &backendv1.SAMLConnection{
 			IdpRedirectUrl: "https://idp.example.com/saml/redirect",
 			IdpEntityId:    "https://idp.example.com/saml/idp",
@@ -86,7 +76,7 @@ func TestGetSAMLConnection_Exists(t *testing.T) {
 	})
 	require.NoError(err, "failed to create SAML connection")
 
-	res, err := storeT.GetSAMLConnection(ctx, &backendv1.GetSAMLConnectionRequest{
+	res, err := u.Store.GetSAMLConnection(ctx, &backendv1.GetSAMLConnectionRequest{
 		Id: samlConnection.SamlConnection.Id,
 	})
 	require.NoError(err, "failed to get SAML connection")
@@ -104,10 +94,10 @@ func TestGetSAMLConnection_Exists(t *testing.T) {
 func TestGetSAMLConnection_DoesNotExist(t *testing.T) {
 	t.Parallel()
 
-	ctx, _ := storeT.Init(t)
+	ctx, u := Init(t)
 	require := require.New(t)
 
-	res, err := storeT.GetSAMLConnection(ctx, &backendv1.GetSAMLConnectionRequest{
+	res, err := u.Store.GetSAMLConnection(ctx, &backendv1.GetSAMLConnectionRequest{
 		Id: idformat.SAMLConnection.Format(uuid.New()),
 	})
 
