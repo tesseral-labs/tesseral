@@ -28,9 +28,10 @@ import { VisitVaultCard } from "./VisitVaultCard";
 import { WelcomeCard } from "./WelcomeCard";
 
 export function HomePage() {
-  const { data: getProjectEntitlementsResponse } = useQuery(
-    getProjectEntitlements,
-  );
+  const {
+    data: getProjectEntitlementsResponse,
+    isLoading: isLoadingEntitlements,
+  } = useQuery(getProjectEntitlements);
   const { data: getProjectWebhookManagementUrlResponse } = useQuery(
     getProjectWebhookManagementURL,
   );
@@ -40,9 +41,10 @@ export function HomePage() {
       <div className={"grid grid-cols-1 lg:grid-cols-3 gap-8"}>
         <WelcomeCard />
         <VisitVaultCard />
-        {!getProjectEntitlementsResponse?.entitledBackendApiKeys && (
-          <UpgradeCard />
-        )}
+        {!isLoadingEntitlements &&
+          !getProjectEntitlementsResponse?.entitledBackendApiKeys && (
+            <UpgradeCard />
+          )}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
         <Link to="/organizations">

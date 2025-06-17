@@ -16,15 +16,17 @@ import { getProjectEntitlements } from "@/gen/tesseral/backend/v1/backend-Backen
 import { cn } from "@/lib/utils";
 
 export function WelcomeCard() {
-  const { data: getProjectEntitlementsResponse } = useQuery(
-    getProjectEntitlements,
-  );
+  const {
+    data: getProjectEntitlementsResponse,
+    isLoading: isLoadingEntitlements,
+  } = useQuery(getProjectEntitlements);
 
   return (
     <Card
       className={cn(
         "col-span-1",
-        getProjectEntitlementsResponse?.entitledBackendApiKeys
+        !isLoadingEntitlements &&
+          getProjectEntitlementsResponse?.entitledBackendApiKeys
           ? "lg:col-span-2"
           : "",
       )}
