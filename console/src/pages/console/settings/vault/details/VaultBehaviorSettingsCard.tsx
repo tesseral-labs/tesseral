@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -59,13 +60,12 @@ export function VaultBehaviorSettingsCard() {
               Create Organizations automatically when a new user signs up.
             </p>
           </div>
-          <Switch
-            disabled
-            checked={
-              getProjectUiSettingsResponse?.projectUiSettings
-                ?.autoCreateOrganizations
-            }
-          />
+          {getProjectUiSettingsResponse?.projectUiSettings
+            ?.autoCreateOrganizations ? (
+            <Badge>Enabled</Badge>
+          ) : (
+            <Badge variant="secondary">Disabled</Badge>
+          )}
         </div>
       </CardContent>
       <CardFooter>
