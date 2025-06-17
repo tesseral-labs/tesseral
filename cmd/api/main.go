@@ -20,6 +20,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/google/uuid"
+	"github.com/honeycombio/otel-config-go/otelconfig"
 	"github.com/ssoready/conf"
 	stripeclient "github.com/stripe/stripe-go/v82/client"
 	svix "github.com/svix/svix-webhooks/go"
@@ -63,6 +64,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	wellknownservice "github.com/tesseral-labs/tesseral/internal/wellknown/service"
 	wellknownstore "github.com/tesseral-labs/tesseral/internal/wellknown/store"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 )
 
 func main() {
@@ -74,6 +76,12 @@ func main() {
 	}); err != nil {
 		panic(fmt.Errorf("init sentry: %w", err))
 	}
+
+	otelShutdown, err := otelconfig.ConfigureOpenTelemetry()
+	if err != nil {
+		panic(fmt.Errorf("configure otel: %w", err))
+	}
+	defer otelShutdown()
 
 	slog.SetDefault(slog.New(ctxlog.NewHandler(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{AddSource: true}))))
 
@@ -373,6 +381,9 @@ func main() {
 
 	// add correlation IDs to logs
 	serve = slogcorrelation.NewHandler(serve)
+
+	// add traces
+	serve = otelhttp.NewHandler(serve, "serve")
 
 	slog.Info("serve")
 	if config.RunAsLambda {
