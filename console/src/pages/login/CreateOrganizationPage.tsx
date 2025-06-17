@@ -6,8 +6,8 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { z } from "zod";
 
-import { Title } from "@/components/Title";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
+import { Title } from "@/components/page/Title";
 import { Button } from "@/components/ui/button";
 import {
   CardContent,
