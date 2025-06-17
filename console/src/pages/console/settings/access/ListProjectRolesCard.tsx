@@ -21,6 +21,7 @@ import { z } from "zod";
 
 import { MultiSelect } from "@/components/core/MuliSelect";
 import { ValueCopier } from "@/components/core/ValueCopier";
+import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -83,7 +84,13 @@ import {
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 
 export function ListProjectRolesCard() {
-  const { data: listRolesResponses } = useInfiniteQuery(
+  const {
+    data: listRolesResponses,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+  } = useInfiniteQuery(
     listRoles,
     {
       pageToken: "",
@@ -109,46 +116,59 @@ export function ListProjectRolesCard() {
         </CardAction>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Role</TableHead>
-              <TableHead>Actions</TableHead>
-              <TableHead>Created At</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {roles.map((role) => (
-              <TableRow key={role.id}>
-                <TableCell>
-                  <div className="space-y-2">
-                    <div>{role.displayName}</div>
-                    <ValueCopier value={role.id} label="Role ID" />
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex flex-wrap gap-2">
-                    {role.actions.map((action) => (
-                      <Badge key={action} variant="secondary">
-                        {action}
-                      </Badge>
-                    ))}
-                  </div>
-                </TableCell>
-                <TableCell>
-                  {role.createTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(role.createTime),
-                    ).toRelative()}
-                </TableCell>
-                <TableCell className="text-right">
-                  <ManageRoleButton roleId={role.id} />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        {isLoading ? (
+          <TableSkeleton columns={4} />
+        ) : (
+          <>
+            {roles.length === 0 ? (
+              <div className="text-center text-muted-foreground text-sm py-6">
+                No roles found. Create a role to grant permissions to Users and
+                API keys.
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Role</TableHead>
+                    <TableHead>Actions</TableHead>
+                    <TableHead>Created At</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {roles.map((role) => (
+                    <TableRow key={role.id}>
+                      <TableCell>
+                        <div className="space-y-2">
+                          <div>{role.displayName}</div>
+                          <ValueCopier value={role.id} label="Role ID" />
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-2">
+                          {role.actions.map((action) => (
+                            <Badge key={action} variant="secondary">
+                              {action}
+                            </Badge>
+                          ))}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {role.createTime &&
+                          DateTime.fromJSDate(
+                            timestampDate(role.createTime),
+                          ).toRelative()}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <ManageRoleButton roleId={role.id} />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </>
+        )}
       </CardContent>
     </Card>
   );

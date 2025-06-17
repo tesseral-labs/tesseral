@@ -16,6 +16,7 @@ import React, { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 
+import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -68,6 +69,7 @@ export function ListOrganizationSamlConnectionsCard() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isLoading,
   } = useInfiniteQuery(
     listSAMLConnections,
     {
@@ -100,55 +102,62 @@ export function ListOrganizationSamlConnectionsCard() {
         </CardAction>
       </CardHeader>
       <CardContent>
-        {samlConnections.length === 0 ? (
-          <div className="text-center text-muted-foreground text-sm py-4 mt-8">
-            No SAML connections found. Create a new connection to get started.
-          </div>
+        {isLoading ? (
+          <TableSkeleton />
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Connection</TableHead>
-                <TableHead>Primary</TableHead>
-                <TableHead>IDP Entity ID</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {samlConnections.map((samlConnection) => (
-                <TableRow key={samlConnection.id}>
-                  <TableCell>
-                    <span className="px-2 py-1 bg-muted font-mono text-xs rounded mr-2">
-                      {samlConnection.id}
-                    </span>
-                    {samlConnection.primary && (
-                      <Badge variant="outline">Primary</Badge>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {samlConnection.primary ? (
-                      <Badge>Yes</Badge>
-                    ) : (
-                      <Badge variant="secondary">No</Badge>
-                    )}
-                  </TableCell>
-                  <TableCell>{samlConnection.idpEntityId || "—"}</TableCell>
-                  <TableCell>
-                    {samlConnection.createTime &&
-                      DateTime.fromJSDate(
-                        timestampDate(samlConnection.createTime),
-                      ).toRelative()}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <ManageSamlConnectionButton
-                      samlConnection={samlConnection}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <>
+            {samlConnections.length === 0 ? (
+              <div className="text-center text-muted-foreground text-sm py-6">
+                No SAML connections found. Create a new connection to get
+                started.
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Connection</TableHead>
+                    <TableHead>Primary</TableHead>
+                    <TableHead>IDP Entity ID</TableHead>
+                    <TableHead>Created</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {samlConnections.map((samlConnection) => (
+                    <TableRow key={samlConnection.id}>
+                      <TableCell>
+                        <span className="px-2 py-1 bg-muted font-mono text-xs rounded mr-2">
+                          {samlConnection.id}
+                        </span>
+                        {samlConnection.primary && (
+                          <Badge variant="outline">Primary</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {samlConnection.primary ? (
+                          <Badge>Yes</Badge>
+                        ) : (
+                          <Badge variant="secondary">No</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell>{samlConnection.idpEntityId || "—"}</TableCell>
+                      <TableCell>
+                        {samlConnection.createTime &&
+                          DateTime.fromJSDate(
+                            timestampDate(samlConnection.createTime),
+                          ).toRelative()}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <ManageSamlConnectionButton
+                          samlConnection={samlConnection}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </>
         )}
       </CardContent>
       {hasNextPage && (

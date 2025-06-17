@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { ValueCopier } from "@/components/core/ValueCopier";
+import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -99,6 +100,7 @@ export function OrganizationUsersTab() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isLoading,
   } = useInfiniteQuery(
     listUsers,
     {
@@ -129,73 +131,85 @@ export function OrganizationUsersTab() {
         </CardAction>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>User</TableHead>
-              <TableHead>ID</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Auth Methods</TableHead>
-              <TableHead>Last Updated</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {users?.map((user) => (
-              <TableRow key={user.id}>
-                <TableCell>
-                  <Link
-                    to={`/organizations/${organizationId}/users/${user.id}`}
-                  >
-                    <div className="flex flex-col items-start gap-2">
-                      {user.displayName && (
-                        <span className="font-medium text-sm">
-                          {user.displayName}
-                        </span>
-                      )}
-                      <span className="text-muted-foreground text-sm">
-                        {user.email}
-                      </span>
-                    </div>
-                  </Link>
-                </TableCell>
-                <TableCell>
-                  <ValueCopier value={user.id} label="User ID" />
-                </TableCell>
-                <TableCell>
-                  {user.owner ? (
-                    <Badge>Owner</Badge>
-                  ) : (
-                    <Badge variant="secondary">Member</Badge>
-                  )}
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center flex-wrap gap-2">
-                    <Badge variant="outline">Email</Badge>
-                    {user.googleUserId && (
-                      <Badge variant="outline">Google</Badge>
-                    )}
-                    {user.microsoftUserId && (
-                      <Badge variant="outline">Microsoft</Badge>
-                    )}
-                    {user.githubUserId && (
-                      <Badge variant="outline">GitHub</Badge>
-                    )}
-                  </div>
-                </TableCell>
-                <TableCell>
-                  {user.updateTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(user.updateTime),
-                    ).toRelative()}
-                </TableCell>
-                <TableCell className="text-right">
-                  <ManageUserButton user={user} />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        {isLoading ? (
+          <TableSkeleton />
+        ) : (
+          <>
+            {users.length === 0 ? (
+              <div className="text-center text-muted-foreground text-sm py-6">
+                No Users found in this Organization.
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>User</TableHead>
+                    <TableHead>ID</TableHead>
+                    <TableHead>Role</TableHead>
+                    <TableHead>Auth Methods</TableHead>
+                    <TableHead>Last Updated</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {users?.map((user) => (
+                    <TableRow key={user.id}>
+                      <TableCell>
+                        <Link
+                          to={`/organizations/${organizationId}/users/${user.id}`}
+                        >
+                          <div className="flex flex-col items-start gap-2">
+                            {user.displayName && (
+                              <span className="font-medium text-sm">
+                                {user.displayName}
+                              </span>
+                            )}
+                            <span className="text-muted-foreground text-sm">
+                              {user.email}
+                            </span>
+                          </div>
+                        </Link>
+                      </TableCell>
+                      <TableCell>
+                        <ValueCopier value={user.id} label="User ID" />
+                      </TableCell>
+                      <TableCell>
+                        {user.owner ? (
+                          <Badge>Owner</Badge>
+                        ) : (
+                          <Badge variant="secondary">Member</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center flex-wrap gap-2">
+                          <Badge variant="outline">Email</Badge>
+                          {user.googleUserId && (
+                            <Badge variant="outline">Google</Badge>
+                          )}
+                          {user.microsoftUserId && (
+                            <Badge variant="outline">Microsoft</Badge>
+                          )}
+                          {user.githubUserId && (
+                            <Badge variant="outline">GitHub</Badge>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {user.updateTime &&
+                          DateTime.fromJSDate(
+                            timestampDate(user.updateTime),
+                          ).toRelative()}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <ManageUserButton user={user} />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </>
+        )}
       </CardContent>
       {hasNextPage && (
         <CardFooter className="justify-center">

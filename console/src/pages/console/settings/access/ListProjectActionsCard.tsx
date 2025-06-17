@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { ValueCopier } from "@/components/core/ValueCopier";
+import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -77,7 +78,7 @@ import {
 import { Action } from "@/gen/tesseral/backend/v1/models_pb";
 
 export function ListProjectActionsCard() {
-  const { data: getRBACPolicyResponse } = useQuery(getRBACPolicy);
+  const { data: getRBACPolicyResponse, isLoading } = useQuery(getRBACPolicy);
 
   return (
     <Card>
@@ -92,32 +93,44 @@ export function ListProjectActionsCard() {
         </CardAction>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Action</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {getRBACPolicyResponse?.rbacPolicy?.actions.map((action) => (
-              <TableRow key={action.name}>
-                <TableCell>
-                  <ValueCopier value={action.name} label="Action" />
-                </TableCell>
-                <TableCell>
-                  {action.description || (
-                    <span className="text-muted-foreground">—</span>
-                  )}
-                </TableCell>
-                <TableCell className="text-right">
-                  <ManageProjectActionButtion action={action} />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        {isLoading ? (
+          <TableSkeleton />
+        ) : (
+          <>
+            {!getRBACPolicyResponse?.rbacPolicy?.actions.length ? (
+              <div className="text-center text-muted-foreground text-sm py-6">
+                No actions defined yet
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Action</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {getRBACPolicyResponse?.rbacPolicy?.actions.map((action) => (
+                    <TableRow key={action.name}>
+                      <TableCell>
+                        <ValueCopier value={action.name} label="Action" />
+                      </TableCell>
+                      <TableCell>
+                        {action.description || (
+                          <span className="text-muted-foreground">—</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <ManageProjectActionButtion action={action} />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </>
+        )}
       </CardContent>
     </Card>
   );

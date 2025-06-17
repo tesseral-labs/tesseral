@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { ValueCopier } from "@/components/core/ValueCopier";
+import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -85,6 +86,7 @@ export function ListOrganizationScimApiKeysCard() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isLoading,
   } = useInfiniteQuery(
     listSCIMAPIKeys,
     {
@@ -113,64 +115,70 @@ export function ListOrganizationScimApiKeysCard() {
         </CardAction>
       </CardHeader>
       <CardContent>
-        {scimApiKeys?.length === 0 ? (
-          <div className="text-muted-foreground text-sm">
-            No SCIM API keys found for this organization.
-          </div>
+        {isLoading ? (
+          <TableSkeleton />
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>API Key</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead>Updated</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {scimApiKeys?.map((scimApiKey) => (
-                <TableRow key={scimApiKey.id}>
-                  <TableCell className="space-y-1">
-                    <div className="font-medium">
-                      <Link
-                        to={`/organizations/${organizationId}/scim-api-keys/${scimApiKey.id}`}
-                      >
-                        {scimApiKey.displayName || "No display name"}
-                      </Link>
-                    </div>
+          <>
+            {scimApiKeys?.length === 0 ? (
+              <div className="text-muted-foreground text-sm py-6 text-center">
+                No SCIM API keys found for this organization.
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>API Key</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Created</TableHead>
+                    <TableHead>Updated</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {scimApiKeys?.map((scimApiKey) => (
+                    <TableRow key={scimApiKey.id}>
+                      <TableCell className="space-y-1">
+                        <div className="font-medium">
+                          <Link
+                            to={`/organizations/${organizationId}/scim-api-keys/${scimApiKey.id}`}
+                          >
+                            {scimApiKey.displayName || "No display name"}
+                          </Link>
+                        </div>
 
-                    <ValueCopier
-                      value={scimApiKey.id}
-                      label="SCIM API Key ID"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    {scimApiKey.revoked ? (
-                      <Badge variant="secondary">Revoked</Badge>
-                    ) : (
-                      <Badge>Active</Badge>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {scimApiKey.createTime &&
-                      DateTime.fromJSDate(
-                        timestampDate(scimApiKey.createTime),
-                      ).toRelative()}
-                  </TableCell>
-                  <TableCell>
-                    {scimApiKey.updateTime &&
-                      DateTime.fromJSDate(
-                        timestampDate(scimApiKey.updateTime),
-                      ).toRelative()}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <ManageScimApiKeyButton scimApiKey={scimApiKey} />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                        <ValueCopier
+                          value={scimApiKey.id}
+                          label="SCIM API Key ID"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        {scimApiKey.revoked ? (
+                          <Badge variant="secondary">Revoked</Badge>
+                        ) : (
+                          <Badge>Active</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {scimApiKey.createTime &&
+                          DateTime.fromJSDate(
+                            timestampDate(scimApiKey.createTime),
+                          ).toRelative()}
+                      </TableCell>
+                      <TableCell>
+                        {scimApiKey.updateTime &&
+                          DateTime.fromJSDate(
+                            timestampDate(scimApiKey.updateTime),
+                          ).toRelative()}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <ManageScimApiKeyButton scimApiKey={scimApiKey} />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </>
         )}
       </CardContent>
       {hasNextPage && (

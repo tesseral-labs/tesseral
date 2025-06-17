@@ -25,6 +25,7 @@ import { z } from "zod";
 
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { PageContent } from "@/components/page";
+import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -92,6 +93,7 @@ export function ListOrganizationsPage() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isLoading,
   } = useInfiniteQuery(
     listOrganizations,
     {
@@ -127,67 +129,82 @@ export function ListOrganizationsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Organization</TableHead>
-                  <TableHead>Auth Methods</TableHead>
-                  <TableHead>MFA</TableHead>
-                  <TableHead>Created</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {organizations?.map((org) => (
-                  <TableRow key={org.id}>
-                    <TableCell className="font-medium">
-                      <div className="flex flex-col items-start gap-2">
-                        <Link to={`/organizations/${org.id}`}>
-                          {org.displayName}
-                        </Link>
-                        <ValueCopier value={org.id} label="Organization ID" />
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center flex-wrap gap-2">
-                        {org.logInWithGoogle && (
-                          <Badge variant="outline">Google</Badge>
-                        )}
-                        {org.logInWithMicrosoft && (
-                          <Badge variant="outline">Microsoft</Badge>
-                        )}
-                        {org.logInWithGithub && (
-                          <Badge variant="outline">GitHub</Badge>
-                        )}
-                        {org.logInWithEmail && (
-                          <Badge variant="outline">Email</Badge>
-                        )}
-                        {org.logInWithSaml && (
-                          <Badge variant="outline">SAML</Badge>
-                        )}
-                      </div>
-                      {/* {org.authenticationMethods.join(", ")} */}
-                    </TableCell>
-                    <TableCell>
-                      {org.requireMfa ? (
-                        <Badge className="bg-green-500">Required</Badge>
-                      ) : (
-                        <Badge variant="secondary">Not Required</Badge>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {org.createTime &&
-                        DateTime.fromJSDate(
-                          timestampDate(org.createTime),
-                        ).toRelative()}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <ManageOrganizationButton organization={org} />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            {isLoading ? (
+              <TableSkeleton />
+            ) : (
+              <>
+                {organizations?.length === 0 ? (
+                  <div className="text-center text-muted-foreground py-6">
+                    No Organizations Found
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Organization</TableHead>
+                        <TableHead>Auth Methods</TableHead>
+                        <TableHead>MFA</TableHead>
+                        <TableHead>Created</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {organizations?.map((org) => (
+                        <TableRow key={org.id}>
+                          <TableCell className="font-medium">
+                            <div className="flex flex-col items-start gap-2">
+                              <Link to={`/organizations/${org.id}`}>
+                                {org.displayName}
+                              </Link>
+                              <ValueCopier
+                                value={org.id}
+                                label="Organization ID"
+                              />
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center flex-wrap gap-2">
+                              {org.logInWithGoogle && (
+                                <Badge variant="outline">Google</Badge>
+                              )}
+                              {org.logInWithMicrosoft && (
+                                <Badge variant="outline">Microsoft</Badge>
+                              )}
+                              {org.logInWithGithub && (
+                                <Badge variant="outline">GitHub</Badge>
+                              )}
+                              {org.logInWithEmail && (
+                                <Badge variant="outline">Email</Badge>
+                              )}
+                              {org.logInWithSaml && (
+                                <Badge variant="outline">SAML</Badge>
+                              )}
+                            </div>
+                            {/* {org.authenticationMethods.join(", ")} */}
+                          </TableCell>
+                          <TableCell>
+                            {org.requireMfa ? (
+                              <Badge className="bg-green-500">Required</Badge>
+                            ) : (
+                              <Badge variant="secondary">Not Required</Badge>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {org.createTime &&
+                              DateTime.fromJSDate(
+                                timestampDate(org.createTime),
+                              ).toRelative()}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <ManageOrganizationButton organization={org} />
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </>
+            )}
           </CardContent>
           {hasNextPage && (
             <CardFooter className="justify-center">

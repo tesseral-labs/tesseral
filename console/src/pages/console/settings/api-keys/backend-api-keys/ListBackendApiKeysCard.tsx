@@ -191,7 +191,7 @@ export function ListBackendApiKeysCard() {
             ) : (
               <>
                 {!backendApiKeys.length ? (
-                  <div className="text-center text-muted-foreground text-sm py-4 mt-8">
+                  <div className="text-center text-muted-foreground text-sm py-6">
                     No API keys found. Create a new key to get started.
                   </div>
                 ) : (

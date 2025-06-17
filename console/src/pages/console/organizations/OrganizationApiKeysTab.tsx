@@ -51,9 +51,10 @@ export function OrganizationApiKeysTab() {
     id: organizationId,
   });
   const { data: getProjectResponse } = useQuery(getProject);
-  const { data: getProjectEntitlementsResponse } = useQuery(
-    getProjectEntitlements,
-  );
+  const {
+    data: getProjectEntitlementsResponse,
+    isLoading: isLoadingEntitlements,
+  } = useQuery(getProjectEntitlements);
   const createStripeCheckoutLinkMutation = useMutation(
     createStripeCheckoutLink,
   );
@@ -65,8 +66,8 @@ export function OrganizationApiKeysTab() {
 
   return (
     <>
-      {getProjectEntitlementsResponse &&
-        !getProjectEntitlementsResponse.entitledBackendApiKeys && (
+      {!isLoadingEntitlements &&
+        !getProjectEntitlementsResponse?.entitledBackendApiKeys && (
           <div className="bg-gradient-to-br from-violet-500 via-purple-500 to-blue-500 border-0 text-white relative overflow-hidden shadow-xl p-8 rounded-lg">
             <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
 

@@ -16,6 +16,7 @@ import { Link, useParams } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -87,6 +88,7 @@ export function OrganizationApiKeyRolesTab() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isLoading,
   } = useInfiniteQuery(
     listAPIKeyRoleAssignments,
     {
@@ -115,28 +117,34 @@ export function OrganizationApiKeyRolesTab() {
         </CardAction>
       </CardHeader>
       <CardContent>
-        {apiKeyRoleAssignments.length === 0 ? (
-          <div className="text-sm text-muted-foreground text-center">
-            No roles assigned to this API Key.
-          </div>
+        {isLoading ? (
+          <TableSkeleton columns={3} />
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Role</TableHead>
-                <TableHead>Actions</TableHead>
-                <TableHead></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {apiKeyRoleAssignments.map((assignment) => (
-                <ApiKeyRoleAssignmentRow
-                  key={assignment.id}
-                  apiKeyRoleAssignment={assignment}
-                />
-              ))}
-            </TableBody>
-          </Table>
+          <>
+            {apiKeyRoleAssignments.length === 0 ? (
+              <div className="text-sm text-muted-foreground text-center py-6">
+                No roles assigned to this API Key.
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Role</TableHead>
+                    <TableHead>Actions</TableHead>
+                    <TableHead></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {apiKeyRoleAssignments.map((assignment) => (
+                    <ApiKeyRoleAssignmentRow
+                      key={assignment.id}
+                      apiKeyRoleAssignment={assignment}
+                    />
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </>
         )}
       </CardContent>
       {hasNextPage && (

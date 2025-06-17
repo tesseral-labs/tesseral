@@ -11,6 +11,7 @@ import { Link, useParams } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -84,6 +85,7 @@ export function UserRolesTab() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isLoading,
   } = useInfiniteQuery(
     listUserRoleAssignments,
     {
@@ -117,28 +119,34 @@ export function UserRolesTab() {
         </CardAction>
       </CardHeader>
       <CardContent>
-        {userRoleAssignments.length === 0 ? (
-          <div className="col-span-3 text-center text-sm text-muted-foreground">
-            No roles assigned to this user.
-          </div>
+        {isLoading ? (
+          <TableSkeleton columns={3} />
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Role</TableHead>
-                <TableHead>Actions</TableHead>
-                <TableHead></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {userRoleAssignments.map((assignment) => (
-                <UserRoleAssignmentRow
-                  key={assignment.roleId}
-                  userRoleAssignment={assignment}
-                />
-              ))}
-            </TableBody>
-          </Table>
+          <>
+            {userRoleAssignments.length === 0 ? (
+              <div className="text-center text-sm text-muted-foreground py-6">
+                No roles assigned to this user.
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Role</TableHead>
+                    <TableHead>Actions</TableHead>
+                    <TableHead></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {userRoleAssignments.map((assignment) => (
+                    <UserRoleAssignmentRow
+                      key={assignment.roleId}
+                      userRoleAssignment={assignment}
+                    />
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </>
         )}
       </CardContent>
       {hasNextPage && (

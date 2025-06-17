@@ -18,6 +18,7 @@ import { Link, useParams } from "react-router";
 import { toast } from "sonner";
 
 import { ValueCopier } from "@/components/core/ValueCopier";
+import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -68,6 +69,7 @@ export function UserPasskeysTab() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isLoading,
   } = useInfiniteQuery(
     listPasskeys,
     {
@@ -90,75 +92,81 @@ export function UserPasskeysTab() {
         <CardDescription>Passkeys associated with this User.</CardDescription>
       </CardHeader>
       <CardContent>
-        {passkeys.length === 0 && (
-          <div className="text-center text-muted-foreground">
-            <p className="text-sm">No passkeys found for this user.</p>
-          </div>
-        )}
-        {passkeys.length > 0 && (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Passkey</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Public Key</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead>Updated</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {passkeys.map((passkey) => (
-                <TableRow key={passkey.id}>
-                  <TableCell className="space-y-2">
-                    <Link
-                      to={`/organizations/${organizationId}/users/${userId}/passkeys/${passkey.id}`}
-                    >
-                      <span className="block font-semibold">
-                        {passkey.aaguid && AAGUIDS[passkey.aaguid]
-                          ? AAGUIDS[passkey.aaguid]
-                          : "Unknown Vendor"}
-                      </span>
-                    </Link>
-                    <ValueCopier value={passkey.id} label="Passkey ID" />
-                  </TableCell>
-                  <TableCell>
-                    {passkey.disabled ? (
-                      <Badge variant="secondary">Disabled</Badge>
-                    ) : (
-                      <Badge>Active</Badge>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {passkey.publicKeyPkix && (
-                      <a
-                        className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
-                        download={`Public Key ${passkey.id}.pem`}
-                        href={`data:text/plain;base64,${btoa(passkey.publicKeyPkix)}`}
-                      >
-                        Download (.pem)
-                      </a>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {passkey.createTime &&
-                      DateTime.fromJSDate(
-                        timestampDate(passkey.createTime),
-                      ).toRelative()}
-                  </TableCell>
-                  <TableCell>
-                    {passkey.updateTime &&
-                      DateTime.fromJSDate(
-                        timestampDate(passkey.updateTime),
-                      ).toRelative()}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <ManagePasskeyButton passkey={passkey} />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+        {isLoading ? (
+          <TableSkeleton columns={6} />
+        ) : (
+          <>
+            {passkeys.length === 0 && (
+              <div className="text-center text-muted-foreground py-6 text-sm">
+                No passkeys found for this user
+              </div>
+            )}
+            {passkeys.length > 0 && (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Passkey</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Public Key</TableHead>
+                    <TableHead>Created</TableHead>
+                    <TableHead>Updated</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {passkeys.map((passkey) => (
+                    <TableRow key={passkey.id}>
+                      <TableCell className="space-y-2">
+                        <Link
+                          to={`/organizations/${organizationId}/users/${userId}/passkeys/${passkey.id}`}
+                        >
+                          <span className="block font-semibold">
+                            {passkey.aaguid && AAGUIDS[passkey.aaguid]
+                              ? AAGUIDS[passkey.aaguid]
+                              : "Unknown Vendor"}
+                          </span>
+                        </Link>
+                        <ValueCopier value={passkey.id} label="Passkey ID" />
+                      </TableCell>
+                      <TableCell>
+                        {passkey.disabled ? (
+                          <Badge variant="secondary">Disabled</Badge>
+                        ) : (
+                          <Badge>Active</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {passkey.publicKeyPkix && (
+                          <a
+                            className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
+                            download={`Public Key ${passkey.id}.pem`}
+                            href={`data:text/plain;base64,${btoa(passkey.publicKeyPkix)}`}
+                          >
+                            Download (.pem)
+                          </a>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {passkey.createTime &&
+                          DateTime.fromJSDate(
+                            timestampDate(passkey.createTime),
+                          ).toRelative()}
+                      </TableCell>
+                      <TableCell>
+                        {passkey.updateTime &&
+                          DateTime.fromJSDate(
+                            timestampDate(passkey.updateTime),
+                          ).toRelative()}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <ManagePasskeyButton passkey={passkey} />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </>
         )}
       </CardContent>
       {hasNextPage && (

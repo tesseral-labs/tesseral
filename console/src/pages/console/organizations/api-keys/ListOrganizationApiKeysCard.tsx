@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { SecretCopier } from "@/components/core/SecretCopier";
+import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -115,6 +116,7 @@ export function ListOrganizationApiKeysCard() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isLoading,
   } = useInfiniteQuery(
     listAPIKeys,
     {
@@ -146,59 +148,69 @@ export function ListOrganizationApiKeysCard() {
         </CardAction>
       </CardHeader>
       <CardContent>
-        <>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>API Key</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {apiKeys?.map((apiKey) => (
-                <TableRow key={apiKey.id}>
-                  <TableCell>
-                    <Link
-                      to={`/organizations/${organizationId}/api-keys/${apiKey.id}`}
-                    >
-                      <div className="space-y-2">
-                        <h3 className="font-semibold">{apiKey.displayName}</h3>
-                        <div className="inline bg-muted text-muted-foreground font-mono text-xs py-1 px-2 rounded-sm">
-                          {getProjectResponse?.project?.apiKeySecretTokenPrefix}
-                          ...
-                          {apiKey.secretTokenSuffix}
-                        </div>
-                      </div>
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    {apiKey.revoked ? (
-                      <Badge>Active</Badge>
-                    ) : (
-                      <Badge variant="secondary">Revoked</Badge>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {apiKey.createTime &&
-                      DateTime.fromJSDate(
-                        timestampDate(apiKey.createTime),
-                      ).toRelative()}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <ManageApiKeyButton apiKey={apiKey} />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          {apiKeys.length === 0 && (
-            <div className="text-center text-muted-foreground text-sm py-4 mt-8">
-              No Managed API Keys found. Create a new API Key to get started.
-            </div>
-          )}
-        </>
+        {isLoading ? (
+          <TableSkeleton columns={4} />
+        ) : (
+          <>
+            {apiKeys.length === 0 ? (
+              <div className="text-center text-muted-foreground text-sm py-6">
+                No Managed API Keys found. Create a new API Key to get started.
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>API Key</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Created</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {apiKeys?.map((apiKey) => (
+                    <TableRow key={apiKey.id}>
+                      <TableCell>
+                        <Link
+                          to={`/organizations/${organizationId}/api-keys/${apiKey.id}`}
+                        >
+                          <div className="space-y-2">
+                            <h3 className="font-semibold">
+                              {apiKey.displayName}
+                            </h3>
+                            <div className="inline bg-muted text-muted-foreground font-mono text-xs py-1 px-2 rounded-sm">
+                              {
+                                getProjectResponse?.project
+                                  ?.apiKeySecretTokenPrefix
+                              }
+                              ...
+                              {apiKey.secretTokenSuffix}
+                            </div>
+                          </div>
+                        </Link>
+                      </TableCell>
+                      <TableCell>
+                        {apiKey.revoked ? (
+                          <Badge>Active</Badge>
+                        ) : (
+                          <Badge variant="secondary">Revoked</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {apiKey.createTime &&
+                          DateTime.fromJSDate(
+                            timestampDate(apiKey.createTime),
+                          ).toRelative()}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <ManageApiKeyButton apiKey={apiKey} />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </>
+        )}
       </CardContent>
       <CardFooter className="flex justify-center">
         {hasNextPage && (

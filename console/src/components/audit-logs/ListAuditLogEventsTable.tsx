@@ -37,6 +37,7 @@ import {
 import { cn } from "@/lib/utils";
 
 import { ValueCopier } from "../core/ValueCopier";
+import { TableSkeleton } from "../skeletons/TableSkeleton";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
@@ -98,6 +99,7 @@ export function ListAuditLogEventsTable({
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isLoading,
   } = useInfiniteQuery(consoleListAuditLogEvents, stableListParams, {
     pageParamKey: "pageToken",
     getNextPageParam: (lastPage) => lastPage.nextPageToken || undefined,
@@ -231,36 +233,42 @@ export function ListAuditLogEventsTable({
           )}
         </div>
       </div>
-      {auditLogEvents.length === 0 ? (
-        <div className="py-4 text-sm text-center text-muted-foreground mt-8">
-          No log events found.
-        </div>
+      {isLoading ? (
+        <TableSkeleton columns={4} />
       ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead></TableHead>
-              <TableHead>Event</TableHead>
-              <TableHead>Actor</TableHead>
-              <TableHead className="text-right">Time</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {auditLogEvents.map((event) => (
-              <>
-                <AuditLogEventRow
-                  key={event.id}
-                  event={event}
-                  expandedRows={expandedRows}
-                  toggleRow={toggleRow}
-                />
-                {expandedRows[event.id] && (
-                  <AuditLogEventDetails event={event} />
-                )}
-              </>
-            ))}
-          </TableBody>
-        </Table>
+        <>
+          {auditLogEvents.length === 0 ? (
+            <div className="text-sm text-center text-muted-foreground py-6">
+              No log events found.
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead></TableHead>
+                  <TableHead>Event</TableHead>
+                  <TableHead>Actor</TableHead>
+                  <TableHead className="text-right">Time</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {auditLogEvents.map((event) => (
+                  <>
+                    <AuditLogEventRow
+                      key={event.id}
+                      event={event}
+                      expandedRows={expandedRows}
+                      toggleRow={toggleRow}
+                    />
+                    {expandedRows[event.id] && (
+                      <AuditLogEventDetails event={event} />
+                    )}
+                  </>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </>
       )}
 
       {hasNextPage && (
