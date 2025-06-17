@@ -103,7 +103,7 @@ function BreadcrumbSlug({
     if (breadcrumb && label && label.includes("_")) {
       fetchBreadcrumbLabel();
     }
-  }, [breadcrumb, label]);
+  }, [breadcrumb, getOrganizationMutation, getUserMutation, label]);
 
   return (
     <>

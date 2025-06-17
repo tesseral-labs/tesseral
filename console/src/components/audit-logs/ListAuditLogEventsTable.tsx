@@ -1,9 +1,5 @@
 import { timestampDate, timestampFromDate } from "@bufbuild/protobuf/wkt";
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery,
-} from "@connectrpc/connect-query";
+import { useInfiniteQuery, useQuery } from "@connectrpc/connect-query";
 import { format } from "date-fns";
 import {
   CalendarIcon,
@@ -26,14 +22,8 @@ import {
   getUser,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { ConsoleListAuditLogEventsRequest } from "@/gen/tesseral/backend/v1/backend_pb";
-import {
-  APIKey,
-  BackendAPIKey,
-  ConsoleAuditLogEvent,
-  User,
-} from "@/gen/tesseral/backend/v1/models_pb";
+import { ConsoleAuditLogEvent } from "@/gen/tesseral/backend/v1/models_pb";
 import { getUser as getFrontendUser } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
-import { User as FrontendUser } from "@/gen/tesseral/frontend/v1/models_pb";
 import { cn } from "@/lib/utils";
 
 import { ValueCopier } from "../core/ValueCopier";
