@@ -1,12 +1,11 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ExternalLink, Globe } from "lucide-react";
+import { ExternalLink, Globe, LoaderCircle } from "lucide-react";
 import React, { MouseEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 import { z } from "zod";
 
-import { Loader } from "@/components/core/Loader";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -223,10 +222,17 @@ function ConfigureVaultDomainsButton() {
               </Button>
               <Button
                 type="submit"
-                disabled={updateVaultDomainSettingsMutation.isPending}
+                disabled={
+                  !form.formState.isDirty ||
+                  updateVaultDomainSettingsMutation.isPending
+                }
               >
-                {updateVaultDomainSettingsMutation.isPending && <Loader />}
-                Save
+                {updateVaultDomainSettingsMutation.isPending && (
+                  <LoaderCircle className="animate-spin" />
+                )}
+                {updateVaultDomainSettingsMutation.isPending
+                  ? "Saving changes"
+                  : "Save changes"}
               </Button>
             </DialogFooter>
           </form>

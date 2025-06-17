@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogDescription, DialogTrigger } from "@radix-ui/react-dialog";
-import { Cookie } from "lucide-react";
+import { Cookie, LoaderCircle } from "lucide-react";
 import React, { MouseEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -182,8 +182,19 @@ function ConfigureVaultCookieDomainButton() {
                       <Button variant="outline" onClick={handleCancel}>
                         Cancel
                       </Button>
-                      <Button disabled={!form.formState.isDirty} type="submit">
-                        Save
+                      <Button
+                        disabled={
+                          !form.formState.isDirty ||
+                          updateProjectMutation.isPending
+                        }
+                        type="submit"
+                      >
+                        {updateProjectMutation.isPending && (
+                          <LoaderCircle className="animate-spin" />
+                        )}
+                        {updateProjectMutation.isPending
+                          ? "Saving changes"
+                          : "Save changes"}
                       </Button>
                     </DialogFooter>
                   </form>

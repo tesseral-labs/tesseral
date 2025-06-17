@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { GlobeLock } from "lucide-react";
+import { GlobeLock, LoaderCircle } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -167,8 +167,18 @@ function ConfigureVaultTrustedDomainsButton() {
               <Button variant="outline" onClick={handleCancel} type="button">
                 Cancel
               </Button>
-              <Button disabled={!form.formState.isDirty} type="submit">
-                Save
+              <Button
+                disabled={
+                  !form.formState.isDirty || updateProjectMutation.isPending
+                }
+                type="submit"
+              >
+                {updateProjectMutation.isPending && (
+                  <LoaderCircle className="animate-spin" />
+                )}
+                {updateProjectMutation.isPending
+                  ? "Saving changes"
+                  : "Save changes"}
               </Button>
             </DialogFooter>
           </form>

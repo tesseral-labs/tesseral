@@ -1,7 +1,15 @@
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { useInfiniteQuery, useMutation } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Copy, Edit, Plus, Settings, Trash, TriangleAlert } from "lucide-react";
+import {
+  Copy,
+  Edit,
+  LoaderCircle,
+  Plus,
+  Settings,
+  Trash,
+  TriangleAlert,
+} from "lucide-react";
 import { DateTime } from "luxon";
 import React, { MouseEvent, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -323,8 +331,19 @@ function ManagePublishableKeyButton({
                 <Button variant="outline" onClick={handleCancel}>
                   Cancel
                 </Button>
-                <Button disabled={!form.formState.isDirty} type="submit">
-                  Save
+                <Button
+                  disabled={
+                    !form.formState.isDirty ||
+                    updatePublishableKeyMutation.isPending
+                  }
+                  type="submit"
+                >
+                  {updatePublishableKeyMutation.isPending && (
+                    <LoaderCircle className="animate-spin" />
+                  )}
+                  {updatePublishableKeyMutation.isPending
+                    ? "Saving changes"
+                    : "Save changes"}
                 </Button>
               </DialogFooter>
             </form>
