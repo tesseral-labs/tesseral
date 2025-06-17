@@ -2,7 +2,6 @@ package store
 
 import (
 	"context"
-	"os"
 	"testing"
 
 	"github.com/google/uuid"
@@ -13,52 +12,46 @@ import (
 )
 
 var (
-	deps *storetestutil.StoreDependencies
+	environment *storetestutil.Environment
 )
 
 func TestMain(m *testing.M) {
-	storeDeps, cleanup := storetestutil.NewStoreDependencies()
+	testEnvironment, cleanup := storetestutil.NewEnvironment()
 	defer cleanup()
 
-	deps = storeDeps
-	exitCode := m.Run()
-	cleanup()
-
-	os.Exit(exitCode)
+	environment = testEnvironment
+	m.Run()
 }
 
-type tester struct {
-	Store   *Store
-	console *storetestutil.Console
-	Project storetestutil.Project
+type testUtil struct {
+	Store       *Store
+	Environment *storetestutil.Environment
+	ProjectID   string
 }
 
-func Init(t *testing.T) (context.Context, *tester) {
+func newTestUtil(t *testing.T) (context.Context, *testUtil) {
 	store := New(NewStoreParams{
-		DB:                        deps.DB,
-		S3:                        deps.S3,
-		KMS:                       deps.KMS.Client,
-		SessionSigningKeyKmsKeyID: deps.KMS.SessionSigningKeyID,
-		DogfoodProjectID:          deps.Console.DogfoodProjectID,
-		ConsoleDomain:             deps.Console.ConsoleDomain,
+		DB:                        environment.DB,
+		S3:                        environment.S3,
+		KMS:                       environment.KMS.Client,
+		SessionSigningKeyKmsKeyID: environment.KMS.SessionSigningKeyID,
+		DogfoodProjectID:          environment.DogfoodProjectID,
+		ConsoleDomain:             environment.ConsoleDomain,
 	})
-	project := deps.Console.NewProject(t)
+	projectID, projectUserID := environment.NewProject(t)
 	ctx := authn.NewDogfoodSessionContext(t.Context(), authn.DogfoodSessionContextData{
-		ProjectID: project.ProjectID,
-		UserID:    project.UserID,
+		ProjectID: projectID,
+		UserID:    projectUserID,
 		SessionID: idformat.Session.Format(uuid.New()),
 	})
 
-	return ctx, &tester{
-		Store:   store,
-		console: deps.Console,
-		Project: project,
+	return ctx, &testUtil{
+		Store:       store,
+		Environment: environment,
+		ProjectID:   projectID,
 	}
 }
 
-func (s *tester) NewOrganization(t *testing.T, organization *backendv1.Organization) storetestutil.Organization {
-	return s.console.NewOrganization(t, storetestutil.OrganizationParams{
-		Project:      s.Project,
-		Organization: organization,
-	})
+func (s *testUtil) NewOrganization(t *testing.T, organization *backendv1.Organization) string {
+	return s.Environment.NewOrganization(t, s.ProjectID, organization)
 }

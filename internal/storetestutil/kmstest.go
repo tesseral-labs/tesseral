@@ -10,13 +10,13 @@ import (
 	"github.com/testcontainers/testcontainers-go/wait"
 )
 
-type KMS struct {
+type testKms struct {
 	*kms.Client
 
 	SessionSigningKeyID string
 }
 
-func NewKMS() (*KMS, func()) {
+func newKMS() (*testKms, func()) {
 	container, err := testcontainers.GenericContainer(
 		context.Background(),
 		testcontainers.GenericContainerRequest{
@@ -96,7 +96,7 @@ Aliases:
 		EndpointResolver: kms.EndpointResolverFromURL(endpoint),
 		Region:           awsTestRegion,
 	}
-	return &KMS{
+	return &testKms{
 		Client:              kms.New(cfg),
 		SessionSigningKeyID: "bc436485-5092-42b8-92a3-0aa8b93536dc",
 	}, cleanup

@@ -11,7 +11,7 @@ import (
 func TestNewKMS(t *testing.T) {
 	t.Parallel()
 
-	client, cleanup := NewKMS()
+	client, cleanup := newKMS()
 	t.Cleanup(cleanup)
 
 	_, err := client.CreateKey(t.Context(), &kms.CreateKeyInput{

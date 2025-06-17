@@ -10,7 +10,7 @@ import (
 func TesNewDB(t *testing.T) {
 	t.Parallel()
 
-	pool, cleanup := NewDB()
+	pool, cleanup := newDB()
 	t.Cleanup(cleanup)
 
 	ctx := context.Background()

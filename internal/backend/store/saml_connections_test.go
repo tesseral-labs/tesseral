@@ -13,10 +13,10 @@ import (
 func TestCreateSAMLConnection_SAMLEnabled(t *testing.T) {
 	t.Parallel()
 
-	ctx, u := Init(t)
+	ctx, u := newTestUtil(t)
 	require := require.New(t)
 
-	organization := u.NewOrganization(t, &backendv1.Organization{
+	organizationID := u.NewOrganization(t, &backendv1.Organization{
 		DisplayName:   "test",
 		LogInWithSaml: refOrNil(true),
 	})
@@ -26,7 +26,7 @@ func TestCreateSAMLConnection_SAMLEnabled(t *testing.T) {
 			SpEntityId:     "https://example.com/saml/sp",
 			IdpRedirectUrl: "https://idp.example.com/saml/redirect",
 			IdpEntityId:    "https://idp.example.com/saml/idp",
-			OrganizationId: organization.OrganizationID,
+			OrganizationId: organizationID,
 		},
 	})
 	require.NoError(err, "failed to create SAML connection")
@@ -35,10 +35,10 @@ func TestCreateSAMLConnection_SAMLEnabled(t *testing.T) {
 func TestCreateSAMLConnection_SAMLDisabled(t *testing.T) {
 	t.Parallel()
 
-	ctx, u := Init(t)
+	ctx, u := newTestUtil(t)
 	require := require.New(t)
 
-	organization := u.NewOrganization(t, &backendv1.Organization{
+	organizationID := u.NewOrganization(t, &backendv1.Organization{
 		DisplayName:   "test",
 		LogInWithSaml: refOrNil(false), // SAML not enabled
 	})
@@ -48,7 +48,7 @@ func TestCreateSAMLConnection_SAMLDisabled(t *testing.T) {
 			SpEntityId:     "https://example.com/saml/sp",
 			IdpRedirectUrl: "https://idp.example.com/saml/redirect",
 			IdpEntityId:    "https://idp.example.com/saml/idp",
-			OrganizationId: organization.OrganizationID,
+			OrganizationId: organizationID,
 		},
 	})
 
@@ -60,10 +60,10 @@ func TestCreateSAMLConnection_SAMLDisabled(t *testing.T) {
 func TestGetSAMLConnection_Exists(t *testing.T) {
 	t.Parallel()
 
-	ctx, u := Init(t)
+	ctx, u := newTestUtil(t)
 	require := require.New(t)
 
-	organization := u.NewOrganization(t, &backendv1.Organization{
+	organizationID := u.NewOrganization(t, &backendv1.Organization{
 		DisplayName:   "test",
 		LogInWithSaml: refOrNil(true),
 	})
@@ -71,7 +71,7 @@ func TestGetSAMLConnection_Exists(t *testing.T) {
 		SamlConnection: &backendv1.SAMLConnection{
 			IdpRedirectUrl: "https://idp.example.com/saml/redirect",
 			IdpEntityId:    "https://idp.example.com/saml/idp",
-			OrganizationId: organization.OrganizationID,
+			OrganizationId: organizationID,
 		},
 	})
 	require.NoError(err, "failed to create SAML connection")
@@ -86,7 +86,7 @@ func TestGetSAMLConnection_Exists(t *testing.T) {
 	require.NotEmpty(res.SamlConnection.SpEntityId, "expected SAML connection SP Entity ID to be set")
 	require.Equal("https://idp.example.com/saml/redirect", res.SamlConnection.IdpRedirectUrl, "expected SAML connection IdP Redirect URL to match")
 	require.Equal("https://idp.example.com/saml/idp", res.SamlConnection.IdpEntityId, "expected SAML connection IdP Entity ID to match")
-	require.Equal(organization.OrganizationID, res.SamlConnection.OrganizationId, "expected SAML connection Organization ID to match")
+	require.Equal(organizationID, res.SamlConnection.OrganizationId, "expected SAML connection Organization ID to match")
 	require.NotEmpty(res.SamlConnection.CreateTime, "expected SAML connection CreatedAt to be set")
 	require.NotEmpty(res.SamlConnection.UpdateTime, "expected SAML connection UpdatedAt to be set")
 }
@@ -94,7 +94,7 @@ func TestGetSAMLConnection_Exists(t *testing.T) {
 func TestGetSAMLConnection_DoesNotExist(t *testing.T) {
 	t.Parallel()
 
-	ctx, u := Init(t)
+	ctx, u := newTestUtil(t)
 	require := require.New(t)
 
 	res, err := u.Store.GetSAMLConnection(ctx, &backendv1.GetSAMLConnectionRequest{

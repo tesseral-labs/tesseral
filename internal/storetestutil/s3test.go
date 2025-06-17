@@ -9,7 +9,7 @@ import (
 	"github.com/testcontainers/testcontainers-go/wait"
 )
 
-func NewS3() (*s3.Client, func()) {
+func newS3() (*s3.Client, func()) {
 	container, err := testcontainers.GenericContainer(
 		context.Background(),
 		testcontainers.GenericContainerRequest{

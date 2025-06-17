@@ -10,7 +10,7 @@ import (
 func TestNewS3(t *testing.T) {
 	t.Parallel()
 
-	client, cleanup := NewS3()
+	client, cleanup := newS3()
 	t.Cleanup(cleanup)
 
 	res, err := client.ListBuckets(t.Context(), &s3.ListBucketsInput{})

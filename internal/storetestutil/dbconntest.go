@@ -17,7 +17,7 @@ import (
 // Matches docker-compose.yaml
 const imageName = "postgres:15.8"
 
-func NewDB() (*pgxpool.Pool, func()) {
+func newDB() (*pgxpool.Pool, func()) {
 	ctx := context.Background()
 
 	container, err := postgres.Run(ctx, imageName,
