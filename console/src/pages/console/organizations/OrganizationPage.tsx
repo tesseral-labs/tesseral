@@ -7,7 +7,7 @@ import { Link, Outlet, useLocation, useParams } from "react-router";
 
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { PageContent } from "@/components/page";
-import { Tab, Tabs } from "@/components/page/Tabs";
+import { TabLink, Tabs } from "@/components/page/Tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getOrganization } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
@@ -58,33 +58,40 @@ export function OrganizationPage() {
         </div>
       </div>
       <Tabs>
-        <Tab active={pathname === `/organizations/${organizationId}`}>
-          <Link to={`/organizations/${organizationId}`}>Details</Link>
-        </Tab>
-        <Tab
+        <TabLink
+          active={pathname === `/organizations/${organizationId}`}
+          to={`/organizations/${organizationId}`}
+        >
+          Details
+        </TabLink>
+        <TabLink
           active={
             pathname === `/organizations/${organizationId}/authentication`
           }
+          to={`/organizations/${organizationId}/authentication`}
         >
-          <Link to={`/organizations/${organizationId}/authentication`}>
-            Authentication
-          </Link>
-        </Tab>
-        <Tab
+          Authentication
+        </TabLink>
+        <TabLink
           active={pathname.startsWith(
             `/organizations/${organizationId}/api-keys`,
           )}
+          to={`/organizations/${organizationId}/api-keys`}
         >
-          <Link to={`/organizations/${organizationId}/api-keys`}>API Keys</Link>
-        </Tab>
-        <Tab
+          API Keys
+        </TabLink>
+        <TabLink
           active={pathname.startsWith(`/organizations/${organizationId}/users`)}
+          to={`/organizations/${organizationId}/users`}
         >
-          <Link to={`/organizations/${organizationId}/users`}>Users</Link>
-        </Tab>
-        <Tab active={pathname === `/organizations/${organizationId}/logs`}>
-          <Link to={`/organizations/${organizationId}/logs`}>Audit Logs</Link>
-        </Tab>
+          Users
+        </TabLink>
+        <TabLink
+          active={pathname === `/organizations/${organizationId}/logs`}
+          to={`/organizations/${organizationId}/logs`}
+        >
+          Audit Logs
+        </TabLink>
       </Tabs>
       <div>
         <Outlet />

@@ -18,7 +18,7 @@ export function ValueCopier({
   return (
     <div
       className={cn(
-        "inline-flex items-center bg-muted text-muted-foreground px-2 py-1 rounded text-xs font-mono cursor-pointer pr-6 relative max-w-full",
+        "inline-flex items-center bg-muted text-muted-foreground px-2 py-1 rounded text-xs font-mono cursor-pointer pr-6 relative max-w-full hover:text-foreground",
         className,
       )}
       onClick={() => {

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
+import { Link } from "react-router";
 
 import { cn } from "@/lib/utils";
 
@@ -56,5 +57,20 @@ export function Tab({
     >
       {children}
     </div>
+  );
+}
+
+export function TabLink({
+  active = false,
+  children,
+  to,
+}: PropsWithChildren<{
+  active?: boolean;
+  to: string;
+}>) {
+  return (
+    <Link to={to}>
+      <Tab active={active}>{children}</Tab>
+    </Link>
   );
 }

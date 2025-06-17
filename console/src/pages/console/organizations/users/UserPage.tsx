@@ -7,7 +7,7 @@ import { Link, Outlet, useLocation, useParams } from "react-router";
 
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { PageContent } from "@/components/page";
-import { Tab, Tabs } from "@/components/page/Tabs";
+import { Tab, TabLink, Tabs } from "@/components/page/Tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getUser } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
@@ -55,71 +55,59 @@ export function UserPage() {
       </div>
 
       <Tabs>
-        <Tab
+        <TabLink
           active={
             pathname === `/organizations/${organizationId}/users/${userId}`
           }
+          to={`/organizations/${organizationId}/users/${userId}`}
         >
-          <Link to={`/organizations/${organizationId}/users/${userId}`}>
-            Details
-          </Link>
-        </Tab>
-        <Tab
+          Details
+        </TabLink>
+        <TabLink
           active={
             pathname ===
             `/organizations/${organizationId}/users/${userId}/sessions`
           }
+          to={`/organizations/${organizationId}/users/${userId}/sessions`}
         >
-          <Link
-            to={`/organizations/${organizationId}/users/${userId}/sessions`}
-          >
-            Sessions
-          </Link>
-        </Tab>
-        <Tab
+          Sessions
+        </TabLink>
+        <TabLink
           active={
             pathname ===
             `/organizations/${organizationId}/users/${userId}/roles`
           }
+          to={`/organizations/${organizationId}/users/${userId}/roles`}
         >
-          <Link to={`/organizations/${organizationId}/users/${userId}/roles`}>
-            Roles
-          </Link>
-        </Tab>
-        <Tab
+          Roles
+        </TabLink>
+        <TabLink
           active={
             pathname ===
             `/organizations/${organizationId}/users/${userId}/passkeys`
           }
+          to={`/organizations/${organizationId}/users/${userId}/passkeys`}
         >
-          <Link
-            to={`/organizations/${organizationId}/users/${userId}/passkeys`}
-          >
-            Passkeys
-          </Link>
-        </Tab>
-        <Tab
+          Passkeys
+        </TabLink>
+        <TabLink
           active={
             pathname ===
             `/organizations/${organizationId}/users/${userId}/history`
           }
+          to={`/organizations/${organizationId}/users/${userId}/history`}
         >
-          <Link to={`/organizations/${organizationId}/users/${userId}/history`}>
-            User History
-          </Link>
-        </Tab>
-        <Tab
+          User History
+        </TabLink>
+        <TabLink
           active={
             pathname ===
             `/organizations/${organizationId}/users/${userId}/activity`
           }
+          to={`/organizations/${organizationId}/users/${userId}/activity`}
         >
-          <Link
-            to={`/organizations/${organizationId}/users/${userId}/activity`}
-          >
-            User Activity
-          </Link>
-        </Tab>
+          User Activity
+        </TabLink>
       </Tabs>
 
       <div>

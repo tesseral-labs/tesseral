@@ -4,7 +4,7 @@ import React from "react";
 import { Link, Outlet, useLocation } from "react-router";
 
 import { PageContent } from "@/components/page";
-import { Tab, Tabs } from "@/components/page/Tabs";
+import { TabLink, Tabs } from "@/components/page/Tabs";
 import { Button } from "@/components/ui/button";
 import { getProject } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 
@@ -36,15 +36,21 @@ export function VaultCustomizationPage() {
         </Link>
       </div>
       <Tabs>
-        <Tab active={pathname === `/settings/vault`}>
-          <Link to={`/settings/vault`}>Details</Link>
-        </Tab>
-        <Tab active={pathname === `/settings/vault/domains`}>
-          <Link to={`/settings/vault/domains`}>Domains</Link>
-        </Tab>
-        <Tab active={pathname === `/settings/vault/branding`}>
-          <Link to={`/settings/vault/branding`}>Branding</Link>
-        </Tab>
+        <TabLink active={pathname === `/settings/vault`} to={`/settings/vault`}>
+          Details
+        </TabLink>
+        <TabLink
+          active={pathname === `/settings/vault/domains`}
+          to={`/settings/vault/domains`}
+        >
+          Domains
+        </TabLink>
+        <TabLink
+          active={pathname === `/settings/vault/branding`}
+          to={`/settings/vault/branding`}
+        >
+          Branding
+        </TabLink>
       </Tabs>
       <div>
         <Outlet />
