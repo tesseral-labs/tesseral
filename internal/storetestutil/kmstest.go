@@ -20,7 +20,6 @@ func NewKMS(t *testing.T) *KMS {
 		t.Context(),
 		testcontainers.GenericContainerRequest{
 			ContainerRequest: testcontainers.ContainerRequest{
-				Name:         "tesseral-test-local-kms",
 				Image:        "nsmithuk/local-kms:latest",
 				ExposedPorts: []string{"4566/tcp"},
 				Env: map[string]string{

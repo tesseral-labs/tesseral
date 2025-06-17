@@ -13,7 +13,6 @@ func NewS3(t *testing.T) *s3.Client {
 		t.Context(),
 		testcontainers.GenericContainerRequest{
 			ContainerRequest: testcontainers.ContainerRequest{
-				Name:         "tesseral-test-local-s3",
 				Image:        "adobe/s3mock:latest",
 				ExposedPorts: []string{"9090/tcp"},
 				Env: map[string]string{
