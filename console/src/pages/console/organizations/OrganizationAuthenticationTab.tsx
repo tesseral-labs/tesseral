@@ -26,7 +26,10 @@ export function OrganizationAuthentication() {
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        <OrganizationBasicAuthCard />
+        {(getProjectResponse?.project?.logInWithEmail ||
+          getProjectResponse?.project?.logInWithPassword) && (
+          <OrganizationBasicAuthCard />
+        )}
 
         {(getProjectResponse?.project?.logInWithGoogle ||
           getProjectResponse?.project?.logInWithGithub ||
@@ -38,7 +41,11 @@ export function OrganizationAuthentication() {
           (getProjectResponse?.project?.logInWithPasskey && (
             <OrganizationMFACard />
           ))}
-        <OrganizationSamlCard />
+
+        {getOrganizationResponse?.organization?.logInWithSaml && (
+          <OrganizationSamlCard />
+        )}
+
         <OrganizationScimCard />
       </div>
 
