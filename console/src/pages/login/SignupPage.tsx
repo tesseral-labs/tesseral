@@ -35,6 +35,7 @@ import {
   getMicrosoftOAuthRedirectURL,
   issueEmailVerificationChallenge,
   setEmailAsPrimaryLoginFactor,
+  setPasswordAsPrimaryLoginFactor,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import {
   ProjectSettingsProvider,
@@ -153,12 +154,21 @@ function SignupPageContents() {
   const issueEmailVerificationChallengeMutation = useMutation(
     issueEmailVerificationChallenge,
   );
+  const { mutateAsync: setPasswordAsPrimaryLoginFactorAsync } = useMutation(
+    setPasswordAsPrimaryLoginFactor,
+  );
   const navigate = useNavigate();
 
   async function handleSubmit(values: z.infer<typeof schema>) {
     setSubmitting(true);
     await createIntermediateSessionWithRelayedSessionState();
-    await setEmailAsPrimaryLoginFactorMutation.mutateAsync({});
+    // prefer to sign up with "Log in with Email"
+    if (settings.logInWithEmail) {
+      await setEmailAsPrimaryLoginFactorMutation.mutateAsync({});
+    } else if (settings.logInWithPassword) {
+      await setPasswordAsPrimaryLoginFactorAsync({});
+    }
+
     await issueEmailVerificationChallengeMutation.mutateAsync({
       email: values.email,
     });
@@ -168,7 +178,10 @@ function SignupPageContents() {
 
   const hasAboveFoldMethod =
     settings.logInWithGoogle || settings.logInWithMicrosoft;
-  const hasBelowFoldMethod = settings.logInWithEmail || settings.logInWithSaml;
+  const hasBelowFoldMethod =
+    settings.logInWithEmail ||
+    settings.logInWithPassword ||
+    settings.logInWithSaml;
 
   return (
     <LoginFlowCard>

@@ -168,6 +168,8 @@ function isPrimaryAuthFactorAcceptable(
   switch (intermediateSession.primaryAuthFactor) {
     case PrimaryAuthFactor.EMAIL:
       return organization.logInWithEmail;
+    case PrimaryAuthFactor.PASSWORD:
+      return organization.logInWithPassword;
     case PrimaryAuthFactor.GOOGLE:
       return organization.logInWithGoogle;
     case PrimaryAuthFactor.MICROSOFT:
