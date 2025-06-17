@@ -23,9 +23,12 @@ type tester struct {
 
 func TestMain(m *testing.M) {
 	tester, cleanup := newTester()
+	defer cleanup()
+
 	storeT = tester
 	exitCode := m.Run()
 	cleanup()
+
 	os.Exit(exitCode)
 }
 
