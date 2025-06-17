@@ -213,7 +213,7 @@ export function VaultBrandingSettingsTab() {
     try {
       if (
         logoUploadUrl &&
-        logo &&
+        logoFile &&
         logo !== getProjectUISettingsResponse?.projectUiSettings?.logoUrl
       ) {
         const response = await fetch(logoUploadUrl, {
@@ -237,7 +237,7 @@ export function VaultBrandingSettingsTab() {
     try {
       if (
         darkModeLogoUploadUrl &&
-        darkModeLogo &&
+        darkModeLogoFile &&
         darkModeLogo !==
           getProjectUISettingsResponse?.projectUiSettings?.darkModeLogoUrl
       ) {
