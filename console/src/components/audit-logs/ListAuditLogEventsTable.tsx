@@ -40,11 +40,6 @@ import { ValueCopier } from "../core/ValueCopier";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "../ui/hover-card";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import {
   Select,
@@ -206,7 +201,11 @@ export function ListAuditLogEventsTable({
                   <SelectLabel>Event</SelectLabel>
                   {listAuditLogEventNamesResponse?.eventNames.map(
                     (eventName) => (
-                      <SelectItem key={eventName} value={eventName}>
+                      <SelectItem
+                        className=""
+                        key={eventName}
+                        value={eventName}
+                      >
                         {eventName}
                       </SelectItem>
                     ),
@@ -422,48 +421,20 @@ function AuditLogEventActor({
 
   return (
     <>
-      {apiKeyActor || sessionActor || userActor ? (
-        <HoverCard>
-          <HoverCardTrigger>
-            {apiKeyActor ? (
-              <Badge variant="secondary">
-                <span className="font-mono">
-                  {apiKeyActor.displayName || apiKeyActor.id}
-                </span>
-              </Badge>
-            ) : sessionActor ? (
-              <Badge variant="secondary">
-                <span className="font-mono">
-                  {userActor && userActor.email}
-                </span>
-              </Badge>
-            ) : userActor ? (
-              <Badge variant="secondary">
-                <span className="font-mono">{userActor.email}</span>
-              </Badge>
-            ) : (
-              <></>
-            )}
-          </HoverCardTrigger>
-          <HoverCardContent>
-            {apiKeyActor && (
-              <>
-                <div className="font-semibold">API Key</div>
-                <pre className="text-xs">
-                  {JSON.stringify(apiKeyActor, null, 2)}
-                </pre>
-              </>
-            )}
-            {userActor && (
-              <>
-                <div className="font-semibold">User</div>
-                <pre className="text-xs">
-                  {JSON.stringify(userActor, null, 2)}
-                </pre>
-              </>
-            )}
-          </HoverCardContent>
-        </HoverCard>
+      {apiKeyActor ? (
+        <Badge variant="secondary">
+          <span className="font-mono">
+            {apiKeyActor.displayName || apiKeyActor.id}
+          </span>
+        </Badge>
+      ) : sessionActor && userActor ? (
+        <Badge variant="secondary">
+          <span className="font-mono">{userActor.email}</span>
+        </Badge>
+      ) : userActor ? (
+        <Badge variant="secondary">
+          <span className="font-mono">{userActor.email}</span>
+        </Badge>
       ) : (
         <Badge variant="outline">
           <span className="font-mono">System</span>
