@@ -187,7 +187,7 @@ export function ListOrganizationsPage() {
                           </TableCell>
                           <TableCell>
                             {org.requireMfa ? (
-                              <Badge className="bg-green-500">Required</Badge>
+                              <Badge>Required</Badge>
                             ) : (
                               <Badge variant="secondary">Not Required</Badge>
                             )}
