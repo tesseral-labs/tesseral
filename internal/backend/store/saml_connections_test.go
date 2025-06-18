@@ -235,8 +235,8 @@ func TestListSAMLConnections_ReturnsAllForOrg(t *testing.T) {
 	})
 
 	// Create multiple SAML connections
-	ids := make([]string, 3)
-	for i := range 3 {
+	var ids []string
+	for range 3 {
 		resp, err := u.Store.CreateSAMLConnection(ctx, &backendv1.CreateSAMLConnectionRequest{
 			SamlConnection: &backendv1.SAMLConnection{
 				IdpRedirectUrl: "https://idp.example.com/saml/redirect",
@@ -245,7 +245,7 @@ func TestListSAMLConnections_ReturnsAllForOrg(t *testing.T) {
 			},
 		})
 		require.NoError(t, err)
-		ids[i] = resp.SamlConnection.Id
+		ids = append(ids, resp.SamlConnection.Id)
 	}
 
 	listResp, err := u.Store.ListSAMLConnections(ctx, &backendv1.ListSAMLConnectionsRequest{
@@ -253,7 +253,7 @@ func TestListSAMLConnections_ReturnsAllForOrg(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.NotNil(t, listResp)
-	require.Equal(t, len(listResp.SamlConnections), 3)
+	require.Len(t, listResp.SamlConnections, 3)
 
 	respIds := []string{}
 	for _, conn := range listResp.SamlConnections {
@@ -261,4 +261,56 @@ func TestListSAMLConnections_ReturnsAllForOrg(t *testing.T) {
 	}
 
 	require.ElementsMatch(t, ids, respIds)
+}
+
+func TestListSAMLConnections_Pagination(t *testing.T) {
+	t.Parallel()
+	ctx, u := newTestUtil(t)
+
+	organizationID := u.NewOrganization(t, &backendv1.Organization{
+		DisplayName:   "test",
+		LogInWithSaml: refOrNil(true),
+	})
+
+	// Create 15 SAML connections (page size is 10)
+	var createdIDs []string
+	for range 15 {
+		resp, err := u.Store.CreateSAMLConnection(ctx, &backendv1.CreateSAMLConnectionRequest{
+			SamlConnection: &backendv1.SAMLConnection{
+				IdpRedirectUrl: "https://idp.example.com/saml/redirect",
+				IdpEntityId:    "https://idp.example.com/saml/idp",
+				OrganizationId: organizationID,
+			},
+		})
+		require.NoError(t, err)
+		createdIDs = append(createdIDs, resp.SamlConnection.Id)
+	}
+
+	// First page
+	resp1, err := u.Store.ListSAMLConnections(ctx, &backendv1.ListSAMLConnectionsRequest{
+		OrganizationId: organizationID,
+	})
+	require.NoError(t, err)
+	require.NotNil(t, resp1)
+	require.Len(t, resp1.SamlConnections, 10)
+	require.NotEmpty(t, resp1.NextPageToken)
+
+	// Second page
+	resp2, err := u.Store.ListSAMLConnections(ctx, &backendv1.ListSAMLConnectionsRequest{
+		OrganizationId: organizationID,
+		PageToken:      resp1.NextPageToken,
+	})
+	require.NoError(t, err)
+	require.NotNil(t, resp2)
+	require.Len(t, resp2.SamlConnections, 5)
+	require.Empty(t, resp2.NextPageToken)
+
+	var allIDs []string
+	for _, c := range resp1.SamlConnections {
+		allIDs = append(allIDs, c.Id)
+	}
+	for _, c := range resp2.SamlConnections {
+		allIDs = append(allIDs, c.Id)
+	}
+	require.ElementsMatch(t, createdIDs, allIDs)
 }

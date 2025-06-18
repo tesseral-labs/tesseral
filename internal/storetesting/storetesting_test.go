@@ -1,4 +1,4 @@
-package storetestutil
+package storetesting
 
 import (
 	"testing"

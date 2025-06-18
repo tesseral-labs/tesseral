@@ -8,15 +8,15 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
-	"github.com/tesseral-labs/tesseral/internal/storetestutil"
+	"github.com/tesseral-labs/tesseral/internal/storetesting"
 )
 
 var (
-	environment *storetestutil.Environment
+	environment *storetesting.Environment
 )
 
 func TestMain(m *testing.M) {
-	testEnvironment, cleanup := storetestutil.NewEnvironment()
+	testEnvironment, cleanup := storetesting.NewEnvironment()
 	defer cleanup()
 
 	environment = testEnvironment
@@ -25,7 +25,7 @@ func TestMain(m *testing.M) {
 
 type testUtil struct {
 	Store       *Store
-	Environment *storetestutil.Environment
+	Environment *storetesting.Environment
 	ProjectID   string
 }
 
@@ -52,6 +52,6 @@ func newTestUtil(t *testing.T) (context.Context, *testUtil) {
 	}
 }
 
-func (s *testUtil) NewOrganization(t *testing.T, organization *backendv1.Organization) string {
-	return s.Environment.NewOrganization(t, s.ProjectID, organization)
+func (u *testUtil) NewOrganization(t *testing.T, organization *backendv1.Organization) string {
+	return u.Environment.NewOrganization(t, u.ProjectID, organization)
 }
