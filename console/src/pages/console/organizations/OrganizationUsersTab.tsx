@@ -279,7 +279,10 @@ function ManageUserButton({ user }: { user: User }) {
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem>
-            <Link to={`/organizations/${organizationId}/users/${user.id}`}>
+            <Link
+              className="w-full"
+              to={`/organizations/${organizationId}/users/${user.id}`}
+            >
               <div className="w-full flex items-center">
                 <AlignLeft className="inline mr-2" />
                 Details
@@ -288,6 +291,7 @@ function ManageUserButton({ user }: { user: User }) {
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Link
+              className="w-full"
               to={`/organizations/${organizationId}/users/${user.id}/sessions`}
             >
               <div className="w-full flex items-center">
@@ -298,6 +302,7 @@ function ManageUserButton({ user }: { user: User }) {
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Link
+              className="w-full"
               to={`/organizations/${organizationId}/users/${user.id}/roles`}
             >
               <div className="w-full flex items-center">
@@ -308,6 +313,7 @@ function ManageUserButton({ user }: { user: User }) {
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Link
+              className="w-full"
               to={`/organizations/${organizationId}/users/${user.id}/passkeys`}
             >
               <div className="w-full flex items-center">
@@ -317,7 +323,10 @@ function ManageUserButton({ user }: { user: User }) {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Link to={`/organizations/${organizationId}/users/${user.id}/logs`}>
+            <Link
+              className="w-full"
+              to={`/organizations/${organizationId}/users/${user.id}/logs`}
+            >
               <div className="w-full flex items-center">
                 <Logs className="inline mr-2" />
                 Audit Logs

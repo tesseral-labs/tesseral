@@ -337,11 +337,13 @@ function ManageBackendApiKeyButton({
         <DropdownMenuContent>
           <DropdownMenuItem>
             <Link
-              className="flex items-center gap-2"
+              className="w-full"
               to={`/settings/api-keys/backend-api-keys/${backendApiKey.id}`}
             >
-              <AlignLeft />
-              Details
+              <div className="w-full flex items-center gap-2">
+                <AlignLeft />
+                Details
+              </div>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />

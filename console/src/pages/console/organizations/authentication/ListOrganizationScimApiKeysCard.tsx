@@ -332,11 +332,13 @@ function ManageScimApiKeyButton({ scimApiKey }: { scimApiKey: SCIMAPIKey }) {
         <DropdownMenuContent>
           <DropdownMenuItem>
             <Link
+              className="w-full"
               to={`/organizations/${organizationId}/scim-api-keys/${scimApiKey.id}`}
-              className="flex items-center gap-2"
             >
-              <AlignLeft />
-              <span>Details</span>
+              <div className="w-full flex items-center gap-2">
+                <AlignLeft />
+                <span>Details</span>
+              </div>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />

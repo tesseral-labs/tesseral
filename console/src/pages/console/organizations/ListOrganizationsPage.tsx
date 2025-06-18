@@ -264,7 +264,7 @@ function ManageOrganizationButton({
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <Link to={`/organizations/${organization.id}`}>
+          <Link className="w-full" to={`/organizations/${organization.id}`}>
             <div className="w-full flex items-center">
               <AlignLeft className="inline mr-2" />
               Details
@@ -272,7 +272,10 @@ function ManageOrganizationButton({
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link to={`/organizations/${organization.id}/authentication`}>
+          <Link
+            className="w-full"
+            to={`/organizations/${organization.id}/authentication`}
+          >
             <div className="w-full flex items-center">
               <Shield className="inline mr-2" />
               Authentication Settings
@@ -280,7 +283,10 @@ function ManageOrganizationButton({
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link to={`/organizations/${organization.id}/api-keys`}>
+          <Link
+            className="w-full"
+            to={`/organizations/${organization.id}/api-keys`}
+          >
             <div className="w-full flex items-center">
               <Key className="inline mr-2" />
               Managed API Keys
@@ -288,7 +294,10 @@ function ManageOrganizationButton({
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link to={`/organizations/${organization.id}/users`}>
+          <Link
+            className="w-full"
+            to={`/organizations/${organization.id}/users`}
+          >
             <div className="w-full flex items-center">
               <Users className="inline mr-2" />
               Users
@@ -296,7 +305,10 @@ function ManageOrganizationButton({
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link to={`/organizations/${organization.id}/logs`}>
+          <Link
+            className="w-full"
+            to={`/organizations/${organization.id}/logs`}
+          >
             <div className="w-full flex items-center">
               <Logs className="inline mr-2" />
               Audit Logs
@@ -306,15 +318,9 @@ function ManageOrganizationButton({
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-            <AlertDialogTrigger asChild>
-              <Button
-                className="group text-destructive hover:text-destructive"
-                variant="ghost"
-                size="sm"
-              >
-                <Trash className="text-destructive group-hover:text:destructive" />
-                Delete Organization
-              </Button>
+            <AlertDialogTrigger className="group text-destructive hover:text-destructive flex items-center gap-2">
+              <Trash className="text-destructive group-hover:text:destructive" />
+              <span>Delete Organization</span>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>

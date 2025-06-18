@@ -257,11 +257,13 @@ function ManageSamlConnectionButton({
         <DropdownMenuContent>
           <DropdownMenuItem>
             <Link
-              className="flex items-center gap-2"
+              className="w-full"
               to={`/organizations/${organizationId}/saml-connections/${samlConnection.id}`}
             >
-              <AlignLeft />
-              <span>SAML Connection Details</span>
+              <div className="w-full flex items-center gap-2">
+                <AlignLeft />
+                <span>SAML Connection Details</span>
+              </div>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />

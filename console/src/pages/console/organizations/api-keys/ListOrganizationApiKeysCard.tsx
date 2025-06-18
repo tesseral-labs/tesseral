@@ -535,29 +535,35 @@ function ManageApiKeyButton({ apiKey }: { apiKey: APIKey }) {
         <DropdownMenuContent>
           <DropdownMenuItem>
             <Link
-              className="flex items-center gap-2"
+              className="w-full"
               to={`/organizations/${organizationId}/api-keys/${apiKey.id}`}
             >
-              <AlignLeft />
-              <span>Details</span>
+              <div className="w-full flex items-center gap-2">
+                <AlignLeft />
+                <span>Details</span>
+              </div>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Link
-              className="flex items-center gap-2"
+              className="w-full"
               to={`/organizations/${organizationId}/api-keys/${apiKey.id}/roles`}
             >
-              <GlobeLock />
-              <span>Roles</span>
+              <div className="w-full flex items-center gap-2">
+                <GlobeLock />
+                <span>Roles</span>
+              </div>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Link
-              className="flex items-center gap-2"
+              className="w-full"
               to={`/organizations/${organizationId}/api-keys/${apiKey.id}/logs`}
             >
-              <Logs />
-              <span>Audit Logs</span>
+              <div className="w-full flex items-center gap-2">
+                <Logs />
+                <span>Audit Logs</span>
+              </div>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />

@@ -254,11 +254,13 @@ function ManagePasskeyButton({ passkey }: { passkey: Passkey }) {
         <DropdownMenuContent>
           <DropdownMenuItem>
             <Link
-              className="flex items-center gap-2"
+              className="w-full"
               to={`/organizations/${organizationId}/users/${userId}/passkeys/${passkey.id}`}
             >
-              <AlignLeft />
-              Details
+              <div className="w-full flex items-center gap-2">
+                <AlignLeft />
+                Details
+              </div>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
