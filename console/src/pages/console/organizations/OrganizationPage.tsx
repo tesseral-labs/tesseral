@@ -34,7 +34,7 @@ export function OrganizationPage() {
       id: organizationId,
     },
     {
-      retry: false,
+      retry: 3,
     },
   );
 

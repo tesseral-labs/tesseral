@@ -33,7 +33,7 @@ export function UserPage() {
       id: userId,
     },
     {
-      retry: false,
+      retry: 3,
     },
   );
 

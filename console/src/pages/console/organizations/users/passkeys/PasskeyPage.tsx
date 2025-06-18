@@ -56,7 +56,7 @@ export function PasskeyPage() {
       id: passkeyId,
     },
     {
-      retry: false,
+      retry: 3,
     },
   );
 

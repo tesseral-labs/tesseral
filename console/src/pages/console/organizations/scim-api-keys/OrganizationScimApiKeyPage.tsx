@@ -66,7 +66,7 @@ export function OrganizationScimApiKeyPage() {
       id: scimApiKeyId,
     },
     {
-      retry: false,
+      retry: 3,
     },
   );
   const updateScimApiKeyMutation = useMutation(updateSCIMAPIKey);

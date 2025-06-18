@@ -70,7 +70,7 @@ export function OrganizationSamlConnectionPage() {
       id: samlConnectionId,
     },
     {
-      retry: false,
+      retry: 3,
     },
   );
   const updateSamlConnectionMutation = useMutation(updateSAMLConnection);

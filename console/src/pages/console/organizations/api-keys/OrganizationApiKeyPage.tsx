@@ -35,7 +35,7 @@ export function OrganizationApiKeyPage() {
       id: apiKeyId,
     },
     {
-      retry: false,
+      retry: 3,
     },
   );
 

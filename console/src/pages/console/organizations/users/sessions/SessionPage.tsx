@@ -29,7 +29,7 @@ export function SessionPage() {
       id: sessionId,
     },
     {
-      retry: false,
+      retry: 3,
     },
   );
 
