@@ -2277,7 +2277,7 @@ FROM
 WHERE
     api_key_role_assignments.api_key_id = $1
     AND organization.project_id = $2
-    AND api_key_role_assignments.id > $3
+    AND api_key_role_assignments.id >= $3
 ORDER BY
     api_key_role_assignments.id
 LIMIT $4
@@ -2329,7 +2329,7 @@ FROM
 WHERE
     organization.id = $1
     AND organization.project_id = $2
-    AND api_keys.id > $3
+    AND api_keys.id >= $3
 ORDER BY
     api_keys.id
 LIMIT $4
@@ -2471,7 +2471,7 @@ FROM
     organizations
 WHERE
     project_id = $1
-    AND id > $2
+    AND id >= $2
 ORDER BY
     id
 LIMIT $3

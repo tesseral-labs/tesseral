@@ -1480,7 +1480,7 @@ FROM
 WHERE
     api_key_role_assignments.api_key_id = $1
     AND api_keys.organization_id = $2
-    AND api_key_role_assignments.id > $3
+    AND api_key_role_assignments.id >= $3
 ORDER BY
     api_key_role_assignments.id
 LIMIT $4
@@ -1530,7 +1530,7 @@ FROM
     api_keys
 WHERE
     organization_id = $1
-    AND id > $2
+    AND id >= $2
 ORDER BY
     id
 LIMIT $3
