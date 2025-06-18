@@ -386,7 +386,7 @@ function DangerZoneCard() {
         </CardHeader>
 
         <CardContent>
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-8 w-full lg:w-auto flex-wrap lg:flex-nowrap">
             <div>
               <div className="text-sm font-semibold">
                 Delete SAML Connection

@@ -264,7 +264,7 @@ function DangerZoneCard() {
         </CardHeader>
         <CardContent className="space-y-6">
           {getPasskeyResponse?.passkey?.disabled ? (
-            <div className="flex items-center justify-between gap-8">
+            <div className="flex items-center justify-between gap-8 w-full lg:w-auto flex-wrap lg:flex-nowrap">
               <div className="space-y-1">
                 <div className="text-sm font-semibold flex items-center gap-2">
                   <ShieldPlus className="w-4 h-4" />
