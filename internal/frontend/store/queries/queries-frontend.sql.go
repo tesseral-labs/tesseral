@@ -1628,7 +1628,7 @@ WHERE
         OR $6 IS NULL)
     AND (actor_user_id = $7
         OR $7 IS NULL)
-    AND id < $8
+    AND id <= $8
 ORDER BY
     id DESC
 LIMIT $1

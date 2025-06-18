@@ -723,7 +723,7 @@ WHERE
         OR sqlc.narg ('event_name') IS NULL)
     AND (actor_user_id = @actor_user_id
         OR @actor_user_id IS NULL)
-    AND id < @id
+    AND id <= @id
 ORDER BY
     id DESC
 LIMIT $1;
