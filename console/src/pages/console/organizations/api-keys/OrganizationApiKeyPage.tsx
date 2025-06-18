@@ -1,6 +1,6 @@
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { useQuery } from "@connectrpc/connect-query";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronDown } from "lucide-react";
 import { DateTime } from "luxon";
 import React from "react";
 import { Link, Outlet, useLocation, useParams } from "react-router";
@@ -12,6 +12,12 @@ import { Tab, Tabs } from "@/components/page/Tabs";
 import { Title } from "@/components/page/Title";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { getAPIKey } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { NotFound } from "@/pages/NotFoundPage";
 
@@ -78,7 +84,7 @@ export function OrganizationApiKeyPage() {
               </Badge>
             </div>
           </div>
-          <Tabs>
+          <Tabs className="hidden lg:inline-block">
             <Tab
               active={
                 pathname ===
@@ -115,6 +121,54 @@ export function OrganizationApiKeyPage() {
               </Link>
             </Tab>
           </Tabs>
+
+          <div className="block lg:hidden space-y-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  className="flex items-center gap-2"
+                  variant="outline"
+                  size="sm"
+                >
+                  <span>
+                    {pathname ===
+                      `/organizations/${organizationId}/api-keys/${apiKeyId}` &&
+                      "Details"}
+                    {pathname ===
+                      `/organizations/${organizationId}/api-keys/${apiKeyId}/roles` &&
+                      "Roles"}
+                    {pathname ===
+                      `/organizations/${organizationId}/api-keys/${apiKeyId}/logs` &&
+                      "Audit Logs"}
+                  </span>
+                  <ChevronDown className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem asChild>
+                  <Link
+                    to={`/organizations/${organizationId}/api-keys/${apiKeyId}`}
+                  >
+                    Details
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link
+                    to={`/organizations/${organizationId}/api-keys/${apiKeyId}/roles`}
+                  >
+                    Roles
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link
+                    to={`/organizations/${organizationId}/api-keys/${apiKeyId}/logs`}
+                  >
+                    Audit Logs
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
 
           <div>
             <Outlet />

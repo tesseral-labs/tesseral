@@ -1,6 +1,6 @@
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { useQuery } from "@connectrpc/connect-query";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronDown } from "lucide-react";
 import { DateTime } from "luxon";
 import React from "react";
 import { Link, Outlet, useLocation, useParams } from "react-router";
@@ -12,6 +12,12 @@ import { TabLink, Tabs } from "@/components/page/Tabs";
 import { Title } from "@/components/page/Title";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { getOrganization } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { NotFound } from "@/pages/NotFoundPage";
 
@@ -87,7 +93,7 @@ export function OrganizationPage() {
               </Badge>
             </div>
           </div>
-          <Tabs>
+          <Tabs className="hidden lg:inline-block">
             <TabLink
               active={pathname === `/organizations/${organizationId}`}
               to={`/organizations/${organizationId}`}
@@ -125,6 +131,59 @@ export function OrganizationPage() {
               Audit Logs
             </TabLink>
           </Tabs>
+          <div className="block lg:hidden space-y-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  className="flex items-center gap-2"
+                  variant="outline"
+                  size="sm"
+                >
+                  <span>
+                    {pathname === `/organizations/${organizationId}` &&
+                      "Details"}
+                    {pathname ===
+                      `/organizations/${organizationId}/authentication` &&
+                      "Authentication"}
+                    {pathname.startsWith(
+                      `/organizations/${organizationId}/api-keys`,
+                    ) && "API Keys"}
+                    {pathname.startsWith(
+                      `/organizations/${organizationId}/users`,
+                    ) && "Users"}
+                    {pathname === `/organizations/${organizationId}/logs` &&
+                      "Audit Logs"}
+                  </span>
+                  <ChevronDown className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem asChild>
+                  <Link to={`/organizations/${organizationId}`}>Details</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to={`/organizations/${organizationId}/authentication`}>
+                    Authentication
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to={`/organizations/${organizationId}/api-keys`}>
+                    API Keys
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to={`/organizations/${organizationId}/users`}>
+                    Users
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to={`/organizations/${organizationId}/logs`}>
+                    Audit Logs
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
           <div>
             <Outlet />
           </div>

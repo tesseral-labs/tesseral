@@ -1,5 +1,5 @@
 import { useQuery } from "@connectrpc/connect-query";
-import { ExternalLink, Settings2 } from "lucide-react";
+import { ChevronDown, ExternalLink, Settings2 } from "lucide-react";
 import React from "react";
 import { Link, Outlet, useLocation } from "react-router";
 
@@ -7,6 +7,12 @@ import { PageContent } from "@/components/page";
 import { TabLink, Tabs } from "@/components/page/Tabs";
 import { Title } from "@/components/page/Title";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { getProject } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 
 export function VaultCustomizationPage() {
@@ -38,7 +44,7 @@ export function VaultCustomizationPage() {
           </Button>
         </Link>
       </div>
-      <Tabs>
+      <Tabs className="hidden lg:inline-block">
         <TabLink active={pathname === `/settings/vault`} to={`/settings/vault`}>
           Details
         </TabLink>
@@ -55,6 +61,35 @@ export function VaultCustomizationPage() {
           Branding
         </TabLink>
       </Tabs>
+      <div className="block lg:hidden space-y-2">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              className="flex items-center gap-2"
+              variant="outline"
+              size="sm"
+            >
+              <span>
+                {pathname === `/settings/vault` && "Details"}
+                {pathname === `/settings/vault/domains` && "Domains"}
+                {pathname === `/settings/vault/branding` && "Branding"}
+              </span>
+              <ChevronDown className="w-4 h-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem asChild>
+              <Link to={`/settings/vault`}>Details</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to={`/settings/vault/domains`}>Domains</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to={`/settings/vault/branding`}>Branding</Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
       <div>
         <Outlet />
       </div>

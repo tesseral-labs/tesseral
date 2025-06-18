@@ -1,6 +1,6 @@
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { useQuery } from "@connectrpc/connect-query";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronDown } from "lucide-react";
 import { DateTime } from "luxon";
 import React from "react";
 import { Link, Outlet, useLocation, useParams } from "react-router";
@@ -12,6 +12,12 @@ import { TabLink, Tabs } from "@/components/page/Tabs";
 import { Title } from "@/components/page/Title";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { getUser } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { NotFound } from "@/pages/NotFoundPage";
 
@@ -79,7 +85,7 @@ export function UserPage() {
             </div>
           </div>
 
-          <Tabs>
+          <Tabs className="hidden lg:inline-block">
             <TabLink
               active={
                 pathname === `/organizations/${organizationId}/users/${userId}`
@@ -134,7 +140,81 @@ export function UserPage() {
               User Activity
             </TabLink>
           </Tabs>
-
+          <div className="block lg:hidden space-y-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  className="flex items-center gap-2"
+                  variant="outline"
+                  size="sm"
+                >
+                  <span>
+                    {pathname ===
+                      `/organizations/${organizationId}/users/${userId}` &&
+                      "Details"}
+                    {pathname ===
+                      `/organizations/${organizationId}/users/${userId}/sessions` &&
+                      "Sessions"}
+                    {pathname ===
+                      `/organizations/${organizationId}/users/${userId}/roles` &&
+                      "Roles"}
+                    {pathname ===
+                      `/organizations/${organizationId}/users/${userId}/passkeys` &&
+                      "Passkeys"}
+                    {pathname ===
+                      `/organizations/${organizationId}/users/${userId}/history` &&
+                      "User History"}
+                    {pathname ===
+                      `/organizations/${organizationId}/users/${userId}/activity` &&
+                      "User Activity"}
+                  </span>
+                  <ChevronDown className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem asChild>
+                  <Link to={`/organizations/${organizationId}/users/${userId}`}>
+                    Details
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link
+                    to={`/organizations/${organizationId}/users/${userId}/sessions`}
+                  >
+                    Sessions
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link
+                    to={`/organizations/${organizationId}/users/${userId}/roles`}
+                  >
+                    Roles
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link
+                    to={`/organizations/${organizationId}/users/${userId}/passkeys`}
+                  >
+                    Passkeys
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link
+                    to={`/organizations/${organizationId}/users/${userId}/history`}
+                  >
+                    User History
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link
+                    to={`/organizations/${organizationId}/users/${userId}/activity`}
+                  >
+                    User Activity
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
           <div>
             <Outlet />
           </div>

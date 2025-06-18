@@ -4,7 +4,10 @@ import { Link } from "react-router";
 
 import { cn } from "@/lib/utils";
 
-export function Tabs({ children }: PropsWithChildren) {
+export function Tabs({
+  children,
+  className = "",
+}: PropsWithChildren & { className?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
 
@@ -24,7 +27,12 @@ export function Tabs({ children }: PropsWithChildren) {
   }, [children]);
 
   return (
-    <div className="relative inline-block bg-gradient-to-br from-gray-100/50 to-gray-200/50 rounded-md p-1">
+    <div
+      className={cn(
+        "relative inline-block bg-gradient-to-br from-gray-100/50 to-gray-200/50 rounded-md p-1",
+        className,
+      )}
+    >
       <div ref={containerRef} className="relative flex space-x-2">
         <motion.div
           layout

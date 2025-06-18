@@ -67,7 +67,7 @@ export function VaultDomainSettingsTab() {
           </CardContent>
         </Card>
       )}
-      <div className="gap-8 grid grid-cols-3">
+      <div className="gap-8 grid grid-cols-1 lg:grid-cols-3">
         <VaultDomainsCard />
         <VaultCookieDomainCard />
         <VaultTrustedDomainsCard />

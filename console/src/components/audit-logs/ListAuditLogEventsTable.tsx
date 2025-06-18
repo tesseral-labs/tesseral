@@ -124,13 +124,13 @@ export function ListAuditLogEventsTable({
           <Filter className="w-3 h-3" />
           <span>Filters</span>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="space-y-1">
+        <div className="flex flex-col lg:flex-row items-center justify-start gap-2 lg:gap-2">
+          <div className="space-y-1 w-full lg:w-auto">
             <Popover>
               <PopoverTrigger asChild>
                 <Button
                   variant={"outline"}
-                  className="justify-start text-left font-normal"
+                  className="justify-start text-left font-normal w-full lg:w-auto"
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {date?.from ? (
@@ -172,9 +172,9 @@ export function ListAuditLogEventsTable({
             </Popover>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 w-full lg:w-auto">
             <Select value={eventName} onValueChange={setEventName}>
-              <SelectTrigger className="bg-white hover:bg-muted">
+              <SelectTrigger className="bg-white hover:bg-muted w-full lg:w-auto">
                 <Tag />
                 <SelectValue placeholder="Pick an event" />
               </SelectTrigger>
@@ -207,8 +207,9 @@ export function ListAuditLogEventsTable({
             </Select>
           </div>
           {((date && date.from) || (eventName && eventName.length > 0)) && (
-            <div className="ml-auto">
+            <div className="ml-auto w-full lg:w-auto">
               <Button
+                className="w-full lg:w-auto"
                 variant="outline"
                 size="sm"
                 onClick={() => {
