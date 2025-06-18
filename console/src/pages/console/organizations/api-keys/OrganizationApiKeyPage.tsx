@@ -22,7 +22,6 @@ import { getAPIKey } from "@/gen/tesseral/backend/v1/backend-BackendService_conn
 import { NotFound } from "@/pages/NotFoundPage";
 
 export function OrganizationApiKeyPage() {
-  const { pathname } = useLocation();
   const { apiKeyId, organizationId } = useParams();
 
   const {

@@ -1,5 +1,5 @@
 import { useQuery } from "@connectrpc/connect-query";
-import { ChevronDown, ExternalLink, Settings2, Vault } from "lucide-react";
+import { ChevronDown, ExternalLink, Settings2 } from "lucide-react";
 import React from "react";
 import { Link, Outlet, useLocation } from "react-router";
 
@@ -16,8 +16,6 @@ import {
 import { getProject } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 
 export function VaultCustomizationPage() {
-  const { pathname } = useLocation();
-
   const { data: getProjectResponse } = useQuery(getProject);
 
   return (
