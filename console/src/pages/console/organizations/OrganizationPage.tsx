@@ -179,12 +179,12 @@ export function OrganizationPageTabs() {
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link to={`/organizations/${organizationId}/authentication`}>
-                Authentication
+                Authentication Settings
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link to={`/organizations/${organizationId}/api-keys`}>
-                API Keys
+                Managed API Keys
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
