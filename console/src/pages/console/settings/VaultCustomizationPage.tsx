@@ -22,7 +22,7 @@ export function VaultCustomizationPage() {
     <PageContent>
       <Title title="Vault Customization Settings" />
 
-      <div className="flex justify-between gap-8">
+      <div className="flex justify-between gap-8 flex-wrap lg:flex-nowrap">
         <div>
           <h1 className="text-2xl font-semibold flex items-center gap-2">
             <Settings2 />

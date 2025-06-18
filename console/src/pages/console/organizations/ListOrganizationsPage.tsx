@@ -114,7 +114,7 @@ export function ListOrganizationsPage() {
     <PageContent>
       <Title title="Organizations" />
 
-      <div className="flex justify-between items-center gap-x-8">
+      <div className="flex justify-between items-center gap-8 flex-wrap lg:flex-nowrap">
         <div>
           <h1 className="font-semibold text-xl">Organizations</h1>
           <p className="text-muted-foreground text-sm">
