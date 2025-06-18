@@ -79,7 +79,7 @@ func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *frontendv1.Re
 
 	key := totp.Key{Secret: secret}
 	if err := key.Validate(time.Now(), req.TotpCode); err != nil {
-		return nil, apierror.NewInvalidArgumentError("invalid totp code", err)
+		return nil, apierror.NewInvalidTOTPCodeError("incorrect totp code", fmt.Errorf("validate totp code: %w", err))
 	}
 
 	var recoveryCodes []string

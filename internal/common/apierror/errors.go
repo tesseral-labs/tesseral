@@ -15,6 +15,7 @@ var errPasswordCompromised = "password_compromised"
 var errPermissionDenied = "permission_denied"
 var errUnauthenticated = "unauthenticated"
 var errUnauthenticatedApiKey = "unauthenticated_api_key"
+var errIncorrectTOTPCode = "incorrect_totp_code"
 
 func NewAlreadyExistsError(description string, sourceError error) error {
 	apiErr := New(errAlreadyExists, sourceError)
@@ -153,6 +154,21 @@ func NewPasswordCompromisedError(description string, sourceError error) error {
 	apiErr := New(errPasswordCompromised, sourceError)
 
 	err := connect.NewError(connect.CodeFailedPrecondition, apiErr)
+
+	// Add details to the connect error
+	if detail, detailErr := connect.NewErrorDetail(&commonv1.ErrorDetail{
+		Description: description,
+	}); detailErr == nil {
+		err.AddDetail(detail)
+	}
+
+	return err
+}
+
+func NewInvalidTOTPCodeError(description string, sourceError error) error {
+	apiErr := New(errIncorrectTOTPCode, sourceError)
+
+	err := connect.NewError(connect.CodeInvalidArgument, apiErr)
 
 	// Add details to the connect error
 	if detail, detailErr := connect.NewErrorDetail(&commonv1.ErrorDetail{
