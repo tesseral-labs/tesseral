@@ -59,6 +59,18 @@ export function OrganizationMFACard() {
   });
 
   async function handleSubmit(data: z.infer<typeof schema>) {
+    if (
+      data.requireMfa &&
+      !getProjectResponse?.project?.logInWithAuthenticatorApp &&
+      !getProjectResponse?.project?.logInWithPasskey
+    ) {
+      form.setError("requireMfa", {
+        message:
+          "MFA cannot be required unless at least one MFA method is enabled.",
+      });
+      return;
+    }
+
     await updateOrganizationMutation.mutateAsync({
       id: organizationId,
       organization: {
