@@ -43,6 +43,10 @@ import {
 
 export function VaultDomainsCard() {
   const { data: getProjectResponse } = useQuery(getProject);
+  const { data: getProjectEntitlementsResponse } = useQuery(
+    getProjectEntitlements,
+    {},
+  );
   const { data: getVaultDomainSettingsResponse } = useQuery(
     getVaultDomainSettings,
   );
@@ -104,9 +108,11 @@ export function VaultDomainsCard() {
           </div>
         </div>
       </CardContent>
-      <CardFooter className="mt-8">
-        <ConfigureVaultDomainsButton />
-      </CardFooter>
+      {getProjectEntitlementsResponse?.entitledCustomVaultDomains && (
+        <CardFooter className="mt-8">
+          <ConfigureVaultDomainsButton />
+        </CardFooter>
+      )}
     </Card>
   );
 }

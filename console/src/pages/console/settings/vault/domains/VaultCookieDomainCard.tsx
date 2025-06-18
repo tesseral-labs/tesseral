@@ -41,12 +41,20 @@ import {
 import { Input } from "@/components/ui/input";
 import {
   getProject,
+  getProjectEntitlements,
   getVaultDomainSettings,
   updateProject,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 
 export function VaultCookieDomainCard() {
   const { data: getProjectResponse } = useQuery(getProject);
+  const { data: getVaultDomainSettingsResponse } = useQuery(
+    getVaultDomainSettings,
+  );
+  const { data: getProjectEntitlementsResponse } = useQuery(
+    getProjectEntitlements,
+    {},
+  );
 
   return (
     <Card>
@@ -69,9 +77,12 @@ export function VaultCookieDomainCard() {
           "—"
         )}
       </CardContent>
-      <CardFooter>
-        <ConfigureVaultCookieDomainButton />
-      </CardFooter>
+      {getProjectEntitlementsResponse?.entitledCustomVaultDomains &&
+        getVaultDomainSettingsResponse?.vaultDomainSettings?.pendingDomain && (
+          <CardFooter>
+            <ConfigureVaultCookieDomainButton />
+          </CardFooter>
+        )}
     </Card>
   );
 }
