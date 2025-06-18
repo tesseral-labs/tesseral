@@ -39,12 +39,6 @@ import {
 } from "@/components/ui/hover-card";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { AuthCardPreview } from "@/components/vault-preview/AuthCardPreview";
 import { CenterLayoutWireframePreview } from "@/components/vault-preview/layouts/AuthPreviewCenterLayout";
 import { SideBySideLayoutWireframePreview } from "@/components/vault-preview/layouts/AuthPreviewSideBySideLayout";
