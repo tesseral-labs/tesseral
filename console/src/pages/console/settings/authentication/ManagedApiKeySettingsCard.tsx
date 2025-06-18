@@ -37,25 +37,19 @@ import {
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import {
-  createStripeCheckoutLink,
   getProject,
   getProjectEntitlements,
   updateProject,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
+import { useHandleUpgrade } from "@/hooks/use-handle-upgrade";
 
 export function ManagedApiKeySettingsCard() {
+  const handleUpgrade = useHandleUpgrade();
+
   const { data: getProjectEntitlementsResponse } = useQuery(
     getProjectEntitlements,
   );
   const { data: getProjectResponse } = useQuery(getProject);
-  const createStripeCheckoutLinkMutation = useMutation(
-    createStripeCheckoutLink,
-  );
-
-  async function handleUpgrade() {
-    const { url } = await createStripeCheckoutLinkMutation.mutateAsync({});
-    window.location.href = url;
-  }
 
   return (
     <>

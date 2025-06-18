@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@connectrpc/connect-query";
+import { useQuery } from "@connectrpc/connect-query";
 import { Crown, Key } from "lucide-react";
 import React from "react";
 import { Link } from "react-router";
@@ -13,24 +13,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  createStripeCheckoutLink,
-  getProjectEntitlements,
-} from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
+import { getProjectEntitlements } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
+import { useHandleUpgrade } from "@/hooks/use-handle-upgrade";
 
 export function ApiKeysCard() {
+  const handleUpgrade = useHandleUpgrade();
   const {
     data: getProjectEntitlementsResponse,
     isLoading: isLoadingEntitlements,
   } = useQuery(getProjectEntitlements);
-  const createStripeCheckoutLinkMutation = useMutation(
-    createStripeCheckoutLink,
-  );
-
-  async function handleUpgrade() {
-    const { url } = await createStripeCheckoutLinkMutation.mutateAsync({});
-    window.location.href = url;
-  }
 
   return (
     <Card>

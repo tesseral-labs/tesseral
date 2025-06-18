@@ -87,15 +87,17 @@ import {
 } from "@/components/ui/table";
 import {
   createBackendAPIKey,
-  createStripeCheckoutLink,
   deleteBackendAPIKey,
   getProjectEntitlements,
   listBackendAPIKeys,
   revokeBackendAPIKey,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { BackendAPIKey } from "@/gen/tesseral/backend/v1/models_pb";
+import { useHandleUpgrade } from "@/hooks/use-handle-upgrade";
 
 export function ListBackendApiKeysCard() {
+  const handleUpgrade = useHandleUpgrade();
+
   const {
     data: getProjectEntitlementsResponse,
     isLoading: isLoadingEntitlements,
@@ -116,18 +118,10 @@ export function ListBackendApiKeysCard() {
       getNextPageParam: (page) => page.nextPageToken || undefined,
     },
   );
-  const createStripeCheckoutLinkMutation = useMutation(
-    createStripeCheckoutLink,
-  );
 
   const backendApiKeys =
     listBackendApiKeysResponses?.pages.flatMap((page) => page.backendApiKeys) ||
     [];
-
-  async function handleUpgrade() {
-    const { url } = await createStripeCheckoutLinkMutation.mutateAsync({});
-    window.location.href = url;
-  }
 
   return (
     <>
