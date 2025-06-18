@@ -15,9 +15,9 @@ type sentryHandler struct {
 
 var _ slog.Handler = (*sentryHandler)(nil)
 
-// NewSlogHandler wraps another slog handle, creating breadcrumbs in Sentry for each log record.
+// NewSlogHandler creates an slog handler which inserts breadcrumbs into the current breadcrumb stack for each log record.
 //
-// Sentry breadcrumbs are a way to record events leading up to an error or crash, which can help in debugging issues.
+// These breadcrumbs are associated with a panic or manual Sentry event if they occur and are otherwise discarded.
 func NewSlogHandler(base slog.Handler) slog.Handler {
 	return &sentryHandler{base: base}
 }
