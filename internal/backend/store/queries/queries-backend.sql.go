@@ -130,7 +130,7 @@ WHERE
         OR $11 IS NULL)
     AND (resource_id = $12
         OR $12 IS NULL)
-    AND id <= $13
+    AND id < $13
 ORDER BY
     id DESC
 LIMIT $1

@@ -625,7 +625,7 @@ FROM
     api_keys
 WHERE
     organization_id = $1
-    AND id > $2
+    AND id >= $2
 ORDER BY
     id
 LIMIT $3;
@@ -723,7 +723,7 @@ WHERE
         OR sqlc.narg ('event_name') IS NULL)
     AND (actor_user_id = @actor_user_id
         OR @actor_user_id IS NULL)
-    AND id <= @id
+    AND id < @id
 ORDER BY
     id DESC
 LIMIT $1;
