@@ -218,18 +218,10 @@ INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
 		userID.String(),
 		user.Email,
 		uuid.UUID(organizationUUID).String(),
-		derefOrEmpty(user.Owner),
+		user.GetOwner(),
 	)
 	if err != nil {
 		t.Fatalf("failed to create user: %v", err)
 	}
 	return formattedUserID
-}
-
-func derefOrEmpty[T any](t *T) T {
-	var z T
-	if t == nil {
-		return z
-	}
-	return *t
 }
