@@ -74,7 +74,7 @@ export function WelcomeCard() {
           </Link>
         </p>
       </CardContent>
-      <CardFooter className="mt-8">
+      <CardFooter className="mt-8 z-index-0 relative">
         <img
           src="/images/tesseral-logo-black.svg"
           alt="Tesseral Logo"
