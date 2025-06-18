@@ -64,7 +64,12 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	wellknownservice "github.com/tesseral-labs/tesseral/internal/wellknown/service"
 	wellknownstore "github.com/tesseral-labs/tesseral/internal/wellknown/store"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda/xrayconfig"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	"go.opentelemetry.io/contrib/propagators/aws/xray"
+	"go.opentelemetry.io/otel"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
 func main() {
@@ -76,12 +81,6 @@ func main() {
 	}); err != nil {
 		panic(fmt.Errorf("init sentry: %w", err))
 	}
-
-	otelShutdown, err := otelconfig.ConfigureOpenTelemetry()
-	if err != nil {
-		panic(fmt.Errorf("configure otel: %w", err))
-	}
-	defer otelShutdown()
 
 	slog.SetDefault(slog.New(ctxlog.NewHandler(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{AddSource: true}))))
 
@@ -125,7 +124,30 @@ func main() {
 	conf.Load(&config)
 	slog.Info("config", "config", conf.Redact(config))
 
-	// TODO: Set up Sentry apps and error handling
+	var tp *sdktrace.TracerProvider
+	if config.RunAsLambda {
+		xrayTP, err := xrayconfig.NewTracerProvider(context.Background())
+		if err != nil {
+			panic(fmt.Errorf("xray new tracer provider: %w", err))
+		}
+
+		defer func(ctx context.Context) {
+			err := tp.Shutdown(ctx)
+			if err != nil {
+				panic(fmt.Errorf("xray shutdown: %w", err))
+			}
+		}(context.Background())
+
+		tp = xrayTP
+		otel.SetTracerProvider(tp)
+		otel.SetTextMapPropagator(xray.Propagator{})
+	} else {
+		otelShutdown, err := otelconfig.ConfigureOpenTelemetry()
+		if err != nil {
+			panic(fmt.Errorf("configure otel: %w", err))
+		}
+		defer otelShutdown()
+	}
 
 	db, err := dbconn.Open(context.Background(), config.DB)
 	if err != nil {
@@ -387,7 +409,7 @@ func main() {
 
 	slog.Info("serve")
 	if config.RunAsLambda {
-		lambda.Start(httplambda.Handler(serve))
+		lambda.Start(otellambda.InstrumentHandler(httplambda.Handler(serve), xrayconfig.WithRecommendedOptions(tp)...))
 	} else {
 		if err := http.ListenAndServe(config.ServeAddr, serve); err != nil {
 			panic(err)

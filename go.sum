@@ -123,8 +123,6 @@ github.com/jackc/pgpassfile v1.0.0 h1:/6Hmqy13Ss2zCq62VdNG8tM1wchn8zjSGOBJ6icpsI
 github.com/jackc/pgpassfile v1.0.0/go.mod h1:CEx0iS5ambNFdcRtxPj5JhEz+xB6uRky5eyVu/W2HEg=
 github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 h1:iCEnooe7UlwOQYpKFhBabPMi4aNAfoODPEFNiAnClxo=
 github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761/go.mod h1:5TJZWKEWniPve33vlWYSoGYefn3gLQRzjfDlhSJ9ZKM=
-github.com/jackc/pgx/v5 v5.7.1 h1:x7SYsPBYDkHDksogeSmZZ5xzThcTgRz++I5E+ePFUcs=
-github.com/jackc/pgx/v5 v5.7.1/go.mod h1:e7O26IywZZ+naJtWWos6i6fvWK+29etgITqrqHLfoZA=
 github.com/jackc/pgx/v5 v5.7.4 h1:9wKznZrhWa2QiHL+NjTSPP6yjl3451BX3imWDnokYlg=
 github.com/jackc/pgx/v5 v5.7.4/go.mod h1:ncY89UGWxg82EykZUwSpUKEfccBGGYq1xjrOpsbsfGQ=
 github.com/jackc/puddle/v2 v2.2.2 h1:PR8nw+E/1w0GLuRFSmiioY6UooMp6KJv0/61nB7icHo=
@@ -212,12 +210,18 @@ go.opentelemetry.io/auto/sdk v1.1.0 h1:cH53jehLUN6UFLY71z+NDOiNJqDdPRaXzTel0sJyS
 go.opentelemetry.io/auto/sdk v1.1.0/go.mod h1:3wSPjt5PWp2RhlCcmmOial7AvC4DQqZb7a7wCow3W8A=
 go.opentelemetry.io/contrib/detectors/aws/lambda v0.61.0 h1:q31cEXzokwG0HWqebkyFu5qYljV8ndIxbpqOLtiXJ9g=
 go.opentelemetry.io/contrib/detectors/aws/lambda v0.61.0/go.mod h1:WaCy0rbX1LchqsUphVJsruHJJ90mHgV/U4Zl66mo1/o=
+go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda v0.61.0 h1:FT/RUO9FS5Zb+sS8xBiHMWcnkCBBYSjK7J1/nfUeafg=
+go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda v0.61.0/go.mod h1:/d/HGEJE5Vp0uvt1zMSR75XDT6ZeC1WTiiNGfFVtfLw=
+go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda/xrayconfig v0.61.0 h1:avk1Uc5ExfbWTaGiNAoVKPu1drY55BDc35zBtXU6A3c=
+go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda/xrayconfig v0.61.0/go.mod h1:vJGOui0MZGiIqYUMzOsyfo3uL0V9iHOeE8PVGmjyQHU=
 go.opentelemetry.io/contrib/instrumentation/host v0.53.0 h1:X4r+5n6bSqaQUbPlSO5baoM7tBvipkT0mJFyuPFnPAU=
 go.opentelemetry.io/contrib/instrumentation/host v0.53.0/go.mod h1:NTaDj8VCnJxWleEcRQRQaN36+aCZjO9foNIdJunEjUQ=
 go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.61.0 h1:F7Jx+6hwnZ41NSFTO5q4LYDtJRXBf2PD0rNBkeB/lus=
 go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.61.0/go.mod h1:UHB22Z8QsdRDrnAtX4PntOl36ajSxcdUMt1sF7Y6E7Q=
 go.opentelemetry.io/contrib/instrumentation/runtime v0.53.0 h1:nOlJEAJyrcy8hexK65M+dsCHIx7CVVbybcFDNkcTcAc=
 go.opentelemetry.io/contrib/instrumentation/runtime v0.53.0/go.mod h1:u79lGGIlkg3Ryw425RbMjEkGYNxSnXRyR286O840+u4=
+go.opentelemetry.io/contrib/propagators/aws v1.36.0 h1:Txhy/1LZIbbnutftc5pdU8Y9vOQuAkuIOFXuLsdDejs=
+go.opentelemetry.io/contrib/propagators/aws v1.36.0/go.mod h1:M3A0491jGFPNHU8b3zEW7r/gtsMpGOsFUO3WL+SZ1xw=
 go.opentelemetry.io/contrib/propagators/b3 v1.28.0 h1:XR6CFQrQ/ttAYmTBX2loUEFGdk1h17pxYI8828dk/1Y=
 go.opentelemetry.io/contrib/propagators/b3 v1.28.0/go.mod h1:DWRkzJONLquRz7OJPh2rRbZ7MugQj62rk7g6HRnEqh0=
 go.opentelemetry.io/contrib/propagators/ot v1.28.0 h1:rmlG+2pc5k5M7Y7izDrxAHZUIwDERdGMTD9oMV7llMk=
