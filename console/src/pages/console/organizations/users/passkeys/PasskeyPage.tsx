@@ -14,6 +14,7 @@ import { toast } from "sonner";
 
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { PageContent } from "@/components/page";
+import { PageLoading } from "@/components/page/PageLoading";
 import { Title } from "@/components/page/Title";
 import {
   AlertDialog,
@@ -40,143 +41,164 @@ import {
   updatePasskey,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { AAGUIDS } from "@/lib/passkeys";
+import { NotFound } from "@/pages/NotFoundPage";
 
 export function PasskeyPage() {
   const { organizationId, passkeyId, userId } = useParams();
 
-  const { data: getPasskeyResponse } = useQuery(getPasskey, {
-    id: passkeyId,
-  });
+  const {
+    data: getPasskeyResponse,
+    isError,
+    isLoading,
+  } = useQuery(
+    getPasskey,
+    {
+      id: passkeyId,
+    },
+    {
+      retry: false,
+    },
+  );
 
   return (
-    <PageContent>
-      <Title title={`Passkey ${passkeyId}`} />
+    <>
+      {isLoading ? (
+        <PageLoading />
+      ) : isError ? (
+        <NotFound />
+      ) : (
+        <PageContent>
+          <Title title={`Passkey ${passkeyId}`} />
 
-      <div>
-        <Link to={`/organizations/${organizationId}/users/${userId}/passkeys`}>
-          <Button variant="ghost" size="sm">
-            <ArrowLeft />
-            Back to Passkeys
-          </Button>
-        </Link>
-      </div>
+          <div>
+            <Link
+              to={`/organizations/${organizationId}/users/${userId}/passkeys`}
+            >
+              <Button variant="ghost" size="sm">
+                <ArrowLeft />
+                Back to Passkeys
+              </Button>
+            </Link>
+          </div>
 
-      <div>
-        <h1 className="text-2xl font-semibold">Passkey</h1>
-        <ValueCopier
-          value={getPasskeyResponse?.passkey?.id || ""}
-          label="Passkey ID"
-        />
-        <div className="flex flex-wrap mt-2 gap-2 text-muted-foreground/50">
-          <Badge className="border-0" variant="outline">
-            Created{" "}
-            {getPasskeyResponse?.passkey?.createTime &&
-              DateTime.fromJSDate(
-                timestampDate(getPasskeyResponse.passkey.createTime),
-              ).toRelative()}
-          </Badge>
-          <div>•</div>
-          <Badge className="border-0" variant="outline">
-            Updated{" "}
-            {getPasskeyResponse?.passkey?.updateTime &&
-              DateTime.fromJSDate(
-                timestampDate(getPasskeyResponse.passkey.updateTime),
-              ).toRelative()}
-          </Badge>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <Card className="col-span-1">
-          <CardHeader>
-            <CardTitle>Basic Details</CardTitle>
-            <CardDescription>
-              Basic information about this Passkey.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between gap-4">
-              <span className="text-sm font-semibold">Vendor</span>
-              <Badge variant="outline">
-                {getPasskeyResponse?.passkey?.aaguid
-                  ? AAGUIDS[getPasskeyResponse.passkey.aaguid] || "Unknown"
-                  : "Unknown"}
-              </Badge>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <span className="text-sm font-semibold">Status</span>
-              {getPasskeyResponse?.passkey?.disabled ? (
-                <Badge variant="secondary">Disabled</Badge>
-              ) : (
-                <Badge>Active</Badge>
-              )}
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <span className="text-sm font-semibold">Created</span>
+          <div>
+            <h1 className="text-2xl font-semibold">Passkey</h1>
+            <ValueCopier
+              value={getPasskeyResponse?.passkey?.id || ""}
+              label="Passkey ID"
+            />
+            <div className="flex flex-wrap mt-2 gap-2 text-muted-foreground/50">
               <Badge className="border-0" variant="outline">
+                Created{" "}
                 {getPasskeyResponse?.passkey?.createTime &&
                   DateTime.fromJSDate(
                     timestampDate(getPasskeyResponse.passkey.createTime),
                   ).toRelative()}
               </Badge>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <span className="text-sm font-semibold">Update</span>
+              <div>•</div>
               <Badge className="border-0" variant="outline">
+                Updated{" "}
                 {getPasskeyResponse?.passkey?.updateTime &&
                   DateTime.fromJSDate(
                     timestampDate(getPasskeyResponse.passkey.updateTime),
                   ).toRelative()}
               </Badge>
             </div>
-          </CardContent>
-        </Card>
-        <Card className="col-span-1">
-          <CardHeader>
-            <CardTitle>Advanced Details</CardTitle>
-            <CardDescription>
-              Advanced information about this Passkey typically required when
-              debugging issues with Passkeys.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between gap-4">
-              <span className="text-sm font-semibold">Public Key</span>
-              {getPasskeyResponse?.passkey?.publicKeyPkix && (
-                <a
-                  className="font-medium underline underline-offset-2 decoration-muted-foreground/40 text-sm"
-                  download={`Public Key ${passkeyId}.pem`}
-                  href={`data:text/plain;base64,${btoa(getPasskeyResponse.passkey.publicKeyPkix)}`}
-                >
-                  Download (.pem)
-                </a>
-              )}
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <span className="text-sm font-semibold">AAGUID</span>
-              <ValueCopier
-                value={getPasskeyResponse?.passkey?.aaguid || ""}
-                label="User ID"
-              />
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <span className="text-sm font-semibold">Credential ID</span>
-              {getPasskeyResponse?.passkey?.credentialId && (
-                <ValueCopier
-                  value={Array.from(getPasskeyResponse.passkey.credentialId)
-                    .map((byte) => byte.toString(16).padStart(2, "0"))
-                    .join("")}
-                  label="Credential ID"
-                  maxLength={32}
-                />
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
 
-      <DangerZoneCard />
-    </PageContent>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <Card className="col-span-1">
+              <CardHeader>
+                <CardTitle>Basic Details</CardTitle>
+                <CardDescription>
+                  Basic information about this Passkey.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-sm font-semibold">Vendor</span>
+                  <Badge variant="outline">
+                    {getPasskeyResponse?.passkey?.aaguid
+                      ? AAGUIDS[getPasskeyResponse.passkey.aaguid] || "Unknown"
+                      : "Unknown"}
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-sm font-semibold">Status</span>
+                  {getPasskeyResponse?.passkey?.disabled ? (
+                    <Badge variant="secondary">Disabled</Badge>
+                  ) : (
+                    <Badge>Active</Badge>
+                  )}
+                </div>
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-sm font-semibold">Created</span>
+                  <Badge className="border-0" variant="outline">
+                    {getPasskeyResponse?.passkey?.createTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(getPasskeyResponse.passkey.createTime),
+                      ).toRelative()}
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-sm font-semibold">Update</span>
+                  <Badge className="border-0" variant="outline">
+                    {getPasskeyResponse?.passkey?.updateTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(getPasskeyResponse.passkey.updateTime),
+                      ).toRelative()}
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="col-span-1">
+              <CardHeader>
+                <CardTitle>Advanced Details</CardTitle>
+                <CardDescription>
+                  Advanced information about this Passkey typically required
+                  when debugging issues with Passkeys.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-sm font-semibold">Public Key</span>
+                  {getPasskeyResponse?.passkey?.publicKeyPkix && (
+                    <a
+                      className="font-medium underline underline-offset-2 decoration-muted-foreground/40 text-sm"
+                      download={`Public Key ${passkeyId}.pem`}
+                      href={`data:text/plain;base64,${btoa(getPasskeyResponse.passkey.publicKeyPkix)}`}
+                    >
+                      Download (.pem)
+                    </a>
+                  )}
+                </div>
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-sm font-semibold">AAGUID</span>
+                  <ValueCopier
+                    value={getPasskeyResponse?.passkey?.aaguid || ""}
+                    label="User ID"
+                  />
+                </div>
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-sm font-semibold">Credential ID</span>
+                  {getPasskeyResponse?.passkey?.credentialId && (
+                    <ValueCopier
+                      value={Array.from(getPasskeyResponse.passkey.credentialId)
+                        .map((byte) => byte.toString(16).padStart(2, "0"))
+                        .join("")}
+                      label="Credential ID"
+                      maxLength={32}
+                    />
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <DangerZoneCard />
+        </PageContent>
+      )}
+    </>
   );
 }
 

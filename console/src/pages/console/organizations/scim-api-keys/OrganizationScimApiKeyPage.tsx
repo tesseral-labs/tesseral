@@ -11,6 +11,7 @@ import { z } from "zod";
 
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { PageContent } from "@/components/page";
+import { PageLoading } from "@/components/page/PageLoading";
 import { Title } from "@/components/page/Title";
 import {
   AlertDialog,
@@ -45,6 +46,7 @@ import {
   getSCIMAPIKey,
   updateSCIMAPIKey,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
+import { NotFound } from "@/pages/NotFoundPage";
 
 const schema = z.object({
   displayName: z.string().min(1, "Display name is required"),
@@ -53,9 +55,20 @@ const schema = z.object({
 export function OrganizationScimApiKeyPage() {
   const { organizationId, scimApiKeyId } = useParams();
 
-  const { data: getScimApiKeyResponse, refetch } = useQuery(getSCIMAPIKey, {
-    id: scimApiKeyId,
-  });
+  const {
+    data: getScimApiKeyResponse,
+    isError,
+    isLoading,
+    refetch,
+  } = useQuery(
+    getSCIMAPIKey,
+    {
+      id: scimApiKeyId,
+    },
+    {
+      retry: false,
+    },
+  );
   const updateScimApiKeyMutation = useMutation(updateSCIMAPIKey);
 
   const form = useForm<z.infer<typeof schema>>({
@@ -86,105 +99,118 @@ export function OrganizationScimApiKeyPage() {
   }, [getScimApiKeyResponse, form]);
 
   return (
-    <PageContent>
-      <Title title={`SCIM API Key ${scimApiKeyId}`} />
+    <>
+      {isLoading ? (
+        <PageLoading />
+      ) : isError ? (
+        <NotFound />
+      ) : (
+        <PageContent>
+          <Title title={`SCIM API Key ${scimApiKeyId}`} />
 
-      <div>
-        <Link to={`/organizations/${organizationId}/authentication`}>
-          <Button variant="ghost" size="sm">
-            <ArrowLeft />
-            Back to Authentication
-          </Button>
-        </Link>
-      </div>
-
-      <div>
-        <div>
-          <h1 className="text-2xl font-semibold">
-            {getScimApiKeyResponse?.scimApiKey?.displayName || "SCIM API Key"}
-          </h1>
-          <ValueCopier
-            value={getScimApiKeyResponse?.scimApiKey?.id || ""}
-            label="SCIM API Key ID"
-          />
-          <div className="flex flex-wrap mt-2 gap-2 text-muted-foreground/50">
-            {getScimApiKeyResponse?.scimApiKey?.revoked ? (
-              <Badge variant="secondary">Revoked</Badge>
-            ) : (
-              <Badge>Active</Badge>
-            )}
-            <Badge className="border-0" variant="outline">
-              Created{" "}
-              {getScimApiKeyResponse?.scimApiKey?.createTime &&
-                DateTime.fromJSDate(
-                  timestampDate(getScimApiKeyResponse.scimApiKey.createTime),
-                ).toRelative()}
-            </Badge>
-            <div>•</div>
-            <Badge className="border-0" variant="outline">
-              Updated{" "}
-              {getScimApiKeyResponse?.scimApiKey?.updateTime &&
-                DateTime.fromJSDate(
-                  timestampDate(getScimApiKeyResponse.scimApiKey.updateTime),
-                ).toRelative()}
-            </Badge>
+          <div>
+            <Link to={`/organizations/${organizationId}/authentication`}>
+              <Button variant="ghost" size="sm">
+                <ArrowLeft />
+                Back to Authentication
+              </Button>
+            </Link>
           </div>
-        </div>
-      </div>
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)}>
-          <Card>
-            <CardHeader>
-              <CardTitle>SCIM API Key Details</CardTitle>
-              <CardDescription>
-                Update basic information about this SCIM API Key.
-              </CardDescription>
-              <CardAction>
-                <Button
-                  type="submit"
-                  disabled={
-                    !form.formState.isDirty ||
-                    updateScimApiKeyMutation.isPending
-                  }
-                >
-                  {updateScimApiKeyMutation.isPending && (
-                    <LoaderCircle className="animate-spin" />
-                  )}
-                  {updateScimApiKeyMutation.isPending
-                    ? "Saving changes"
-                    : "Save changes"}
-                </Button>
-              </CardAction>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <FormField
-                control={form.control}
-                name="displayName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Display Name</FormLabel>
-                    <FormDescription>
-                      The human-friendly name for this SCIM API Key.
-                    </FormDescription>
-                    <FormMessage />
-                    <FormControl>
-                      <Input
-                        className="max-w-2xl"
-                        placeholder="Display name"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
+          <div>
+            <div>
+              <h1 className="text-2xl font-semibold">
+                {getScimApiKeyResponse?.scimApiKey?.displayName ||
+                  "SCIM API Key"}
+              </h1>
+              <ValueCopier
+                value={getScimApiKeyResponse?.scimApiKey?.id || ""}
+                label="SCIM API Key ID"
               />
-            </CardContent>
-          </Card>
-        </form>
-      </Form>
+              <div className="flex flex-wrap mt-2 gap-2 text-muted-foreground/50">
+                {getScimApiKeyResponse?.scimApiKey?.revoked ? (
+                  <Badge variant="secondary">Revoked</Badge>
+                ) : (
+                  <Badge>Active</Badge>
+                )}
+                <Badge className="border-0" variant="outline">
+                  Created{" "}
+                  {getScimApiKeyResponse?.scimApiKey?.createTime &&
+                    DateTime.fromJSDate(
+                      timestampDate(
+                        getScimApiKeyResponse.scimApiKey.createTime,
+                      ),
+                    ).toRelative()}
+                </Badge>
+                <div>•</div>
+                <Badge className="border-0" variant="outline">
+                  Updated{" "}
+                  {getScimApiKeyResponse?.scimApiKey?.updateTime &&
+                    DateTime.fromJSDate(
+                      timestampDate(
+                        getScimApiKeyResponse.scimApiKey.updateTime,
+                      ),
+                    ).toRelative()}
+                </Badge>
+              </div>
+            </div>
+          </div>
 
-      <DangerZoneCard />
-    </PageContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleSubmit)}>
+              <Card>
+                <CardHeader>
+                  <CardTitle>SCIM API Key Details</CardTitle>
+                  <CardDescription>
+                    Update basic information about this SCIM API Key.
+                  </CardDescription>
+                  <CardAction>
+                    <Button
+                      type="submit"
+                      disabled={
+                        !form.formState.isDirty ||
+                        updateScimApiKeyMutation.isPending
+                      }
+                    >
+                      {updateScimApiKeyMutation.isPending && (
+                        <LoaderCircle className="animate-spin" />
+                      )}
+                      {updateScimApiKeyMutation.isPending
+                        ? "Saving changes"
+                        : "Save changes"}
+                    </Button>
+                  </CardAction>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <FormField
+                    control={form.control}
+                    name="displayName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Display Name</FormLabel>
+                        <FormDescription>
+                          The human-friendly name for this SCIM API Key.
+                        </FormDescription>
+                        <FormMessage />
+                        <FormControl>
+                          <Input
+                            className="max-w-2xl"
+                            placeholder="Display name"
+                            {...field}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </CardContent>
+              </Card>
+            </form>
+          </Form>
+
+          <DangerZoneCard />
+        </PageContent>
+      )}
+    </>
   );
 }
 

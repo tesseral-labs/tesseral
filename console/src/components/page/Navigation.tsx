@@ -167,6 +167,10 @@ function NavigationProjects() {
 function NavigationSettings() {
   const { data: getProjectWebhookManagementUrlResponse } = useQuery(
     getProjectWebhookManagementURL,
+    {},
+    {
+      retry: false,
+    },
   );
 
   return (

@@ -5,7 +5,13 @@ import { Title } from "@/components/page/Title";
 
 export function NotFoundPage() {
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
+    <div className="flex flex-col items-center justify-center h-screen"></div>
+  );
+}
+
+export function NotFound() {
+  return (
+    <div className="py-16">
       <Title title="Not Found" />
 
       <div className="space-y-4 text-center">
