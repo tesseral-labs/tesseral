@@ -37,10 +37,10 @@ export function OrganizationAuthentication() {
           <OrganizationOAuthCard />
         )}
 
-        {getProjectResponse?.project?.logInWithAuthenticatorApp ||
-          (getProjectResponse?.project?.logInWithPasskey && (
-            <OrganizationMFACard />
-          ))}
+        {(getProjectResponse?.project?.logInWithAuthenticatorApp ||
+          getProjectResponse?.project?.logInWithPasskey) && (
+          <OrganizationMFACard />
+        )}
 
         {getOrganizationResponse?.organization?.logInWithSaml && (
           <OrganizationSamlCard />
