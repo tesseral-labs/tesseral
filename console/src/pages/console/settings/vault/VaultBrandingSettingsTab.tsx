@@ -32,6 +32,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -41,6 +46,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { AuthCardPreview } from "@/components/vault-preview/AuthCardPreview";
+import { CenterLayoutWireframePreview } from "@/components/vault-preview/layouts/AuthPreviewCenterLayout";
+import { SideBySideLayoutWireframePreview } from "@/components/vault-preview/layouts/AuthPreviewSideBySideLayout";
 import {
   getProjectUISettings,
   updateProjectUISettings,
@@ -363,100 +370,84 @@ export function VaultBrandingSettingsTab() {
                       <FormMessage />
                       <FormControl>
                         <div className="grid grid-cols-2 gap-4 mt-4">
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
+                          <HoverCard>
+                            <HoverCardTrigger asChild>
+                              <div
+                                className={cn(
+                                  "p-4 border rounded-sm relative",
+                                  field.value === "centered"
+                                    ? "border-primary border-2 cursor-default"
+                                    : "cursor-pointer",
+                                )}
+                                onClick={() => field.onChange("centered")}
+                              >
                                 <div
                                   className={cn(
-                                    "p-4 border rounded-sm relative",
+                                    "font-semibold text-sm",
                                     field.value === "centered"
-                                      ? "border-primary border-2 cursor-default"
-                                      : "cursor-pointer",
+                                      ? "text-primary"
+                                      : "text-muted-foreground",
                                   )}
-                                  onClick={() => field.onChange("centered")}
                                 >
-                                  <div
-                                    className={cn(
-                                      "font-semibold text-sm",
-                                      field.value === "centered"
-                                        ? "text-primary"
-                                        : "text-muted-foreground",
-                                    )}
-                                  >
-                                    <SquareSquare
-                                      className="inline-block mr-2"
-                                      size={16}
-                                    />
-                                    Center card
-                                    {field.value === "centered" && (
-                                      <div className="h-5 w-5 text-white bg-primary rounded-full flex justify-center items-center absolute top-2 right-2">
-                                        <Check size={12} />
-                                      </div>
-                                    )}
-                                  </div>
-                                  <p className="text-xs text-muted-foreground mt-2">
-                                    A center-aligned card layout.
-                                  </p>
-                                </div>
-                              </TooltipTrigger>
-                              <TooltipContent className="bg-primary">
-                                <div className="rounded">
-                                  <img
-                                    src="/images/auth-preview-centered.png"
-                                    alt="Auth Preview - Centered"
-                                    className="rounded max-w-[300px]"
+                                  <SquareSquare
+                                    className="inline-block mr-2"
+                                    size={16}
                                   />
+                                  Center card
+                                  {field.value === "centered" && (
+                                    <div className="h-5 w-5 text-white bg-primary rounded-full flex justify-center items-center absolute top-2 right-2">
+                                      <Check size={12} />
+                                    </div>
+                                  )}
                                 </div>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
+                                <p className="text-xs text-muted-foreground mt-2">
+                                  A center-aligned card layout.
+                                </p>
+                              </div>
+                            </HoverCardTrigger>
+                            <HoverCardContent className="w-[400px]">
+                              <CenterLayoutWireframePreview />
+                            </HoverCardContent>
+                          </HoverCard>
+                          <HoverCard>
+                            <HoverCardTrigger asChild>
+                              <div
+                                className={cn(
+                                  "p-4 border rounded-sm relative",
+                                  field.value === "side_by_side"
+                                    ? "border-primary border-2 cursor-default"
+                                    : "cursor-pointer",
+                                )}
+                                onClick={() => field.onChange("side_by_side")}
+                              >
                                 <div
                                   className={cn(
-                                    "p-4 border rounded-sm relative",
+                                    "font-semibold text-sm",
                                     field.value === "side_by_side"
-                                      ? "border-primary border-2 cursor-default"
-                                      : "cursor-pointer",
+                                      ? "text-primary"
+                                      : "text-muted-foreground",
                                   )}
-                                  onClick={() => field.onChange("side_by_side")}
                                 >
-                                  <div
-                                    className={cn(
-                                      "font-semibold text-sm",
-                                      field.value === "side_by_side"
-                                        ? "text-primary"
-                                        : "text-muted-foreground",
-                                    )}
-                                  >
-                                    <SquareSplitHorizontal
-                                      className="inline-block mr-2"
-                                      size={16}
-                                    />
-                                    Side by side
-                                    {field.value === "side_by_side" && (
-                                      <div className="h-5 w-5 text-white bg-primary rounded-full flex justify-center items-center absolute top-2 right-2">
-                                        <Check size={12} />
-                                      </div>
-                                    )}
-                                  </div>
-                                  <p className="text-xs text-muted-foreground mt-2">
-                                    A horizontally split layout.
-                                  </p>
-                                </div>
-                              </TooltipTrigger>
-                              <TooltipContent className="bg-primary">
-                                <div className="rounded">
-                                  <img
-                                    src="/images/auth-preview-side-by-side.png"
-                                    alt="Auth Preview - Side by Side"
-                                    className="rounded max-w-[300px]"
+                                  <SquareSplitHorizontal
+                                    className="inline-block mr-2"
+                                    size={16}
                                   />
+                                  Side by side
+                                  {field.value === "side_by_side" && (
+                                    <div className="h-5 w-5 text-white bg-primary rounded-full flex justify-center items-center absolute top-2 right-2">
+                                      <Check size={12} />
+                                    </div>
+                                  )}
                                 </div>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
+                                <p className="text-xs text-muted-foreground mt-2">
+                                  A horizontally split layout.
+                                </p>
+                              </div>
+                            </HoverCardTrigger>
+                            <HoverCardContent className="w-[400px]">
+                              <SideBySideLayoutWireframePreview />
+                            </HoverCardContent>
+                          </HoverCard>
                         </div>
                       </FormControl>
                     </FormItem>
