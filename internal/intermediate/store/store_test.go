@@ -44,44 +44,10 @@ func newTestUtil(t *testing.T) (context.Context, *testUtil) {
 
 	intermediateSession := &intermediatev1.IntermediateSession{
 		Id:        idformat.IntermediateSession.Format(uuid.New()),
+		Email:     fmt.Sprintf("testuser@%s", environment.ConsoleDomain),
 		ProjectId: projectID,
 	}
 	ctx := authn.NewContext(t.Context(), intermediateSession, projectID)
-
-	// Create a true intermediate session so it's in the database
-	resp, err := store.CreateIntermediateSession(ctx, &intermediatev1.CreateIntermediateSessionRequest{})
-	if err != nil {
-		t.Fatalf("failed to create intermediate session: %v", err)
-	}
-	secretToken := resp.IntermediateSessionSecretToken
-	intermediateSession, err = store.AuthenticateIntermediateSession(ctx, projectID, secretToken)
-	if err != nil {
-		t.Fatalf("failed to create intermediate session: %v", err)
-	}
-
-	intermediateSessionUUID, err := idformat.IntermediateSession.Parse(intermediateSession.Id)
-	if err != nil {
-		t.Fatalf("failed to parse intermediate session id: %v", err)
-	}
-
-	email := fmt.Sprintf("%s@%s", uuid.New(), environment.ConsoleDomain)
-	_, err = environment.DB.Exec(t.Context(), `
-UPDATE intermediate_sessions
-SET 
-	email_verification_challenge_completed = TRUE,
-	email = $2
-WHERE id = $1::uuid;
-`,
-		uuid.UUID(intermediateSessionUUID).String(),
-		email)
-	if err != nil {
-		t.Fatalf("failed to update intermediate session email verified: %v", err)
-	}
-	intermediateSession.Email = email
-	intermediateSession.EmailVerified = true
-
-	// Recreate the context with the new intermediate session
-	ctx = authn.NewContext(t.Context(), intermediateSession, projectID)
 
 	return ctx, &testUtil{
 		Store:       store,
