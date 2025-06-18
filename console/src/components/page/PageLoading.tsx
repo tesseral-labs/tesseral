@@ -4,7 +4,7 @@ import React from "react";
 export function PageLoading() {
   return (
     <div className="w-full h-64 flex items-center justify-center">
-      <LoaderCircle className="animate-spin text-muted" />
+      <LoaderCircle className="animate-spin text-muted-foreground" />
     </div>
   );
 }
