@@ -331,6 +331,7 @@ function AuditLogEventActor({
     },
     {
       enabled: !!actorApiKeyId,
+      retry: false,
     },
   );
   const { data: getBackendApiKeyResponse } = useQuery(
@@ -340,6 +341,7 @@ function AuditLogEventActor({
     },
     {
       enabled: !!actorBackendApiKeyId,
+      retry: false,
     },
   );
   const { data: getFrontendUserResponse } = useQuery(
@@ -349,6 +351,7 @@ function AuditLogEventActor({
     },
     {
       enabled: !!actorConsoleUserId,
+      retry: false,
     },
   );
   const { data: getUserResponse } = useQuery(
@@ -358,6 +361,7 @@ function AuditLogEventActor({
     },
     {
       enabled: !!actorUserId,
+      retry: false,
     },
   );
 
