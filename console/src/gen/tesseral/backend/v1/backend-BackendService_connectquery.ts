@@ -539,3 +539,13 @@ export const createStripeCheckoutLink = BackendService.method.createStripeChecko
  * @generated from rpc tesseral.backend.v1.BackendService.GetProjectWebhookManagementURL
  */
 export const getProjectWebhookManagementURL = BackendService.method.getProjectWebhookManagementURL;
+
+/**
+ * @generated from rpc tesseral.backend.v1.BackendService.ConsoleListAuditLogEvents
+ */
+export const consoleListAuditLogEvents = BackendService.method.consoleListAuditLogEvents;
+
+/**
+ * @generated from rpc tesseral.backend.v1.BackendService.ConsoleListAuditLogEventNames
+ */
+export const consoleListAuditLogEventNames = BackendService.method.consoleListAuditLogEventNames;

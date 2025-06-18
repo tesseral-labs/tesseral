@@ -1,17 +1,17 @@
-import { useMutation, useQuery } from '@connectrpc/connect-query';
-import { useCallback } from 'react';
-import { useNavigate } from 'react-router';
+import { useMutation, useQuery } from "@connectrpc/connect-query";
+import { useCallback } from "react";
+import { useNavigate } from "react-router";
 
 import {
   issueEmailVerificationChallenge,
   listOrganizations,
   whoami,
-} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
+} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import {
   IntermediateSession,
   PrimaryAuthFactor,
-} from '@/gen/tesseral/intermediate/v1/intermediate_pb';
-import { Organization } from '@/gen/tesseral/intermediate/v1/intermediate_pb';
+} from "@/gen/tesseral/intermediate/v1/intermediate_pb";
+import { Organization } from "@/gen/tesseral/intermediate/v1/intermediate_pb";
 
 export function useRedirectNextLoginFlowPage(): () => void {
   // don't eagerly fetch; we won't use their initial values
@@ -168,6 +168,8 @@ function isPrimaryAuthFactorAcceptable(
   switch (intermediateSession.primaryAuthFactor) {
     case PrimaryAuthFactor.EMAIL:
       return organization.logInWithEmail;
+    case PrimaryAuthFactor.PASSWORD:
+      return organization.logInWithPassword;
     case PrimaryAuthFactor.GOOGLE:
       return organization.logInWithGoogle;
     case PrimaryAuthFactor.MICROSOFT:

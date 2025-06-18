@@ -1,29 +1,29 @@
-import React, { HTMLAttributes, PropsWithChildren } from 'react'
-import { cva, VariantProps } from 'class-variance-authority'
-import { cn } from '@/lib/utils'
+import React, { HTMLAttributes, PropsWithChildren } from "react";
+import { cva, VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
-const textDividerVariants = cva('block relative w-full', {
+const textDividerVariants = cva("block relative w-full", {
   variants: {
     variant: {
-      default: 'my-4',
-      tight: 'my-2',
-      tighter: 'my-1',
-      wide: 'my-6',
-      wider: 'my-8',
-      widest: 'my-12',
+      default: "my-4",
+      tight: "my-2",
+      tighter: "my-1",
+      wide: "my-6",
+      wider: "my-8",
+      widest: "my-12",
     },
     affects: {
       default:
-        '[&>div.absolute>span]:border-muted-foreground [&>div.relative>span]:text-muted-foreground',
+        "[&>div.absolute>span]:border-muted-foreground [&>div.relative>span]:text-muted-foreground",
       muted:
-        '[&>div.absolute>span]:border-muted [&>div.relative>span]:text-muted',
+        "[&>div.absolute>span]:border-muted [&>div.relative>span]:text-muted",
     },
   },
   defaultVariants: {
-    variant: 'default',
-    affects: 'default',
+    variant: "default",
+    affects: "default",
   },
-})
+});
 
 export interface TextDividerProps
   extends HTMLAttributes<HTMLDivElement>,
@@ -45,10 +45,10 @@ const TextDivider = React.forwardRef<HTMLDivElement, TextDividerProps>(
           <span className="bg-card px-2">{children}</span>
         </div>
       </div>
-    )
-  },
-)
+    );
+  }
+);
 
-TextDivider.displayName = 'TextDivider'
+TextDivider.displayName = "TextDivider";
 
-export default TextDivider
+export default TextDivider;

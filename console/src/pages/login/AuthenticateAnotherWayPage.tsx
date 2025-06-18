@@ -1,27 +1,23 @@
-import { useMutation, useQuery } from '@connectrpc/connect-query';
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useMutation, useQuery } from "@connectrpc/connect-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { LoaderCircleIcon } from "lucide-react";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
+import { z } from "zod";
 
-import { GoogleIcon } from '@/components/login/GoogleIcon';
-import { LoginFlowCard } from '@/components/login/LoginFlowCard';
-import { MicrosoftIcon } from '@/components/login/MicrosoftIcon';
-import { Button } from '@/components/ui/button';
+import { LoginFlowCard } from "@/components/login/LoginFlowCard";
+import { GithubIcon } from "@/components/login/icons/GithubIcon";
+import { GoogleIcon } from "@/components/login/icons/GoogleIcon";
+import { MicrosoftIcon } from "@/components/login/icons/MicrosoftIcon";
+import { Title } from "@/components/page/Title";
+import { Button } from "@/components/ui/button";
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import {
-  getGoogleOAuthRedirectURL,
-  getMicrosoftOAuthRedirectURL,
-  issueEmailVerificationChallenge,
-  listOrganizations,
-  setEmailAsPrimaryLoginFactor,
-  whoami,
-} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
-import { Title } from '@/components/Title';
-import TextDivider from '@/components/ui/text-divider';
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -29,12 +25,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { LoaderCircleIcon } from 'lucide-react';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigate } from 'react-router';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import TextDivider from "@/components/ui/text-divider";
+import {
+  getGithubOAuthRedirectURL,
+  getGoogleOAuthRedirectURL,
+  getMicrosoftOAuthRedirectURL,
+  issueEmailVerificationChallenge,
+  listOrganizations,
+  setEmailAsPrimaryLoginFactor,
+  whoami,
+} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 
 const schema = z.object({
   email: z.string().email(),
@@ -81,6 +83,17 @@ export function AuthenticateAnotherWayPage() {
     window.location.href = url;
   }
 
+  const { mutateAsync: getGithubOAuthRedirectURLAsync } = useMutation(
+    getGithubOAuthRedirectURL,
+  );
+
+  async function handleLogInWithGithub() {
+    const { url } = await getGithubOAuthRedirectURLAsync({
+      redirectUrl: `${window.location.origin}/github-oauth-callback`,
+    });
+    window.location.href = url;
+  }
+
   async function handleSubmit(values: z.infer<typeof schema>) {
     setSubmitting(true);
     await setEmailAsPrimaryLoginFactorMutation.mutateAsync({});
@@ -88,13 +101,13 @@ export function AuthenticateAnotherWayPage() {
       email: values.email,
     });
 
-    navigate('/verify-email');
+    navigate("/verify-email");
   }
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      email: '',
+      email: "",
     },
   });
 
@@ -128,6 +141,16 @@ export function AuthenticateAnotherWayPage() {
             >
               <MicrosoftIcon />
               Log in with Microsoft
+            </Button>
+          )}
+          {organization?.logInWithGithub && (
+            <Button
+              className="w-full"
+              variant="outline"
+              onClick={handleLogInWithGithub}
+            >
+              <GithubIcon />
+              Log in with GitHub
             </Button>
           )}
         </div>

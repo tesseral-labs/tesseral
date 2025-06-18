@@ -89,6 +89,281 @@ func (s *Store) CreateCustomAuditLogEvent(ctx context.Context, req *backendv1.Cr
 	}, nil
 }
 
+func (s *Store) ConsoleListCustomAuditLogEvents(ctx context.Context, req *backendv1.ConsoleListAuditLogEventsRequest) (*backendv1.ConsoleListAuditLogEventsResponse, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	// We want data sorted by event time, newest first. That corresponds to
+	// paginating through IDs high-to-low, because IDs are uuidv7s for this
+	// table.
+	startID := uuid.Max
+	if err := s.pageEncoder.Unmarshal(req.PageToken, &startID); err != nil {
+		return nil, fmt.Errorf("unmarshal page token: %w", err)
+	}
+
+	limit := 10
+	listParams := queries.ConsoleListAuditLogEventsParams{
+		ProjectID: authn.ProjectID(ctx),
+		ID:        startID,
+		Limit:     int32(limit + 1),
+	}
+
+	if req.ResourceType != backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_UNSPECIFIED && req.ResourceId != "" {
+		switch req.ResourceType {
+		case backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_API_KEY:
+			resourceType := queries.AuditLogEventResourceTypeApiKey
+			apiKeyID, err := idformat.APIKey.Parse(req.ResourceId)
+			if err != nil {
+				return nil, apierror.NewInvalidArgumentError("invalid resource id", fmt.Errorf("parse api key id: %w", err))
+			}
+			listParams.ResourceID = (*uuid.UUID)(&apiKeyID)
+			listParams.ResourceType = &resourceType
+		case backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_ORGANIZATION:
+			resourceType := queries.AuditLogEventResourceTypeOrganization
+			orgID, err := idformat.Organization.Parse(req.ResourceId)
+			if err != nil {
+				return nil, apierror.NewInvalidArgumentError("invalid resource id", fmt.Errorf("parse organization id: %w", err))
+			}
+			listParams.ResourceID = (*uuid.UUID)(&orgID)
+			listParams.ResourceType = &resourceType
+		case backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_PASSKEY:
+			resourceType := queries.AuditLogEventResourceTypePasskey
+			passkeyID, err := idformat.Passkey.Parse(req.ResourceId)
+			if err != nil {
+				return nil, apierror.NewInvalidArgumentError("invalid resource id", fmt.Errorf("parse passkey id: %w", err))
+			}
+			listParams.ResourceID = (*uuid.UUID)(&passkeyID)
+			listParams.ResourceType = &resourceType
+		case backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_ROLE:
+			resourceType := queries.AuditLogEventResourceTypeRole
+			roleID, err := idformat.Role.Parse(req.ResourceId)
+			if err != nil {
+				return nil, apierror.NewInvalidArgumentError("invalid resource id", fmt.Errorf("parse role id: %w", err))
+			}
+			listParams.ResourceID = (*uuid.UUID)(&roleID)
+			listParams.ResourceType = &resourceType
+		case backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SAML_CONNECTION:
+			resourceType := queries.AuditLogEventResourceTypeSamlConnection
+			samlConnectionID, err := idformat.SAMLConnection.Parse(req.ResourceId)
+			if err != nil {
+				return nil, apierror.NewInvalidArgumentError("invalid backend_api_key_id", fmt.Errorf("parse backend api key id: %w", err))
+			}
+			listParams.ResourceID = (*uuid.UUID)(&samlConnectionID)
+			listParams.ResourceType = &resourceType
+		case backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SCIM_API_KEY:
+			resourceType := queries.AuditLogEventResourceTypeScimApiKey
+			scimAPIKeyID, err := idformat.SCIMAPIKey.Parse(req.ResourceId)
+			if err != nil {
+				return nil, apierror.NewInvalidArgumentError("invalid intermediate_session_id", fmt.Errorf("parse intermediate session id: %w", err))
+			}
+			listParams.ResourceID = (*uuid.UUID)(&scimAPIKeyID)
+			listParams.ResourceType = &resourceType
+		case backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SESSION:
+			resourceType := queries.AuditLogEventResourceTypeSession
+			sessionID, err := idformat.Session.Parse(req.ResourceId)
+			if err != nil {
+				return nil, apierror.NewInvalidArgumentError("invalid resource id", fmt.Errorf("parse session id: %w", err))
+			}
+			listParams.ResourceID = (*uuid.UUID)(&sessionID)
+			listParams.ResourceType = &resourceType
+		case backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_USER_INVITE:
+			resourceType := queries.AuditLogEventResourceTypeUserInvite
+			inviteID, err := idformat.UserInvite.Parse(req.ResourceId)
+			if err != nil {
+				return nil, apierror.NewInvalidArgumentError("invalid resource id", fmt.Errorf("parse user invite id: %w", err))
+			}
+			listParams.ResourceID = (*uuid.UUID)(&inviteID)
+			listParams.ResourceType = &resourceType
+		case backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_USER:
+			resourceType := queries.AuditLogEventResourceTypeUser
+			userID, err := idformat.User.Parse(req.ResourceId)
+			if err != nil {
+				return nil, apierror.NewInvalidArgumentError("invalid resource id", fmt.Errorf("parse user id: %w", err))
+			}
+			listParams.ResourceID = (*uuid.UUID)(&userID)
+			listParams.ResourceType = &resourceType
+		default:
+			return nil, apierror.NewInvalidArgumentError("invalid resource_type", fmt.Errorf("unknown resource type: %s", req.ResourceType))
+		}
+	}
+
+	if req.OrganizationId != "" {
+		orgID, err := idformat.Organization.Parse(req.OrganizationId)
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid organization_id", fmt.Errorf("parse organization id: %w", err))
+		}
+		listParams.OrganizationID = (*uuid.UUID)(&orgID)
+	}
+
+	if req.ActorUserId != "" {
+		userID, err := idformat.User.Parse(req.ActorUserId)
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid user_id", fmt.Errorf("parse user id: %w", err))
+		}
+		listParams.ActorUserID = (*uuid.UUID)(&userID)
+	}
+
+	if req.ActorSessionId != "" {
+		sessionID, err := idformat.Session.Parse(req.ActorSessionId)
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid session_id", fmt.Errorf("parse session id: %w", err))
+		}
+		listParams.ActorSessionID = (*uuid.UUID)(&sessionID)
+	}
+
+	if req.ActorApiKeyId != "" {
+		apiKeyID, err := idformat.APIKey.Parse(req.ActorApiKeyId)
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid api_key_id", fmt.Errorf("parse api key id: %w", err))
+		}
+		listParams.ActorApiKeyID = (*uuid.UUID)(&apiKeyID)
+	}
+
+	if req.ActorBackendApiKeyId != "" {
+		backendApiKeyID, err := idformat.BackendAPIKey.Parse(req.ActorBackendApiKeyId)
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid backend_api_key_id", fmt.Errorf("parse backend api key id: %w", err))
+		}
+		listParams.ActorBackendApiKeyID = (*uuid.UUID)(&backendApiKeyID)
+	}
+
+	if req.FilterStartTime != nil {
+		filterStartTime := req.FilterStartTime.AsTime()
+		listParams.StartTime = &filterStartTime
+	}
+
+	if req.FilterEndTime != nil {
+		endTime := req.FilterEndTime.AsTime()
+		listParams.EndTime = &endTime
+	}
+
+	if req.FilterEventName != "" {
+		listParams.EventName = &req.FilterEventName
+	}
+
+	qAuditLogEvents, err := q.ConsoleListAuditLogEvents(ctx, listParams)
+	if err != nil {
+		return nil, fmt.Errorf("list audit log events: %w", err)
+	}
+
+	var auditLogEvents []*backendv1.ConsoleAuditLogEvent
+	for _, qAuditLogEvent := range qAuditLogEvents {
+		event := parseConsoleAuditLogEvent(qAuditLogEvent)
+		auditLogEvents = append(auditLogEvents, event)
+	}
+
+	var nextPageToken string
+	if len(qAuditLogEvents) == limit+1 {
+		nextPageToken = s.pageEncoder.Marshal(qAuditLogEvents[limit].ID)
+		auditLogEvents = auditLogEvents[:limit]
+	}
+
+	return &backendv1.ConsoleListAuditLogEventsResponse{
+		AuditLogEvents: auditLogEvents,
+		NextPageToken:  nextPageToken,
+	}, nil
+}
+
+func (s *Store) ConsoleListAuditLogEventNames(ctx context.Context, req *backendv1.ConsoleListAuditLogEventNamesRequest) (*backendv1.ConsoleListAuditLogEventNamesResponse, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	listParams := queries.ConsoleListAuditLogEventNamesParams{
+		ProjectID: authn.ProjectID(ctx),
+	}
+
+	if err := enforceSingleEventNamesFilter(req); err != nil {
+		return nil, apierror.NewFailedPreconditionError("exactly one of actor_api_key_id, actor_backend_api_key_id, actor_session_id, actor_user_id, or resource_type must be provided", fmt.Errorf("enforce single event names filter: %w", err))
+	}
+
+	if req.OrganizationId != "" {
+		orgID, err := idformat.Organization.Parse(req.OrganizationId)
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid organization_id", fmt.Errorf("parse organization id: %w", err))
+		}
+		listParams.OrganizationID = (*uuid.UUID)(&orgID)
+	}
+
+	if req.ResourceType != backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_UNSPECIFIED {
+		switch req.ResourceType {
+		case backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_API_KEY:
+			resourceType := queries.AuditLogEventResourceTypeApiKey
+			listParams.ResourceType = &resourceType
+		case backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_ORGANIZATION:
+			resourceType := queries.AuditLogEventResourceTypeOrganization
+			listParams.ResourceType = &resourceType
+		case backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_PASSKEY:
+			resourceType := queries.AuditLogEventResourceTypePasskey
+			listParams.ResourceType = &resourceType
+		case backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_ROLE:
+			resourceType := queries.AuditLogEventResourceTypeRole
+			listParams.ResourceType = &resourceType
+		case backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SAML_CONNECTION:
+			resourceType := queries.AuditLogEventResourceTypeSamlConnection
+			listParams.ResourceType = &resourceType
+		case backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SCIM_API_KEY:
+			resourceType := queries.AuditLogEventResourceTypeScimApiKey
+			listParams.ResourceType = &resourceType
+		case backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SESSION:
+			resourceType := queries.AuditLogEventResourceTypeSession
+			listParams.ResourceType = &resourceType
+		case backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_USER_INVITE:
+			resourceType := queries.AuditLogEventResourceTypeUserInvite
+			listParams.ResourceType = &resourceType
+		case backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_USER:
+			resourceType := queries.AuditLogEventResourceTypeUser
+			listParams.ResourceType = &resourceType
+		default:
+			return nil, apierror.NewInvalidArgumentError("invalid resource_type", fmt.Errorf("unknown resource type: %s", req.ResourceType))
+		}
+	}
+
+	if req.ActorApiKeyId != "" {
+		apiKeyID, err := idformat.APIKey.Parse(req.ActorApiKeyId)
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid actor_api_key_id", fmt.Errorf("parse api key id: %w", err))
+		}
+		listParams.ActorApiKeyID = (*uuid.UUID)(&apiKeyID)
+	}
+	if req.ActorBackendApiKeyId != "" {
+		backendApiKeyID, err := idformat.BackendAPIKey.Parse(req.ActorBackendApiKeyId)
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid actor_backend_api_key_id", fmt.Errorf("parse backend api key id: %w", err))
+		}
+		listParams.ActorBackendApiKeyID = (*uuid.UUID)(&backendApiKeyID)
+	}
+	if req.ActorSessionId != "" {
+		sessionID, err := idformat.Session.Parse(req.ActorSessionId)
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid actor_session_id", fmt.Errorf("parse session id: %w", err))
+		}
+		listParams.ActorSessionID = (*uuid.UUID)(&sessionID)
+	}
+	if req.ActorUserId != "" {
+		userID, err := idformat.User.Parse(req.ActorUserId)
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid actor_user_id", fmt.Errorf("parse user id: %w", err))
+		}
+		listParams.ActorUserID = (*uuid.UUID)(&userID)
+	}
+
+	qEventNames, err := q.ConsoleListAuditLogEventNames(ctx, listParams)
+	if err != nil {
+		return nil, fmt.Errorf("list audit log event names: %w", err)
+	}
+
+	return &backendv1.ConsoleListAuditLogEventNamesResponse{
+		EventNames: qEventNames,
+	}, nil
+
+}
+
 func parseAuditLogEvent(qAuditLogEvent queries.AuditLogEvent) *backendv1.AuditLogEvent {
 	var eventDetails structpb.Struct
 	if err := protojson.Unmarshal(qAuditLogEvent.EventDetails, &eventDetails); err != nil {
@@ -128,6 +403,67 @@ func parseAuditLogEvent(qAuditLogEvent queries.AuditLogEvent) *backendv1.AuditLo
 	return &backendv1.AuditLogEvent{
 		Id:                         idformat.AuditLogEvent.Format(qAuditLogEvent.ID),
 		OrganizationId:             organizationID,
+		ActorUserId:                userID,
+		ActorSessionId:             sessionID,
+		ActorApiKeyId:              apiKeyID,
+		ActorBackendApiKeyId:       backendApiKeyID,
+		ActorIntermediateSessionId: intermediateSessionID,
+		EventName:                  qAuditLogEvent.EventName,
+		EventTime:                  timestamppb.New(*qAuditLogEvent.EventTime),
+		EventDetails:               &eventDetails,
+	}
+}
+
+func parseConsoleAuditLogEvent(qAuditLogEvent queries.AuditLogEvent) *backendv1.ConsoleAuditLogEvent {
+	var eventDetails structpb.Struct
+	if err := protojson.Unmarshal(qAuditLogEvent.EventDetails, &eventDetails); err != nil {
+		panic(fmt.Errorf("unmarshal event details: %w", err))
+	}
+
+	var organizationID string
+	if qAuditLogEvent.OrganizationID != nil {
+		organizationID = idformat.Organization.Format(*qAuditLogEvent.OrganizationID)
+	}
+
+	var userID string
+	if qAuditLogEvent.ActorUserID != nil {
+		userID = idformat.User.Format(*qAuditLogEvent.ActorUserID)
+	}
+
+	var consoleUserID string
+	if qAuditLogEvent.ActorConsoleUserID != nil {
+		consoleUserID = idformat.User.Format(*qAuditLogEvent.ActorConsoleUserID)
+	}
+
+	var sessionID string
+	if qAuditLogEvent.ActorSessionID != nil {
+		sessionID = idformat.Session.Format(*qAuditLogEvent.ActorSessionID)
+	}
+	var consoleSessionID string
+	if qAuditLogEvent.ActorConsoleSessionID != nil {
+		consoleSessionID = idformat.Session.Format(*qAuditLogEvent.ActorConsoleSessionID)
+	}
+
+	var apiKeyID string
+	if qAuditLogEvent.ActorApiKeyID != nil {
+		apiKeyID = idformat.APIKey.Format(*qAuditLogEvent.ActorApiKeyID)
+	}
+
+	var backendApiKeyID string
+	if qAuditLogEvent.ActorBackendApiKeyID != nil {
+		backendApiKeyID = idformat.BackendAPIKey.Format(*qAuditLogEvent.ActorBackendApiKeyID)
+	}
+
+	var intermediateSessionID string
+	if qAuditLogEvent.ActorIntermediateSessionID != nil {
+		intermediateSessionID = idformat.IntermediateSession.Format(*qAuditLogEvent.ActorIntermediateSessionID)
+	}
+
+	return &backendv1.ConsoleAuditLogEvent{
+		Id:                         idformat.AuditLogEvent.Format(qAuditLogEvent.ID),
+		OrganizationId:             organizationID,
+		ActorConsoleUserId:         consoleUserID,
+		ActorConsoleSessionId:      consoleSessionID,
 		ActorUserId:                userID,
 		ActorSessionId:             sessionID,
 		ActorApiKeyId:              apiKeyID,
@@ -197,6 +533,31 @@ func enforceSingleActor(req *backendv1.CreateAuditLogEventRequest) error {
 
 	if actorCount != 1 {
 		return apierror.NewInvalidArgumentError("exactly one of actor_credentials, actor_api_key_id, actor_session_id, actor_user_id, or organization_id must be provided", nil)
+	}
+
+	return nil
+}
+
+func enforceSingleEventNamesFilter(req *backendv1.ConsoleListAuditLogEventNamesRequest) error {
+	filterCount := 0
+	if req.ResourceType != backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_UNSPECIFIED {
+		filterCount++
+	}
+	if req.ActorApiKeyId != "" {
+		filterCount++
+	}
+	if req.ActorBackendApiKeyId != "" {
+		filterCount++
+	}
+	if req.ActorSessionId != "" {
+		filterCount++
+	}
+	if req.ActorUserId != "" {
+		filterCount++
+	}
+
+	if filterCount != 1 {
+		return apierror.NewInvalidArgumentError("only one of filter_event_name or resource_type/resource_id can be provided", nil)
 	}
 
 	return nil

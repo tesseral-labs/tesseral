@@ -1177,3 +1177,57 @@ WHERE
     users.id = $1
     AND projects.id = @project_id;
 
+-- name: ConsoleListAuditLogEvents :many
+SELECT
+    *
+FROM
+    audit_log_events
+WHERE
+    project_id = @project_id
+    AND (organization_id = @organization_id
+        OR @organization_id IS NULL)
+    AND (event_time >= @start_time
+        OR @start_time IS NULL)
+    AND (event_time <= @end_time
+        OR @end_time IS NULL)
+    AND (event_name = sqlc.narg ('event_name')
+        OR sqlc.narg ('event_name') IS NULL)
+    AND (actor_user_id = @actor_user_id
+        OR @actor_user_id IS NULL)
+    AND (actor_session_id = @actor_session_id
+        OR @actor_session_id IS NULL)
+    AND (actor_api_key_id = @actor_api_key_id
+        OR @actor_api_key_id IS NULL)
+    AND (actor_backend_api_key_id = @actor_backend_api_key_id
+        OR @actor_backend_api_key_id IS NULL)
+    AND (resource_type = @resource_type
+        OR @resource_type IS NULL)
+    AND (resource_id = @resource_id
+        OR @resource_id IS NULL)
+    AND id < @id
+ORDER BY
+    id DESC
+LIMIT $1;
+
+-- name: ConsoleListAuditLogEventNames :many
+SELECT DISTINCT
+    event_name
+FROM
+    audit_log_events
+WHERE
+    project_id = @project_id
+    AND (organization_id = @organization_id
+        OR @organization_id IS NULL)
+    AND (actor_api_key_id = @actor_api_key_id
+        OR @actor_api_key_id IS NULL)
+    AND (actor_user_id = @actor_user_id
+        OR @actor_user_id IS NULL)
+    AND (actor_session_id = @actor_session_id
+        OR @actor_session_id IS NULL)
+    AND (actor_backend_api_key_id = @actor_backend_api_key_id
+        OR @actor_backend_api_key_id IS NULL)
+    AND (resource_type = @resource_type
+        OR @resource_type IS NULL)
+ORDER BY
+    event_name;
+
