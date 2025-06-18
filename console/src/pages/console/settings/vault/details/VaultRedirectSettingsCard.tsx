@@ -35,8 +35,16 @@ const schema = z.object({
     .string()
     .url("Must be a valid URL")
     .min(1, "Default Redirect URI is required"),
-  afterLoginRedirectUri: z.string().url("Must be a valid URL").optional(),
-  afterSignupRedirectUri: z.string().url("Must be a valid URL").optional(),
+  afterLoginRedirectUri: z
+    .string()
+    .url("Must be a valid URL")
+    .optional()
+    .or(z.literal("")),
+  afterSignupRedirectUri: z
+    .string()
+    .url("Must be a valid URL")
+    .optional()
+    .or(z.literal("")),
 });
 
 export function VaultRedirectSettingsCard() {
