@@ -189,7 +189,7 @@ function NavigationMobile({
   return (
     <div
       className={cn(
-        "absolute top-14 left-0 w-full h-screen bg-white transition-transform duration-300 ease-in-out -z-index",
+        "fixed top-14 left-0 w-full h-screen bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/80 transition-transform duration-300 ease-in-out -z-index",
         open ? "translate-y-0" : "hidden -translate-y-[calc(100vh)]",
       )}
     >
