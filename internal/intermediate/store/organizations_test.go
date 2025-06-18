@@ -33,19 +33,12 @@ func TestListOrganizations_ActiveByEmail(t *testing.T) {
 	organizationID := u.NewOrganization(t, &backendv1.Organization{
 		DisplayName: "Test Organization",
 	})
-	organizationUUID, err := idformat.Organization.Parse(organizationID)
-	require.NoError(t, err)
-
 	email := authn.IntermediateSession(ctx).Email
 
 	// Create a user in the organization with the same email
-	_, err = u.Environment.DB.Exec(t.Context(), `
-INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
-VALUES (gen_random_uuid(), $1, crypt('password', gen_salt('bf', 14)), $2, true);
-`,
-		email,
-		uuid.UUID(organizationUUID).String())
-	require.NoError(t, err)
+	_ = u.Environment.NewUser(t, organizationID, &backendv1.User{
+		Email: email,
+	})
 
 	res, err := u.Store.ListOrganizations(ctx, &intermediatev1.ListOrganizationsRequest{})
 	require.NoError(t, err)
@@ -67,13 +60,9 @@ func TestListOrganizations_ActiveByEmailWithSamlConnection(t *testing.T) {
 	email := authn.IntermediateSession(ctx).Email
 
 	// Create a user in the organization with the same email
-	_, err = u.Environment.DB.Exec(t.Context(), `
-INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
-VALUES (gen_random_uuid(), $1, crypt('password', gen_salt('bf', 14)), $2, true);
-`,
-		email,
-		uuid.UUID(organizationUUID).String())
-	require.NoError(t, err)
+	_ = u.Environment.NewUser(t, organizationID, &backendv1.User{
+		Email: email,
+	})
 
 	// Create a SAML connection for the organization
 	samlConnectionID := uuid.New()

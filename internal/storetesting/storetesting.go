@@ -196,3 +196,40 @@ INSERT INTO organizations (id, display_name, project_id, log_in_with_google, log
 
 	return formattedOrganizationID
 }
+
+func (e *Environment) NewUser(t *testing.T, organizationID string, user *backendv1.User) string {
+	organizationUUID, err := idformat.Organization.Parse(organizationID)
+	if err != nil {
+		t.Fatalf("failed to parse organization ID: %v", err)
+	}
+
+	userID := uuid.New()
+	formattedUserID := idformat.User.Format(userID)
+
+	if user.Email == "" {
+		user.Email = fmt.Sprintf("%s@%s", formattedUserID, e.ConsoleDomain)
+	}
+
+	// Create the user
+	_, err = e.DB.Exec(t.Context(), `
+INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
+  VALUES ($1::uuid, $2, crypt('password', gen_salt('bf', 14)), $3::uuid, $4);
+`,
+		userID.String(),
+		user.Email,
+		uuid.UUID(organizationUUID).String(),
+		derefOrEmpty(user.Owner),
+	)
+	if err != nil {
+		t.Fatalf("failed to create user: %v", err)
+	}
+	return formattedUserID
+}
+
+func derefOrEmpty[T any](t *T) T {
+	var z T
+	if t == nil {
+		return z
+	}
+	return *t
+}
