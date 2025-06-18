@@ -1,9 +1,5 @@
 import { timestampDate } from "@bufbuild/protobuf/wkt";
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery,
-} from "@connectrpc/connect-query";
+import { useMutation, useQuery } from "@connectrpc/connect-query";
 import {
   AlignLeft,
   Settings,
@@ -17,6 +13,7 @@ import React, { useState } from "react";
 import { Link, useParams } from "react-router";
 import { toast } from "sonner";
 
+import { Pagination } from "@/components/core/Pagination";
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 import {
@@ -59,18 +56,20 @@ import {
   updatePasskey,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { Passkey } from "@/gen/tesseral/backend/v1/models_pb";
+import { usePaginatedInfiniteQuery } from "@/hooks/use-paginate";
 import { AAGUIDS } from "@/lib/passkeys";
 
 export function UserPasskeysTab() {
   const { organizationId, userId } = useParams();
 
   const {
-    data: listPasskeysResponses,
-    fetchNextPage,
+    consoleFetchNextPage: fetchNextPage,
+    consoleFetchPreviousPage: fetchPreviousPage,
     hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-  } = useInfiniteQuery(
+    hasPreviousPage,
+    isFetching,
+    page,
+  } = usePaginatedInfiniteQuery(
     listPasskeys,
     {
       userId: userId,
@@ -82,8 +81,7 @@ export function UserPasskeysTab() {
     },
   );
 
-  const passkeys =
-    listPasskeysResponses?.pages?.flatMap((page) => page.passkeys) || [];
+  const passkeys = page?.passkeys || [];
 
   return (
     <Card>
@@ -92,7 +90,7 @@ export function UserPasskeysTab() {
         <CardDescription>Passkeys associated with this User.</CardDescription>
       </CardHeader>
       <CardContent>
-        {isLoading ? (
+        {isFetching ? (
           <TableSkeleton columns={6} />
         ) : (
           <>
@@ -102,85 +100,91 @@ export function UserPasskeysTab() {
               </div>
             )}
             {passkeys.length > 0 && (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Passkey</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Public Key</TableHead>
-                    <TableHead>Created</TableHead>
-                    <TableHead>Updated</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {passkeys.map((passkey) => (
-                    <TableRow key={passkey.id}>
-                      <TableCell className="space-y-2">
-                        <Link
-                          to={`/organizations/${organizationId}/users/${userId}/passkeys/${passkey.id}`}
-                        >
-                          <span className="block font-semibold">
-                            {passkey.aaguid && AAGUIDS[passkey.aaguid]
-                              ? AAGUIDS[passkey.aaguid]
-                              : "Unknown Vendor"}
-                          </span>
-                        </Link>
-                        <ValueCopier value={passkey.id} label="Passkey ID" />
-                      </TableCell>
-                      <TableCell>
-                        {passkey.disabled ? (
-                          <Badge variant="secondary">Disabled</Badge>
-                        ) : (
-                          <Badge>Active</Badge>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {passkey.publicKeyPkix && (
-                          <a
-                            className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
-                            download={`Public Key ${passkey.id}.pem`}
-                            href={`data:text/plain;base64,${btoa(passkey.publicKeyPkix)}`}
-                          >
-                            Download (.pem)
-                          </a>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {passkey.createTime &&
-                          DateTime.fromJSDate(
-                            timestampDate(passkey.createTime),
-                          ).toRelative()}
-                      </TableCell>
-                      <TableCell>
-                        {passkey.updateTime &&
-                          DateTime.fromJSDate(
-                            timestampDate(passkey.updateTime),
-                          ).toRelative()}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <ManagePasskeyButton passkey={passkey} />
-                      </TableCell>
+              <>
+                <Pagination
+                  count={passkeys.length}
+                  hasNextPage={hasNextPage}
+                  hasPreviousPage={hasPreviousPage}
+                  fetchNextPage={fetchNextPage}
+                  fetchPreviousPage={fetchPreviousPage}
+                />
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Passkey</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Public Key</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead>Updated</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {passkeys.map((passkey) => (
+                      <TableRow key={passkey.id}>
+                        <TableCell className="space-y-2">
+                          <Link
+                            to={`/organizations/${organizationId}/users/${userId}/passkeys/${passkey.id}`}
+                          >
+                            <span className="block font-semibold">
+                              {passkey.aaguid && AAGUIDS[passkey.aaguid]
+                                ? AAGUIDS[passkey.aaguid]
+                                : "Unknown Vendor"}
+                            </span>
+                          </Link>
+                          <ValueCopier value={passkey.id} label="Passkey ID" />
+                        </TableCell>
+                        <TableCell>
+                          {passkey.disabled ? (
+                            <Badge variant="secondary">Disabled</Badge>
+                          ) : (
+                            <Badge>Active</Badge>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {passkey.publicKeyPkix && (
+                            <a
+                              className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
+                              download={`Public Key ${passkey.id}.pem`}
+                              href={`data:text/plain;base64,${btoa(passkey.publicKeyPkix)}`}
+                            >
+                              Download (.pem)
+                            </a>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {passkey.createTime &&
+                            DateTime.fromJSDate(
+                              timestampDate(passkey.createTime),
+                            ).toRelative()}
+                        </TableCell>
+                        <TableCell>
+                          {passkey.updateTime &&
+                            DateTime.fromJSDate(
+                              timestampDate(passkey.updateTime),
+                            ).toRelative()}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <ManagePasskeyButton passkey={passkey} />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </>
             )}
           </>
         )}
       </CardContent>
-      {hasNextPage && (
-        <CardFooter className="justify-center">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => fetchNextPage()}
-            disabled={isFetchingNextPage}
-          >
-            Load More
-          </Button>
-        </CardFooter>
-      )}
+      <CardFooter>
+        <Pagination
+          count={passkeys.length}
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
+          fetchNextPage={fetchNextPage}
+          fetchPreviousPage={fetchPreviousPage}
+        />
+      </CardFooter>
     </Card>
   );
 }
@@ -188,7 +192,7 @@ export function UserPasskeysTab() {
 function ManagePasskeyButton({ passkey }: { passkey: Passkey }) {
   const { organizationId, userId } = useParams();
 
-  const { refetch } = useInfiniteQuery(
+  const { refetch } = usePaginatedInfiniteQuery(
     listPasskeys,
     {
       userId: userId,

@@ -1,8 +1,4 @@
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery,
-} from "@connectrpc/connect-query";
+import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, ListCheck, Plus } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -11,6 +7,7 @@ import { Link, useParams } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { Pagination } from "@/components/core/Pagination";
 import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 import {
   AlertDialog,
@@ -74,6 +71,7 @@ import {
   listUserRoleAssignments,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { UserRoleAssignment } from "@/gen/tesseral/backend/v1/models_pb";
+import { usePaginatedInfiniteQuery } from "@/hooks/use-paginate";
 
 export function UserRolesTab() {
   const { userId } = useParams();
@@ -81,12 +79,13 @@ export function UserRolesTab() {
     id: userId,
   });
   const {
-    data: listUserRoleAssignmentsResponses,
-    fetchNextPage,
+    consoleFetchNextPage: fetchNextPage,
+    consoleFetchPreviousPage: fetchPreviousPage,
     hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-  } = useInfiniteQuery(
+    hasPreviousPage,
+    isFetching,
+    page,
+  } = usePaginatedInfiniteQuery(
     listUserRoleAssignments,
     {
       userId,
@@ -98,10 +97,7 @@ export function UserRolesTab() {
     },
   );
 
-  const userRoleAssignments =
-    listUserRoleAssignmentsResponses?.pages.flatMap(
-      (page) => page.userRoleAssignments,
-    ) || [];
+  const userRoleAssignments = page?.userRoleAssignments || [];
 
   return (
     <Card>
@@ -119,7 +115,7 @@ export function UserRolesTab() {
         </CardAction>
       </CardHeader>
       <CardContent>
-        {isLoading ? (
+        {isFetching ? (
           <TableSkeleton columns={3} />
         ) : (
           <>
@@ -128,39 +124,45 @@ export function UserRolesTab() {
                 No roles assigned to this user.
               </div>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Actions</TableHead>
-                    <TableHead></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {userRoleAssignments.map((assignment) => (
-                    <UserRoleAssignmentRow
-                      key={assignment.roleId}
-                      userRoleAssignment={assignment}
-                    />
-                  ))}
-                </TableBody>
-              </Table>
+              <>
+                <Pagination
+                  count={userRoleAssignments.length}
+                  hasNextPage={hasNextPage}
+                  hasPreviousPage={hasPreviousPage}
+                  fetchNextPage={fetchNextPage}
+                  fetchPreviousPage={fetchPreviousPage}
+                />
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Role</TableHead>
+                      <TableHead>Actions</TableHead>
+                      <TableHead></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {userRoleAssignments.map((assignment) => (
+                      <UserRoleAssignmentRow
+                        key={assignment.roleId}
+                        userRoleAssignment={assignment}
+                      />
+                    ))}
+                  </TableBody>
+                </Table>
+              </>
             )}
           </>
         )}
       </CardContent>
-      {hasNextPage && (
-        <CardFooter className="justify-center">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => fetchNextPage()}
-            disabled={isFetchingNextPage}
-          >
-            Load More
-          </Button>
-        </CardFooter>
-      )}
+      <CardFooter>
+        <Pagination
+          count={userRoleAssignments.length}
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
+          fetchNextPage={fetchNextPage}
+          fetchPreviousPage={fetchPreviousPage}
+        />
+      </CardFooter>
     </Card>
   );
 }
@@ -173,7 +175,7 @@ function UserRoleAssignmentRow({
   const { roleId } = userRoleAssignment;
   const { userId } = useParams();
 
-  const { refetch } = useInfiniteQuery(
+  const { refetch } = usePaginatedInfiniteQuery(
     listUserRoleAssignments,
     {
       userId,
@@ -275,7 +277,7 @@ const schema = z.object({
 function AssignRoleButton() {
   const { organizationId, userId } = useParams();
 
-  const { refetch } = useInfiniteQuery(
+  const { refetch } = usePaginatedInfiniteQuery(
     listUserRoleAssignments,
     {
       userId,

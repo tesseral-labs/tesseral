@@ -1,9 +1,5 @@
 import { timestampDate } from "@bufbuild/protobuf/wkt";
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery,
-} from "@connectrpc/connect-query";
+import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   AlignLeft,
@@ -24,6 +20,7 @@ import { Link } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { Pagination } from "@/components/core/Pagination";
 import { SecretCopier } from "@/components/core/SecretCopier";
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
@@ -94,6 +91,7 @@ import {
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { BackendAPIKey } from "@/gen/tesseral/backend/v1/models_pb";
 import { useHandleUpgrade } from "@/hooks/use-handle-upgrade";
+import { usePaginatedInfiniteQuery } from "@/hooks/use-paginate";
 
 export function ListBackendApiKeysCard() {
   const handleUpgrade = useHandleUpgrade();
@@ -103,12 +101,13 @@ export function ListBackendApiKeysCard() {
     isLoading: isLoadingEntitlements,
   } = useQuery(getProjectEntitlements);
   const {
-    data: listBackendApiKeysResponses,
-    fetchNextPage,
+    consoleFetchNextPage: fetchNextPage,
+    consoleFetchPreviousPage: fetchPreviousPage,
     hasNextPage,
+    hasPreviousPage,
     isFetching,
-    isLoading,
-  } = useInfiniteQuery(
+    page,
+  } = usePaginatedInfiniteQuery(
     listBackendAPIKeys,
     {
       pageToken: "",
@@ -119,9 +118,7 @@ export function ListBackendApiKeysCard() {
     },
   );
 
-  const backendApiKeys =
-    listBackendApiKeysResponses?.pages.flatMap((page) => page.backendApiKeys) ||
-    [];
+  const backendApiKeys = page?.backendApiKeys || [];
 
   return (
     <>
@@ -181,7 +178,7 @@ export function ListBackendApiKeysCard() {
             </CardAction>
           </CardHeader>
           <CardContent>
-            {isLoading ? (
+            {isFetching ? (
               <TableSkeleton />
             ) : (
               <>
@@ -190,90 +187,96 @@ export function ListBackendApiKeysCard() {
                     No API keys found. Create a new key to get started.
                   </div>
                 ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>
-                          <div className="flex items-center">
-                            <span>ID</span>
-                            <HoverCard>
-                              <HoverCardTrigger asChild>
-                                <div className="inline-block ml-2 text-muted-foreground">
-                                  <Info className="h-4 w-4" />
-                                </div>
-                              </HoverCardTrigger>
-                              <HoverCardContent className="bg-primary text-white space-y-4 text-sm">
-                                <p className="font-semibold">
-                                  Not the secret token
-                                </p>
-                                <p className="text-xs">
-                                  The secret token used to authenticate to the
-                                  Backend API is only available immediately
-                                  after creation, and is never shown again.
-                                </p>
-                              </HoverCardContent>
-                            </HoverCard>
-                          </div>
-                        </TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Created</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {backendApiKeys.map((key) => (
-                        <TableRow key={key.id}>
-                          <TableCell>
-                            <Link
-                              className="font-medium"
-                              to={`/settings/api-keys/backend-api-keys/${key.id}`}
-                            >
-                              {key.displayName || "—"}
-                            </Link>
-                          </TableCell>
-                          <TableCell>
-                            <ValueCopier
-                              value={key.id}
-                              label="Backend API Key ID"
-                            />
-                          </TableCell>
-                          <TableCell>
-                            {key.revoked ? (
-                              <Badge variant="secondary">Revoked</Badge>
-                            ) : (
-                              <Badge>Active</Badge>
-                            )}
-                          </TableCell>
-                          <TableCell>
-                            {key.createTime &&
-                              DateTime.fromJSDate(
-                                timestampDate(key.createTime),
-                              ).toRelative()}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <ManageBackendApiKeyButton backendApiKey={key} />
-                          </TableCell>
+                  <>
+                    <Pagination
+                      count={backendApiKeys.length}
+                      hasNextPage={hasNextPage}
+                      hasPreviousPage={hasPreviousPage}
+                      fetchNextPage={fetchNextPage}
+                      fetchPreviousPage={fetchPreviousPage}
+                    />
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Name</TableHead>
+                          <TableHead>
+                            <div className="flex items-center">
+                              <span>ID</span>
+                              <HoverCard>
+                                <HoverCardTrigger asChild>
+                                  <div className="inline-block ml-2 text-muted-foreground">
+                                    <Info className="h-4 w-4" />
+                                  </div>
+                                </HoverCardTrigger>
+                                <HoverCardContent className="bg-primary text-white space-y-4 text-sm">
+                                  <p className="font-semibold">
+                                    Not the secret token
+                                  </p>
+                                  <p className="text-xs">
+                                    The secret token used to authenticate to the
+                                    Backend API is only available immediately
+                                    after creation, and is never shown again.
+                                  </p>
+                                </HoverCardContent>
+                              </HoverCard>
+                            </div>
+                          </TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Created</TableHead>
+                          <TableHead className="text-right">Actions</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                      </TableHeader>
+                      <TableBody>
+                        {backendApiKeys.map((key) => (
+                          <TableRow key={key.id}>
+                            <TableCell>
+                              <Link
+                                className="font-medium"
+                                to={`/settings/api-keys/backend-api-keys/${key.id}`}
+                              >
+                                {key.displayName || "—"}
+                              </Link>
+                            </TableCell>
+                            <TableCell>
+                              <ValueCopier
+                                value={key.id}
+                                label="Backend API Key ID"
+                              />
+                            </TableCell>
+                            <TableCell>
+                              {key.revoked ? (
+                                <Badge variant="secondary">Revoked</Badge>
+                              ) : (
+                                <Badge>Active</Badge>
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              {key.createTime &&
+                                DateTime.fromJSDate(
+                                  timestampDate(key.createTime),
+                                ).toRelative()}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <ManageBackendApiKeyButton backendApiKey={key} />
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </>
                 )}
               </>
             )}
           </CardContent>
-          {hasNextPage && (
-            <CardFooter className="flex justify-center">
-              <Button
-                disabled={isFetching}
-                variant="outline"
-                onClick={() => fetchNextPage()}
-                size="sm"
-              >
-                Load More
-              </Button>
-            </CardFooter>
-          )}
+          <CardFooter className="flex justify-center">
+            <Pagination
+              count={backendApiKeys.length}
+              hasNextPage={hasNextPage}
+              hasPreviousPage={hasPreviousPage}
+              fetchNextPage={fetchNextPage}
+              fetchPreviousPage={fetchPreviousPage}
+            />
+          </CardFooter>
         </Card>
       )}
     </>
@@ -285,7 +288,7 @@ function ManageBackendApiKeyButton({
 }: {
   backendApiKey: BackendAPIKey;
 }) {
-  const { refetch } = useInfiniteQuery(
+  const { refetch } = usePaginatedInfiniteQuery(
     listBackendAPIKeys,
     {
       pageToken: "",
@@ -421,7 +424,7 @@ const schema = z.object({
 });
 
 function CreateBackendApiKeyButton() {
-  const { refetch } = useInfiniteQuery(
+  const { refetch } = usePaginatedInfiniteQuery(
     listBackendAPIKeys,
     {
       pageToken: "",
