@@ -6,7 +6,9 @@ import {
 } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  Activity,
   AlignLeft,
+  History,
   KeyRound,
   LoaderCircle,
   Logs,
@@ -325,11 +327,22 @@ function ManageUserButton({ user }: { user: User }) {
           <DropdownMenuItem>
             <Link
               className="w-full"
-              to={`/organizations/${organizationId}/users/${user.id}/logs`}
+              to={`/organizations/${organizationId}/users/${user.id}/history`}
             >
               <div className="w-full flex items-center">
-                <Logs className="inline mr-2" />
-                Audit Logs
+                <History className="inline mr-2" />
+                User History
+              </div>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link
+              className="w-full"
+              to={`/organizations/${organizationId}/users/${user.id}/activity`}
+            >
+              <div className="w-full flex items-center">
+                <Activity className="inline mr-2" />
+                User Activity
               </div>
             </Link>
           </DropdownMenuItem>
