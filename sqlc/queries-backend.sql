@@ -1204,7 +1204,7 @@ WHERE
         OR @resource_type IS NULL)
     AND (resource_id = @resource_id
         OR @resource_id IS NULL)
-    AND id < @id
+    AND id <= @id
 ORDER BY
     id DESC
 LIMIT $1;
