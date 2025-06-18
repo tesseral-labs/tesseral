@@ -61,8 +61,8 @@ export function OrganizationMFACard() {
   async function handleSubmit(data: z.infer<typeof schema>) {
     if (
       data.requireMfa &&
-      !getProjectResponse?.project?.logInWithAuthenticatorApp &&
-      !getProjectResponse?.project?.logInWithPasskey
+      !data.logInWithAuthenticatorApp &&
+      !data.logInWithPasskey
     ) {
       form.setError("requireMfa", {
         message:
