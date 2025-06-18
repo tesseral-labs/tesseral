@@ -7,15 +7,18 @@ import {
   Home,
   Key,
   LifeBuoy,
+  ListCheck,
   Lock,
   LogOut,
+  Menu,
   Settings,
   Settings2,
   Shield,
   User,
+  Vault,
   Webhook,
 } from "lucide-react";
-import React from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -50,71 +53,322 @@ import {
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 import { cn } from "@/lib/utils";
 
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../ui/accordion";
 import { Separator } from "../ui/separator";
 import { BreadcrumbBar } from "./BreadcrumbBar";
 
 export function Navigation() {
   const { pathname } = useLocation();
 
+  const [navigationMenuOpen, setNavigationMenuOpen] = useState(false);
+
+  function toggleNavigationMenu() {
+    setNavigationMenuOpen((prev) => !prev);
+  }
+
   return (
-    <header className="w-full sticky top-0 z-10">
-      <nav className="p-4 w-full z-50 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/80 flex flex-row items-center justify-between border-b lg:border-0">
-        <div className="flex items-center">
-          <NavigationMenu className="relative ">
-            <NavigationMenuList className="relative mr-auto">
-              <NavigationMenuItem>
-                <Link to="/">
-                  <img
-                    className="max-h-8"
-                    src="/images/tesseral-icon-black.svg"
-                  />
-                </Link>
-              </NavigationMenuItem>
-              <NavigationProjects />
-              <NavigationMenuItem>
-                <NavigationMenuLink
-                  active={pathname === "/"}
-                  asChild
-                  className={navigationMenuTriggerStyle()}
-                >
+    <>
+      <header className="w-full sticky top-0 z-10">
+        <nav className="h-14 p-4 w-full z-50 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/80 flex flex-row items-center justify-between border-b lg:border-0">
+          <div className="flex items-center">
+            <NavigationMenu className="flex lg:hidden">
+              <NavigationMenuList className="relative mr-auto">
+                <NavigationMenuItem>
                   <Link to="/">
-                    <div className="flex items-center">
-                      <Home className="inline h-4 w-4 mr-2" />
-                      Home
-                    </div>
+                    <img
+                      className="max-h-6"
+                      src="/images/tesseral-logo-black.svg"
+                    />
                   </Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink
-                  active={pathname.startsWith("/organizations")}
-                  className={navigationMenuTriggerStyle()}
-                  asChild
-                >
-                  <Link to="/organizations">
-                    <div className="flex items-center">
-                      <Building2 className="h-4 w-4 mr-2" />
-                      Organizations
-                    </div>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+            <NavigationMenu className="relative hidden lg:flex">
+              <NavigationMenuList className="relative mr-auto">
+                <NavigationMenuItem>
+                  <Link to="/">
+                    <img
+                      className="max-h-8"
+                      src="/images/tesseral-icon-black.svg"
+                    />
                   </Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
+                </NavigationMenuItem>
+                <NavigationProjects />
+                <NavigationMenuItem>
+                  <NavigationMenuLink
+                    active={pathname === "/"}
+                    asChild
+                    className={navigationMenuTriggerStyle()}
+                  >
+                    <Link to="/">
+                      <div className="flex items-center">
+                        <Home className="inline h-4 w-4 mr-2" />
+                        Home
+                      </div>
+                    </Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuLink
+                    active={pathname.startsWith("/organizations")}
+                    className={navigationMenuTriggerStyle()}
+                    asChild
+                  >
+                    <Link to="/organizations">
+                      <div className="flex items-center">
+                        <Building2 className="h-4 w-4 mr-2" />
+                        Organizations
+                      </div>
+                    </Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+            <NavigationMenu className="hidden lg:flex relative">
+              <NavigationMenuList>
+                <NavigationSettings />
+              </NavigationMenuList>
+            </NavigationMenu>
+          </div>
+          <NavigationMenu className="hidden lg:flex">
+            <NavigationMenuList className="ml-auto">
+              <NavigationUser />
             </NavigationMenuList>
           </NavigationMenu>
-          <NavigationMenu className="relative">
-            <NavigationMenuList>
-              <NavigationSettings />
-            </NavigationMenuList>
-          </NavigationMenu>
-        </div>
-        <NavigationMenu>
-          <NavigationMenuList className="ml-auto">
-            <NavigationUser />
-          </NavigationMenuList>
-        </NavigationMenu>
-      </nav>
-      <BreadcrumbBar />
-    </header>
+          <div
+            className="flex lg:hidden"
+            onClick={() => toggleNavigationMenu()}
+          >
+            <Menu
+              className={cn(
+                "transition-transform",
+                navigationMenuOpen ? "rotate-90" : "rotate-none",
+              )}
+            />
+          </div>
+        </nav>
+        <BreadcrumbBar />
+      </header>
+      <NavigationMobile
+        open={navigationMenuOpen}
+        setOpen={setNavigationMenuOpen}
+      />
+    </>
+  );
+}
+
+function NavigationMobile({
+  open,
+  setOpen,
+}: {
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+}) {
+  const { data: getProjectResponse } = useQuery(getProject);
+  const { data: getProjectWebhookManagementUrlResponse } = useQuery(
+    getProjectWebhookManagementURL,
+    {},
+    {
+      retry: false,
+    },
+  );
+  const navigate = useNavigate();
+  const { mutateAsync: logoutAsync } = useMutation(logout);
+
+  async function handleLogout() {
+    await logoutAsync({});
+    toast.success("You have been logged out.");
+    navigate("/login");
+  }
+
+  return (
+    <div
+      className={cn(
+        "absolute top-14 left-0 w-full h-screen bg-white transition-transform duration-300 ease-in-out -z-index",
+        open ? "translate-y-0" : "hidden -translate-y-[calc(100vh)]",
+      )}
+    >
+      <Link
+        className="flex gap-2 items-center w-full font-medium text-sm p-3"
+        onClick={() => setOpen(false)}
+        to="/"
+      >
+        <Home className="h-4 w-4" />
+        Home
+      </Link>
+      <Link
+        className="flex gap-2 items-center w-full font-medium text-sm p-3"
+        onClick={() => setOpen(false)}
+        to="/organizations"
+      >
+        <Building2 className="h-4 w-4" />
+        Organizations
+      </Link>
+      <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value="settings" className="!border-0">
+          <AccordionTrigger className="hover:no-underline cursor-pointer">
+            <div className="flex gap-2 items-center px-3">
+              <Settings className="h-4 w-4" />
+              Settings
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="space-y-2 p-3 bg-muted border-y">
+            <Link
+              className="rounded hover:bg-white w-full p-2 flex flex-col gap-1"
+              onClick={() => setOpen(false)}
+              to="/settings/authentication"
+            >
+              <div className="text-sm leading-none font-medium">
+                <Shield className="inline mr-2 w-4 h-4" />
+                Authentication
+              </div>
+              <p className="text-muted-foreground line-clamp-2 text-xs leading-snug">
+                Configure SAML, SCIM, OAuth, and MFA
+              </p>
+            </Link>
+            <Link
+              className="rounded hover:bg-white w-full p-2 flex flex-col gap-1"
+              onClick={() => setOpen(false)}
+              to="/settings/api-keys"
+            >
+              <div className="text-sm leading-none font-medium">
+                <Key className="inline mr-2 w-4 h-4" />
+                API Keys
+              </div>
+              <p className="text-muted-foreground line-clamp-2 text-xs leading-snug">
+                Configure SAML, SCIM, OAuth, and MFA
+              </p>
+            </Link>
+            <Link
+              className="rounded hover:bg-white w-full p-2 flex flex-col gap-1"
+              onClick={() => setOpen(false)}
+              to="/settings/vault"
+            >
+              <div className="text-sm leading-none font-medium">
+                <Settings2 className="inline mr-2 w-4 h-4" />
+                Vault Customization
+              </div>
+              <p className="text-muted-foreground line-clamp-2 text-xs leading-snug">
+                Configure SAML, SCIM, OAuth, and MFA
+              </p>
+            </Link>
+            <Link
+              className="rounded hover:bg-white w-full p-2 flex flex-col gap-1"
+              onClick={() => setOpen(false)}
+              to="/settings/access"
+            >
+              <div className="text-sm leading-none font-medium">
+                <Lock className="inline mr-2 w-4 h-4" />
+                Access Control
+              </div>
+              <p className="text-muted-foreground line-clamp-2 text-xs leading-snug">
+                Configure SAML, SCIM, OAuth, and MFA
+              </p>
+            </Link>
+            <Link
+              className="rounded hover:bg-white w-full p-2 flex flex-col gap-1"
+              onClick={() => setOpen(false)}
+              to={getProjectWebhookManagementUrlResponse?.url || ""}
+            >
+              <div className="text-sm leading-none font-medium">
+                <Webhook className="inline mr-2 w-4 h-4" />
+                Webhooks
+              </div>
+              <p className="text-muted-foreground line-clamp-2 text-xs leading-snug">
+                Configure SAML, SCIM, OAuth, and MFA
+              </p>
+            </Link>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="vault" className="!border-0">
+          <AccordionTrigger className="hover:no-underline cursor-pointer !border-0">
+            <div className="flex gap-2 items-center px-3">
+              <Vault className="h-4 w-4" />
+              Vault
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="space-y-2 p-3 bg-muted border-y">
+            <Link
+              className="rounded hover:bg-white w-full p-2 flex flex-col gap-1"
+              onClick={() => setOpen(false)}
+              to={`https://${getProjectResponse?.project?.vaultDomain}/user-settings`}
+            >
+              <div className="text-sm leading-none font-medium">
+                <User className="inline mr-2 w-4 h-4" />
+                User Settings
+              </div>
+            </Link>
+            <Link
+              className="rounded hover:bg-white w-full p-2 flex flex-col gap-1"
+              onClick={() => setOpen(false)}
+              to={`https://${getProjectResponse?.project?.vaultDomain}/organization-settings`}
+            >
+              <div className="text-sm leading-none font-medium">
+                <Building2 className="inline mr-2 w-4 h-4" />
+                Organization Settings
+              </div>
+            </Link>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="resources" className="!border-0">
+          <AccordionTrigger className="hover:no-underline cursor-pointer">
+            <div className="flex gap-2 items-center px-3">
+              <ListCheck className="h-4 w-4" />
+              Resources
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="space-y-2 p-3 bg-muted border-y">
+            <Link
+              className="rounded hover:bg-white w-full p-2 flex flex-col gap-1"
+              onClick={() => setOpen(false)}
+              to="https://tesseral.com/docs"
+              target="_blank"
+            >
+              <div className="text-sm leading-none font-medium">
+                <BookOpen className="inline mr-2 w-4 h-4" />
+                Docs
+              </div>
+            </Link>
+            <Link
+              className="rounded hover:bg-white w-full p-2 flex flex-col gap-1"
+              onClick={() => setOpen(false)}
+              to="https://github.com/tesseral-labs/tesseral/issues/new"
+              target="_blank"
+            >
+              <div className="text-sm leading-none font-medium">
+                <Bug className="inline mr-2 w-4 h-4" />
+                Report
+              </div>
+            </Link>
+            <Link
+              className="rounded hover:bg-white w-full p-2 flex flex-col gap-1"
+              onClick={() => setOpen(false)}
+              to="mailto:support@tesseral.com"
+            >
+              <div className="text-sm leading-none font-medium">
+                <LifeBuoy className="inline mr-2 w-4 h-4" />
+                Support
+              </div>
+            </Link>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+      <div
+        className="flex gap-2 items-center w-full font-medium text-sm p-3"
+        onClick={() => {
+          handleLogout();
+          setOpen(false);
+        }}
+      >
+        <LogOut className="h-4 w-4" />
+        Logout
+      </div>
+    </div>
   );
 }
 
