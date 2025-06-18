@@ -27,12 +27,12 @@ import {
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
 import {
-  createStripeCheckoutLink,
   getOrganization,
   getProject,
   getProjectEntitlements,
   updateOrganization,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
+import { useHandleUpgrade } from "@/hooks/use-handle-upgrade";
 
 import { ListOrganizationApiKeysCard } from "./api-keys/ListOrganizationApiKeysCard";
 
@@ -41,6 +41,7 @@ const schema = z.object({
 });
 
 export function OrganizationApiKeysTab() {
+  const handleUpgrade = useHandleUpgrade();
   const { organizationId } = useParams();
 
   const { data: getOrganizationResponse, refetch } = useQuery(getOrganization, {
@@ -51,9 +52,6 @@ export function OrganizationApiKeysTab() {
     data: getProjectEntitlementsResponse,
     isLoading: isLoadingEntitlements,
   } = useQuery(getProjectEntitlements);
-  const createStripeCheckoutLinkMutation = useMutation(
-    createStripeCheckoutLink,
-  );
   const updateOrganizationMutation = useMutation(updateOrganization);
 
   const form = useForm<z.infer<typeof schema>>({
@@ -74,11 +72,6 @@ export function OrganizationApiKeysTab() {
     await refetch();
     form.reset(data);
     toast.success("Managed API Keys configuration updated successfully.");
-  }
-
-  async function handleUpgrade() {
-    const { url } = await createStripeCheckoutLinkMutation.mutateAsync({});
-    window.location.href = url;
   }
 
   return (

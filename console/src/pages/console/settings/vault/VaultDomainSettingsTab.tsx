@@ -1,14 +1,14 @@
-import { useMutation, useQuery } from "@connectrpc/connect-query";
+import { useQuery } from "@connectrpc/connect-query";
 import { ArrowRight, Crown } from "lucide-react";
 import React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  createStripeCheckoutLink,
   getProjectEntitlements,
   getVaultDomainSettings,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
+import { useHandleUpgrade } from "@/hooks/use-handle-upgrade";
 
 import { VaultCookieDomainCard } from "./domains/VaultCookieDomainCard";
 import { VaultDomainRecordsCard } from "./domains/VaultDomainRecordsCard";
@@ -17,20 +17,14 @@ import { VaultEmailSendFromDomainRecordsCard } from "./domains/VaultEmailSendFro
 import { VaultTrustedDomainsCard } from "./domains/VaultTrustedDomainsCard";
 
 export function VaultDomainSettingsTab() {
+  const handleUpgrade = useHandleUpgrade();
+
   const { data: getProjectEntitlementsResponse } = useQuery(
     getProjectEntitlements,
   );
   const { data: getVaultDomainSettingsResponse } = useQuery(
     getVaultDomainSettings,
   );
-  const createStripeCheckoutLinkMutation = useMutation(
-    createStripeCheckoutLink,
-  );
-
-  async function handleUpgrade() {
-    const { url } = await createStripeCheckoutLinkMutation.mutateAsync({});
-    window.location.href = url;
-  }
 
   return (
     <div className="space-y-8">

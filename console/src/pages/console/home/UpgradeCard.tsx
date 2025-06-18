@@ -1,20 +1,13 @@
-import { useMutation } from "@connectrpc/connect-query";
 import { ArrowRight, CheckCircle2, Crown } from "lucide-react";
 import React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { createStripeCheckoutLink } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
+import { useHandleUpgrade } from "@/hooks/use-handle-upgrade";
 
 export function UpgradeCard() {
-  const createStripeCheckoutLinkMutation = useMutation(
-    createStripeCheckoutLink,
-  );
+  const handleUpgrade = useHandleUpgrade();
 
-  async function handleUpgrade() {
-    const { url } = await createStripeCheckoutLinkMutation.mutateAsync({});
-    window.location.href = url;
-  }
   return (
     <Card className="lg:col-span-1 bg-gradient-to-br from-violet-500 via-purple-500 to-blue-500 border-0 text-white relative overflow-hidden shadow-xl">
       <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
