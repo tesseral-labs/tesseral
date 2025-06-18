@@ -11,7 +11,6 @@ import {
   History,
   KeyRound,
   LoaderCircle,
-  Logs,
   Plus,
   Settings,
   ShieldPlus,
