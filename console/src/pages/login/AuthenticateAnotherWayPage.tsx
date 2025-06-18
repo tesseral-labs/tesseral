@@ -7,6 +7,7 @@ import { useNavigate } from "react-router";
 import { z } from "zod";
 
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
+import { GithubIcon } from "@/components/login/icons/GithubIcon";
 import { GoogleIcon } from "@/components/login/icons/GoogleIcon";
 import { MicrosoftIcon } from "@/components/login/icons/MicrosoftIcon";
 import { Title } from "@/components/page/Title";
@@ -28,6 +29,7 @@ import {
 import { Input } from "@/components/ui/input";
 import TextDivider from "@/components/ui/text-divider";
 import {
+  getGithubOAuthRedirectURL,
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
   issueEmailVerificationChallenge,
@@ -81,6 +83,17 @@ export function AuthenticateAnotherWayPage() {
     window.location.href = url;
   }
 
+  const { mutateAsync: getGithubOAuthRedirectURLAsync } = useMutation(
+    getGithubOAuthRedirectURL,
+  );
+
+  async function handleLogInWithGithub() {
+    const { url } = await getGithubOAuthRedirectURLAsync({
+      redirectUrl: `${window.location.origin}/github-oauth-callback`,
+    });
+    window.location.href = url;
+  }
+
   async function handleSubmit(values: z.infer<typeof schema>) {
     setSubmitting(true);
     await setEmailAsPrimaryLoginFactorMutation.mutateAsync({});
@@ -128,6 +141,16 @@ export function AuthenticateAnotherWayPage() {
             >
               <MicrosoftIcon />
               Log in with Microsoft
+            </Button>
+          )}
+          {organization?.logInWithGithub && (
+            <Button
+              className="w-full"
+              variant="outline"
+              onClick={handleLogInWithGithub}
+            >
+              <GithubIcon />
+              Log in with GitHub
             </Button>
           )}
         </div>
