@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogDescription, DialogTrigger } from "@radix-ui/react-dialog";
-import { Cookie, LoaderCircle } from "lucide-react";
+import { Cookie, LoaderCircle, Settings } from "lucide-react";
 import React, { MouseEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -149,7 +149,8 @@ function ConfigureVaultCookieDomainButton() {
             ?.pendingDomain && (
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
-                <Button className="w-full" variant="outline" size="sm">
+                <Button className="w-full" variant="outline">
+                  <Settings />
                   Configure Vault Cookie Domain
                 </Button>
               </DialogTrigger>

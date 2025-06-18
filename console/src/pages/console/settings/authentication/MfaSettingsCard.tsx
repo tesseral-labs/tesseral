@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Fingerprint, LoaderCircle } from "lucide-react";
+import { Fingerprint, LoaderCircle, Settings } from "lucide-react";
 import React, { MouseEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -140,6 +140,7 @@ export function ConfigureMfaButton() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="w-full">
+          <Settings />
           Configure MFA Settings
         </Button>
       </DialogTrigger>

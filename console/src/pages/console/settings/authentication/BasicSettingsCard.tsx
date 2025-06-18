@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoaderCircle, Lock } from "lucide-react";
+import { LoaderCircle, Lock, Settings } from "lucide-react";
 import React, { MouseEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -152,6 +152,7 @@ function ConfigureBasicAuthenticationButton() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="w-full" variant="outline">
+          <Settings />
           Configure Basic Authentication
         </Button>
       </DialogTrigger>

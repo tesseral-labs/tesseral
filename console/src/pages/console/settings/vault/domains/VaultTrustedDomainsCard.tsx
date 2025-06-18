@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { GlobeLock, LoaderCircle } from "lucide-react";
+import { GlobeLock, LoaderCircle, Settings } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -127,7 +127,8 @@ function ConfigureVaultTrustedDomainsButton() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full" variant="outline" size="sm">
+        <Button className="w-full" variant="outline">
+          <Settings />
           Configure Trusted Domains
         </Button>
       </DialogTrigger>

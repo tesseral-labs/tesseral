@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ExternalLink, Globe, LoaderCircle } from "lucide-react";
+import { ExternalLink, Globe, LoaderCircle, Settings } from "lucide-react";
 import React, { MouseEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
@@ -186,6 +186,7 @@ function ConfigureVaultDomainsButton() {
           variant="outline"
           disabled={!getProjectEntitlementsResponse?.entitledCustomVaultDomains}
         >
+          <Settings />
           Configure Vault Domain
         </Button>
       </DialogTrigger>

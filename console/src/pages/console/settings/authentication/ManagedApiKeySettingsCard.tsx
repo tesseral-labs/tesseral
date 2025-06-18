@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, Crown, Key, LoaderCircle } from "lucide-react";
+import { ArrowRight, Crown, Key, LoaderCircle, Settings } from "lucide-react";
 import React, { MouseEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -196,6 +196,7 @@ export function ConfigureManagedApiKeysButton() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="w-full" variant="outline">
+          <Settings />
           Configure Managed API Keys
         </Button>
       </DialogTrigger>

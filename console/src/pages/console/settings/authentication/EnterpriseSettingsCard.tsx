@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoaderCircle, Shield } from "lucide-react";
+import { LoaderCircle, Settings, Shield } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -125,6 +125,7 @@ function ConfigureEnterpriseSettingsButton() {
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button variant="outline" className="w-full">
+              <Settings />
               Configure Enterprise Settings
             </Button>
           </DialogTrigger>
