@@ -2,7 +2,7 @@ import { TransportProvider } from "@connectrpc/connect-query";
 import { createConnectTransport } from "@connectrpc/connect-web";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 import { Toaster } from "sonner";
 
 import { PageShell } from "@/components/page";
@@ -85,6 +85,11 @@ function AppWithinQueryClient() {
     <TransportProvider transport={transport}>
       <BrowserRouter>
         <Routes>
+          <Route
+            path="/project-settings/publishable-keys"
+            element={<Navigate to="/settings/api-keys" replace />}
+          />
+
           {/* Console Routes */}
           <Route path="/" element={<PageShell />}>
             <Route path="" element={<HomePage />} />
