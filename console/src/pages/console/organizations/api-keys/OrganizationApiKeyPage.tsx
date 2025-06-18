@@ -84,97 +84,107 @@ export function OrganizationApiKeyPage() {
               </Badge>
             </div>
           </div>
-          <Tabs className="hidden lg:inline-block">
-            <Tab
-              active={
-                pathname ===
-                `/organizations/${organizationId}/api-keys/${apiKeyId}`
-              }
-            >
-              <Link
-                to={`/organizations/${organizationId}/api-keys/${apiKeyId}`}
-              >
-                Details
-              </Link>
-            </Tab>
-            <Tab
-              active={pathname.startsWith(
-                `/organizations/${organizationId}/api-keys/${apiKeyId}/roles`,
-              )}
-            >
-              <Link
-                to={`/organizations/${organizationId}/api-keys/${apiKeyId}/roles`}
-              >
-                Roles
-              </Link>
-            </Tab>
-            <Tab
-              active={
-                pathname ===
-                `/organizations/${organizationId}/api-keys/${apiKeyId}/logs`
-              }
-            >
-              <Link
-                to={`/organizations/${organizationId}/api-keys/${apiKeyId}/logs`}
-              >
-                Audit Logs
-              </Link>
-            </Tab>
-          </Tabs>
 
-          <div className="block lg:hidden space-y-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  className="flex items-center gap-2"
-                  variant="outline"
-                  size="sm"
-                >
-                  <span>
-                    {pathname ===
-                      `/organizations/${organizationId}/api-keys/${apiKeyId}` &&
-                      "Details"}
-                    {pathname ===
-                      `/organizations/${organizationId}/api-keys/${apiKeyId}/roles` &&
-                      "Roles"}
-                    {pathname ===
-                      `/organizations/${organizationId}/api-keys/${apiKeyId}/logs` &&
-                      "Audit Logs"}
-                  </span>
-                  <ChevronDown className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem asChild>
-                  <Link
-                    to={`/organizations/${organizationId}/api-keys/${apiKeyId}`}
-                  >
-                    Details
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link
-                    to={`/organizations/${organizationId}/api-keys/${apiKeyId}/roles`}
-                  >
-                    Roles
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link
-                    to={`/organizations/${organizationId}/api-keys/${apiKeyId}/logs`}
-                  >
-                    Audit Logs
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <OrganizationApiKeyPageTabs />
 
           <div>
             <Outlet />
           </div>
         </PageContent>
       )}
+    </>
+  );
+}
+
+function OrganizationApiKeyPageTabs() {
+  const { pathname } = useLocation();
+  const { apiKeyId, organizationId } = useParams();
+
+  return (
+    <>
+      {/* Desktop tabs */}
+      <Tabs className="hidden lg:inline-block">
+        <Tab
+          active={
+            pathname === `/organizations/${organizationId}/api-keys/${apiKeyId}`
+          }
+        >
+          <Link to={`/organizations/${organizationId}/api-keys/${apiKeyId}`}>
+            Details
+          </Link>
+        </Tab>
+        <Tab
+          active={pathname.startsWith(
+            `/organizations/${organizationId}/api-keys/${apiKeyId}/roles`,
+          )}
+        >
+          <Link
+            to={`/organizations/${organizationId}/api-keys/${apiKeyId}/roles`}
+          >
+            Roles
+          </Link>
+        </Tab>
+        <Tab
+          active={
+            pathname ===
+            `/organizations/${organizationId}/api-keys/${apiKeyId}/logs`
+          }
+        >
+          <Link
+            to={`/organizations/${organizationId}/api-keys/${apiKeyId}/logs`}
+          >
+            Audit Logs
+          </Link>
+        </Tab>
+      </Tabs>
+      {/* Mobile tabs */}
+      <div className="block lg:hidden space-y-2">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              className="flex items-center gap-2"
+              variant="outline"
+              size="sm"
+            >
+              <span>
+                {pathname ===
+                  `/organizations/${organizationId}/api-keys/${apiKeyId}` &&
+                  "Details"}
+                {pathname ===
+                  `/organizations/${organizationId}/api-keys/${apiKeyId}/roles` &&
+                  "Roles"}
+                {pathname ===
+                  `/organizations/${organizationId}/api-keys/${apiKeyId}/logs` &&
+                  "Audit Logs"}
+              </span>
+              <ChevronDown className="w-4 h-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem asChild>
+              <Link
+                to={`/organizations/${organizationId}/api-keys/${apiKeyId}`}
+              >
+                Details
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link
+                to={`/organizations/${organizationId}/api-keys/${apiKeyId}/roles`}
+              >
+                Roles
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link
+                to={`/organizations/${organizationId}/api-keys/${apiKeyId}/logs`}
+              >
+                Audit Logs
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </>
   );
 }

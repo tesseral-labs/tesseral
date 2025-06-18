@@ -22,7 +22,6 @@ import { getOrganization } from "@/gen/tesseral/backend/v1/backend-BackendServic
 import { NotFound } from "@/pages/NotFoundPage";
 
 export function OrganizationPage() {
-  const { pathname } = useLocation();
   const { organizationId } = useParams();
 
   const {
@@ -93,102 +92,112 @@ export function OrganizationPage() {
               </Badge>
             </div>
           </div>
-          <Tabs className="hidden lg:inline-block">
-            <TabLink
-              active={pathname === `/organizations/${organizationId}`}
-              to={`/organizations/${organizationId}`}
-            >
-              Details
-            </TabLink>
-            <TabLink
-              active={
-                pathname === `/organizations/${organizationId}/authentication`
-              }
-              to={`/organizations/${organizationId}/authentication`}
-            >
-              Authentication
-            </TabLink>
-            <TabLink
-              active={pathname.startsWith(
-                `/organizations/${organizationId}/api-keys`,
-              )}
-              to={`/organizations/${organizationId}/api-keys`}
-            >
-              API Keys
-            </TabLink>
-            <TabLink
-              active={pathname.startsWith(
-                `/organizations/${organizationId}/users`,
-              )}
-              to={`/organizations/${organizationId}/users`}
-            >
-              Users
-            </TabLink>
-            <TabLink
-              active={pathname === `/organizations/${organizationId}/logs`}
-              to={`/organizations/${organizationId}/logs`}
-            >
-              Audit Logs
-            </TabLink>
-          </Tabs>
-          <div className="block lg:hidden space-y-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  className="flex items-center gap-2"
-                  variant="outline"
-                  size="sm"
-                >
-                  <span>
-                    {pathname === `/organizations/${organizationId}` &&
-                      "Details"}
-                    {pathname ===
-                      `/organizations/${organizationId}/authentication` &&
-                      "Authentication"}
-                    {pathname.startsWith(
-                      `/organizations/${organizationId}/api-keys`,
-                    ) && "API Keys"}
-                    {pathname.startsWith(
-                      `/organizations/${organizationId}/users`,
-                    ) && "Users"}
-                    {pathname === `/organizations/${organizationId}/logs` &&
-                      "Audit Logs"}
-                  </span>
-                  <ChevronDown className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem asChild>
-                  <Link to={`/organizations/${organizationId}`}>Details</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to={`/organizations/${organizationId}/authentication`}>
-                    Authentication
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to={`/organizations/${organizationId}/api-keys`}>
-                    API Keys
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to={`/organizations/${organizationId}/users`}>
-                    Users
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to={`/organizations/${organizationId}/logs`}>
-                    Audit Logs
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+
+          <OrganizationPageTabs />
+
           <div>
             <Outlet />
           </div>
         </PageContent>
       )}
+    </>
+  );
+}
+
+export function OrganizationPageTabs() {
+  const { pathname } = useLocation();
+  const { organizationId } = useParams();
+
+  return (
+    <>
+      {/* Desktop Tabs */}
+      <Tabs className="hidden lg:inline-block">
+        <TabLink
+          active={pathname === `/organizations/${organizationId}`}
+          to={`/organizations/${organizationId}`}
+        >
+          Details
+        </TabLink>
+        <TabLink
+          active={
+            pathname === `/organizations/${organizationId}/authentication`
+          }
+          to={`/organizations/${organizationId}/authentication`}
+        >
+          Authentication
+        </TabLink>
+        <TabLink
+          active={pathname.startsWith(
+            `/organizations/${organizationId}/api-keys`,
+          )}
+          to={`/organizations/${organizationId}/api-keys`}
+        >
+          API Keys
+        </TabLink>
+        <TabLink
+          active={pathname.startsWith(`/organizations/${organizationId}/users`)}
+          to={`/organizations/${organizationId}/users`}
+        >
+          Users
+        </TabLink>
+        <TabLink
+          active={pathname === `/organizations/${organizationId}/logs`}
+          to={`/organizations/${organizationId}/logs`}
+        >
+          Audit Logs
+        </TabLink>
+      </Tabs>
+      {/* Mobile tabs */}
+      <div className="block lg:hidden space-y-2">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              className="flex items-center gap-2"
+              variant="outline"
+              size="sm"
+            >
+              <span>
+                {pathname === `/organizations/${organizationId}` && "Details"}
+                {pathname ===
+                  `/organizations/${organizationId}/authentication` &&
+                  "Authentication Settings"}
+                {pathname.startsWith(
+                  `/organizations/${organizationId}/api-keys`,
+                ) && "Managed API Keys"}
+                {pathname.startsWith(
+                  `/organizations/${organizationId}/users`,
+                ) && "Users"}
+                {pathname === `/organizations/${organizationId}/logs` &&
+                  "Audit Logs"}
+              </span>
+              <ChevronDown className="w-4 h-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem asChild>
+              <Link to={`/organizations/${organizationId}`}>Details</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to={`/organizations/${organizationId}/authentication`}>
+                Authentication
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to={`/organizations/${organizationId}/api-keys`}>
+                API Keys
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to={`/organizations/${organizationId}/users`}>Users</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to={`/organizations/${organizationId}/logs`}>
+                Audit Logs
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </>
   );
 }

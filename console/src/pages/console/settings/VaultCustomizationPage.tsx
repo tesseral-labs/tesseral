@@ -1,5 +1,5 @@
 import { useQuery } from "@connectrpc/connect-query";
-import { ChevronDown, ExternalLink, Settings2 } from "lucide-react";
+import { ChevronDown, ExternalLink, Settings2, Vault } from "lucide-react";
 import React from "react";
 import { Link, Outlet, useLocation } from "react-router";
 
@@ -44,6 +44,22 @@ export function VaultCustomizationPage() {
           </Button>
         </Link>
       </div>
+
+      <VaultCustomizationPageTabs />
+
+      <div>
+        <Outlet />
+      </div>
+    </PageContent>
+  );
+}
+
+function VaultCustomizationPageTabs() {
+  const { pathname } = useLocation();
+
+  return (
+    <>
+      {/* Desktop tabs */}
       <Tabs className="hidden lg:inline-block">
         <TabLink active={pathname === `/settings/vault`} to={`/settings/vault`}>
           Details
@@ -61,6 +77,7 @@ export function VaultCustomizationPage() {
           Branding
         </TabLink>
       </Tabs>
+      {/* Mobile tabs */}
       <div className="block lg:hidden space-y-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -90,9 +107,6 @@ export function VaultCustomizationPage() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div>
-        <Outlet />
-      </div>
-    </PageContent>
+    </>
   );
 }
