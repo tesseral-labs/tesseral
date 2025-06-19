@@ -166,6 +166,18 @@ export function ConfigureManagedApiKeysButton() {
   }
 
   async function handleSubmit(data: z.infer<typeof schema>) {
+    if (
+      data.apiKeysEnabled &&
+      (!data.apiKeySecretTokenPrefix ||
+        data.apiKeySecretTokenPrefix.trim() === "")
+    ) {
+      form.setError("apiKeySecretTokenPrefix", {
+        message:
+          "API Key Secret Token Prefix is required when Managed API Keys are enabled.",
+      });
+      return;
+    }
+
     await updateProjectMutation.mutateAsync({
       project: {
         apiKeysEnabled: data.apiKeysEnabled,
