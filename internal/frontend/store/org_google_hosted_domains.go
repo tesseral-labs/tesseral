@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
@@ -66,7 +67,7 @@ func (s *Store) UpdateOrganizationGoogleHostedDomains(ctx context.Context, req *
 	googleHostedDomains := parseOrganizationGoogleHostedDomains(qGoogleHostedDomains)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.organizations.update_google_hosted_domains",
-		EventDetails: &frontendv1.OrganizationGoogleHostedDomainsUpdated{
+		EventDetails: &auditlogv1.UpdateOrganizationGoogleHostedDomains{
 			GoogleHostedDomains:         googleHostedDomains.GoogleHostedDomains,
 			PreviousGoogleHostedDomains: parseOrganizationGoogleHostedDomains(qPreviousGoogleHostedDomains).GoogleHostedDomains,
 		},

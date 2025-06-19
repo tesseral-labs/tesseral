@@ -11,6 +11,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
@@ -23,7 +24,7 @@ import (
 const apiKeySecretTokenSuffixLength = 4
 
 func (s *Store) CreateAPIKey(ctx context.Context, req *backendv1.CreateAPIKeyRequest) (*backendv1.CreateAPIKeyResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -90,11 +91,15 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *backendv1.CreateAPIKeyReq
 		return nil, fmt.Errorf("create api key: %w", err)
 	}
 
-	apiKey := parseAPIKey(qAPIKey)
+	auditAPIKey, err := s.auditlogStore.GetAPIKey(ctx, tx, qAPIKey.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit log api key: %w", err)
+	}
+
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_keys.create",
-		EventDetails: &backendv1.APIKeyCreated{
-			ApiKey: apiKey,
+		EventDetails: &auditlogv1.CreateAPIKey{
+			ApiKey: auditAPIKey,
 		},
 		OrganizationID: &qOrg.ID,
 		ResourceType:   queries.AuditLogEventResourceTypeApiKey,
@@ -107,6 +112,7 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *backendv1.CreateAPIKeyReq
 		return nil, fmt.Errorf("commit transaction: %w", err)
 	}
 
+	apiKey := parseAPIKey(qAPIKey)
 	apiKey.SecretToken = secretToken
 	return &backendv1.CreateAPIKeyResponse{
 		ApiKey: apiKey,
@@ -114,7 +120,7 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *backendv1.CreateAPIKeyReq
 }
 
 func (s *Store) DeleteAPIKey(ctx context.Context, req *backendv1.DeleteAPIKeyRequest) (*backendv1.DeleteAPIKeyResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -140,6 +146,11 @@ func (s *Store) DeleteAPIKey(ctx context.Context, req *backendv1.DeleteAPIKeyReq
 		return nil, apierror.NewFailedPreconditionError("api key must be revoked to be deleted", fmt.Errorf("api key mut be revoked to be deleted"))
 	}
 
+	auditAPIKey, err := s.auditlogStore.GetAPIKey(ctx, tx, qAPIKey.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit log api key: %w", err)
+	}
+
 	if err := q.DeleteAPIKey(ctx, queries.DeleteAPIKeyParams{
 		ID:        apiKeyID,
 		ProjectID: authn.ProjectID(ctx),
@@ -149,8 +160,8 @@ func (s *Store) DeleteAPIKey(ctx context.Context, req *backendv1.DeleteAPIKeyReq
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_keys.delete",
-		EventDetails: &backendv1.APIKeyDeleted{
-			ApiKey: parseAPIKey(qAPIKey),
+		EventDetails: &auditlogv1.DeleteAPIKey{
+			ApiKey: auditAPIKey,
 		},
 		OrganizationID: &qAPIKey.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeApiKey,
@@ -242,7 +253,7 @@ func (s *Store) ListAPIKeys(ctx context.Context, req *backendv1.ListAPIKeysReque
 }
 
 func (s *Store) RevokeAPIKey(ctx context.Context, req *backendv1.RevokeAPIKeyRequest) (*backendv1.RevokeAPIKeyResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -253,12 +264,19 @@ func (s *Store) RevokeAPIKey(ctx context.Context, req *backendv1.RevokeAPIKeyReq
 		return nil, apierror.NewInvalidArgumentError("invalid api key id", fmt.Errorf("parse api key id: %w", err))
 	}
 
-	qPreviousAPIKey, err := q.GetAPIKeyByID(ctx, queries.GetAPIKeyByIDParams{
+	if _, err := q.GetAPIKeyByID(ctx, queries.GetAPIKeyByIDParams{
 		ID:        apiKeyID,
 		ProjectID: authn.ProjectID(ctx),
-	})
-	if err != nil {
+	}); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("api key not found", fmt.Errorf("get api key: %w", err))
+		}
 		return nil, fmt.Errorf("get api key by id: %w", err)
+	}
+
+	auditPreviousAPIKey, err := s.auditlogStore.GetAPIKey(ctx, tx, apiKeyID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit log api key: %w", err)
 	}
 
 	if err := q.RevokeAPIKey(ctx, queries.RevokeAPIKeyParams{
@@ -276,11 +294,16 @@ func (s *Store) RevokeAPIKey(ctx context.Context, req *backendv1.RevokeAPIKeyReq
 		return nil, fmt.Errorf("get api key by id after revocation: %w", err)
 	}
 
+	auditAPIKey, err := s.auditlogStore.GetAPIKey(ctx, tx, qAPIKey.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit log api key: %w", err)
+	}
+
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_keys.revoke",
-		EventDetails: &backendv1.APIKeyRevoked{
-			ApiKey:         parseAPIKey(qAPIKey),
-			PreviousApiKey: parseAPIKey(qPreviousAPIKey),
+		EventDetails: &auditlogv1.RevokeAPIKey{
+			ApiKey:         auditAPIKey,
+			PreviousApiKey: auditPreviousAPIKey,
 		},
 		OrganizationID: &qAPIKey.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeApiKey,
@@ -297,7 +320,7 @@ func (s *Store) RevokeAPIKey(ctx context.Context, req *backendv1.RevokeAPIKeyReq
 }
 
 func (s *Store) UpdateAPIKey(ctx context.Context, req *backendv1.UpdateAPIKeyRequest) (*backendv1.UpdateAPIKeyResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -319,6 +342,11 @@ func (s *Store) UpdateAPIKey(ctx context.Context, req *backendv1.UpdateAPIKeyReq
 		return nil, fmt.Errorf("get api key by id: %w", err)
 	}
 
+	auditPreviousAPIKey, err := s.auditlogStore.GetAPIKey(ctx, tx, qPreviousAPIKey.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit log api key: %w", err)
+	}
+
 	qUpdatedAPIKey, err := q.UpdateAPIKey(ctx, queries.UpdateAPIKeyParams{
 		ID:          apiKeyID,
 		DisplayName: req.ApiKey.DisplayName,
@@ -328,12 +356,16 @@ func (s *Store) UpdateAPIKey(ctx context.Context, req *backendv1.UpdateAPIKeyReq
 		return nil, fmt.Errorf("update api key: %w", err)
 	}
 
-	apiKey := parseAPIKey(qUpdatedAPIKey)
+	auditAPIKey, err := s.auditlogStore.GetAPIKey(ctx, tx, qUpdatedAPIKey.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit log api key: %w", err)
+	}
+
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.api_keys.update",
-		EventDetails: &backendv1.APIKeyUpdated{
-			ApiKey:         apiKey,
-			PreviousApiKey: parseAPIKey(qPreviousAPIKey),
+		EventDetails: &auditlogv1.UpdateAPIKey{
+			ApiKey:         auditAPIKey,
+			PreviousApiKey: auditPreviousAPIKey,
 		},
 		OrganizationID: &qUpdatedAPIKey.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeApiKey,
@@ -347,7 +379,7 @@ func (s *Store) UpdateAPIKey(ctx context.Context, req *backendv1.UpdateAPIKeyReq
 	}
 
 	return &backendv1.UpdateAPIKeyResponse{
-		ApiKey: apiKey,
+		ApiKey: parseAPIKey(qUpdatedAPIKey),
 	}, nil
 }
 

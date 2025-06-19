@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
+	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
@@ -92,7 +93,7 @@ func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *frontendv1.Re
 		recoveryCodeSHA256s = append(recoveryCodeSHA256s, recoveryCodeSHA[:])
 	}
 
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -107,6 +108,11 @@ func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *frontendv1.Re
 		return nil, fmt.Errorf("delete user authenticator app challenge: %w", err)
 	}
 
+	auditPreviousUser, err := s.auditlogStore.GetUser(ctx, tx, qUserAuthenticatorAppChallenge.UserID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit user: %w", err)
+	}
+
 	qUser, err := q.UpdateUserAuthenticatorApp(ctx, queries.UpdateUserAuthenticatorAppParams{
 		ID:                                  authn.UserID(ctx),
 		AuthenticatorAppSecretCiphertext:    qUserAuthenticatorAppChallenge.AuthenticatorAppSecretCiphertext,
@@ -116,10 +122,16 @@ func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *frontendv1.Re
 		return nil, fmt.Errorf("update user authenticator app: %w", err)
 	}
 
+	auditUser, err := s.auditlogStore.GetUser(ctx, tx, qUser.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit user: %w", err)
+	}
+
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
-		EventName: "tesseral.users.register_authenticator_app",
-		EventDetails: &frontendv1.UserAuthenticatorAppRegistered{
-			User: parseUser(qUser),
+		EventName: "tesseral.users.update",
+		EventDetails: &auditlogv1.UpdateUser{
+			User:         auditUser,
+			PreviousUser: auditPreviousUser,
 		},
 		OrganizationID: &qUser.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeUser,

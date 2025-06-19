@@ -13,6 +13,9 @@ internal/store/queries/** generated
 internal/common/gen/** generated
 internal/common/store/queries/** generated
 
+internal/auditlog/gen/** generated
+internal/auditlog/store/queries/** generated
+
 internal/backend/gen/** generated
 internal/backend/store/queries/** generated
 
