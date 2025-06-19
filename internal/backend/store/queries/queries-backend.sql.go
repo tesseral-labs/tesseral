@@ -202,6 +202,314 @@ func (q *Queries) ConsoleListAuditLogEvents(ctx context.Context, arg ConsoleList
 	return items, nil
 }
 
+const consoleSearchAPIKeys = `-- name: ConsoleSearchAPIKeys :many
+SELECT
+    api_keys.id, api_keys.organization_id, api_keys.display_name, api_keys.secret_token_sha256, api_keys.secret_token_suffix, api_keys.expire_time, api_keys.create_time, api_keys.update_time
+FROM
+    api_keys
+    JOIN organizations ON api_keys.organization_id = organizations.id
+WHERE
+    organizations.project_id = $2
+    AND ((api_keys.display_name ILIKE '%' || $3::text || '%'
+            AND $3::text != '')
+        OR (api_keys.id = $4
+            OR $4 IS NULL))
+ORDER BY
+    api_keys.id
+LIMIT $1
+`
+
+type ConsoleSearchAPIKeysParams struct {
+	Limit     int32
+	ProjectID uuid.UUID
+	Query     string
+	ID        *uuid.UUID
+}
+
+func (q *Queries) ConsoleSearchAPIKeys(ctx context.Context, arg ConsoleSearchAPIKeysParams) ([]ApiKey, error) {
+	rows, err := q.db.Query(ctx, consoleSearchAPIKeys,
+		arg.Limit,
+		arg.ProjectID,
+		arg.Query,
+		arg.ID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ApiKey
+	for rows.Next() {
+		var i ApiKey
+		if err := rows.Scan(
+			&i.ID,
+			&i.OrganizationID,
+			&i.DisplayName,
+			&i.SecretTokenSha256,
+			&i.SecretTokenSuffix,
+			&i.ExpireTime,
+			&i.CreateTime,
+			&i.UpdateTime,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const consoleSearchBackendAPIKeys = `-- name: ConsoleSearchBackendAPIKeys :many
+SELECT
+    id, project_id, secret_token_sha256, display_name, create_time, update_time
+FROM
+    backend_api_keys
+WHERE
+    project_id = $2
+    AND ((display_name ILIKE '%' || $3::text || '%'
+            AND $3::text != '')
+        OR (id = $4
+            OR $4 IS NULL))
+ORDER BY
+    id
+LIMIT $1
+`
+
+type ConsoleSearchBackendAPIKeysParams struct {
+	Limit     int32
+	ProjectID uuid.UUID
+	Query     string
+	ID        *uuid.UUID
+}
+
+func (q *Queries) ConsoleSearchBackendAPIKeys(ctx context.Context, arg ConsoleSearchBackendAPIKeysParams) ([]BackendApiKey, error) {
+	rows, err := q.db.Query(ctx, consoleSearchBackendAPIKeys,
+		arg.Limit,
+		arg.ProjectID,
+		arg.Query,
+		arg.ID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []BackendApiKey
+	for rows.Next() {
+		var i BackendApiKey
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProjectID,
+			&i.SecretTokenSha256,
+			&i.DisplayName,
+			&i.CreateTime,
+			&i.UpdateTime,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const consoleSearchOrganizations = `-- name: ConsoleSearchOrganizations :many
+SELECT
+    organizations.id, organizations.project_id, organizations.display_name, organizations.scim_enabled, organizations.create_time, organizations.update_time, organizations.logins_disabled, organizations.log_in_with_google, organizations.log_in_with_microsoft, organizations.log_in_with_password, organizations.log_in_with_authenticator_app, organizations.log_in_with_passkey, organizations.require_mfa, organizations.log_in_with_email, organizations.log_in_with_saml, organizations.custom_roles_enabled, organizations.log_in_with_github, organizations.api_keys_enabled
+FROM
+    organizations
+WHERE
+    project_id = $2
+    AND (($3::text != ''
+            AND display_name ILIKE '%' || $3::text || '%')
+        OR (id = $4
+            OR $4 IS NULL))
+ORDER BY
+    id
+LIMIT $1
+`
+
+type ConsoleSearchOrganizationsParams struct {
+	Limit     int32
+	ProjectID uuid.UUID
+	Query     string
+	ID        *uuid.UUID
+}
+
+func (q *Queries) ConsoleSearchOrganizations(ctx context.Context, arg ConsoleSearchOrganizationsParams) ([]Organization, error) {
+	rows, err := q.db.Query(ctx, consoleSearchOrganizations,
+		arg.Limit,
+		arg.ProjectID,
+		arg.Query,
+		arg.ID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Organization
+	for rows.Next() {
+		var i Organization
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProjectID,
+			&i.DisplayName,
+			&i.ScimEnabled,
+			&i.CreateTime,
+			&i.UpdateTime,
+			&i.LoginsDisabled,
+			&i.LogInWithGoogle,
+			&i.LogInWithMicrosoft,
+			&i.LogInWithPassword,
+			&i.LogInWithAuthenticatorApp,
+			&i.LogInWithPasskey,
+			&i.RequireMfa,
+			&i.LogInWithEmail,
+			&i.LogInWithSaml,
+			&i.CustomRolesEnabled,
+			&i.LogInWithGithub,
+			&i.ApiKeysEnabled,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const consoleSearchPublishableKeys = `-- name: ConsoleSearchPublishableKeys :many
+SELECT
+    id, project_id, create_time, update_time, display_name, dev_mode
+FROM
+    publishable_keys
+WHERE
+    project_id = $2
+    AND (($3::text != ''
+            AND display_name ILIKE '%' || $3::text || '%')
+        OR (id = $4
+            OR $4 IS NULL))
+ORDER BY
+    id
+LIMIT $1
+`
+
+type ConsoleSearchPublishableKeysParams struct {
+	Limit     int32
+	ProjectID uuid.UUID
+	Query     string
+	ID        *uuid.UUID
+}
+
+func (q *Queries) ConsoleSearchPublishableKeys(ctx context.Context, arg ConsoleSearchPublishableKeysParams) ([]PublishableKey, error) {
+	rows, err := q.db.Query(ctx, consoleSearchPublishableKeys,
+		arg.Limit,
+		arg.ProjectID,
+		arg.Query,
+		arg.ID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []PublishableKey
+	for rows.Next() {
+		var i PublishableKey
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProjectID,
+			&i.CreateTime,
+			&i.UpdateTime,
+			&i.DisplayName,
+			&i.DevMode,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const consoleSearchUsers = `-- name: ConsoleSearchUsers :many
+SELECT
+    users.id, users.organization_id, users.password_bcrypt, users.google_user_id, users.microsoft_user_id, users.email, users.create_time, users.update_time, users.deactivate_time, users.is_owner, users.failed_password_attempts, users.password_lockout_expire_time, users.authenticator_app_secret_ciphertext, users.failed_authenticator_app_attempts, users.authenticator_app_lockout_expire_time, users.authenticator_app_recovery_code_sha256s, users.display_name, users.profile_picture_url, users.github_user_id
+FROM
+    users
+    JOIN organizations ON users.organization_id = organizations.id
+WHERE
+    organizations.project_id = $2
+    AND (($3::text != ''
+            AND (users.email ILIKE '%' || $3::text || '%'
+                OR users.display_name ILIKE '%' || $3::text || '%'
+                OR users.google_user_id = $3::text
+                OR users.microsoft_user_id ILIKE $3::text
+                OR users.github_user_id ILIKE $3::text))
+        OR (users.id = $4
+            OR $4 IS NULL))
+ORDER BY
+    users.id
+LIMIT $1
+`
+
+type ConsoleSearchUsersParams struct {
+	Limit     int32
+	ProjectID uuid.UUID
+	Query     string
+	ID        *uuid.UUID
+}
+
+func (q *Queries) ConsoleSearchUsers(ctx context.Context, arg ConsoleSearchUsersParams) ([]User, error) {
+	rows, err := q.db.Query(ctx, consoleSearchUsers,
+		arg.Limit,
+		arg.ProjectID,
+		arg.Query,
+		arg.ID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []User
+	for rows.Next() {
+		var i User
+		if err := rows.Scan(
+			&i.ID,
+			&i.OrganizationID,
+			&i.PasswordBcrypt,
+			&i.GoogleUserID,
+			&i.MicrosoftUserID,
+			&i.Email,
+			&i.CreateTime,
+			&i.UpdateTime,
+			&i.DeactivateTime,
+			&i.IsOwner,
+			&i.FailedPasswordAttempts,
+			&i.PasswordLockoutExpireTime,
+			&i.AuthenticatorAppSecretCiphertext,
+			&i.FailedAuthenticatorAppAttempts,
+			&i.AuthenticatorAppLockoutExpireTime,
+			&i.AuthenticatorAppRecoveryCodeSha256s,
+			&i.DisplayName,
+			&i.ProfilePictureUrl,
+			&i.GithubUserID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const createAPIKey = `-- name: CreateAPIKey :one
 INSERT INTO api_keys (id, organization_id, display_name, secret_token_sha256, secret_token_suffix, expire_time)
     VALUES ($1, $2, $3, $4, $5, $6)

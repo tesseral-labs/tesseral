@@ -5,14 +5,18 @@ import {
   AccessTokenProvider,
   useAccessToken,
 } from "@/lib/access-token-provider";
+import { GlobalSearchProvider } from "@/lib/search";
 import { cn } from "@/lib/utils";
 
+import { Search } from "../core/Search";
 import { Navigation } from "./Navigation";
 
 export function PageShell() {
   return (
     <AccessTokenProvider>
-      <PageShellInner />
+      <GlobalSearchProvider>
+        <PageShellInner />
+      </GlobalSearchProvider>
     </AccessTokenProvider>
   );
 }
@@ -32,6 +36,8 @@ function PageShellInner() {
           <Outlet />
         </div>
       </main>
+
+      <Search />
     </>
   );
 }

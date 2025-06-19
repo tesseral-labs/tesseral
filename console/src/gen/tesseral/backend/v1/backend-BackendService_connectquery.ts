@@ -549,3 +549,8 @@ export const consoleListAuditLogEvents = BackendService.method.consoleListAuditL
  * @generated from rpc tesseral.backend.v1.BackendService.ConsoleListAuditLogEventNames
  */
 export const consoleListAuditLogEventNames = BackendService.method.consoleListAuditLogEventNames;
+
+/**
+ * @generated from rpc tesseral.backend.v1.BackendService.ConsoleSearch
+ */
+export const consoleSearch = BackendService.method.consoleSearch;

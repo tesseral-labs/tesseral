@@ -90,6 +90,10 @@ func (s *Store) CreateCustomAuditLogEvent(ctx context.Context, req *backendv1.Cr
 }
 
 func (s *Store) ConsoleListCustomAuditLogEvents(ctx context.Context, req *backendv1.ConsoleListAuditLogEventsRequest) (*backendv1.ConsoleListAuditLogEventsResponse, error) {
+	if err := validateIsDogfoodSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	}
+
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err

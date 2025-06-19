@@ -1231,3 +1231,95 @@ WHERE
 ORDER BY
     event_name;
 
+-- name: ConsoleSearchAPIKeys :many
+SELECT
+    api_keys.*
+FROM
+    api_keys
+    JOIN organizations ON api_keys.organization_id = organizations.id
+WHERE
+    organizations.project_id = @project_id
+    AND (
+        (api_keys.display_name ILIKE '%' || @query::text || '%' AND @query::text != '')
+        OR (api_keys.id = sqlc.narg (id) OR sqlc.narg (id) IS NULL)
+    )
+ORDER BY
+    api_keys.id
+LIMIT $1;
+
+-- name: ConsoleSearchBackendAPIKeys :many
+SELECT
+    *
+FROM
+    backend_api_keys
+WHERE
+    project_id = @project_id
+    AND ((display_name ILIKE '%' || @query::text || '%'
+            AND @query::text != '')
+        OR (id = sqlc.narg (id)
+            OR sqlc.narg (id) IS NULL))
+ORDER BY
+    id
+LIMIT $1;
+
+-- name: ConsoleSearchPublishableKeys :many
+SELECT
+    *
+FROM
+    publishable_keys
+WHERE
+    project_id = @project_id
+    AND ((@query::text != ''
+            AND display_name ILIKE '%' || @query::text || '%')
+        OR (id = sqlc.narg (id)
+            OR sqlc.narg (id) IS NULL))
+ORDER BY
+    id
+LIMIT $1;
+
+-- name: ConsoleSearchOrganizations :many
+SELECT
+    organizations.*
+FROM
+    organizations
+WHERE
+    project_id = @project_id
+    AND ((@query::text != ''
+            AND display_name ILIKE '%' || @query::text || '%')
+        OR (id = sqlc.narg (id)
+            OR sqlc.narg (id) IS NULL))
+ORDER BY
+    id
+LIMIT $1;
+
+-- name: ConsoleSearchUsers :many
+SELECT
+    users.*
+FROM
+    users
+    JOIN organizations ON users.organization_id = organizations.id
+WHERE
+    organizations.project_id = @project_id
+    AND ((@query::text != ''
+            AND (users.email ILIKE '%' || @query::text || '%'
+                OR users.display_name ILIKE '%' || @query::text || '%'
+                OR users.google_user_id = @query::text
+                OR users.microsoft_user_id ILIKE @query::text
+                OR users.github_user_id ILIKE @query::text))
+        OR (users.id = sqlc.narg (id)
+            OR sqlc.narg (id) IS NULL))
+ORDER BY
+    users.id
+LIMIT $1;
+
+--name: ConsoleCountUsers :one
+SELECT
+    COUNT(*)
+FROM
+    users
+    JOIN organizations ON users.organization_id = organizations.id
+WHERE
+    organizations.project_id = @project_id
+    AND organizations.id = @organization_id
+;
+
