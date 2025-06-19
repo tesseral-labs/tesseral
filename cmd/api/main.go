@@ -115,7 +115,7 @@ func main() {
 		TesseralDNSCloudflareZoneID         string        `conf:"tesseral_dns_cloudflare_zone_id,noredact"`
 		StripeAPIKey                        string        `conf:"stripe_api_key"`
 		StripePriceIDGrowthTier             string        `conf:"stripe_price_id_growth_tier,noredact"`
-		SvixApiKey                          string        `conf:"svix_api_key,noredact"`
+		SvixApiKey                          string        `conf:"svix_api_key"`
 	}{
 		PageEncodingValue: "0000000000000000000000000000000000000000000000000000000000000000",
 	}
