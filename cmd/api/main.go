@@ -409,7 +409,7 @@ func main() {
 
 	slog.Info("serve")
 	if config.RunAsLambda {
-		lambda.Start(otellambda.InstrumentHandler(httplambda.Handler(serve), xrayconfig.WithRecommendedOptions(tp)...))
+		lambda.Start(otellambda.WrapHandler(httplambda.Handler(serve), xrayconfig.WithRecommendedOptions(tp)...))
 	} else {
 		if err := http.ListenAndServe(config.ServeAddr, serve); err != nil {
 			panic(err)
