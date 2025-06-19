@@ -31,6 +31,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/common/accesstoken"
 	"github.com/tesseral-labs/tesseral/internal/common/corstrusteddomains"
 	"github.com/tesseral-labs/tesseral/internal/common/projectid"
+	"github.com/tesseral-labs/tesseral/internal/common/sentryintegration"
 	commonstore "github.com/tesseral-labs/tesseral/internal/common/store"
 	configapiservice "github.com/tesseral-labs/tesseral/internal/configapi/service"
 	configapistore "github.com/tesseral-labs/tesseral/internal/configapi/store"
@@ -75,7 +76,12 @@ func main() {
 		panic(fmt.Errorf("init sentry: %w", err))
 	}
 
-	slog.SetDefault(slog.New(ctxlog.NewHandler(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{AddSource: true}))))
+	slogHandler := ctxlog.NewHandler(
+		sentryintegration.NewSlogHandler(
+			slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{AddSource: true}),
+		),
+	)
+	slog.SetDefault(slog.New(slogHandler))
 
 	if err := secretload.Load(context.Background()); err != nil {
 		panic(fmt.Errorf("load secrets: %w", err))
@@ -340,6 +346,7 @@ func main() {
 	}))
 
 	mux.Handle("/api/internal/panic", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		slog.InfoContext(r.Context(), "panic_request", "remote_addr", r.RemoteAddr)
 		panic("deliberate panic")
 	}))
 
@@ -366,13 +373,13 @@ func main() {
 	// These handlers are registered in a FILO order much like
 	// a Matryoshka doll
 
-	// wrap all http requests with sentry
-	serve := sentryhttp.New(sentryhttp.Options{
-		Repanic: true,
-	}).Handle(mux)
-
 	// add correlation IDs to logs
-	serve = slogcorrelation.NewHandler(serve)
+	serve := slogcorrelation.NewHandler(mux)
+
+	// wrap all http requests with sentry
+	serve = sentryhttp.New(sentryhttp.Options{
+		Repanic: true,
+	}).Handle(serve)
 
 	slog.Info("serve")
 	if config.RunAsLambda {
