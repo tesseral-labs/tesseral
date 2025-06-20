@@ -36,6 +36,7 @@ func TestCreateSAMLConnection_SAMLEnabled(t *testing.T) {
 	require.Equal(t, organizationID, res.SamlConnection.OrganizationId)
 	require.NotEmpty(t, res.SamlConnection.CreateTime)
 	require.NotEmpty(t, res.SamlConnection.UpdateTime)
+	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SAML_CONNECTION, "tesseral.saml_connections.create")
 }
 
 func TestCreateSAMLConnection_SAMLDisabled(t *testing.T) {
@@ -125,6 +126,7 @@ func TestUpdateSAMLConnection_UpdatesFields(t *testing.T) {
 	})
 	require.NoError(t, err)
 	connID := createResp.SamlConnection.Id
+	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SAML_CONNECTION, "tesseral.saml_connections.create")
 
 	updateResp, err := u.Store.UpdateSAMLConnection(ctx, &backendv1.UpdateSAMLConnectionRequest{
 		Id: connID,
@@ -139,6 +141,7 @@ func TestUpdateSAMLConnection_UpdatesFields(t *testing.T) {
 	require.Equal(t, "https://idp.example.com/saml/redirect2", updated.IdpRedirectUrl)
 	require.Equal(t, "https://idp.example.com/saml/idp2", updated.IdpEntityId)
 	require.True(t, updated.GetPrimary())
+	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SAML_CONNECTION, "tesseral.saml_connections.update")
 }
 
 func TestDeleteSAMLConnection_RemovesConnection(t *testing.T) {
@@ -159,9 +162,11 @@ func TestDeleteSAMLConnection_RemovesConnection(t *testing.T) {
 	})
 	require.NoError(t, err)
 	connID := createResp.SamlConnection.Id
+	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SAML_CONNECTION, "tesseral.saml_connections.create")
 
 	_, err = u.Store.DeleteSAMLConnection(ctx, &backendv1.DeleteSAMLConnectionRequest{Id: connID})
 	require.NoError(t, err)
+	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SAML_CONNECTION, "tesseral.saml_connections.delete")
 
 	res, err := u.Store.GetSAMLConnection(ctx, &backendv1.GetSAMLConnectionRequest{Id: connID})
 	var connectErr *connect.Error
@@ -234,7 +239,6 @@ func TestListSAMLConnections_ReturnsAllForOrg(t *testing.T) {
 		LogInWithSaml: refOrNil(true),
 	})
 
-	// Create multiple SAML connections
 	var ids []string
 	for range 3 {
 		resp, err := u.Store.CreateSAMLConnection(ctx, &backendv1.CreateSAMLConnectionRequest{
@@ -272,7 +276,6 @@ func TestListSAMLConnections_Pagination(t *testing.T) {
 		LogInWithSaml: refOrNil(true),
 	})
 
-	// Create 15 SAML connections (page size is 10)
 	var createdIDs []string
 	for range 15 {
 		resp, err := u.Store.CreateSAMLConnection(ctx, &backendv1.CreateSAMLConnectionRequest{
@@ -286,7 +289,6 @@ func TestListSAMLConnections_Pagination(t *testing.T) {
 		createdIDs = append(createdIDs, resp.SamlConnection.Id)
 	}
 
-	// First page
 	resp1, err := u.Store.ListSAMLConnections(ctx, &backendv1.ListSAMLConnectionsRequest{
 		OrganizationId: organizationID,
 	})
@@ -295,7 +297,6 @@ func TestListSAMLConnections_Pagination(t *testing.T) {
 	require.Len(t, resp1.SamlConnections, 10)
 	require.NotEmpty(t, resp1.NextPageToken)
 
-	// Second page
 	resp2, err := u.Store.ListSAMLConnections(ctx, &backendv1.ListSAMLConnectionsRequest{
 		OrganizationId: organizationID,
 		PageToken:      resp1.NextPageToken,

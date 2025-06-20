@@ -422,6 +422,7 @@ func (s *Store) AuthenticateAPIKey(ctx context.Context, req *backendv1.Authentic
 func parseAPIKey(qAPIKey queries.ApiKey) *backendv1.APIKey {
 	return &backendv1.APIKey{
 		Id:                idformat.APIKey.Format(qAPIKey.ID),
+		OrganizationId:    idformat.Organization.Format(qAPIKey.OrganizationID),
 		DisplayName:       qAPIKey.DisplayName,
 		CreateTime:        timestamppb.New(*qAPIKey.CreateTime),
 		UpdateTime:        timestamppb.New(*qAPIKey.UpdateTime),

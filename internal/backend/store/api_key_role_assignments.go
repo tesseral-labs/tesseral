@@ -190,7 +190,7 @@ func (s *Store) ListAPIKeyRoleAssignments(ctx context.Context, req *backendv1.Li
 
 	var nextPageToken string
 	if len(apiKeyRoleAssignments) == limit+1 {
-		nextPageToken = s.pageEncoder.Marshal(apiKeyRoleAssignments[limit].Id)
+		nextPageToken = s.pageEncoder.Marshal(qAPIKeyRoleAssignments[limit].ID)
 		apiKeyRoleAssignments = apiKeyRoleAssignments[:limit]
 	}
 

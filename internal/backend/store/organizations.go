@@ -195,6 +195,10 @@ func (s *Store) GetOrganization(ctx context.Context, req *backendv1.GetOrganizat
 		ID:        organizationId,
 	})
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("organization not found", fmt.Errorf("get organization by id: %w", err))
+		}
+
 		return nil, fmt.Errorf("get organization: %w", err)
 	}
 
