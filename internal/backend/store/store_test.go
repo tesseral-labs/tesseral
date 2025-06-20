@@ -101,6 +101,5 @@ func (u *testUtil) EnsureAuditLogEvent(t *testing.T, resourceType backendv1.Audi
 func (u *testUtil) NewUser(t *testing.T, organizationID string, email string) string {
 	return u.Environment.NewUser(t, organizationID, &backendv1.User{
 		Email: email,
-		Owner: refOrNil(false),
 	})
 }
