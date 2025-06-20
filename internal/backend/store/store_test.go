@@ -28,7 +28,6 @@ type testUtil struct {
 	Common      *commonstore.Store
 	Environment *storetesting.Environment
 	ProjectID   string
-	ctx         context.Context
 }
 
 func newTestUtil(t *testing.T) (context.Context, *testUtil) {
@@ -64,6 +63,5 @@ func newTestUtil(t *testing.T) (context.Context, *testUtil) {
 		Common:      commonStore,
 		Environment: environment,
 		ProjectID:   projectID,
-		ctx:         ctx,
 	}
 }
