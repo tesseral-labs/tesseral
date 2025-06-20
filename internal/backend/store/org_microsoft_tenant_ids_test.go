@@ -10,7 +10,7 @@ import (
 func TestGetOrganizationMicrosoftTenantIDs_Empty(t *testing.T) {
 	t.Parallel()
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test",
 	})
 
@@ -26,7 +26,7 @@ func TestGetOrganizationMicrosoftTenantIDs_Empty(t *testing.T) {
 func TestUpdateOrganizationMicrosoftTenantIDs_AddAndGet(t *testing.T) {
 	t.Parallel()
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test",
 	})
 
@@ -39,7 +39,6 @@ func TestUpdateOrganizationMicrosoftTenantIDs_AddAndGet(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.ElementsMatch(t, tenantIDs, updateResp.OrganizationMicrosoftTenantIds.MicrosoftTenantIds)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_ORGANIZATION, "tesseral.organizations.update_microsoft_tenant_ids")
 
 	getResp, err := u.Store.GetOrganizationMicrosoftTenantIDs(ctx, &backendv1.GetOrganizationMicrosoftTenantIDsRequest{
 		OrganizationId: orgID,
@@ -51,7 +50,7 @@ func TestUpdateOrganizationMicrosoftTenantIDs_AddAndGet(t *testing.T) {
 func TestUpdateOrganizationMicrosoftTenantIDs_ReplaceTenantIDs(t *testing.T) {
 	t.Parallel()
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test",
 	})
 

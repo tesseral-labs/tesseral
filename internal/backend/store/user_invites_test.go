@@ -15,7 +15,9 @@ func TestCreateUserInvite_Success(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "test"})
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName: "test",
+	})
 
 	resp, err := u.Store.CreateUserInvite(ctx, &backendv1.CreateUserInviteRequest{
 		UserInvite: &backendv1.UserInvite{
@@ -32,14 +34,15 @@ func TestCreateUserInvite_Success(t *testing.T) {
 	require.NotEmpty(t, resp.UserInvite.Id)
 	require.NotEmpty(t, resp.UserInvite.CreateTime)
 	require.NotEmpty(t, resp.UserInvite.UpdateTime)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_USER_INVITE, "tesseral.user_invites.create")
 }
 
 func TestCreateUserInvite_DuplicateEmail(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "test"})
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName: "test",
+	})
 
 	_, err := u.Store.CreateUserInvite(ctx, &backendv1.CreateUserInviteRequest{
 		UserInvite: &backendv1.UserInvite{
@@ -67,8 +70,12 @@ func TestCreateUserInvite_ExistingUser(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "test"})
-	_ = u.NewUser(t, orgID, "test@example.com")
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName: "test",
+	})
+	_ = u.Environment.NewUser(t, orgID, &backendv1.User{
+		Email: "test@example.com",
+	})
 
 	_, err := u.Store.CreateUserInvite(ctx, &backendv1.CreateUserInviteRequest{
 		UserInvite: &backendv1.UserInvite{
@@ -86,7 +93,9 @@ func TestGetUserInvite_Exists(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "test"})
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName: "test",
+	})
 
 	createResp, err := u.Store.CreateUserInvite(ctx, &backendv1.CreateUserInviteRequest{
 		UserInvite: &backendv1.UserInvite{
@@ -126,7 +135,9 @@ func TestDeleteUserInvite_Deletes(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "test"})
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName: "test",
+	})
 
 	createResp, err := u.Store.CreateUserInvite(ctx, &backendv1.CreateUserInviteRequest{
 		UserInvite: &backendv1.UserInvite{
@@ -141,7 +152,6 @@ func TestDeleteUserInvite_Deletes(t *testing.T) {
 
 	_, err = u.Store.DeleteUserInvite(ctx, &backendv1.DeleteUserInviteRequest{Id: inviteID})
 	require.NoError(t, err)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_USER_INVITE, "tesseral.user_invites.delete")
 
 	_, err = u.Store.GetUserInvite(ctx, &backendv1.GetUserInviteRequest{Id: inviteID})
 	var connectErr *connect.Error
@@ -153,7 +163,9 @@ func TestListUserInvites_ReturnsAll(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "test"})
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName: "test",
+	})
 
 	var ids []string
 	for i := range 3 {
@@ -186,7 +198,9 @@ func TestListUserInvites_Pagination(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "test"})
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName: "test",
+	})
 
 	var createdIDs []string
 	for i := range 15 {

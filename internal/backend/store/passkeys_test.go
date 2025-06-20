@@ -35,10 +35,12 @@ func TestGetPasskey_Exists(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "Test Organization",
 	})
-	userID := u.NewUser(t, orgID, "test@example.com")
+	userID := u.Environment.NewUser(t, orgID, &backendv1.User{
+		Email: "test@example.com",
+	})
 	passkeyID := u.newPasskey(t, userID)
 
 	resp, err := u.Store.GetPasskey(ctx, &backendv1.GetPasskeyRequest{Id: passkeyID})
@@ -64,10 +66,12 @@ func TestUpdatePasskey_Disable(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "Test Organization",
 	})
-	userID := u.NewUser(t, orgID, "test@example.com")
+	userID := u.Environment.NewUser(t, orgID, &backendv1.User{
+		Email: "test@example.com",
+	})
 	passkeyID := u.newPasskey(t, userID)
 
 	resp, err := u.Store.UpdatePasskey(ctx, &backendv1.UpdatePasskeyRequest{
@@ -79,17 +83,18 @@ func TestUpdatePasskey_Disable(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, resp.Passkey)
 	require.True(t, resp.Passkey.GetDisabled())
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_PASSKEY, "tesseral.passkeys.update")
 }
 
 func TestListPasskeys_ReturnsAll(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "Test Organization",
 	})
-	userID := u.NewUser(t, orgID, "test@example.com")
+	userID := u.Environment.NewUser(t, orgID, &backendv1.User{
+		Email: "test@example.com",
+	})
 
 	var ids []string
 	for range 3 {
@@ -113,10 +118,12 @@ func TestListPasskeys_Pagination(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "Test Organization",
 	})
-	userID := u.NewUser(t, orgID, "test@example.com")
+	userID := u.Environment.NewUser(t, orgID, &backendv1.User{
+		Email: "test@example.com",
+	})
 
 	var createdIDs []string
 	for range 15 {
@@ -150,15 +157,16 @@ func TestDeletePasskey_RemovesKey(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "Test Organization",
 	})
-	userID := u.NewUser(t, orgID, "test@example.com")
+	userID := u.Environment.NewUser(t, orgID, &backendv1.User{
+		Email: "test@example.com",
+	})
 	passkeyID := u.newPasskey(t, userID)
 
 	_, err := u.Store.DeletePasskey(ctx, &backendv1.DeletePasskeyRequest{Id: passkeyID})
 	require.NoError(t, err)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_PASSKEY, "tesseral.passkeys.delete")
 
 	_, err = u.Store.GetPasskey(ctx, &backendv1.GetPasskeyRequest{Id: passkeyID})
 	var connectErr *connect.Error

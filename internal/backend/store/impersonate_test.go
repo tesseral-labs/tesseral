@@ -13,10 +13,12 @@ func TestCreateUserImpersonationToken(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "Test Organization",
 	})
-	userID := u.NewUser(t, orgID, "test@example.com")
+	userID := u.Environment.NewUser(t, orgID, &backendv1.User{
+		Email: "test@example.com",
+	})
 
 	res, err := u.Store.CreateUserImpersonationToken(ctx, &backendv1.CreateUserImpersonationTokenRequest{
 		UserImpersonationToken: &backendv1.UserImpersonationToken{

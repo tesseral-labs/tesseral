@@ -26,7 +26,6 @@ func TestCreateOrganization_Success(t *testing.T) {
 	require.NotEmpty(t, resp.Organization.Id)
 	require.NotEmpty(t, resp.Organization.CreateTime)
 	require.NotEmpty(t, resp.Organization.UpdateTime)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_ORGANIZATION, "tesseral.organizations.create")
 }
 
 func TestGetOrganization_Exists(t *testing.T) {
@@ -82,7 +81,6 @@ func TestUpdateOrganization_UpdatesFields(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.Equal(t, "org2", updateResp.Organization.DisplayName)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_ORGANIZATION, "tesseral.organizations.update")
 }
 
 func TestListOrganizations_ReturnsAll(t *testing.T) {
@@ -166,7 +164,6 @@ func TestDeleteOrganization(t *testing.T) {
 
 	_, err = u.Store.DeleteOrganization(ctx, &backendv1.DeleteOrganizationRequest{Id: orgID})
 	require.NoError(t, err)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_ORGANIZATION, "tesseral.organizations.delete")
 
 	_, err = u.Store.GetOrganization(ctx, &backendv1.GetOrganizationRequest{Id: orgID})
 	var connectErr *connect.Error

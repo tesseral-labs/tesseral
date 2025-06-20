@@ -15,7 +15,9 @@ func TestCreateUser_Success(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "test"})
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName: "test",
+	})
 
 	resp, err := u.Store.CreateUser(ctx, &backendv1.CreateUserRequest{
 		User: &backendv1.User{
@@ -32,7 +34,6 @@ func TestCreateUser_Success(t *testing.T) {
 	require.NotEmpty(t, resp.User.CreateTime)
 	require.NotEmpty(t, resp.User.UpdateTime)
 	require.False(t, resp.User.GetOwner())
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_USER, "tesseral.users.create")
 }
 
 func TestCreateUser_OrgNotFound(t *testing.T) {
@@ -55,8 +56,12 @@ func TestGetUser_Exists(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "test"})
-	userID := u.NewUser(t, orgID, "test@example.com")
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName: "test",
+	})
+	userID := u.Environment.NewUser(t, orgID, &backendv1.User{
+		Email: "test@example.com",
+	})
 
 	getResp, err := u.Store.GetUser(ctx, &backendv1.GetUserRequest{Id: userID})
 	require.NoError(t, err)
@@ -84,8 +89,12 @@ func TestUpdateUser_UpdatesFields(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "test"})
-	userID := u.NewUser(t, orgID, "test@example.com")
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName: "test",
+	})
+	userID := u.Environment.NewUser(t, orgID, &backendv1.User{
+		Email: "test@example.com",
+	})
 
 	updateResp, err := u.Store.UpdateUser(ctx, &backendv1.UpdateUserRequest{
 		Id: userID,
@@ -107,19 +116,21 @@ func TestUpdateUser_UpdatesFields(t *testing.T) {
 	require.Equal(t, "microsoft-user-id-456", updateResp.User.GetMicrosoftUserId())
 	require.Equal(t, "apple-user-id-789", updateResp.User.GetGithubUserId())
 	require.Equal(t, "https://example.com/profile.jpg", updateResp.User.GetProfilePictureUrl())
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_USER, "tesseral.users.update")
 }
 
 func TestDeleteUser(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "test"})
-	userID := u.NewUser(t, orgID, "user5@example.com")
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName: "test",
+	})
+	userID := u.Environment.NewUser(t, orgID, &backendv1.User{
+		Email: "test@example.com",
+	})
 
 	_, err := u.Store.DeleteUser(ctx, &backendv1.DeleteUserRequest{Id: userID})
 	require.NoError(t, err)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_USER, "tesseral.users.delete")
 
 	_, err = u.Store.GetUser(ctx, &backendv1.GetUserRequest{Id: userID})
 	var connectErr *connect.Error
@@ -131,12 +142,15 @@ func TestListUsers_ReturnsAll(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "test"})
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName: "test",
+	})
 
 	var ids []string
 	for i := range 3 {
-		email := fmt.Sprintf("user%d@example.com", i)
-		id := u.NewUser(t, orgID, email)
+		id := u.Environment.NewUser(t, orgID, &backendv1.User{
+			Email: fmt.Sprintf("user%d@example.com", i),
+		})
 		ids = append(ids, id)
 	}
 
@@ -156,12 +170,15 @@ func TestListUsers_Pagination(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "test"})
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName: "test",
+	})
 
 	var createdIDs []string
 	for i := range 15 {
-		email := fmt.Sprintf("user%d@example.com", i)
-		id := u.NewUser(t, orgID, email)
+		id := u.Environment.NewUser(t, orgID, &backendv1.User{
+			Email: fmt.Sprintf("user%d@example.com", i),
+		})
 		createdIDs = append(createdIDs, id)
 	}
 

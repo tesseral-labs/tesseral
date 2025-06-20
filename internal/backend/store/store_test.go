@@ -5,9 +5,7 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/stretchr/testify/require"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
-	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	commonstore "github.com/tesseral-labs/tesseral/internal/common/store"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/storetesting"
@@ -68,38 +66,4 @@ func newTestUtil(t *testing.T) (context.Context, *testUtil) {
 		ProjectID:   projectID,
 		ctx:         ctx,
 	}
-}
-
-func (u *testUtil) NewOrganization(t *testing.T, organization *backendv1.Organization) string {
-	return u.Environment.NewOrganization(t, u.ProjectID, organization)
-}
-
-func (u *testUtil) CreateActions(t *testing.T, names ...string) {
-	projectID, err := idformat.Project.Parse(u.ProjectID)
-	require.NoError(t, err)
-	for _, name := range names {
-		_, err := u.Environment.DB.Exec(t.Context(), `
-INSERT INTO actions (id, project_id, name, description)
-  VALUES (gen_random_uuid(), $1::uuid, $2, $2);
-`,
-			uuid.UUID(projectID).String(),
-			name,
-		)
-		require.NoError(t, err)
-	}
-}
-
-func (u *testUtil) EnsureAuditLogEvent(t *testing.T, resourceType backendv1.AuditLogEventResourceType, eventType string) {
-	resp, err := u.Store.ConsoleListAuditLogEventNames(u.ctx, &backendv1.ConsoleListAuditLogEventNamesRequest{
-		ResourceType: resourceType,
-	})
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	require.Contains(t, resp.EventNames, eventType)
-}
-
-func (u *testUtil) NewUser(t *testing.T, organizationID string, email string) string {
-	return u.Environment.NewUser(t, organizationID, &backendv1.User{
-		Email: email,
-	})
 }

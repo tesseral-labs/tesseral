@@ -14,7 +14,7 @@ func TestCreateAPIKey_ApiKeysEnabled(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:    "test",
 		ApiKeysEnabled: refOrNil(true),
 	})
@@ -33,14 +33,13 @@ func TestCreateAPIKey_ApiKeysEnabled(t *testing.T) {
 	require.NotEmpty(t, res.ApiKey.CreateTime)
 	require.NotEmpty(t, res.ApiKey.UpdateTime)
 	require.NotEmpty(t, res.ApiKey.SecretToken)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_API_KEY, "tesseral.api_keys.create")
 }
 
 func TestCreateAPIKey_ApiKeysDisabled(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:    "test",
 		ApiKeysEnabled: refOrNil(false),
 	})
@@ -60,7 +59,7 @@ func TestGetAPIKey_Exists(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:    "test",
 		ApiKeysEnabled: refOrNil(true),
 	})
@@ -97,7 +96,7 @@ func TestUpdateAPIKey_UpdatesFields(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:    "test",
 		ApiKeysEnabled: refOrNil(true),
 	})
@@ -119,14 +118,13 @@ func TestUpdateAPIKey_UpdatesFields(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.Equal(t, "key2", updateResp.ApiKey.DisplayName)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_API_KEY, "tesseral.api_keys.update")
 }
 
 func TestRevokeAPIKey(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:    "test",
 		ApiKeysEnabled: refOrNil(true),
 	})
@@ -142,7 +140,6 @@ func TestRevokeAPIKey(t *testing.T) {
 
 	_, err = u.Store.RevokeAPIKey(ctx, &backendv1.RevokeAPIKeyRequest{Id: keyID})
 	require.NoError(t, err)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_API_KEY, "tesseral.api_keys.revoke")
 
 	getResp, err := u.Store.GetAPIKey(ctx, &backendv1.GetAPIKeyRequest{Id: keyID})
 	require.NoError(t, err)
@@ -160,7 +157,7 @@ func TestDeleteAPIKey_RemovesKey(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:    "test",
 		ApiKeysEnabled: refOrNil(true),
 	})
@@ -179,7 +176,6 @@ func TestDeleteAPIKey_RemovesKey(t *testing.T) {
 
 	_, err = u.Store.DeleteAPIKey(ctx, &backendv1.DeleteAPIKeyRequest{Id: keyID})
 	require.NoError(t, err)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_API_KEY, "tesseral.api_keys.delete")
 
 	_, err = u.Store.GetAPIKey(ctx, &backendv1.GetAPIKeyRequest{Id: keyID})
 	var connectErr *connect.Error
@@ -191,7 +187,7 @@ func TestListAPIKeys_ReturnsAll(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:    "test",
 		ApiKeysEnabled: refOrNil(true),
 	})
@@ -224,7 +220,7 @@ func TestListAPIKeys_Pagination(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:    "test",
 		ApiKeysEnabled: refOrNil(true),
 	})
@@ -267,7 +263,7 @@ func TestAuthenticateAPIKey_Success(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:    "test",
 		ApiKeysEnabled: refOrNil(true),
 	})

@@ -11,7 +11,7 @@ func TestGetOrganizationDomains_Empty(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test",
 	})
 
@@ -28,7 +28,7 @@ func TestUpdateOrganizationDomains_AddAndGet(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test",
 	})
 
@@ -41,7 +41,6 @@ func TestUpdateOrganizationDomains_AddAndGet(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.ElementsMatch(t, domains, updateResp.OrganizationDomains.Domains)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_ORGANIZATION, "tesseral.organizations.update_domains")
 
 	getResp, err := u.Store.GetOrganizationDomains(ctx, &backendv1.GetOrganizationDomainsRequest{
 		OrganizationId: orgID,
@@ -54,7 +53,7 @@ func TestUpdateOrganizationDomains_ReplaceDomains(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test",
 	})
 

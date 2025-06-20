@@ -14,10 +14,12 @@ func TestGetSession_Success(t *testing.T) {
 	t.Parallel()
 	ctx, u := newTestUtil(t)
 
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test-org",
 	})
-	userID := u.NewUser(t, orgID, "test@example.com")
+	userID := u.Environment.NewUser(t, orgID, &backendv1.User{
+		Email: "test@example.com",
+	})
 	sessionID, _ := u.Environment.NewSession(t, userID)
 
 	resp, err := u.Store.GetSession(ctx, &backendv1.GetSessionRequest{Id: sessionID})
@@ -42,10 +44,12 @@ func TestListSessions(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test-org",
 	})
-	userID := u.NewUser(t, orgID, "test@example.com")
+	userID := u.Environment.NewUser(t, orgID, &backendv1.User{
+		Email: "test@example.com",
+	})
 
 	var sessionIDs []string
 	for range 12 {

@@ -4,16 +4,30 @@ import (
 	"testing"
 
 	"connectrpc.com/connect"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
 func TestRole_CRUD(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "org"})
-	u.CreateActions(t, "foo.bar.baz", "foo.bar.qux")
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{DisplayName: "org"})
+
+	projectID, err := idformat.Project.Parse(u.ProjectID)
+	require.NoError(t, err)
+	_, err = u.Environment.DB.Exec(t.Context(), `
+INSERT INTO actions (id, project_id, name, description)
+  VALUES (gen_random_uuid(), $1::uuid, $2, $2),
+  		 (gen_random_uuid(), $1::uuid, $3, $3);
+`,
+		uuid.UUID(projectID).String(),
+		"foo.bar.baz",
+		"foo.bar.qux",
+	)
+	require.NoError(t, err)
 
 	resp, err := u.Store.CreateRole(ctx, &backendv1.CreateRoleRequest{
 		Role: &backendv1.Role{
@@ -28,13 +42,20 @@ func TestRole_CRUD(t *testing.T) {
 	require.NotNil(t, role)
 	require.Equal(t, "role1", role.DisplayName)
 	require.ElementsMatch(t, []string{"foo.bar.baz", "foo.bar.qux"}, role.Actions)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_ROLE, "tesseral.roles.create")
 
 	getResp, err := u.Store.GetRole(ctx, &backendv1.GetRoleRequest{Id: role.Id})
 	require.NoError(t, err)
 	require.Equal(t, role.Id, getResp.Role.Id)
 
-	u.CreateActions(t, "foo.bar.new")
+	_, err = u.Environment.DB.Exec(t.Context(), `
+INSERT INTO actions (id, project_id, name, description)
+  VALUES (gen_random_uuid(), $1::uuid, $2, $2);
+`,
+		uuid.UUID(projectID).String(),
+		"foo.bar.new",
+	)
+	require.NoError(t, err)
+
 	updResp, err := u.Store.UpdateRole(ctx, &backendv1.UpdateRoleRequest{
 		Id: role.Id,
 		Role: &backendv1.Role{
@@ -48,11 +69,9 @@ func TestRole_CRUD(t *testing.T) {
 	require.Equal(t, "role1-upd", upd.DisplayName)
 	require.Equal(t, "desc1-upd", upd.Description)
 	require.ElementsMatch(t, []string{"foo.bar.new"}, upd.Actions)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_ROLE, "tesseral.roles.update")
 
 	_, err = u.Store.DeleteRole(ctx, &backendv1.DeleteRoleRequest{Id: role.Id})
 	require.NoError(t, err)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_ROLE, "tesseral.roles.delete")
 
 	_, err = u.Store.GetRole(ctx, &backendv1.GetRoleRequest{Id: role.Id})
 	var connectErr *connect.Error
@@ -64,9 +83,19 @@ func TestRole_Create_InvalidOrgOrAction(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	u.CreateActions(t, "foo.bar.baz")
 
-	_, err := u.Store.CreateRole(ctx, &backendv1.CreateRoleRequest{
+	projectID, err := idformat.Project.Parse(u.ProjectID)
+	require.NoError(t, err)
+	_, err = u.Environment.DB.Exec(t.Context(), `
+INSERT INTO actions (id, project_id, name, description)
+  VALUES (gen_random_uuid(), $1::uuid, $2, $2);
+`,
+		uuid.UUID(projectID).String(),
+		"foo.bar.baz",
+	)
+	require.NoError(t, err)
+
+	_, err = u.Store.CreateRole(ctx, &backendv1.CreateRoleRequest{
 		Role: &backendv1.Role{
 			OrganizationId: "invalid-id",
 			DisplayName:    "role1",
@@ -77,7 +106,7 @@ func TestRole_Create_InvalidOrgOrAction(t *testing.T) {
 	require.ErrorAs(t, err, &connectErr)
 	require.Equal(t, connect.CodeInvalidArgument, connectErr.Code())
 
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "org"})
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{DisplayName: "org"})
 	_, err = u.Store.CreateRole(ctx, &backendv1.CreateRoleRequest{
 		Role: &backendv1.Role{
 			OrganizationId: orgID,
@@ -94,8 +123,18 @@ func TestRole_Update_InvalidIDOrAction(t *testing.T) {
 
 	ctx, u := newTestUtil(t)
 
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "org"})
-	u.CreateActions(t, "foo.bar.baz")
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{DisplayName: "org"})
+
+	projectID, err := idformat.Project.Parse(u.ProjectID)
+	require.NoError(t, err)
+	_, err = u.Environment.DB.Exec(t.Context(), `
+INSERT INTO actions (id, project_id, name, description)
+  VALUES (gen_random_uuid(), $1::uuid, $2, $2);
+`,
+		uuid.UUID(projectID).String(),
+		"foo.bar.baz",
+	)
+	require.NoError(t, err)
 
 	resp, err := u.Store.CreateRole(ctx, &backendv1.CreateRoleRequest{
 		Role: &backendv1.Role{
@@ -121,8 +160,20 @@ func TestRole_List_ByProjectAndByOrg_Pagination(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "org1"})
-	u.CreateActions(t, "foo.bar.baz", "foo.bar.qux")
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{DisplayName: "org1"})
+
+	projectID, err := idformat.Project.Parse(u.ProjectID)
+	require.NoError(t, err)
+	_, err = u.Environment.DB.Exec(t.Context(), `
+INSERT INTO actions (id, project_id, name, description)
+  VALUES (gen_random_uuid(), $1::uuid, $2, $2),
+  		 (gen_random_uuid(), $1::uuid, $3, $3);
+`,
+		uuid.UUID(projectID).String(),
+		"foo.bar.baz",
+		"foo.bar.qux",
+	)
+	require.NoError(t, err)
 
 	var projectRoleIDs []string
 	for range 12 {

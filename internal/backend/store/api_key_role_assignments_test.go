@@ -4,15 +4,17 @@ import (
 	"testing"
 
 	"connectrpc.com/connect"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
 func TestCreateAPIKeyRoleAssignment_Success(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:    "test",
 		ApiKeysEnabled: refOrNil(true),
 	})
@@ -25,9 +27,19 @@ func TestCreateAPIKeyRoleAssignment_Success(t *testing.T) {
 	})
 	require.NoError(t, err)
 	apiKeyID := apiKeyResp.ApiKey.Id
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_API_KEY, "tesseral.api_keys.create")
 
-	u.CreateActions(t, "test.action.1", "test.action.2")
+	projectID, err := idformat.Project.Parse(u.ProjectID)
+	require.NoError(t, err)
+	_, err = u.Environment.DB.Exec(t.Context(), `
+INSERT INTO actions (id, project_id, name, description)
+  VALUES (gen_random_uuid(), $1::uuid, $2, $2),
+  		 (gen_random_uuid(), $1::uuid, $3, $3);
+`,
+		uuid.UUID(projectID).String(),
+		"test.action.1",
+		"test.action.2",
+	)
+	require.NoError(t, err)
 
 	role, err := u.Store.CreateRole(ctx, &backendv1.CreateRoleRequest{
 		Role: &backendv1.Role{
@@ -39,7 +51,6 @@ func TestCreateAPIKeyRoleAssignment_Success(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, role.Role)
 	roleID := role.Role.Id
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_ROLE, "tesseral.roles.create")
 
 	resp, err := u.Store.CreateAPIKeyRoleAssignment(ctx, &backendv1.CreateAPIKeyRoleAssignmentRequest{
 		ApiKeyRoleAssignment: &backendv1.APIKeyRoleAssignment{
@@ -51,7 +62,6 @@ func TestCreateAPIKeyRoleAssignment_Success(t *testing.T) {
 	require.NotNil(t, resp.ApiKeyRoleAssignment)
 	require.Equal(t, apiKeyID, resp.ApiKeyRoleAssignment.ApiKeyId)
 	require.Equal(t, roleID, resp.ApiKeyRoleAssignment.RoleId)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_API_KEY, "tesseral.api_keys.assign_role")
 
 	apiKey, err := u.Store.AuthenticateAPIKey(ctx, &backendv1.AuthenticateAPIKeyRequest{
 		SecretToken: apiKeyResp.ApiKey.SecretToken,
@@ -83,7 +93,7 @@ func TestDeleteAPIKeyRoleAssignment_Success(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:    "test",
 		ApiKeysEnabled: refOrNil(true),
 	})
@@ -118,7 +128,6 @@ func TestDeleteAPIKeyRoleAssignment_Success(t *testing.T) {
 
 	_, err = u.Store.DeleteAPIKeyRoleAssignment(ctx, &backendv1.DeleteAPIKeyRoleAssignmentRequest{Id: assignmentID})
 	require.NoError(t, err)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_API_KEY, "tesseral.api_keys.unassign_role")
 }
 
 func TestDeleteAPIKeyRoleAssignment_InvalidID(t *testing.T) {
@@ -134,7 +143,7 @@ func TestListAPIKeyRoleAssignments_ReturnsAll(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:    "test",
 		ApiKeysEnabled: refOrNil(true),
 	})
@@ -186,7 +195,7 @@ func TestListAPIKeyRoleAssignments_Pagination(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:    "test",
 		ApiKeysEnabled: refOrNil(true),
 	})

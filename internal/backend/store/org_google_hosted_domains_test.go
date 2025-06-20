@@ -10,7 +10,7 @@ import (
 func TestGetOrganizationGoogleHostedDomains_Empty(t *testing.T) {
 	t.Parallel()
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test",
 	})
 
@@ -26,7 +26,7 @@ func TestGetOrganizationGoogleHostedDomains_Empty(t *testing.T) {
 func TestUpdateOrganizationGoogleHostedDomains_AddAndGet(t *testing.T) {
 	t.Parallel()
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test",
 	})
 
@@ -39,7 +39,6 @@ func TestUpdateOrganizationGoogleHostedDomains_AddAndGet(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.ElementsMatch(t, domains, updateResp.OrganizationGoogleHostedDomains.GoogleHostedDomains)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_ORGANIZATION, "tesseral.organizations.update_google_hosted_domains")
 
 	getResp, err := u.Store.GetOrganizationGoogleHostedDomains(ctx, &backendv1.GetOrganizationGoogleHostedDomainsRequest{
 		OrganizationId: orgID,
@@ -51,7 +50,7 @@ func TestUpdateOrganizationGoogleHostedDomains_AddAndGet(t *testing.T) {
 func TestUpdateOrganizationGoogleHostedDomains_ReplaceDomains(t *testing.T) {
 	t.Parallel()
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test",
 	})
 

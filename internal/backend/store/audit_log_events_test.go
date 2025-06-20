@@ -18,7 +18,9 @@ func TestCreateCustomAuditLogEvent_Success(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "test"})
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName: "test",
+	})
 
 	eventTime := time.Now()
 	eventDetailsMap := map[string]any{
@@ -65,12 +67,14 @@ func TestCreateCustomAuditLogEvent_Actor(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:    "test",
 		ApiKeysEnabled: refOrNil(true),
 	})
 
-	userID := u.NewUser(t, orgID, "test@example.com")
+	userID := u.Environment.NewUser(t, orgID, &backendv1.User{
+		Email: "test@example.com",
+	})
 	sessionID, refreshToken := u.Environment.NewSession(t, userID)
 
 	accessToken, err := u.Common.IssueAccessToken(ctx, refreshToken)
@@ -180,7 +184,9 @@ func TestCreateAuditLogEvent_InvalidEventName(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "test"})
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName: "test",
+	})
 
 	_, err := u.Store.CreateCustomAuditLogEvent(ctx, &backendv1.CreateAuditLogEventRequest{
 		AuditLogEvent: &backendv1.AuditLogEvent{
@@ -197,7 +203,9 @@ func TestConsoleListCustomAuditLogEvents_ReturnsAll(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "test"})
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName: "test",
+	})
 
 	for range 3 {
 		_, err := u.Store.CreateCustomAuditLogEvent(ctx, &backendv1.CreateAuditLogEventRequest{
@@ -221,12 +229,14 @@ func TestConsoleListCustomAuditLogEvents_PaginateByActor(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:    "test",
 		ApiKeysEnabled: refOrNil(true),
 	})
 
-	userID := u.NewUser(t, orgID, "test@example.com")
+	userID := u.Environment.NewUser(t, orgID, &backendv1.User{
+		Email: "test@example.com",
+	})
 	sessionID, refreshToken := u.Environment.NewSession(t, userID)
 
 	accessToken, err := u.Common.IssueAccessToken(ctx, refreshToken)
@@ -424,7 +434,7 @@ func TestConsoleListCustomAuditLogEvents_ResourceTypeAPIKey(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:    "test",
 		ApiKeysEnabled: refOrNil(true),
 	})
@@ -465,7 +475,7 @@ func TestConsoleListCustomAuditLogEvents_ResourceTypeOrganization(t *testing.T) 
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:    "test",
 		ApiKeysEnabled: refOrNil(true),
 	})
@@ -508,7 +518,7 @@ func TestConsoleListCustomAuditLogEvents_ResourceTypeRole(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test",
 	})
 
@@ -548,7 +558,7 @@ func TestConsoleListCustomAuditLogEvents_ResourceTypeSAMLConnection(t *testing.T
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:   "test",
 		LogInWithSaml: refOrNil(true),
 	})
@@ -590,7 +600,7 @@ func TestConsoleListCustomAuditLogEvents_ResourceTypeSCIMAPIKey(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test",
 		ScimEnabled: refOrNil(true),
 	})
@@ -635,7 +645,7 @@ func TestConsoleListCustomAuditLogEvents_ResourceTypeUserInvite(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test",
 	})
 
@@ -675,7 +685,7 @@ func TestConsoleListCustomAuditLogEvents_ResourceTypeUser(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test",
 	})
 
@@ -716,7 +726,7 @@ func TestConsoleListAuditLogEventNames_ResourceTypeUnspecified(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test",
 	})
 

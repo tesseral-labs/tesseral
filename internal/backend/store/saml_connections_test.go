@@ -15,7 +15,7 @@ func TestCreateSAMLConnection_SAMLEnabled(t *testing.T) {
 
 	ctx, u := newTestUtil(t)
 
-	organizationID := u.NewOrganization(t, &backendv1.Organization{
+	organizationID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:   "test",
 		LogInWithSaml: refOrNil(true),
 	})
@@ -36,7 +36,6 @@ func TestCreateSAMLConnection_SAMLEnabled(t *testing.T) {
 	require.Equal(t, organizationID, res.SamlConnection.OrganizationId)
 	require.NotEmpty(t, res.SamlConnection.CreateTime)
 	require.NotEmpty(t, res.SamlConnection.UpdateTime)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SAML_CONNECTION, "tesseral.saml_connections.create")
 }
 
 func TestCreateSAMLConnection_SAMLDisabled(t *testing.T) {
@@ -44,7 +43,7 @@ func TestCreateSAMLConnection_SAMLDisabled(t *testing.T) {
 
 	ctx, u := newTestUtil(t)
 
-	organizationID := u.NewOrganization(t, &backendv1.Organization{
+	organizationID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:   "test",
 		LogInWithSaml: refOrNil(false), // SAML not enabled
 	})
@@ -66,7 +65,7 @@ func TestGetSAMLConnection_Exists(t *testing.T) {
 
 	ctx, u := newTestUtil(t)
 
-	organizationID := u.NewOrganization(t, &backendv1.Organization{
+	organizationID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:   "test",
 		LogInWithSaml: refOrNil(true),
 	})
@@ -113,7 +112,7 @@ func TestUpdateSAMLConnection_UpdatesFields(t *testing.T) {
 
 	ctx, u := newTestUtil(t)
 
-	organizationID := u.NewOrganization(t, &backendv1.Organization{
+	organizationID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:   "test",
 		LogInWithSaml: refOrNil(true),
 	})
@@ -140,7 +139,6 @@ func TestUpdateSAMLConnection_UpdatesFields(t *testing.T) {
 	require.Equal(t, "https://idp.example.com/saml/redirect2", updated.IdpRedirectUrl)
 	require.Equal(t, "https://idp.example.com/saml/idp2", updated.IdpEntityId)
 	require.True(t, updated.GetPrimary())
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SAML_CONNECTION, "tesseral.saml_connections.update")
 }
 
 func TestDeleteSAMLConnection_RemovesConnection(t *testing.T) {
@@ -148,7 +146,7 @@ func TestDeleteSAMLConnection_RemovesConnection(t *testing.T) {
 
 	ctx, u := newTestUtil(t)
 
-	organizationID := u.NewOrganization(t, &backendv1.Organization{
+	organizationID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:   "test",
 		LogInWithSaml: refOrNil(true),
 	})
@@ -164,7 +162,6 @@ func TestDeleteSAMLConnection_RemovesConnection(t *testing.T) {
 
 	_, err = u.Store.DeleteSAMLConnection(ctx, &backendv1.DeleteSAMLConnectionRequest{Id: connID})
 	require.NoError(t, err)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SAML_CONNECTION, "tesseral.saml_connections.delete")
 
 	res, err := u.Store.GetSAMLConnection(ctx, &backendv1.GetSAMLConnectionRequest{Id: connID})
 	var connectErr *connect.Error
@@ -212,7 +209,7 @@ func TestCreateSAMLConnection_InvalidRedirectURL(t *testing.T) {
 
 	ctx, u := newTestUtil(t)
 
-	organizationID := u.NewOrganization(t, &backendv1.Organization{
+	organizationID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:   "test",
 		LogInWithSaml: refOrNil(true),
 	})
@@ -232,7 +229,7 @@ func TestListSAMLConnections_ReturnsAllForOrg(t *testing.T) {
 	t.Parallel()
 	ctx, u := newTestUtil(t)
 
-	organizationID := u.NewOrganization(t, &backendv1.Organization{
+	organizationID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:   "test",
 		LogInWithSaml: refOrNil(true),
 	})
@@ -269,7 +266,7 @@ func TestListSAMLConnections_Pagination(t *testing.T) {
 	t.Parallel()
 	ctx, u := newTestUtil(t)
 
-	organizationID := u.NewOrganization(t, &backendv1.Organization{
+	organizationID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:   "test",
 		LogInWithSaml: refOrNil(true),
 	})

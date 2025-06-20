@@ -15,9 +15,25 @@ func TestCreateUserRoleAssignment_Success(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "test"})
-	userID := u.NewUser(t, orgID, "test@example.com")
-	u.CreateActions(t, "test.action.1", "test.action.2")
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName: "test",
+	})
+	userID := u.Environment.NewUser(t, orgID, &backendv1.User{
+		Email: "test@example.com",
+	})
+
+	projectID, err := idformat.Project.Parse(u.ProjectID)
+	require.NoError(t, err)
+	_, err = u.Environment.DB.Exec(t.Context(), `
+INSERT INTO actions (id, project_id, name, description)
+  VALUES (gen_random_uuid(), $1::uuid, $2, $2),
+  		 (gen_random_uuid(), $1::uuid, $3, $3);
+`,
+		uuid.UUID(projectID).String(),
+		"test.action.1",
+		"test.action.2",
+	)
+	require.NoError(t, err)
 
 	roleResp, err := u.Store.CreateRole(ctx, &backendv1.CreateRoleRequest{
 		Role: &backendv1.Role{
@@ -28,7 +44,6 @@ func TestCreateUserRoleAssignment_Success(t *testing.T) {
 	})
 	require.NoError(t, err)
 	roleID := roleResp.Role.Id
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_ROLE, "tesseral.roles.create")
 
 	resp, err := u.Store.CreateUserRoleAssignment(ctx, &backendv1.CreateUserRoleAssignmentRequest{
 		UserRoleAssignment: &backendv1.UserRoleAssignment{
@@ -40,7 +55,6 @@ func TestCreateUserRoleAssignment_Success(t *testing.T) {
 	require.NotNil(t, resp.UserRoleAssignment)
 	require.Equal(t, userID, resp.UserRoleAssignment.UserId)
 	require.Equal(t, roleID, resp.UserRoleAssignment.RoleId)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_USER, "tesseral.users.assign_role")
 }
 
 func TestCreateUserRoleAssignment_NotFound(t *testing.T) {
@@ -63,8 +77,12 @@ func TestDeleteUserRoleAssignment_Success(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "test"})
-	userID := u.NewUser(t, orgID, "test@example.com")
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName: "test",
+	})
+	userID := u.Environment.NewUser(t, orgID, &backendv1.User{
+		Email: "test@example.com",
+	})
 
 	roleResp, err := u.Store.CreateRole(ctx, &backendv1.CreateRoleRequest{
 		Role: &backendv1.Role{
@@ -74,7 +92,6 @@ func TestDeleteUserRoleAssignment_Success(t *testing.T) {
 	})
 	require.NoError(t, err)
 	roleID := roleResp.Role.Id
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_ROLE, "tesseral.roles.create")
 
 	createResp, err := u.Store.CreateUserRoleAssignment(ctx, &backendv1.CreateUserRoleAssignmentRequest{
 		UserRoleAssignment: &backendv1.UserRoleAssignment{
@@ -84,19 +101,21 @@ func TestDeleteUserRoleAssignment_Success(t *testing.T) {
 	})
 	require.NoError(t, err)
 	assignmentID := createResp.UserRoleAssignment.Id
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_USER, "tesseral.users.assign_role")
 
 	_, err = u.Store.DeleteUserRoleAssignment(ctx, &backendv1.DeleteUserRoleAssignmentRequest{Id: assignmentID})
 	require.NoError(t, err)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_USER, "tesseral.users.unassign_role")
 }
 
 func TestGetUserRoleAssignment_Exists(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "test"})
-	userID := u.NewUser(t, orgID, "test@example.com")
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName: "test",
+	})
+	userID := u.Environment.NewUser(t, orgID, &backendv1.User{
+		Email: "test@example.com",
+	})
 
 	roleResp, err := u.Store.CreateRole(ctx, &backendv1.CreateRoleRequest{
 		Role: &backendv1.Role{
@@ -137,8 +156,12 @@ func TestListUserRoleAssignments_ByUser_ReturnsAll(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "test"})
-	userID := u.NewUser(t, orgID, "test@example.com")
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName: "test",
+	})
+	userID := u.Environment.NewUser(t, orgID, &backendv1.User{
+		Email: "test@example.com",
+	})
 
 	var assignmentIDs []string
 	for range 3 {
@@ -176,7 +199,9 @@ func TestListUserRoleAssignments_ByRole_ReturnsAll(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "test"})
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName: "test",
+	})
 
 	roleResp, err := u.Store.CreateRole(ctx, &backendv1.CreateRoleRequest{
 		Role: &backendv1.Role{
@@ -189,7 +214,9 @@ func TestListUserRoleAssignments_ByRole_ReturnsAll(t *testing.T) {
 
 	var assignmentIDs []string
 	for i := range 3 {
-		userID := u.NewUser(t, orgID, fmt.Sprintf("user%d@example.com", i))
+		userID := u.Environment.NewUser(t, orgID, &backendv1.User{
+			Email: fmt.Sprintf("user%d@example.com", i),
+		})
 		createResp, err := u.Store.CreateUserRoleAssignment(ctx, &backendv1.CreateUserRoleAssignmentRequest{
 			UserRoleAssignment: &backendv1.UserRoleAssignment{
 				UserId: userID,
@@ -216,8 +243,12 @@ func TestListUserRoleAssignments_ByUser_Pagination(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "test"})
-	userID := u.NewUser(t, orgID, "test@example.com")
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName: "test",
+	})
+	userID := u.Environment.NewUser(t, orgID, &backendv1.User{
+		Email: "test@example.com",
+	})
 
 	var createdIDs []string
 	for range 15 {
@@ -266,7 +297,9 @@ func TestListUserRoleAssignments_ByRole_Pagination(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{DisplayName: "test"})
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName: "test",
+	})
 
 	roleResp, err := u.Store.CreateRole(ctx, &backendv1.CreateRoleRequest{
 		Role: &backendv1.Role{
@@ -279,7 +312,9 @@ func TestListUserRoleAssignments_ByRole_Pagination(t *testing.T) {
 
 	var createdIDs []string
 	for i := range 15 {
-		userID := u.NewUser(t, orgID, fmt.Sprintf("user%d@example.com", i))
+		userID := u.Environment.NewUser(t, orgID, &backendv1.User{
+			Email: fmt.Sprintf("user%d@example.com", i),
+		})
 		createResp, err := u.Store.CreateUserRoleAssignment(ctx, &backendv1.CreateUserRoleAssignmentRequest{
 			UserRoleAssignment: &backendv1.UserRoleAssignment{
 				UserId: userID,

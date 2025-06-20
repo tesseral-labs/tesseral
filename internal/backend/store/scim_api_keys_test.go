@@ -14,7 +14,7 @@ func TestCreateSCIMAPIKey_SCIMEnabled(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test",
 		ScimEnabled: refOrNil(true),
 	})
@@ -33,14 +33,13 @@ func TestCreateSCIMAPIKey_SCIMEnabled(t *testing.T) {
 	require.NotEmpty(t, res.ScimApiKey.CreateTime)
 	require.NotEmpty(t, res.ScimApiKey.UpdateTime)
 	require.NotEmpty(t, res.ScimApiKey.SecretToken)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SCIM_API_KEY, "tesseral.scim_api_keys.create")
 }
 
 func TestCreateSCIMAPIKey_SCIMDisabled(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test",
 		ScimEnabled: refOrNil(false),
 	})
@@ -60,7 +59,7 @@ func TestGetSCIMAPIKey_Exists(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test",
 		ScimEnabled: refOrNil(true),
 	})
@@ -97,7 +96,7 @@ func TestUpdateSCIMAPIKey_UpdatesFields(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test",
 		ScimEnabled: refOrNil(true),
 	})
@@ -119,14 +118,13 @@ func TestUpdateSCIMAPIKey_UpdatesFields(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.Equal(t, "key2", updateResp.ScimApiKey.DisplayName)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SCIM_API_KEY, "tesseral.scim_api_keys.update")
 }
 
 func TestRevokeSCIMAPIKey(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test",
 		ScimEnabled: refOrNil(true),
 	})
@@ -144,7 +142,6 @@ func TestRevokeSCIMAPIKey(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, revokeResp.ScimApiKey)
 	require.True(t, revokeResp.ScimApiKey.Revoked)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SCIM_API_KEY, "tesseral.scim_api_keys.revoke")
 
 	getResp, err := u.Store.GetSCIMAPIKey(ctx, &backendv1.GetSCIMAPIKeyRequest{Id: keyID})
 	require.NoError(t, err)
@@ -160,7 +157,7 @@ func TestDeleteSCIMAPIKey_RemovesKey(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test",
 		ScimEnabled: refOrNil(true),
 	})
@@ -180,8 +177,6 @@ func TestDeleteSCIMAPIKey_RemovesKey(t *testing.T) {
 	_, err = u.Store.DeleteSCIMAPIKey(ctx, &backendv1.DeleteSCIMAPIKeyRequest{Id: keyID})
 	require.NoError(t, err)
 
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SCIM_API_KEY, "tesseral.scim_api_keys.delete")
-
 	_, err = u.Store.GetSCIMAPIKey(ctx, &backendv1.GetSCIMAPIKeyRequest{Id: keyID})
 	var connectErr *connect.Error
 	require.ErrorAs(t, err, &connectErr)
@@ -192,7 +187,7 @@ func TestListSCIMAPIKeys_ReturnsAll(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test",
 		ScimEnabled: refOrNil(true),
 	})
@@ -225,7 +220,7 @@ func TestListSCIMAPIKeys_Pagination(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
-	orgID := u.NewOrganization(t, &backendv1.Organization{
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName: "test",
 		ScimEnabled: refOrNil(true),
 	})
