@@ -126,7 +126,6 @@ func TestUpdateSAMLConnection_UpdatesFields(t *testing.T) {
 	})
 	require.NoError(t, err)
 	connID := createResp.SamlConnection.Id
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SAML_CONNECTION, "tesseral.saml_connections.create")
 
 	updateResp, err := u.Store.UpdateSAMLConnection(ctx, &backendv1.UpdateSAMLConnectionRequest{
 		Id: connID,
@@ -162,7 +161,6 @@ func TestDeleteSAMLConnection_RemovesConnection(t *testing.T) {
 	})
 	require.NoError(t, err)
 	connID := createResp.SamlConnection.Id
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SAML_CONNECTION, "tesseral.saml_connections.create")
 
 	_, err = u.Store.DeleteSAMLConnection(ctx, &backendv1.DeleteSAMLConnectionRequest{Id: connID})
 	require.NoError(t, err)

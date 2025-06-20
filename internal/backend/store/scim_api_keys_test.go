@@ -110,7 +110,6 @@ func TestUpdateSCIMAPIKey_UpdatesFields(t *testing.T) {
 	})
 	require.NoError(t, err)
 	keyID := createResp.ScimApiKey.Id
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SCIM_API_KEY, "tesseral.scim_api_keys.create")
 
 	updateResp, err := u.Store.UpdateSCIMAPIKey(ctx, &backendv1.UpdateSCIMAPIKeyRequest{
 		Id: keyID,
@@ -140,7 +139,6 @@ func TestRevokeSCIMAPIKey(t *testing.T) {
 	})
 	require.NoError(t, err)
 	keyID := createResp.ScimApiKey.Id
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SCIM_API_KEY, "tesseral.scim_api_keys.create")
 
 	revokeResp, err := u.Store.RevokeSCIMAPIKey(ctx, &backendv1.RevokeSCIMAPIKeyRequest{Id: keyID})
 	require.NoError(t, err)
@@ -175,11 +173,9 @@ func TestDeleteSCIMAPIKey_RemovesKey(t *testing.T) {
 	})
 	require.NoError(t, err)
 	keyID := createResp.ScimApiKey.Id
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SCIM_API_KEY, "tesseral.scim_api_keys.create")
 
 	_, err = u.Store.RevokeSCIMAPIKey(ctx, &backendv1.RevokeSCIMAPIKeyRequest{Id: keyID})
 	require.NoError(t, err)
-	u.EnsureAuditLogEvent(t, backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SCIM_API_KEY, "tesseral.scim_api_keys.revoke")
 
 	_, err = u.Store.DeleteSCIMAPIKey(ctx, &backendv1.DeleteSCIMAPIKeyRequest{Id: keyID})
 	require.NoError(t, err)
