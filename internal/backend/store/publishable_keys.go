@@ -34,6 +34,7 @@ func (s *Store) ListPublishableKeys(ctx context.Context, req *backendv1.ListPubl
 	limit := 10
 	qPublishableKeys, err := q.ListPublishableKeys(ctx, queries.ListPublishableKeysParams{
 		ProjectID: authn.ProjectID(ctx),
+		ID:        startID,
 		Limit:     int32(limit + 1),
 	})
 	if err != nil {
@@ -47,7 +48,7 @@ func (s *Store) ListPublishableKeys(ctx context.Context, req *backendv1.ListPubl
 
 	var nextPageToken string
 	if len(publishableKeys) == limit+1 {
-		nextPageToken = s.pageEncoder.Marshal(publishableKeys[limit].Id)
+		nextPageToken = s.pageEncoder.Marshal(qPublishableKeys[limit].ID)
 		publishableKeys = publishableKeys[:limit]
 	}
 

@@ -2,12 +2,13 @@ package storetesting
 
 import (
 	"context"
+	"crypto/sha256"
 	"fmt"
 	"log"
 	"strings"
 	"testing"
+	"time"
 
-	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
@@ -17,11 +18,12 @@ import (
 type Environment struct {
 	DB  *pgxpool.Pool
 	KMS *testKms
-	S3  *s3.Client
+	S3  *testS3
 
-	DogfoodProjectID *uuid.UUID
-	DogfoodUserID    string
-	ConsoleDomain    string
+	DogfoodProjectID   *uuid.UUID
+	DogfoodUserID      string
+	ConsoleDomain      string
+	AuthAppsRootDomain string
 }
 
 // NewEnvironment initializes and returns test dependencies for testing store layers.
@@ -53,6 +55,7 @@ func (e *Environment) seed() {
 	e.DogfoodProjectID = &dogfoodProjectID
 	e.DogfoodUserID = idformat.User.Format(dogfoodUserID)
 	e.ConsoleDomain = "console.tesseral.example.com"
+	e.AuthAppsRootDomain = "tesseral.example.app"
 
 	const sql = `
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
@@ -87,11 +90,9 @@ INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
 }
 
 func (e *Environment) NewProject(t *testing.T) (string, string) {
-	const rootDomain = "tesseral.example.app"
-
 	projectID := uuid.New()
 	formattedProjectID := idformat.Project.Format(projectID)
-	projectVaultDomain := fmt.Sprintf("%s.%s", strings.ReplaceAll(formattedProjectID, "_", "-"), rootDomain)
+	projectVaultDomain := fmt.Sprintf("%s.%s", strings.ReplaceAll(formattedProjectID, "_", "-"), "example.com")
 
 	// Create the backing organization for the new project
 	organizationID := uuid.New()
@@ -109,8 +110,8 @@ INSERT INTO organizations (id, display_name, project_id, log_in_with_google, log
 
 	// Create the project with the new vault domain
 	_, err = e.DB.Exec(t.Context(), `
-INSERT INTO projects (id, organization_id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, vault_domain, email_send_from_domain, redirect_uri, cookie_domain)
-  VALUES ($1::uuid, $2::uuid, $3, true, true, true, true, true, true, true, $4, $4, $4, $4);
+INSERT INTO projects (id, organization_id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_github, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, vault_domain, email_send_from_domain, redirect_uri, cookie_domain, api_keys_enabled, api_key_secret_token_prefix, entitled_backend_api_keys, entitled_custom_vault_domains, audit_logs_enabled)
+  VALUES ($1::uuid, $2::uuid, $3, true, true, true, true, true, true, true, true, $4, $4, $4, $4, true, 'test_sk_', true, true, true);
 `,
 		projectID.String(),
 		organizationID.String(),
@@ -145,6 +146,23 @@ INSERT INTO project_trusted_domains (id, project_id, domain)
 		t.Fatalf("failed to create project trusted domains for test project: %v", err)
 	}
 
+	// Create the project session signing key
+	_, err = e.DB.Exec(t.Context(), `
+INSERT INTO session_signing_keys (id, project_id, public_key, private_key_cipher_text, expire_time) 
+  VALUES (
+    gen_random_uuid(), 
+    $1::uuid, 
+    decode('3059301306072a8648ce3d020106082a8648ce3d03010703420004a82072a20d2217055f0c5f9f9283e128d5bc26334b19024c93f6ad50619bbe83bc565a2fbdc05e02dc3f1452ff273d7ec2534e2cbe7fe395443d887b128dd7b8', 'hex'), 
+    decode('a1931242e0770f54e2e8365053ff4b72dc72faba0830cff2099655d78aa188f750b9b1557e70566f00449fed97a5b8a94a113e8049a6ea71436a08e135f35a7b86863f47f36e3e0b62dad8da491f28aba812a93e7a2a44913c6b2377c7ea4d89991eba682d9cfb17d5bcfa3f608e973dd61aa9910453e8d48058ea80ccbd0d5961de3fd25dcfe893dbdd84a43112d1533b4ebae65e35b0e8eca25b1af53eec97304899cb542ac850e59a6c5521ecbee5549329a451c8c948d82f1d6858a6d2680d987e72945ad5b4166c3529b70ce1106573874fb68847ed823567a9edfeac712d464ac5b339f80365be985ab69703d7100c65c872765b04a9ee575002edadef', 'hex'), 
+    (SELECT NOW() + INTERVAL '1 year')
+  );
+`,
+		projectID.String(),
+	)
+	if err != nil {
+		t.Fatalf("failed to create project session signing key for test project: %v", err)
+	}
+
 	userID := uuid.New()
 	formattedUserID := idformat.User.Format(userID)
 	userEmail := fmt.Sprintf("%s@%s", formattedUserID, projectVaultDomain)
@@ -175,8 +193,8 @@ func (e *Environment) NewOrganization(t *testing.T, projectID string, organizati
 
 	// Create the organization
 	_, err = e.DB.Exec(t.Context(), `
-INSERT INTO organizations (id, display_name, project_id, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, scim_enabled)
-  VALUES ($1::uuid, $2, $3::uuid, $4, $5, $6, $7, $8, $9, $10, $11);
+INSERT INTO organizations (id, display_name, project_id, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, scim_enabled, api_keys_enabled)
+  VALUES ($1::uuid, $2, $3::uuid, $4, $5, $6, $7, $8, $9, $10, $11, $12);
 `,
 		organizationID.String(),
 		organization.DisplayName,
@@ -189,6 +207,7 @@ INSERT INTO organizations (id, display_name, project_id, log_in_with_google, log
 		organization.GetLogInWithAuthenticatorApp(),
 		organization.GetLogInWithPasskey(),
 		organization.GetScimEnabled(),
+		organization.GetApiKeysEnabled(),
 	)
 	if err != nil {
 		t.Fatalf("failed to create organization: %v", err)
@@ -224,4 +243,33 @@ INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
 		t.Fatalf("failed to create user: %v", err)
 	}
 	return formattedUserID
+}
+
+func (e *Environment) NewSession(t *testing.T, userID string) (string, string) {
+	userUUID, err := idformat.User.Parse(userID)
+	if err != nil {
+		t.Fatalf("failed to parse user ID: %v", err)
+	}
+
+	sessionID := uuid.New()
+	formattedSessionID := idformat.Session.Format(sessionID)
+
+	// Create the session
+	refreshTokenID := uuid.New()
+	refreshTokenSha256 := sha256.Sum256(refreshTokenID[:])
+	refreshToken := idformat.SessionRefreshToken.Format(refreshTokenID)
+	_, err = e.DB.Exec(t.Context(), `
+INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, primary_auth_factor)
+  VALUES ($1::uuid, $2::uuid, $3, $4, $5);
+`,
+		sessionID.String(),
+		uuid.UUID(userUUID).String(),
+		time.Now().Add(24*time.Hour),
+		refreshTokenSha256[:],
+		"email",
+	)
+	if err != nil {
+		t.Fatalf("failed to create session: %v", err)
+	}
+	return formattedSessionID, refreshToken
 }

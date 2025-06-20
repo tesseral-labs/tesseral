@@ -35,6 +35,7 @@ func (s *Store) ListBackendAPIKeys(ctx context.Context, req *backendv1.ListBacke
 	limit := 10
 	qAPIKeys, err := q.ListBackendAPIKeys(ctx, queries.ListBackendAPIKeysParams{
 		ProjectID: authn.ProjectID(ctx),
+		ID:        startID,
 		Limit:     int32(limit + 1),
 	})
 	if err != nil {
@@ -48,7 +49,7 @@ func (s *Store) ListBackendAPIKeys(ctx context.Context, req *backendv1.ListBacke
 
 	var nextPageToken string
 	if len(backendAPIKeys) == limit+1 {
-		nextPageToken = s.pageEncoder.Marshal(backendAPIKeys[limit].Id)
+		nextPageToken = s.pageEncoder.Marshal(qAPIKeys[limit].ID)
 		backendAPIKeys = backendAPIKeys[:limit]
 	}
 

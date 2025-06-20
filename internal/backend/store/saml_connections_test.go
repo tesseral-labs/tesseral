@@ -15,7 +15,7 @@ func TestCreateSAMLConnection_SAMLEnabled(t *testing.T) {
 
 	ctx, u := newTestUtil(t)
 
-	organizationID := u.NewOrganization(t, &backendv1.Organization{
+	organizationID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:   "test",
 		LogInWithSaml: refOrNil(true),
 	})
@@ -43,7 +43,7 @@ func TestCreateSAMLConnection_SAMLDisabled(t *testing.T) {
 
 	ctx, u := newTestUtil(t)
 
-	organizationID := u.NewOrganization(t, &backendv1.Organization{
+	organizationID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:   "test",
 		LogInWithSaml: refOrNil(false), // SAML not enabled
 	})
@@ -65,7 +65,7 @@ func TestGetSAMLConnection_Exists(t *testing.T) {
 
 	ctx, u := newTestUtil(t)
 
-	organizationID := u.NewOrganization(t, &backendv1.Organization{
+	organizationID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:   "test",
 		LogInWithSaml: refOrNil(true),
 	})
@@ -112,7 +112,7 @@ func TestUpdateSAMLConnection_UpdatesFields(t *testing.T) {
 
 	ctx, u := newTestUtil(t)
 
-	organizationID := u.NewOrganization(t, &backendv1.Organization{
+	organizationID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:   "test",
 		LogInWithSaml: refOrNil(true),
 	})
@@ -146,7 +146,7 @@ func TestDeleteSAMLConnection_RemovesConnection(t *testing.T) {
 
 	ctx, u := newTestUtil(t)
 
-	organizationID := u.NewOrganization(t, &backendv1.Organization{
+	organizationID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:   "test",
 		LogInWithSaml: refOrNil(true),
 	})
@@ -209,7 +209,7 @@ func TestCreateSAMLConnection_InvalidRedirectURL(t *testing.T) {
 
 	ctx, u := newTestUtil(t)
 
-	organizationID := u.NewOrganization(t, &backendv1.Organization{
+	organizationID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:   "test",
 		LogInWithSaml: refOrNil(true),
 	})
@@ -229,12 +229,11 @@ func TestListSAMLConnections_ReturnsAllForOrg(t *testing.T) {
 	t.Parallel()
 	ctx, u := newTestUtil(t)
 
-	organizationID := u.NewOrganization(t, &backendv1.Organization{
+	organizationID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:   "test",
 		LogInWithSaml: refOrNil(true),
 	})
 
-	// Create multiple SAML connections
 	var ids []string
 	for range 3 {
 		resp, err := u.Store.CreateSAMLConnection(ctx, &backendv1.CreateSAMLConnectionRequest{
@@ -267,12 +266,11 @@ func TestListSAMLConnections_Pagination(t *testing.T) {
 	t.Parallel()
 	ctx, u := newTestUtil(t)
 
-	organizationID := u.NewOrganization(t, &backendv1.Organization{
+	organizationID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:   "test",
 		LogInWithSaml: refOrNil(true),
 	})
 
-	// Create 15 SAML connections (page size is 10)
 	var createdIDs []string
 	for range 15 {
 		resp, err := u.Store.CreateSAMLConnection(ctx, &backendv1.CreateSAMLConnectionRequest{
@@ -286,7 +284,6 @@ func TestListSAMLConnections_Pagination(t *testing.T) {
 		createdIDs = append(createdIDs, resp.SamlConnection.Id)
 	}
 
-	// First page
 	resp1, err := u.Store.ListSAMLConnections(ctx, &backendv1.ListSAMLConnectionsRequest{
 		OrganizationId: organizationID,
 	})
@@ -295,7 +292,6 @@ func TestListSAMLConnections_Pagination(t *testing.T) {
 	require.Len(t, resp1.SamlConnections, 10)
 	require.NotEmpty(t, resp1.NextPageToken)
 
-	// Second page
 	resp2, err := u.Store.ListSAMLConnections(ctx, &backendv1.ListSAMLConnectionsRequest{
 		OrganizationId: organizationID,
 		PageToken:      resp1.NextPageToken,

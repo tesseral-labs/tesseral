@@ -6,7 +6,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
-	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
+	commonstore "github.com/tesseral-labs/tesseral/internal/common/store"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/storetesting"
 )
@@ -25,19 +25,32 @@ func TestMain(m *testing.M) {
 
 type testUtil struct {
 	Store       *Store
+	Common      *commonstore.Store
 	Environment *storetesting.Environment
 	ProjectID   string
 }
 
 func newTestUtil(t *testing.T) (context.Context, *testUtil) {
 	store := New(NewStoreParams{
-		DB:                        environment.DB,
-		S3:                        environment.S3,
-		KMS:                       environment.KMS.Client,
-		SessionSigningKeyKmsKeyID: environment.KMS.SessionSigningKeyID,
-		DogfoodProjectID:          environment.DogfoodProjectID,
-		ConsoleDomain:             environment.ConsoleDomain,
+		DB:                                  environment.DB,
+		S3:                                  environment.S3.Client,
+		S3UserContentBucketName:             environment.S3.UserContentBucketName,
+		KMS:                                 environment.KMS.Client,
+		SessionSigningKeyKmsKeyID:           environment.KMS.SessionSigningKeyID,
+		GoogleOAuthClientSecretsKMSKeyID:    environment.KMS.GoogleOAuthClientSecretsKMSKeyID,
+		MicrosoftOAuthClientSecretsKMSKeyID: environment.KMS.MicrosoftOAuthClientSecretsKMSKeyID,
+		GithubOAuthClientSecretsKMSKeyID:    environment.KMS.GithubOAuthClientSecretsKMSKeyID,
+		DogfoodProjectID:                    environment.DogfoodProjectID,
+		ConsoleDomain:                       environment.ConsoleDomain,
+		AuthAppsRootDomain:                  environment.AuthAppsRootDomain,
 	})
+	commonStore := commonstore.New(commonstore.NewStoreParams{
+		AppAuthRootDomain:         environment.ConsoleDomain,
+		DB:                        environment.DB,
+		KMS:                       environment.KMS.Client,
+		SessionSigningKeyKMSKeyID: environment.KMS.SessionSigningKeyID,
+	})
+
 	projectID, projectUserID := environment.NewProject(t)
 	ctx := authn.NewDogfoodSessionContext(t.Context(), authn.DogfoodSessionContextData{
 		ProjectID: projectID,
@@ -47,11 +60,8 @@ func newTestUtil(t *testing.T) (context.Context, *testUtil) {
 
 	return ctx, &testUtil{
 		Store:       store,
+		Common:      commonStore,
 		Environment: environment,
 		ProjectID:   projectID,
 	}
-}
-
-func (u *testUtil) NewOrganization(t *testing.T, organization *backendv1.Organization) string {
-	return u.Environment.NewOrganization(t, u.ProjectID, organization)
 }
