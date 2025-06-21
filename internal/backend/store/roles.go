@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
@@ -132,7 +133,7 @@ func (s *Store) GetRole(ctx context.Context, req *backendv1.GetRoleRequest) (*ba
 }
 
 func (s *Store) CreateRole(ctx context.Context, req *backendv1.CreateRoleRequest) (*backendv1.CreateRoleResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -207,11 +208,15 @@ func (s *Store) CreateRole(ctx context.Context, req *backendv1.CreateRoleRequest
 		return nil, fmt.Errorf("batch get role actions by role id: %w", err)
 	}
 
-	role := parseRole(qRole, qRoleActions, qActions)
+	auditRole, err := s.auditlogStore.GetRole(ctx, tx, qRole.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit role: %w", err)
+	}
+
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.roles.create",
-		EventDetails: &backendv1.RoleCreated{
-			Role: role,
+		EventDetails: &auditlogv1.CreateRole{
+			Role: auditRole,
 		},
 		OrganizationID: roleOrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeRole,
@@ -224,11 +229,11 @@ func (s *Store) CreateRole(ctx context.Context, req *backendv1.CreateRoleRequest
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &backendv1.CreateRoleResponse{Role: role}, nil
+	return &backendv1.CreateRoleResponse{Role: parseRole(qRole, qRoleActions, qActions)}, nil
 }
 
 func (s *Store) UpdateRole(ctx context.Context, req *backendv1.UpdateRoleRequest) (*backendv1.UpdateRoleResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -250,9 +255,9 @@ func (s *Store) UpdateRole(ctx context.Context, req *backendv1.UpdateRoleRequest
 		return nil, fmt.Errorf("get role: %w", err)
 	}
 
-	qPreviousRoleActions, err := q.BatchGetRoleActionsByRoleID(ctx, []uuid.UUID{qRole.ID})
+	auditPreviousRole, err := s.auditlogStore.GetRole(ctx, tx, qRole.ID)
 	if err != nil {
-		return nil, fmt.Errorf("batch get role actions by role id: %w", err)
+		return nil, fmt.Errorf("get audit role: %w", err)
 	}
 
 	qActions, err := q.GetActions(ctx, authn.ProjectID(ctx))
@@ -313,17 +318,21 @@ func (s *Store) UpdateRole(ctx context.Context, req *backendv1.UpdateRoleRequest
 		return nil, fmt.Errorf("update role: %w", err)
 	}
 
+	auditRole, err := s.auditlogStore.GetRole(ctx, tx, qUpdatedRole.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit role: %w", err)
+	}
+
 	qRoleActions, err := q.BatchGetRoleActionsByRoleID(ctx, []uuid.UUID{qUpdatedRole.ID})
 	if err != nil {
 		return nil, fmt.Errorf("batch get role actions by role id: %w", err)
 	}
 
-	role := parseRole(qUpdatedRole, qRoleActions, qActions)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.roles.update",
-		EventDetails: &backendv1.RoleUpdated{
-			Role:         role,
-			PreviousRole: parseRole(qRole, qPreviousRoleActions, qActions),
+		EventDetails: &auditlogv1.UpdateRole{
+			Role:         auditRole,
+			PreviousRole: auditPreviousRole,
 		},
 		OrganizationID: qUpdatedRole.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeRole,
@@ -336,11 +345,11 @@ func (s *Store) UpdateRole(ctx context.Context, req *backendv1.UpdateRoleRequest
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &backendv1.UpdateRoleResponse{Role: role}, nil
+	return &backendv1.UpdateRoleResponse{Role: parseRole(qUpdatedRole, qRoleActions, qActions)}, nil
 }
 
 func (s *Store) DeleteRole(ctx context.Context, req *backendv1.DeleteRoleRequest) (*backendv1.DeleteRoleResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -362,25 +371,19 @@ func (s *Store) DeleteRole(ctx context.Context, req *backendv1.DeleteRoleRequest
 		return nil, fmt.Errorf("get role: %w", err)
 	}
 
-	qRoleActions, err := q.BatchGetRoleActionsByRoleID(ctx, []uuid.UUID{qRole.ID})
+	auditRole, err := s.auditlogStore.GetRole(ctx, tx, qRole.ID)
 	if err != nil {
-		return nil, fmt.Errorf("batch get role actions by role id: %w", err)
+		return nil, fmt.Errorf("get audit role: %w", err)
 	}
 
-	qActions, err := q.GetActions(ctx, authn.ProjectID(ctx))
-	if err != nil {
-		return nil, fmt.Errorf("get actions: %w", err)
-	}
-
-	err = q.DeleteRole(ctx, roleID)
-	if err != nil {
+	if err := q.DeleteRole(ctx, roleID); err != nil {
 		return nil, fmt.Errorf("delete role: %w", err)
 	}
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.roles.delete",
-		EventDetails: &backendv1.RoleDeleted{
-			Role: parseRole(qRole, qRoleActions, qActions),
+		EventDetails: &auditlogv1.DeleteRole{
+			Role: auditRole,
 		},
 		OrganizationID: qRole.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeRole,

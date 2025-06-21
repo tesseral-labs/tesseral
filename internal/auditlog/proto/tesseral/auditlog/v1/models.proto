@@ -1,0 +1,109 @@
+syntax = "proto3";
+
+package tesseral.auditlog.v1;
+
+import "google/protobuf/timestamp.proto";
+
+message APIKeyRoleAssignment {
+  string id = 1;
+  string api_key_id = 2;
+  string role_id = 3;
+}
+
+message Organization {
+  string id = 1;
+  string display_name = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  optional bool log_in_with_password = 5;
+  optional bool log_in_with_google = 6;
+  optional bool log_in_with_microsoft = 7;
+  optional bool log_in_with_saml = 8;
+  optional bool scim_enabled = 9;
+  optional bool log_in_with_authenticator_app = 10;
+  optional bool log_in_with_passkey = 11;
+  optional bool require_mfa = 12;
+  optional bool log_in_with_email = 13;
+  optional bool custom_roles_enabled = 14;
+  optional bool api_keys_enabled = 15;
+  optional bool log_in_with_github = 16;
+}
+
+message Passkey {
+  string id = 1;
+  string user_id = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  bytes credential_id = 5;
+  string public_key_pkix = 6;
+  string aaguid = 7;
+  optional bool disabled = 8;
+  string rp_id = 9;
+}
+
+message SAMLConnection {
+  string id = 1;
+  google.protobuf.Timestamp create_time = 2;
+  google.protobuf.Timestamp update_time = 3;
+  optional bool primary = 4;
+  string sp_acs_url = 5;
+  string sp_entity_id = 6;
+  string idp_redirect_url = 7;
+  string idp_x509_certificate = 8;
+  string idp_entity_id = 9;
+}
+
+message SCIMAPIKey {
+  string id = 1;
+  google.protobuf.Timestamp create_time = 2;
+  google.protobuf.Timestamp update_time = 3;
+  string display_name = 4;
+  bool revoked = 5;
+}
+
+message Role {
+  string id = 1;
+  google.protobuf.Timestamp create_time = 2;
+  google.protobuf.Timestamp update_time = 3;
+  string display_name = 4;
+  string description = 5;
+  repeated string actions = 6;
+}
+
+message UserRoleAssignment {
+  string id = 1;
+  string user_id = 2;
+  string role_id = 3;
+}
+
+message UserInvite {
+  string id = 1;
+  google.protobuf.Timestamp create_time = 2;
+  google.protobuf.Timestamp update_time = 3;
+  string email = 4;
+  bool owner = 5;
+}
+
+message APIKey {
+  string id = 1;
+  google.protobuf.Timestamp create_time = 2;
+  google.protobuf.Timestamp update_time = 3;
+  optional google.protobuf.Timestamp expire_time = 4;
+  string display_name = 5;
+  string secret_token_suffix = 6;
+  bool revoked = 7;
+}
+
+message User {
+  string id = 1;
+  string email = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  optional bool owner = 5;
+  optional string google_user_id = 6;
+  optional string microsoft_user_id = 7;
+  optional string github_user_id = 8;
+  bool has_authenticator_app = 9;
+  optional string display_name = 10;
+  optional string profile_picture_url = 11;
+}

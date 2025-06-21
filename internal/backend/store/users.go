@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/svix/svix-webhooks/go/models"
+	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
@@ -100,7 +101,7 @@ func (s *Store) GetUser(ctx context.Context, req *backendv1.GetUserRequest) (*ba
 }
 
 func (s *Store) CreateUser(ctx context.Context, req *backendv1.CreateUserRequest) (*backendv1.CreateUserResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -134,11 +135,16 @@ func (s *Store) CreateUser(ctx context.Context, req *backendv1.CreateUserRequest
 		return nil, fmt.Errorf("create user: %w", err)
 	}
 
+	auditUser, err := s.auditlogStore.GetUser(ctx, tx, qUser.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit user: %w", err)
+	}
+
 	user := parseUser(qUser)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.users.create",
-		EventDetails: &backendv1.UserCreated{
-			User: user,
+		EventDetails: &auditlogv1.CreateUser{
+			User: auditUser,
 		},
 		OrganizationID: &qUser.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeUser,
@@ -160,7 +166,7 @@ func (s *Store) CreateUser(ctx context.Context, req *backendv1.CreateUserRequest
 }
 
 func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest) (*backendv1.UpdateUserResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -180,6 +186,11 @@ func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest
 			return nil, apierror.NewNotFoundError("user not found", fmt.Errorf("get user: %w", err))
 		}
 		return nil, fmt.Errorf("get user: %w", err)
+	}
+
+	auditPreviousUser, err := s.auditlogStore.GetUser(ctx, tx, qUser.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit previous user: %w", err)
 	}
 
 	var updates queries.UpdateUserParams
@@ -227,13 +238,17 @@ func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest
 		return nil, fmt.Errorf("update user: %w", err)
 	}
 
+	auditUser, err := s.auditlogStore.GetUser(ctx, tx, qUpdatedUser.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit user: %w", err)
+	}
+
 	user := parseUser(qUpdatedUser)
-	previousUser := parseUser(qUser)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.users.update",
-		EventDetails: &backendv1.UserUpdated{
-			User:         user,
-			PreviousUser: previousUser,
+		EventDetails: &auditlogv1.UpdateUser{
+			User:         auditUser,
+			PreviousUser: auditPreviousUser,
 		},
 		OrganizationID: &qUpdatedUser.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeUser,
@@ -255,7 +270,7 @@ func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest
 }
 
 func (s *Store) DeleteUser(ctx context.Context, req *backendv1.DeleteUserRequest) (*backendv1.DeleteUserResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -277,15 +292,19 @@ func (s *Store) DeleteUser(ctx context.Context, req *backendv1.DeleteUserRequest
 		return nil, fmt.Errorf("get user: %w", err)
 	}
 
-	err = q.DeleteUser(ctx, userID)
+	auditUser, err := s.auditlogStore.GetUser(ctx, tx, qUser.ID)
 	if err != nil {
+		return nil, fmt.Errorf("get audit user: %w", err)
+	}
+
+	if err = q.DeleteUser(ctx, userID); err != nil {
 		return nil, fmt.Errorf("delete user: %w", err)
 	}
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.users.delete",
-		EventDetails: &backendv1.UserDeleted{
-			User: parseUser(qUser),
+		EventDetails: &auditlogv1.DeleteUser{
+			User: auditUser,
 		},
 		OrganizationID: &qUser.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeUser,

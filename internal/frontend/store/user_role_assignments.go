@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
@@ -171,7 +172,7 @@ func (s *Store) CreateUserRoleAssignment(ctx context.Context, req *frontendv1.Cr
 		return nil, fmt.Errorf("validate is owner: %w", err)
 	}
 
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -226,11 +227,15 @@ func (s *Store) CreateUserRoleAssignment(ctx context.Context, req *frontendv1.Cr
 		return nil, fmt.Errorf("get user role assignment by user and role: %w", err)
 	}
 
-	userRoleAssignment := parseUserRoleAssignment(qUserRoleAssignment)
+	auditUserRoleAssignment, err := s.auditlogStore.GetUserRoleAssignment(ctx, tx, qUserRoleAssignment.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit user role assignment: %w", err)
+	}
+
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.users.assign_role",
-		EventDetails: &frontendv1.UserRoleAssignmentCreated{
-			UserRoleAssignment: userRoleAssignment,
+		EventDetails: &auditlogv1.AssignUserRole{
+			UserRoleAssignment: auditUserRoleAssignment,
 		},
 		ResourceType: queries.AuditLogEventResourceTypeUser,
 		ResourceID:   &qUserRoleAssignment.UserID,
@@ -242,7 +247,7 @@ func (s *Store) CreateUserRoleAssignment(ctx context.Context, req *frontendv1.Cr
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &frontendv1.CreateUserRoleAssignmentResponse{UserRoleAssignment: userRoleAssignment}, nil
+	return &frontendv1.CreateUserRoleAssignmentResponse{UserRoleAssignment: parseUserRoleAssignment(qUserRoleAssignment)}, nil
 }
 
 func (s *Store) DeleteUserRoleAssignment(ctx context.Context, req *frontendv1.DeleteUserRoleAssignmentRequest) (*frontendv1.DeleteUserRoleAssignmentResponse, error) {
@@ -250,7 +255,7 @@ func (s *Store) DeleteUserRoleAssignment(ctx context.Context, req *frontendv1.De
 		return nil, fmt.Errorf("validate is owner: %w", err)
 	}
 
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -274,14 +279,19 @@ func (s *Store) DeleteUserRoleAssignment(ctx context.Context, req *frontendv1.De
 		return nil, fmt.Errorf("get user role assignment: %w", err)
 	}
 
+	auditUserRoleAssignment, err := s.auditlogStore.GetUserRoleAssignment(ctx, tx, qUserRoleAssignment.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit user role assignment: %w", err)
+	}
+
 	if err := q.DeleteUserRoleAssignment(ctx, id); err != nil {
 		return nil, fmt.Errorf("delete user role assignment: %w", err)
 	}
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.users.unassign_role",
-		EventDetails: &frontendv1.UserRoleAssignmentDeleted{
-			UserRoleAssignment: parseUserRoleAssignment(qUserRoleAssignment),
+		EventDetails: &auditlogv1.UnassignUserRole{
+			UserRoleAssignment: auditUserRoleAssignment,
 		},
 		ResourceType: queries.AuditLogEventResourceTypeUser,
 		ResourceID:   &qUserRoleAssignment.UserID,

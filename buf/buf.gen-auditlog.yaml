@@ -1,0 +1,24 @@
+version: v2
+managed:
+  enabled: true
+  disable:
+    - file_option: go_package
+      module: buf.build/googleapis/googleapis
+  override:
+    - file_option: go_package_prefix
+      value: "github.com/tesseral-labs/tesseral/internal/auditlog/gen"
+plugins:
+  - remote: buf.build/protocolbuffers/go:v1.36.5
+    out: internal/auditlog/gen
+    opt: paths=source_relative
+  - remote: buf.build/grpc/go:v1.5.1
+    out: internal/auditlog/gen
+    opt: paths=source_relative
+  - remote: buf.build/grpc-ecosystem/gateway:v2.26.1
+    out: internal/auditlog/gen
+    opt: paths=source_relative
+  - remote: buf.build/connectrpc/go:v1.18.1
+    out: internal/auditlog/gen
+    opt: paths=source_relative
+inputs:
+  - directory: internal/auditlog/proto

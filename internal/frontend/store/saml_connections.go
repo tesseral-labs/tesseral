@@ -10,6 +10,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
@@ -99,7 +100,7 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *frontendv1.Create
 		return nil, fmt.Errorf("validate is owner: %w", err)
 	}
 
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -171,10 +172,16 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *frontendv1.Create
 	}
 
 	samlConnection := parseSAMLConnection(qProject, qSAMLConnection)
+
+	auditSAMLConnection, err := s.auditlogStore.GetSAMLConnection(ctx, tx, qSAMLConnection.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit saml connection: %w", err)
+	}
+
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.saml_connections.create",
-		EventDetails: &frontendv1.SAMLConnectionCreated{
-			SamlConnection: samlConnection,
+		EventDetails: &auditlogv1.CreateSAMLConnection{
+			SamlConnection: auditSAMLConnection,
 		},
 		ResourceType: queries.AuditLogEventResourceTypeSamlConnection,
 		ResourceID:   &qSAMLConnection.ID,
@@ -194,7 +201,7 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *frontendv1.Update
 		return nil, fmt.Errorf("validate is owner: %w", err)
 	}
 
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -280,12 +287,21 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *frontendv1.Update
 		}
 	}
 
-	samlConnection := parseSAMLConnection(qProject, qUpdatedSAMLConnection)
+	auditPreviousSAMLConnection, err := s.auditlogStore.GetSAMLConnection(ctx, tx, qSAMLConnection.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit previous saml connection: %w", err)
+	}
+
+	auditSAMLConnection, err := s.auditlogStore.GetSAMLConnection(ctx, tx, qUpdatedSAMLConnection.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit saml connection: %w", err)
+	}
+
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.saml_connections.update",
-		EventDetails: &frontendv1.SAMLConnectionUpdated{
-			SamlConnection:         samlConnection,
-			PreviousSamlConnection: parseSAMLConnection(qProject, qSAMLConnection),
+		EventDetails: &auditlogv1.UpdateSAMLConnection{
+			SamlConnection:         auditSAMLConnection,
+			PreviousSamlConnection: auditPreviousSAMLConnection,
 		},
 		ResourceType: queries.AuditLogEventResourceTypeSamlConnection,
 		ResourceID:   &qSAMLConnection.ID,
@@ -297,7 +313,7 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *frontendv1.Update
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &frontendv1.UpdateSAMLConnectionResponse{SamlConnection: samlConnection}, nil
+	return &frontendv1.UpdateSAMLConnectionResponse{SamlConnection: parseSAMLConnection(qProject, qUpdatedSAMLConnection)}, nil
 }
 
 func (s *Store) DeleteSAMLConnection(ctx context.Context, req *frontendv1.DeleteSAMLConnectionRequest) (*frontendv1.DeleteSAMLConnectionResponse, error) {
@@ -305,16 +321,11 @@ func (s *Store) DeleteSAMLConnection(ctx context.Context, req *frontendv1.Delete
 		return nil, fmt.Errorf("validate is owner: %w", err)
 	}
 
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer rollback()
-
-	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
-	if err != nil {
-		return nil, fmt.Errorf("get project by id: %w", err)
-	}
 
 	samlConnectionID, err := idformat.SAMLConnection.Parse(req.Id)
 	if err != nil {
@@ -334,14 +345,19 @@ func (s *Store) DeleteSAMLConnection(ctx context.Context, req *frontendv1.Delete
 		return nil, fmt.Errorf("get saml connection: %w", err)
 	}
 
+	auditSAMLConnection, err := s.auditlogStore.GetSAMLConnection(ctx, tx, qSAMLConnection.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit saml connection: %w", err)
+	}
+
 	if err := q.DeleteSAMLConnection(ctx, samlConnectionID); err != nil {
 		return nil, fmt.Errorf("delete saml connection: %w", err)
 	}
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.saml_connections.delete",
-		EventDetails: &frontendv1.SAMLConnectionDeleted{
-			SamlConnection: parseSAMLConnection(qProject, qSAMLConnection),
+		EventDetails: &auditlogv1.DeleteSAMLConnection{
+			SamlConnection: auditSAMLConnection,
 		},
 		ResourceType: queries.AuditLogEventResourceTypeSamlConnection,
 		ResourceID:   &qSAMLConnection.ID,

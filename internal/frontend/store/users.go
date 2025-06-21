@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/svix/svix-webhooks/go/models"
+	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/bcryptcost"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
@@ -122,7 +123,7 @@ func (s *Store) GetUser(ctx context.Context, req *frontendv1.GetUserRequest) (*f
 }
 
 func (s *Store) UpdateUser(ctx context.Context, req *frontendv1.UpdateUserRequest) (*frontendv1.UpdateUserResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -151,6 +152,11 @@ func (s *Store) UpdateUser(ctx context.Context, req *frontendv1.UpdateUserReques
 		return nil, fmt.Errorf("get user by id: %w", err)
 	}
 
+	auditPreviousUser, err := s.auditlogStore.GetUser(ctx, tx, qUser.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit previous user: %w", err)
+	}
+
 	updates := queries.UpdateUserParams{
 		ID:      userID,
 		IsOwner: qUser.IsOwner,
@@ -166,12 +172,16 @@ func (s *Store) UpdateUser(ctx context.Context, req *frontendv1.UpdateUserReques
 		return nil, fmt.Errorf("update user: %w", err)
 	}
 
-	user := parseUser(qUpdatedUser)
+	auditUser, err := s.auditlogStore.GetUser(ctx, tx, qUpdatedUser.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit user: %w", err)
+	}
+
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.users.update",
-		EventDetails: &frontendv1.UserUpdated{
-			User:         user,
-			PreviousUser: parseUser(qUser),
+		EventDetails: &auditlogv1.UpdateUser{
+			User:         auditUser,
+			PreviousUser: auditPreviousUser,
 		},
 		ResourceType: queries.AuditLogEventResourceTypeUser,
 		ResourceID:   &qUser.ID,
@@ -189,7 +199,7 @@ func (s *Store) UpdateUser(ctx context.Context, req *frontendv1.UpdateUserReques
 		return nil, fmt.Errorf("send sync user event: %w", err)
 	}
 
-	return &frontendv1.UpdateUserResponse{User: user}, nil
+	return &frontendv1.UpdateUserResponse{User: parseUser(qUpdatedUser)}, nil
 }
 
 func (s *Store) DeleteUser(ctx context.Context, req *frontendv1.DeleteUserRequest) (*frontendv1.DeleteUserResponse, error) {
@@ -197,7 +207,7 @@ func (s *Store) DeleteUser(ctx context.Context, req *frontendv1.DeleteUserReques
 		return nil, fmt.Errorf("validate is owner: %w", err)
 	}
 
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -224,14 +234,19 @@ func (s *Store) DeleteUser(ctx context.Context, req *frontendv1.DeleteUserReques
 		return nil, fmt.Errorf("get user: %w", err)
 	}
 
+	auditUser, err := s.auditlogStore.GetUser(ctx, tx, qUser.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit user: %w", err)
+	}
+
 	if err := q.DeleteUser(ctx, userID); err != nil {
 		return nil, fmt.Errorf("delete user: %w", err)
 	}
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.users.delete",
-		EventDetails: &frontendv1.UserDeleted{
-			User: parseUser(qUser),
+		EventDetails: &auditlogv1.DeleteUser{
+			User: auditUser,
 		},
 		ResourceType: queries.AuditLogEventResourceTypeUser,
 		ResourceID:   &qUser.ID,

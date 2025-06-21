@@ -13,6 +13,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/sesv2/types"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
@@ -96,7 +97,7 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *frontendv1.CreateUser
 		return nil, fmt.Errorf("validate is owner: %w", err)
 	}
 
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -155,11 +156,15 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *frontendv1.CreateUser
 		return nil, apierror.NewFailedPreconditionError("email daily quota exceeded", fmt.Errorf("email daily quota exceeded"))
 	}
 
-	userInvite := parseUserInvite(qUserInvite)
+	auditUserInvite, err := s.auditlogStore.GetUserInvite(ctx, tx, qUserInvite.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit log user invite: %w", err)
+	}
+
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.user_invites.create",
-		EventDetails: &frontendv1.UserInviteCreated{
-			UserInvite: userInvite,
+		EventDetails: &auditlogv1.CreateUserInvite{
+			UserInvite: auditUserInvite,
 		},
 		ResourceType: queries.AuditLogEventResourceTypeUserInvite,
 		ResourceID:   &qUserInvite.ID,
@@ -177,7 +182,7 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *frontendv1.CreateUser
 		}
 	}
 
-	return &frontendv1.CreateUserInviteResponse{UserInvite: userInvite}, nil
+	return &frontendv1.CreateUserInviteResponse{UserInvite: parseUserInvite(qUserInvite)}, nil
 }
 
 func (s *Store) DeleteUserInvite(ctx context.Context, req *frontendv1.DeleteUserInviteRequest) (*frontendv1.DeleteUserInviteResponse, error) {
@@ -185,7 +190,7 @@ func (s *Store) DeleteUserInvite(ctx context.Context, req *frontendv1.DeleteUser
 		return nil, fmt.Errorf("validate is owner: %w", err)
 	}
 
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -208,14 +213,19 @@ func (s *Store) DeleteUserInvite(ctx context.Context, req *frontendv1.DeleteUser
 		return nil, fmt.Errorf("get user invite: %w", err)
 	}
 
+	auditUserInvite, err := s.auditlogStore.GetUserInvite(ctx, tx, userInviteID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit log user invite: %w", err)
+	}
+
 	if err := q.DeleteUserInvite(ctx, userInviteID); err != nil {
 		return nil, fmt.Errorf("delete user invite: %w", err)
 	}
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.user_invites.delete",
-		EventDetails: &frontendv1.UserInviteDeleted{
-			UserInvite: parseUserInvite(qUserInvite),
+		EventDetails: &auditlogv1.DeleteUserInvite{
+			UserInvite: auditUserInvite,
 		},
 		ResourceType: queries.AuditLogEventResourceTypeUserInvite,
 		ResourceID:   &qUserInvite.ID,

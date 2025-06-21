@@ -8,6 +8,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
@@ -95,7 +96,7 @@ func (s *Store) GetPasskey(ctx context.Context, req *backendv1.GetPasskeyRequest
 }
 
 func (s *Store) UpdatePasskey(ctx context.Context, req *backendv1.UpdatePasskeyRequest) (*backendv1.UpdatePasskeyResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -129,6 +130,11 @@ func (s *Store) UpdatePasskey(ctx context.Context, req *backendv1.UpdatePasskeyR
 		return nil, fmt.Errorf("get user: %w", err)
 	}
 
+	auditPreviousPasskey, err := s.auditlogStore.GetPasskey(ctx, tx, qPasskey.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit passkey: %w", err)
+	}
+
 	var updates queries.UpdatePasskeyParams
 	updates.ID = qPasskey.ID
 
@@ -141,12 +147,17 @@ func (s *Store) UpdatePasskey(ctx context.Context, req *backendv1.UpdatePasskeyR
 		return nil, fmt.Errorf("update passkey: %w", err)
 	}
 
+	auditPasskey, err := s.auditlogStore.GetPasskey(ctx, tx, qUpdatedPasskey.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit passkey: %w", err)
+	}
+
 	passkey := parsePasskey(qUpdatedPasskey)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.passkeys.update",
-		EventDetails: &backendv1.PasskeyUpdated{
-			Passkey:         passkey,
-			PreviousPasskey: parsePasskey(qPasskey),
+		EventDetails: &auditlogv1.UpdatePasskey{
+			Passkey:         auditPasskey,
+			PreviousPasskey: auditPreviousPasskey,
 		},
 		OrganizationID: &qUser.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypePasskey,
@@ -163,7 +174,7 @@ func (s *Store) UpdatePasskey(ctx context.Context, req *backendv1.UpdatePasskeyR
 }
 
 func (s *Store) DeletePasskey(ctx context.Context, req *backendv1.DeletePasskeyRequest) (*backendv1.DeletePasskeyResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -197,14 +208,19 @@ func (s *Store) DeletePasskey(ctx context.Context, req *backendv1.DeletePasskeyR
 		return nil, fmt.Errorf("get user: %w", err)
 	}
 
+	auditPasskey, err := s.auditlogStore.GetPasskey(ctx, tx, qPasskey.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit passkey: %w", err)
+	}
+
 	if err := q.DeletePasskey(ctx, passkeyID); err != nil {
 		return nil, fmt.Errorf("delete passkey: %w", err)
 	}
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.passkeys.delete",
-		EventDetails: &backendv1.PasskeyDeleted{
-			Passkey: parsePasskey(qPasskey),
+		EventDetails: &auditlogv1.DeletePasskey{
+			Passkey: auditPasskey,
 		},
 		OrganizationID: &qUser.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypePasskey,

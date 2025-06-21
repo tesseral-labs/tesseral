@@ -8,6 +8,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/svix/svix-webhooks/go/models"
+	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
@@ -41,7 +42,7 @@ func (s *Store) GetOrganization(ctx context.Context, req *frontendv1.GetOrganiza
 }
 
 func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOrganizationRequest) (*frontendv1.UpdateOrganizationResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -63,6 +64,11 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 		}
 
 		return nil, fmt.Errorf("get organization by id: %w", err)
+	}
+
+	auditPreviousOrganization, err := s.auditlogStore.GetOrganization(ctx, tx, qOrg.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit organization: %w", err)
 	}
 
 	updates := queries.UpdateOrganizationParams{
@@ -153,12 +159,16 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 		return nil, fmt.Errorf("update organization: %w", fmt.Errorf("update organization: %w", err))
 	}
 
-	organization := parseOrganization(qProject, qUpdatedOrg)
+	auditOrganization, err := s.auditlogStore.GetOrganization(ctx, tx, qUpdatedOrg.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit organization: %w", err)
+	}
+
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.organizations.update",
-		EventDetails: &frontendv1.OrganizationUpdated{
-			Organization:         organization,
-			PreviousOrganization: parseOrganization(qProject, qOrg),
+		EventDetails: &auditlogv1.UpdateOrganization{
+			Organization:         auditOrganization,
+			PreviousOrganization: auditPreviousOrganization,
 		},
 		ResourceType: queries.AuditLogEventResourceTypeOrganization,
 		ResourceID:   &qOrg.ID,
@@ -177,7 +187,7 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 	}
 
 	return &frontendv1.UpdateOrganizationResponse{
-		Organization: organization,
+		Organization: parseOrganization(qProject, qUpdatedOrg),
 	}, nil
 }
 

@@ -14,6 +14,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	stripeclient "github.com/stripe/stripe-go/v82/client"
 	svix "github.com/svix/svix-webhooks/go"
+	auditlogstore "github.com/tesseral-labs/tesseral/internal/auditlog/store"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/cloudflaredoh"
@@ -48,6 +49,7 @@ type Store struct {
 	stripe                                *stripeclient.API
 	stripePriceIDGrowthTier               string
 	svixClient                            *svix.Svix
+	auditlogStore                         *auditlogstore.Store
 }
 
 type NewStoreParams struct {
@@ -74,6 +76,7 @@ type NewStoreParams struct {
 	Stripe                                *stripeclient.API
 	StripePriceIDGrowthTier               string
 	SvixClient                            *svix.Svix
+	AuditlogStore                         *auditlogstore.Store
 }
 
 func New(p NewStoreParams) *Store {
@@ -103,6 +106,7 @@ func New(p NewStoreParams) *Store {
 		stripe:                                p.Stripe,
 		stripePriceIDGrowthTier:               p.StripePriceIDGrowthTier,
 		svixClient:                            p.SvixClient,
+		auditlogStore:                         p.AuditlogStore,
 	}
 
 	return store
