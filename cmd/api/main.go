@@ -24,7 +24,6 @@ import (
 	stripeclient "github.com/stripe/stripe-go/v82/client"
 	svix "github.com/svix/svix-webhooks/go"
 	auditlogstore "github.com/tesseral-labs/tesseral/internal/auditlog/store"
-	auditlogqueries "github.com/tesseral-labs/tesseral/internal/auditlog/store/queries"
 	backendinterceptor "github.com/tesseral-labs/tesseral/internal/backend/authn/interceptor"
 	"github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1/backendv1connect"
 	backendservice "github.com/tesseral-labs/tesseral/internal/backend/service"
@@ -184,9 +183,7 @@ func main() {
 
 	cookier := cookies.Cookier{Store: commonStore}
 
-	auditlogStore := auditlogstore.Store{
-		Q: auditlogqueries.New(db),
-	}
+	auditlogStore := auditlogstore.Store{}
 
 	// Register the backend service
 	backendStore := backendstore.New(backendstore.NewStoreParams{
