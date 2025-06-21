@@ -1,8 +1,4 @@
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery,
-} from "@connectrpc/connect-query";
+import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ArrowRightFromLine,
@@ -16,6 +12,7 @@ import { Link, useParams } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { Pagination } from "@/components/core/Pagination";
 import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 import {
   AlertDialog,
@@ -79,17 +76,19 @@ import {
   listRoles,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { APIKeyRoleAssignment } from "@/gen/tesseral/backend/v1/models_pb";
+import { usePaginatedInfiniteQuery } from "@/hooks/use-paginate";
 
 export function OrganizationApiKeyRolesTab() {
   const { apiKeyId } = useParams();
 
   const {
-    data: listApiKeyRoleAssignmentsResponses,
-    fetchNextPage,
+    consoleFetchNextPage: fetchNextPage,
+    consoleFetchPreviousPage: fetchPreviousPage,
     hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-  } = useInfiniteQuery(
+    hasPreviousPage,
+    isFetching,
+    page,
+  } = usePaginatedInfiniteQuery(
     listAPIKeyRoleAssignments,
     {
       apiKeyId: apiKeyId as string,
@@ -101,10 +100,8 @@ export function OrganizationApiKeyRolesTab() {
     },
   );
 
-  const apiKeyRoleAssignments =
-    listApiKeyRoleAssignmentsResponses?.pages.flatMap(
-      (page) => page.apiKeyRoleAssignments || [],
-    ) || [];
+  const apiKeyRoleAssignments = page?.apiKeyRoleAssignments || [];
+
   return (
     <Card>
       <CardHeader>
@@ -117,7 +114,7 @@ export function OrganizationApiKeyRolesTab() {
         </CardAction>
       </CardHeader>
       <CardContent>
-        {isLoading ? (
+        {isFetching ? (
           <TableSkeleton columns={3} />
         ) : (
           <>
@@ -126,39 +123,45 @@ export function OrganizationApiKeyRolesTab() {
                 No roles assigned to this API Key.
               </div>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Actions</TableHead>
-                    <TableHead></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {apiKeyRoleAssignments.map((assignment) => (
-                    <ApiKeyRoleAssignmentRow
-                      key={assignment.id}
-                      apiKeyRoleAssignment={assignment}
-                    />
-                  ))}
-                </TableBody>
-              </Table>
+              <>
+                <Pagination
+                  count={apiKeyRoleAssignments.length}
+                  hasNextPage={hasNextPage}
+                  hasPreviousPage={hasPreviousPage}
+                  fetchNextPage={fetchNextPage}
+                  fetchPreviousPage={fetchPreviousPage}
+                />
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Role</TableHead>
+                      <TableHead>Actions</TableHead>
+                      <TableHead></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {apiKeyRoleAssignments.map((assignment) => (
+                      <ApiKeyRoleAssignmentRow
+                        key={assignment.id}
+                        apiKeyRoleAssignment={assignment}
+                      />
+                    ))}
+                  </TableBody>
+                </Table>
+              </>
             )}
           </>
         )}
       </CardContent>
-      {hasNextPage && (
-        <CardFooter className="justify-center">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => fetchNextPage()}
-            disabled={isFetchingNextPage}
-          >
-            Load More
-          </Button>
-        </CardFooter>
-      )}
+      <CardFooter className="justify-center">
+        <Pagination
+          count={apiKeyRoleAssignments.length}
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
+          fetchNextPage={fetchNextPage}
+          fetchPreviousPage={fetchPreviousPage}
+        />
+      </CardFooter>
     </Card>
   );
 }
@@ -168,7 +171,7 @@ function ApiKeyRoleAssignmentRow({
 }: {
   apiKeyRoleAssignment: APIKeyRoleAssignment;
 }) {
-  const { refetch } = useInfiniteQuery(
+  const { refetch } = usePaginatedInfiniteQuery(
     listAPIKeyRoleAssignments,
     {
       apiKeyId: apiKeyRoleAssignment.apiKeyId,
@@ -261,7 +264,7 @@ const schema = z.object({
 function AssignRoleButton() {
   const { apiKeyId, organizationId } = useParams();
 
-  const { refetch } = useInfiniteQuery(
+  const { refetch } = usePaginatedInfiniteQuery(
     listAPIKeyRoleAssignments,
     {
       apiKeyId: apiKeyId,

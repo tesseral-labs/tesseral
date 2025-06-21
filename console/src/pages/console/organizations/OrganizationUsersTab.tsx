@@ -1,9 +1,5 @@
 import { timestampDate } from "@bufbuild/protobuf/wkt";
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery,
-} from "@connectrpc/connect-query";
+import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Activity,
@@ -25,6 +21,7 @@ import { Link, useParams } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { Pagination } from "@/components/core/Pagination";
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 import {
@@ -90,6 +87,7 @@ import {
   listUsers,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { User } from "@/gen/tesseral/backend/v1/models_pb";
+import { usePaginatedInfiniteQuery } from "@/hooks/use-paginate";
 
 export function OrganizationUsersTab() {
   const { organizationId } = useParams();
@@ -97,12 +95,13 @@ export function OrganizationUsersTab() {
     id: organizationId,
   });
   const {
-    data: listUsersResponses,
-    fetchNextPage,
+    consoleFetchNextPage: fetchNextPage,
+    consoleFetchPreviousPage: fetchPreviousPage,
     hasNextPage,
-    isFetchingNextPage,
+    hasPreviousPage,
     isLoading,
-  } = useInfiniteQuery(
+    page,
+  } = usePaginatedInfiniteQuery(
     listUsers,
     {
       organizationId: organizationId,
@@ -114,7 +113,7 @@ export function OrganizationUsersTab() {
     },
   );
 
-  const users = listUsersResponses?.pages?.flatMap((page) => page.users) || [];
+  const users = page?.users || [];
 
   return (
     <Card>
@@ -141,96 +140,102 @@ export function OrganizationUsersTab() {
                 No Users found in this Organization.
               </div>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>User</TableHead>
-                    <TableHead>ID</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Auth Methods</TableHead>
-                    <TableHead>Last Updated</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {users?.map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell>
-                        <Link
-                          to={`/organizations/${organizationId}/users/${user.id}`}
-                        >
-                          <div className="flex flex-col items-start gap-2">
-                            {user.displayName && (
-                              <span className="font-medium text-sm">
-                                {user.displayName}
-                              </span>
-                            )}
-                            <span className="text-muted-foreground text-sm">
-                              {user.email}
-                            </span>
-                          </div>
-                        </Link>
-                      </TableCell>
-                      <TableCell>
-                        <ValueCopier value={user.id} label="User ID" />
-                      </TableCell>
-                      <TableCell>
-                        {user.owner ? (
-                          <Badge>Owner</Badge>
-                        ) : (
-                          <Badge variant="secondary">Member</Badge>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center flex-wrap gap-2">
-                          <Badge variant="outline">Email</Badge>
-                          {user.googleUserId && (
-                            <Badge variant="outline">Google</Badge>
-                          )}
-                          {user.microsoftUserId && (
-                            <Badge variant="outline">Microsoft</Badge>
-                          )}
-                          {user.githubUserId && (
-                            <Badge variant="outline">GitHub</Badge>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {user.updateTime &&
-                          DateTime.fromJSDate(
-                            timestampDate(user.updateTime),
-                          ).toRelative()}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <ManageUserButton user={user} />
-                      </TableCell>
+              <>
+                <Pagination
+                  count={users.length}
+                  hasNextPage={hasNextPage}
+                  hasPreviousPage={hasPreviousPage}
+                  fetchNextPage={fetchNextPage}
+                  fetchPreviousPage={fetchPreviousPage}
+                />
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>User</TableHead>
+                      <TableHead>ID</TableHead>
+                      <TableHead>Role</TableHead>
+                      <TableHead>Auth Methods</TableHead>
+                      <TableHead>Last Updated</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {users?.map((user) => (
+                      <TableRow key={user.id}>
+                        <TableCell>
+                          <Link
+                            to={`/organizations/${organizationId}/users/${user.id}`}
+                          >
+                            <div className="flex flex-col items-start gap-2">
+                              {user.displayName && (
+                                <span className="font-medium text-sm">
+                                  {user.displayName}
+                                </span>
+                              )}
+                              <span className="text-muted-foreground text-sm">
+                                {user.email}
+                              </span>
+                            </div>
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          <ValueCopier value={user.id} label="User ID" />
+                        </TableCell>
+                        <TableCell>
+                          {user.owner ? (
+                            <Badge>Owner</Badge>
+                          ) : (
+                            <Badge variant="secondary">Member</Badge>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center flex-wrap gap-2">
+                            <Badge variant="outline">Email</Badge>
+                            {user.googleUserId && (
+                              <Badge variant="outline">Google</Badge>
+                            )}
+                            {user.microsoftUserId && (
+                              <Badge variant="outline">Microsoft</Badge>
+                            )}
+                            {user.githubUserId && (
+                              <Badge variant="outline">GitHub</Badge>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {user.updateTime &&
+                            DateTime.fromJSDate(
+                              timestampDate(user.updateTime),
+                            ).toRelative()}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <ManageUserButton user={user} />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </>
             )}
           </>
         )}
       </CardContent>
-      {hasNextPage && (
-        <CardFooter className="justify-center">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => fetchNextPage()}
-            disabled={isFetchingNextPage}
-          >
-            Load More
-          </Button>
-        </CardFooter>
-      )}
+      <CardFooter>
+        <Pagination
+          count={users.length}
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
+          fetchNextPage={fetchNextPage}
+          fetchPreviousPage={fetchPreviousPage}
+        />
+      </CardFooter>
     </Card>
   );
 }
 
 function ManageUserButton({ user }: { user: User }) {
   const { organizationId } = useParams();
-  const { refetch } = useInfiniteQuery(
+  const { refetch } = usePaginatedInfiniteQuery(
     listUsers,
     {
       organizationId: organizationId,
@@ -407,7 +412,7 @@ const schema = z.object({
 function CreateUserButton() {
   const { organizationId } = useParams();
   const { data: getOrganizationResponse } = useQuery(getOrganization);
-  const { refetch } = useInfiniteQuery(
+  const { refetch } = usePaginatedInfiniteQuery(
     listUsers,
     {
       organizationId: organizationId,

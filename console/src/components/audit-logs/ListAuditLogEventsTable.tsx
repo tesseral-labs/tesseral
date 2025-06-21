@@ -1,5 +1,5 @@
 import { timestampDate, timestampFromDate } from "@bufbuild/protobuf/wkt";
-import { useInfiniteQuery, useQuery } from "@connectrpc/connect-query";
+import { useQuery } from "@connectrpc/connect-query";
 import { format } from "date-fns";
 import {
   CalendarIcon,
@@ -24,8 +24,10 @@ import {
 import { ConsoleListAuditLogEventsRequest } from "@/gen/tesseral/backend/v1/backend_pb";
 import { ConsoleAuditLogEvent } from "@/gen/tesseral/backend/v1/models_pb";
 import { getUser as getFrontendUser } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
+import { usePaginatedInfiniteQuery } from "@/hooks/use-paginate";
 import { cn } from "@/lib/utils";
 
+import { Pagination } from "../core/Pagination";
 import { ValueCopier } from "../core/ValueCopier";
 import { TableSkeleton } from "../skeletons/TableSkeleton";
 import { Badge } from "../ui/badge";
@@ -85,12 +87,13 @@ export function ListAuditLogEventsTable({
   }, [date, eventName, listParams]);
 
   const {
-    data: listAuditLogEventsResponse,
-    fetchNextPage,
+    consoleFetchNextPage: fetchNextPage,
+    consoleFetchPreviousPage: fetchPreviousPage,
     hasNextPage,
-    isFetchingNextPage,
+    hasPreviousPage,
     isLoading,
-  } = useInfiniteQuery(consoleListAuditLogEvents, stableListParams, {
+    page,
+  } = usePaginatedInfiniteQuery(consoleListAuditLogEvents, stableListParams, {
     pageParamKey: "pageToken",
     getNextPageParam: (lastPage) => lastPage.nextPageToken || undefined,
   });
@@ -106,9 +109,7 @@ export function ListAuditLogEventsTable({
     },
   );
 
-  const auditLogEvents =
-    listAuditLogEventsResponse?.pages.flatMap((page) => page.auditLogEvents) ||
-    [];
+  const auditLogEvents = page?.auditLogEvents || [];
 
   function toggleRow(eventId: string) {
     setExpandedRows((prev) => ({
@@ -207,7 +208,7 @@ export function ListAuditLogEventsTable({
             </Select>
           </div>
           {((date && date.from) || (eventName && eventName.length > 0)) && (
-            <div className="ml-auto w-full lg:w-auto">
+            <div className="w-full lg:w-auto">
               <Button
                 className="w-full lg:w-auto"
                 variant="outline"
@@ -218,10 +219,18 @@ export function ListAuditLogEventsTable({
                 }}
               >
                 <XIcon />
-                Clear Filters
+                Reset
               </Button>
             </div>
           )}
+          <Pagination
+            className="ml-auto"
+            count={auditLogEvents.length}
+            hasNextPage={hasNextPage}
+            hasPreviousPage={hasPreviousPage}
+            fetchNextPage={fetchNextPage}
+            fetchPreviousPage={fetchPreviousPage}
+          />
         </div>
       </div>
       {isLoading ? (
@@ -262,18 +271,15 @@ export function ListAuditLogEventsTable({
         </>
       )}
 
-      {hasNextPage && (
-        <div className="flex justify-center mt-8">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => fetchNextPage()}
-            disabled={isFetchingNextPage}
-          >
-            Load More
-          </Button>
-        </div>
-      )}
+      <div className="w-full">
+        <Pagination
+          count={auditLogEvents.length}
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
+          fetchNextPage={fetchNextPage}
+          fetchPreviousPage={fetchPreviousPage}
+        />
+      </div>
     </>
   );
 }

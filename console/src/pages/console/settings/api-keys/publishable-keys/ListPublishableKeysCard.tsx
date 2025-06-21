@@ -1,5 +1,5 @@
 import { timestampDate } from "@bufbuild/protobuf/wkt";
-import { useInfiniteQuery, useMutation } from "@connectrpc/connect-query";
+import { useMutation } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Copy,
@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { Pagination } from "@/components/core/Pagination";
 import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 import {
   AlertDialog,
@@ -78,15 +79,17 @@ import {
   updatePublishableKey,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { PublishableKey } from "@/gen/tesseral/backend/v1/models_pb";
+import { usePaginatedInfiniteQuery } from "@/hooks/use-paginate";
 
 export function ListPublishableKeysCard() {
   const {
-    data: listPublishableKeysResponse,
-    fetchNextPage,
+    consoleFetchNextPage: fetchNextPage,
+    consoleFetchPreviousPage: fetchPreviousPage,
     hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-  } = useInfiniteQuery(
+    hasPreviousPage,
+    isFetching,
+    page,
+  } = usePaginatedInfiniteQuery(
     listPublishableKeys,
     {
       pageToken: "",
@@ -97,10 +100,7 @@ export function ListPublishableKeysCard() {
     },
   );
 
-  const publishableKeys =
-    listPublishableKeysResponse?.pages?.flatMap(
-      (page) => page.publishableKeys,
-    ) || [];
+  const publishableKeys = page?.publishableKeys || [];
 
   return (
     <Card>
@@ -115,7 +115,7 @@ export function ListPublishableKeysCard() {
         </CardAction>
       </CardHeader>
       <CardContent>
-        {isLoading ? (
+        {isFetching ? (
           <TableSkeleton columns={6} />
         ) : (
           <>
@@ -124,81 +124,87 @@ export function ListPublishableKeysCard() {
                 No Publishable Keys found
               </div>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Key</TableHead>
-                    <TableHead>Mode</TableHead>
-                    <TableHead>Created</TableHead>
-                    <TableHead>Updated</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {publishableKeys.map((publishableKey) => (
-                    <TableRow key={publishableKey.id}>
-                      <TableCell className="font-medium">
-                        {publishableKey.displayName}
-                      </TableCell>
-                      <TableCell>
-                        <div
-                          className="px-2 py-1 bg-muted text-muted-foreground rounded inline hover:text-foreground cursor-pointer font-mono text-xs"
-                          onClick={() => {
-                            navigator.clipboard.writeText(publishableKey.id);
-                            toast.success(
-                              "Publishable Key copied to clipboard",
-                            );
-                          }}
-                        >
-                          {publishableKey.id}
-                          <Copy className="inline h-4 w-4 ml-2" />
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {publishableKey.devMode ? (
-                          <Badge variant="secondary">Development</Badge>
-                        ) : (
-                          <Badge>Production</Badge>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {publishableKey.createTime &&
-                          DateTime.fromJSDate(
-                            timestampDate(publishableKey.createTime),
-                          ).toRelative()}
-                      </TableCell>
-                      <TableCell>
-                        {publishableKey.updateTime &&
-                          DateTime.fromJSDate(
-                            timestampDate(publishableKey.updateTime),
-                          ).toRelative()}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <ManagePublishableKeyButton
-                          publishableKey={publishableKey}
-                        />
-                      </TableCell>
+              <>
+                <Pagination
+                  count={publishableKeys.length}
+                  hasNextPage={hasNextPage}
+                  hasPreviousPage={hasPreviousPage}
+                  fetchNextPage={fetchNextPage}
+                  fetchPreviousPage={fetchPreviousPage}
+                />
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Key</TableHead>
+                      <TableHead>Mode</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead>Updated</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {publishableKeys.map((publishableKey) => (
+                      <TableRow key={publishableKey.id}>
+                        <TableCell className="font-medium">
+                          {publishableKey.displayName}
+                        </TableCell>
+                        <TableCell>
+                          <div
+                            className="px-2 py-1 bg-muted text-muted-foreground rounded inline hover:text-foreground cursor-pointer font-mono text-xs"
+                            onClick={() => {
+                              navigator.clipboard.writeText(publishableKey.id);
+                              toast.success(
+                                "Publishable Key copied to clipboard",
+                              );
+                            }}
+                          >
+                            {publishableKey.id}
+                            <Copy className="inline h-4 w-4 ml-2" />
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {publishableKey.devMode ? (
+                            <Badge variant="secondary">Development</Badge>
+                          ) : (
+                            <Badge>Production</Badge>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {publishableKey.createTime &&
+                            DateTime.fromJSDate(
+                              timestampDate(publishableKey.createTime),
+                            ).toRelative()}
+                        </TableCell>
+                        <TableCell>
+                          {publishableKey.updateTime &&
+                            DateTime.fromJSDate(
+                              timestampDate(publishableKey.updateTime),
+                            ).toRelative()}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <ManagePublishableKeyButton
+                            publishableKey={publishableKey}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </>
             )}
           </>
         )}
       </CardContent>
-      {hasNextPage && (
-        <CardFooter className="flex justify-center">
-          <Button
-            disabled={isFetchingNextPage}
-            variant="outline"
-            size="sm"
-            onClick={() => fetchNextPage()}
-          >
-            Load more
-          </Button>
-        </CardFooter>
-      )}
+      <CardFooter className="flex justify-center">
+        <Pagination
+          count={publishableKeys.length}
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
+          fetchNextPage={fetchNextPage}
+          fetchPreviousPage={fetchPreviousPage}
+        />
+      </CardFooter>
     </Card>
   );
 }
@@ -208,7 +214,7 @@ function ManagePublishableKeyButton({
 }: {
   publishableKey: PublishableKey;
 }) {
-  const { refetch } = useInfiniteQuery(
+  const { refetch } = usePaginatedInfiniteQuery(
     listPublishableKeys,
     {
       pageToken: "",
@@ -402,7 +408,7 @@ const schema = z.object({
 });
 
 function CreatePublishableKeyButton() {
-  const { refetch } = useInfiniteQuery(
+  const { refetch } = usePaginatedInfiniteQuery(
     listPublishableKeys,
     {
       pageToken: "",

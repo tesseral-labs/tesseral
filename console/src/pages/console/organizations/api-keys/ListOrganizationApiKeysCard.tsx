@@ -1,9 +1,5 @@
 import { timestampDate, timestampFromDate } from "@bufbuild/protobuf/wkt";
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery,
-} from "@connectrpc/connect-query";
+import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import {
@@ -25,6 +21,7 @@ import { Link, useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { Pagination } from "@/components/core/Pagination";
 import { SecretCopier } from "@/components/core/SecretCopier";
 import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 import {
@@ -101,6 +98,7 @@ import {
   revokeAPIKey,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { APIKey } from "@/gen/tesseral/backend/v1/models_pb";
+import { usePaginatedInfiniteQuery } from "@/hooks/use-paginate";
 import { cn } from "@/lib/utils";
 
 export function ListOrganizationApiKeysCard() {
@@ -112,12 +110,13 @@ export function ListOrganizationApiKeysCard() {
   const { data: getProjectResponse } = useQuery(getProject);
 
   const {
-    data: listApiKeysResponses,
-    fetchNextPage,
+    consoleFetchNextPage: fetchNextPage,
+    consoleFetchPreviousPage: fetchPreviousPage,
     hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-  } = useInfiniteQuery(
+    hasPreviousPage,
+    isFetching,
+    page,
+  } = usePaginatedInfiniteQuery(
     listAPIKeys,
     {
       organizationId: organizationId,
@@ -129,8 +128,7 @@ export function ListOrganizationApiKeysCard() {
     },
   );
 
-  const apiKeys =
-    listApiKeysResponses?.pages?.flatMap((page) => page.apiKeys) || [];
+  const apiKeys = page?.apiKeys || [];
 
   return (
     <Card>
@@ -148,7 +146,7 @@ export function ListOrganizationApiKeysCard() {
         </CardAction>
       </CardHeader>
       <CardContent>
-        {isLoading ? (
+        {isFetching ? (
           <TableSkeleton columns={4} />
         ) : (
           <>
@@ -157,72 +155,78 @@ export function ListOrganizationApiKeysCard() {
                 No Managed API Keys found. Create a new API Key to get started.
               </div>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>API Key</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Created</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {apiKeys?.map((apiKey) => (
-                    <TableRow key={apiKey.id}>
-                      <TableCell>
-                        <Link
-                          to={`/organizations/${organizationId}/api-keys/${apiKey.id}`}
-                        >
-                          <div className="space-y-2">
-                            <h3 className="font-semibold">
-                              {apiKey.displayName}
-                            </h3>
-                            <div className="inline bg-muted text-muted-foreground font-mono text-xs py-1 px-2 rounded-sm">
-                              {
-                                getProjectResponse?.project
-                                  ?.apiKeySecretTokenPrefix
-                              }
-                              ...
-                              {apiKey.secretTokenSuffix}
-                            </div>
-                          </div>
-                        </Link>
-                      </TableCell>
-                      <TableCell>
-                        {apiKey.revoked ? (
-                          <Badge>Active</Badge>
-                        ) : (
-                          <Badge variant="secondary">Revoked</Badge>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {apiKey.createTime &&
-                          DateTime.fromJSDate(
-                            timestampDate(apiKey.createTime),
-                          ).toRelative()}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <ManageApiKeyButton apiKey={apiKey} />
-                      </TableCell>
+              <>
+                <Pagination
+                  count={apiKeys.length}
+                  hasNextPage={hasNextPage}
+                  hasPreviousPage={hasPreviousPage}
+                  fetchNextPage={fetchNextPage}
+                  fetchPreviousPage={fetchPreviousPage}
+                />
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>API Key</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {apiKeys?.map((apiKey) => (
+                      <TableRow key={apiKey.id}>
+                        <TableCell>
+                          <Link
+                            to={`/organizations/${organizationId}/api-keys/${apiKey.id}`}
+                          >
+                            <div className="space-y-2">
+                              <h3 className="font-semibold">
+                                {apiKey.displayName}
+                              </h3>
+                              <div className="inline bg-muted text-muted-foreground font-mono text-xs py-1 px-2 rounded-sm">
+                                {
+                                  getProjectResponse?.project
+                                    ?.apiKeySecretTokenPrefix
+                                }
+                                ...
+                                {apiKey.secretTokenSuffix}
+                              </div>
+                            </div>
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          {apiKey.revoked ? (
+                            <Badge>Active</Badge>
+                          ) : (
+                            <Badge variant="secondary">Revoked</Badge>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {apiKey.createTime &&
+                            DateTime.fromJSDate(
+                              timestampDate(apiKey.createTime),
+                            ).toRelative()}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <ManageApiKeyButton apiKey={apiKey} />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </>
             )}
           </>
         )}
       </CardContent>
-      <CardFooter className="flex justify-center">
-        {hasNextPage && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => fetchNextPage()}
-            disabled={isFetchingNextPage}
-          >
-            {isFetchingNextPage ? "Loading more..." : "Load More"}
-          </Button>
-        )}
+      <CardFooter>
+        <Pagination
+          count={apiKeys.length}
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
+          fetchNextPage={fetchNextPage}
+          fetchPreviousPage={fetchPreviousPage}
+        />
       </CardFooter>
     </Card>
   );
@@ -243,7 +247,7 @@ function CreateApiKeyButton() {
 
   const { organizationId } = useParams();
   const { data: getProjectResponse } = useQuery(getProject);
-  const { refetch } = useInfiniteQuery(
+  const { refetch } = usePaginatedInfiniteQuery(
     listAPIKeys,
     {
       organizationId,
@@ -488,7 +492,7 @@ function CreateApiKeyButton() {
 
 function ManageApiKeyButton({ apiKey }: { apiKey: APIKey }) {
   const { organizationId } = useParams();
-  const { refetch } = useInfiniteQuery(
+  const { refetch } = usePaginatedInfiniteQuery(
     listAPIKeys,
     {
       organizationId: organizationId,
