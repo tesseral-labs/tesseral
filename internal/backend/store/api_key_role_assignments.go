@@ -134,16 +134,16 @@ func (s *Store) DeleteAPIKeyRoleAssignment(ctx context.Context, req *backendv1.D
 		return nil, fmt.Errorf("get api key: %w", err)
 	}
 
+	auditAPIKeyRoleAssignment, err := s.auditlogStore.GetAPIKeyRoleAssignment(ctx, tx, qAPIKeyRoleAssignment.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit log api key role assignment: %w", err)
+	}
+
 	if err := q.DeleteAPIKeyRoleAssignment(ctx, queries.DeleteAPIKeyRoleAssignmentParams{
 		ID:        apiKeyRoleAssignmentID,
 		ProjectID: authn.ProjectID(ctx),
 	}); err != nil {
 		return nil, fmt.Errorf("delete api key role assignment: %w", err)
-	}
-
-	auditAPIKeyRoleAssignment, err := s.auditlogStore.GetAPIKeyRoleAssignment(ctx, tx, qAPIKeyRoleAssignment.ID)
-	if err != nil {
-		return nil, fmt.Errorf("get audit log api key role assignment: %w", err)
 	}
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{

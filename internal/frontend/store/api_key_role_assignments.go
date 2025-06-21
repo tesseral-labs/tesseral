@@ -115,16 +115,16 @@ func (s *Store) DeleteAPIKeyRoleAssignment(ctx context.Context, req *frontendv1.
 		return nil, fmt.Errorf("get api key role assignment: %w", err)
 	}
 
+	auditAPIKeyRoleAssignment, err := s.auditlogStore.GetAPIKeyRoleAssignment(ctx, tx, qAPIKeyRoleAssignment.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit log api key role assignment: %w", err)
+	}
+
 	if err := q.DeleteAPIKeyRoleAssignment(ctx, queries.DeleteAPIKeyRoleAssignmentParams{
 		ID:             apiKeyRoleAssignmentID,
 		OrganizationID: authn.OrganizationID(ctx),
 	}); err != nil {
 		return nil, fmt.Errorf("delete api key role assignment: %w", err)
-	}
-
-	auditAPIKeyRoleAssignment, err := s.auditlogStore.GetAPIKeyRoleAssignment(ctx, tx, qAPIKeyRoleAssignment.ID)
-	if err != nil {
-		return nil, fmt.Errorf("get audit log api key role assignment: %w", err)
 	}
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
