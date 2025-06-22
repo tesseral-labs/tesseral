@@ -3,7 +3,6 @@ package httplambda
 import (
 	"context"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -13,7 +12,6 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	"go.opentelemetry.io/otel/propagation"
 )
 
 // Handler converts an http.Handler into a lambda.Handler that supports
@@ -29,18 +27,6 @@ func Handler(h http.Handler) lambda.Handler {
 		h.ServeHTTP(w, req)
 		return httpResponseEvent(w), nil
 	})
-}
-
-func TextMapCarrier(eventJSON []byte) propagation.TextMapCarrier {
-	var event events.LambdaFunctionURLRequest
-	if err := json.Unmarshal(eventJSON, &eventJSON); err != nil {
-		panic(err)
-	}
-	req, err := httpRequest(context.Background(), event)
-	if err != nil {
-		panic(err)
-	}
-	return req.Header
 }
 
 func httpRequest(ctx context.Context, e events.LambdaFunctionURLRequest) (*http.Request, error) {
