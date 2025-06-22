@@ -64,10 +64,10 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	wellknownservice "github.com/tesseral-labs/tesseral/internal/wellknown/service"
 	wellknownstore "github.com/tesseral-labs/tesseral/internal/wellknown/store"
-	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda/xrayconfig"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
-	"go.opentelemetry.io/contrib/propagators/aws/xray"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
@@ -125,21 +125,35 @@ func main() {
 
 	var tp *sdktrace.TracerProvider
 	if config.RunAsLambda {
-		xrayTP, err := xrayconfig.NewTracerProvider(context.Background())
+		exporter, err := otlptracegrpc.New(context.Background(), otlptracegrpc.WithInsecure())
 		if err != nil {
-			panic(fmt.Errorf("xray new tracer provider: %w", err))
+			panic(fmt.Errorf("create otel trace exporter: %w", err))
 		}
 
-		defer func(ctx context.Context) {
-			err := tp.Shutdown(ctx)
-			if err != nil {
-				panic(fmt.Errorf("xray shutdown: %w", err))
+		tp := sdktrace.NewTracerProvider(sdktrace.WithBatcher(exporter))
+		defer func() {
+			if err := tp.Shutdown(context.Background()); err != nil {
+				panic(fmt.Errorf("shutdown tracer provider: %w", err))
 			}
-		}(context.Background())
+		}()
 
-		tp = xrayTP
 		otel.SetTracerProvider(tp)
-		otel.SetTextMapPropagator(xray.Propagator{})
+
+		//xrayTP, err := xrayconfig.NewTracerProvider(context.Background())
+		//if err != nil {
+		//	panic(fmt.Errorf("xray new tracer provider: %w", err))
+		//}
+		//
+		//defer func(ctx context.Context) {
+		//	err := tp.Shutdown(ctx)
+		//	if err != nil {
+		//		panic(fmt.Errorf("xray shutdown: %w", err))
+		//	}
+		//}(context.Background())
+		//
+		//tp = xrayTP
+		//otel.SetTracerProvider(tp)
+		//otel.SetTextMapPropagator(xray.Propagator{})
 	} else {
 		otelShutdown, err := otelconfig.ConfigureOpenTelemetry()
 		if err != nil {
@@ -408,7 +422,8 @@ func main() {
 
 	slog.Info("serve")
 	if config.RunAsLambda {
-		lambda.Start(httplambda.Handler(serve))
+		lambda.Start(otellambda.WrapHandler(httplambda.Handler(serve), otellambda.WithFlusher(tp)))
+		//lambda.Start(httplambda.Handler(serve))
 		//lambda.Start(otellambda.WrapHandler(httplambda.Handler(serve), xrayconfig.WithRecommendedOptions(tp)...))
 	} else {
 		if err := http.ListenAndServe(config.ServeAddr, serve); err != nil {
