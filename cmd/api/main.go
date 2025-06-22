@@ -64,7 +64,6 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	wellknownservice "github.com/tesseral-labs/tesseral/internal/wellknown/service"
 	wellknownstore "github.com/tesseral-labs/tesseral/internal/wellknown/store"
-	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
@@ -421,10 +420,11 @@ func main() {
 
 	// add traces
 	serve = otelhttp.NewHandler(serve, "serve")
+	serve = withOtelFlush(serve, tp)
 
 	slog.Info("serve")
 	if config.RunAsLambda {
-		lambda.Start(otellambda.WrapHandler(httplambda.Handler(serve), otellambda.WithFlusher(tp)))
+		lambda.Start(httplambda.Handler(serve))
 		//lambda.Start(httplambda.Handler(serve))
 		//lambda.Start(otellambda.WrapHandler(httplambda.Handler(serve), xrayconfig.WithRecommendedOptions(tp)...))
 	} else {
@@ -432,4 +432,15 @@ func main() {
 			panic(err)
 		}
 	}
+}
+
+func withOtelFlush(h http.Handler, tp *sdktrace.TracerProvider) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		h.ServeHTTP(w, r)
+
+		// Force flush after the request
+		if err := tp.ForceFlush(r.Context()); err != nil {
+			panic(fmt.Errorf("force flush: %w", err))
+		}
+	})
 }
