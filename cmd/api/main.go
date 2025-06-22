@@ -381,7 +381,11 @@ func main() {
 	// Register health checks
 	mux := http.NewServeMux()
 	mux.Handle("/api/internal/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		slog.InfoContext(r.Context(), "health")
+		tracer := otel.Tracer("github.com/tesseral-labs/tesseral/cmd/api")
+		ctx, span := tracer.Start(r.Context(), "health")
+		defer span.End()
+
+		slog.InfoContext(ctx, "health")
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("ok"))
 	}))
