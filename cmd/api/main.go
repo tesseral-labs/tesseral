@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
+	"encoding/hex"
 	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
+	"strings"
 
 	"connectrpc.com/connect"
 	"connectrpc.com/vanguard"
@@ -381,6 +383,10 @@ func main() {
 	// Register health checks
 	mux := http.NewServeMux()
 	mux.Handle("/api/internal/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		//p := otel.GetTextMapPropagator()
+		//p.Extract(r.Context(), propagation.HeaderCarrier(r.Header))
+		slog.InfoContext(r.Context(), "extract_header", "extract", extract(propagation.HeaderCarrier(r.Header)))
+
 		tracer := otel.Tracer("github.com/tesseral-labs/tesseral/cmd/api")
 		ctx, span := tracer.Start(r.Context(), "health")
 		defer span.End()
@@ -430,10 +436,10 @@ func main() {
 
 	// add traces
 	serve = otelhttp.NewHandler(serve, "serve")
-	serve = withOtelFlush(serve, tp)
 
 	slog.Info("serve")
 	if config.RunAsLambda {
+		serve = withOtelFlush(serve, tp)
 		lambda.Start(httplambda.Handler(serve))
 		//lambda.Start(httplambda.Handler(serve))
 		//lambda.Start(otellambda.WrapHandler(httplambda.Handler(serve), xrayconfig.WithRecommendedOptions(tp)...))
@@ -453,4 +459,77 @@ func withOtelFlush(h http.Handler, tp *sdktrace.TracerProvider) http.Handler {
 			panic(fmt.Errorf("force flush: %w", err))
 		}
 	})
+}
+
+func extract(carrier propagation.TextMapCarrier) trace.SpanContext {
+	h := carrier.Get("traceparent")
+	if h == "" {
+		return trace.SpanContext{}
+	}
+
+	var ver [1]byte
+	if !extractPart(ver[:], &h, 2) {
+		return trace.SpanContext{}
+	}
+	version := int(ver[0])
+	if version > 255 {
+		return trace.SpanContext{}
+	}
+
+	var scc trace.SpanContextConfig
+	if !extractPart(scc.TraceID[:], &h, 32) {
+		return trace.SpanContext{}
+	}
+	if !extractPart(scc.SpanID[:], &h, 16) {
+		return trace.SpanContext{}
+	}
+
+	var opts [1]byte
+	if !extractPart(opts[:], &h, 2) {
+		return trace.SpanContext{}
+	}
+	if version == 0 && (h != "" || opts[0] > 2) {
+		// version 0 not allow extra
+		// version 0 not allow other flag
+		return trace.SpanContext{}
+	}
+
+	// Clear all flags other than the trace-context supported sampling bit.
+	scc.TraceFlags = trace.TraceFlags(opts[0]) & trace.FlagsSampled
+
+	// Ignore the error returned here. Failure to parse tracestate MUST NOT
+	// affect the parsing of traceparent according to the W3C tracecontext
+	// specification.
+	scc.TraceState, _ = trace.ParseTraceState(carrier.Get("tracestate"))
+	scc.Remote = true
+
+	sc := trace.NewSpanContext(scc)
+	if !sc.IsValid() {
+		return trace.SpanContext{}
+	}
+
+	return sc
+}
+
+// upperHex detect hex is upper case Unicode characters.
+func upperHex(v string) bool {
+	for _, c := range v {
+		if c >= 'A' && c <= 'F' {
+			return true
+		}
+	}
+	return false
+}
+
+func extractPart(dst []byte, h *string, n int) bool {
+	part, left, _ := strings.Cut(*h, "-")
+	*h = left
+	// hex.Decode decodes unsupported upper-case characters, so exclude explicitly.
+	if len(part) != n || upperHex(part) {
+		return false
+	}
+	if p, err := hex.Decode(dst, []byte(part)); err != nil || p != n/2 {
+		return false
+	}
+	return true
 }
