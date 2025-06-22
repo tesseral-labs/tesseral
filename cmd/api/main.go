@@ -64,7 +64,6 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	wellknownservice "github.com/tesseral-labs/tesseral/internal/wellknown/service"
 	wellknownstore "github.com/tesseral-labs/tesseral/internal/wellknown/store"
-	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda/xrayconfig"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/contrib/propagators/aws/xray"
@@ -409,7 +408,8 @@ func main() {
 
 	slog.Info("serve")
 	if config.RunAsLambda {
-		lambda.Start(otellambda.WrapHandler(httplambda.Handler(serve), xrayconfig.WithRecommendedOptions(tp)...))
+		lambda.Start(httplambda.Handler(serve))
+		//lambda.Start(otellambda.WrapHandler(httplambda.Handler(serve), xrayconfig.WithRecommendedOptions(tp)...))
 	} else {
 		if err := http.ListenAndServe(config.ServeAddr, serve); err != nil {
 			panic(err)
