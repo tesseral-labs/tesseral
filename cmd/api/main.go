@@ -385,7 +385,8 @@ func main() {
 	mux.Handle("/api/internal/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//p := otel.GetTextMapPropagator()
 		//p.Extract(r.Context(), propagation.HeaderCarrier(r.Header))
-		slog.InfoContext(r.Context(), "extract_header", "extract", extract(propagation.HeaderCarrier(r.Header)))
+
+		slog.InfoContext(r.Context(), "extract_header", "header", r.Header, "header_prop_get", propagation.HeaderCarrier(r.Header).Get("traceparent"), "extract", extract(propagation.HeaderCarrier(r.Header)))
 
 		tracer := otel.Tracer("github.com/tesseral-labs/tesseral/cmd/api")
 		ctx, span := tracer.Start(r.Context(), "health")
