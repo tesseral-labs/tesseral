@@ -130,14 +130,16 @@ func main() {
 			panic(fmt.Errorf("create otel trace exporter: %w", err))
 		}
 
-		tp := sdktrace.NewTracerProvider(sdktrace.WithBatcher(exporter))
+		tracerProvider := sdktrace.NewTracerProvider(sdktrace.WithBatcher(exporter))
 		defer func() {
-			if err := tp.Shutdown(context.Background()); err != nil {
+			if err := tracerProvider.Shutdown(context.Background()); err != nil {
 				panic(fmt.Errorf("shutdown tracer provider: %w", err))
 			}
 		}()
 
-		otel.SetTracerProvider(tp)
+		otel.SetTracerProvider(tracerProvider)
+
+		tp = tracerProvider
 
 		//xrayTP, err := xrayconfig.NewTracerProvider(context.Background())
 		//if err != nil {
@@ -145,14 +147,14 @@ func main() {
 		//}
 		//
 		//defer func(ctx context.Context) {
-		//	err := tp.Shutdown(ctx)
+		//	err := tracerProvider.Shutdown(ctx)
 		//	if err != nil {
 		//		panic(fmt.Errorf("xray shutdown: %w", err))
 		//	}
 		//}(context.Background())
 		//
-		//tp = xrayTP
-		//otel.SetTracerProvider(tp)
+		//tracerProvider = xrayTP
+		//otel.SetTracerProvider(tracerProvider)
 		//otel.SetTextMapPropagator(xray.Propagator{})
 	} else {
 		otelShutdown, err := otelconfig.ConfigureOpenTelemetry()
