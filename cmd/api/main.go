@@ -67,6 +67,7 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
+	"go.opentelemetry.io/otel/propagation"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
@@ -137,6 +138,7 @@ func main() {
 		}()
 
 		otel.SetTracerProvider(tracerProvider)
+		otel.SetTextMapPropagator(propagation.TraceContext{})
 
 		tp = tracerProvider
 
