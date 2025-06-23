@@ -22,7 +22,6 @@ import (
 	"github.com/getsentry/sentry-go"
 	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/google/uuid"
-	"github.com/honeycombio/otel-config-go/otelconfig"
 	"github.com/ssoready/conf"
 	stripeclient "github.com/stripe/stripe-go/v82/client"
 	svix "github.com/svix/svix-webhooks/go"
@@ -94,6 +93,8 @@ func main() {
 	loadenv.LoadEnv()
 
 	config := struct {
+		OTELExportTraces                    bool          `conf:"otel_export_traces,noredact"`
+		OTLPTraceGRPCInsecure               bool          `conf:"otlp_trace_grpc_insecure,noredact"`
 		RunAsLambda                         bool          `conf:"run_as_lambda,noredact"`
 		ConsoleDomain                       string        `conf:"console_domain,noredact"`
 		AuthAppsRootDomain                  string        `conf:"auth_apps_root_domain,noredact"`
@@ -126,14 +127,20 @@ func main() {
 	conf.Load(&config)
 	slog.Info("config", "config", conf.Redact(config))
 
-	var tp *sdktrace.TracerProvider
-	if config.RunAsLambda {
-		exporter, err := otlptracegrpc.New(context.Background(), otlptracegrpc.WithInsecure())
+	var tracerProvider *sdktrace.TracerProvider
+	if config.OTELExportTraces {
+		var exporterOpts []otlptracegrpc.Option
+		if config.OTLPTraceGRPCInsecure {
+			exporterOpts = append(exporterOpts, otlptracegrpc.WithInsecure())
+		}
+
+		exporter, err := otlptracegrpc.New(context.Background(), exporterOpts...)
 		if err != nil {
 			panic(fmt.Errorf("create otel trace exporter: %w", err))
 		}
 
-		tracerProvider := sdktrace.NewTracerProvider(sdktrace.WithBatcher(exporter))
+		tracerProvider = sdktrace.NewTracerProvider(sdktrace.WithBatcher(exporter))
+
 		defer func() {
 			if err := tracerProvider.Shutdown(context.Background()); err != nil {
 				panic(fmt.Errorf("shutdown tracer provider: %w", err))
@@ -142,30 +149,6 @@ func main() {
 
 		otel.SetTracerProvider(tracerProvider)
 		otel.SetTextMapPropagator(propagation.TraceContext{})
-
-		tp = tracerProvider
-
-		//xrayTP, err := xrayconfig.NewTracerProvider(context.Background())
-		//if err != nil {
-		//	panic(fmt.Errorf("xray new tracer provider: %w", err))
-		//}
-		//
-		//defer func(ctx context.Context) {
-		//	err := tracerProvider.Shutdown(ctx)
-		//	if err != nil {
-		//		panic(fmt.Errorf("xray shutdown: %w", err))
-		//	}
-		//}(context.Background())
-		//
-		//tracerProvider = xrayTP
-		//otel.SetTracerProvider(tracerProvider)
-		//otel.SetTextMapPropagator(xray.Propagator{})
-	} else {
-		otelShutdown, err := otelconfig.ConfigureOpenTelemetry()
-		if err != nil {
-			panic(fmt.Errorf("configure otel: %w", err))
-		}
-		defer otelShutdown()
 	}
 
 	db, err := dbconn.Open(context.Background(), config.DB)
@@ -440,10 +423,12 @@ func main() {
 
 	slog.Info("serve")
 	if config.RunAsLambda {
-		serve = withOtelFlush(serve, tp)
+		// if running as lambda, flush traces at the end of every request; we
+		// may be paused between http requests
+		if tracerProvider != nil {
+			serve = withOtelFlush(serve, tracerProvider)
+		}
 		lambda.Start(httplambda.Handler(serve))
-		//lambda.Start(httplambda.Handler(serve))
-		//lambda.Start(otellambda.WrapHandler(httplambda.Handler(serve), xrayconfig.WithRecommendedOptions(tp)...))
 	} else {
 		if err := http.ListenAndServe(config.ServeAddr, serve); err != nil {
 			panic(err)
