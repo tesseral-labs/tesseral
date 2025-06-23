@@ -7,7 +7,6 @@ import { Link } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { ValueCopier } from "@/components/core/ValueCopier";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
