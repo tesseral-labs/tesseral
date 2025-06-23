@@ -320,7 +320,9 @@ function UsersCard() {
         <div className="space-y-4">
           {listUsersResponses?.pages
             .flatMap((page) => page.users)
-            .map((user) => <UserRow key={user.id} user={user} />)}
+            .map((user) => (
+              <UserRow key={user.id} user={user} />
+            ))}
         </div>
       </CardContent>
     </Card>

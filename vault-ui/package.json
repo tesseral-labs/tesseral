@@ -62,6 +62,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/jest": "^29.5.14",
     "@types/luxon": "^3.6.2",
     "@types/qrcode": "^1.5.5",
