@@ -62,7 +62,7 @@
     "eslint": "^9.22.0",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.2.0",
-    "express": "^4.21.1",
+    "express": "^4.21.2",
     "globals": "^16.0.0",
     "highlight.js": "^11.10.0",
     "http-server": "^14.1.1",
