@@ -120,23 +120,23 @@ function ConfigureEnterpriseSettingsButton() {
   }, [getProjectResponse, form]);
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)}>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button variant="outline" className="w-full">
-              <Settings />
-              Configure Enterprise Settings
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Configure Enterprise Settings</DialogTitle>
-              <DialogDescription>
-                Configure whether users can log in with SAML SSO.
-              </DialogDescription>
-            </DialogHeader>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline" className="w-full">
+          <Settings />
+          Configure Enterprise Settings
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Configure Enterprise Settings</DialogTitle>
+          <DialogDescription>
+            Configure whether users can log in with SAML SSO.
+          </DialogDescription>
+        </DialogHeader>
 
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)}>
             <div className="space-y-4">
               <FormField
                 control={form.control}
@@ -179,9 +179,9 @@ function ConfigureEnterpriseSettingsButton() {
                   : "Save Changes"}
               </Button>
             </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </form>
-    </Form>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 }
