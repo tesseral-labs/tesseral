@@ -28,7 +28,7 @@ func newS3() (*testS3, func()) {
 					"root":              "containers3root",
 					"retainFilesOnExit": "false",
 				},
-				WaitingFor: wait.ForLog("Tomcat started on ports"),
+				WaitingFor: wait.ForLog("Started S3MockApplication"),
 			},
 			Started: true,
 		},

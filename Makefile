@@ -32,11 +32,13 @@ migrate:
 
 .PHONY: proto
 proto:
-	rm -rf internal/backend/gen internal/frontend/gen internal/intermediate/gen internal/common/gen console/src/gen vault-ui/src/gen
+	rm -rf internal/auditlog/gen internal/backend/gen internal/frontend/gen internal/intermediate/gen internal/common/gen console/src/gen vault-ui/src/gen
+	buf format internal/auditlog/proto -w
 	buf format internal/backend/proto -w
 	buf format internal/frontend/proto -w
 	buf format internal/intermediate/proto -w
 	buf format internal/common/proto -w
+	npx buf generate --template buf/buf.gen-auditlog.yaml
 	npx buf generate --template buf/buf.gen-backend.yaml
 	npx buf generate --template buf/buf.gen-frontend.yaml
 	npx buf generate --template buf/buf.gen-intermediate.yaml
@@ -44,8 +46,9 @@ proto:
 
 .PHONY: queries
 queries:
-	rm -rf internal/store/queries internal/backend/store/queries internal/frontend/store/queries internal/intermediate/store/queries internal/saml/store/queries internal/scim/store/queries internal/common/store/queries internal/wellknown/store/queries internal/configapi/store/queries
+	rm -rf internal/store/queries internal/auditlog/store/queries internal/backend/store/queries internal/frontend/store/queries internal/intermediate/store/queries internal/saml/store/queries internal/scim/store/queries internal/common/store/queries internal/wellknown/store/queries internal/configapi/store/queries
 	docker run --rm --volume "$$(pwd)/sqlc/queries.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
+	docker run --rm --volume "$$(pwd)/sqlc/queries-auditlog.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
 	docker run --rm --volume "$$(pwd)/sqlc/queries-backend.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
 	docker run --rm --volume "$$(pwd)/sqlc/queries-frontend.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
 	docker run --rm --volume "$$(pwd)/sqlc/queries-intermediate.sql:/work/queries.sql" backplane/pgformatter -i queries.sql

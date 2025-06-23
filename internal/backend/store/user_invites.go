@@ -13,6 +13,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/sesv2/types"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
@@ -104,7 +105,7 @@ func (s *Store) GetUserInvite(ctx context.Context, req *backendv1.GetUserInviteR
 }
 
 func (s *Store) CreateUserInvite(ctx context.Context, req *backendv1.CreateUserInviteRequest) (*backendv1.CreateUserInviteResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -168,11 +169,15 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *backendv1.CreateUserI
 		return nil, apierror.NewFailedPreconditionError("email daily quota exceeded", fmt.Errorf("email daily quota exceeded"))
 	}
 
-	userInvite := parseUserInvite(qUserInvite)
+	auditUserInvite, err := s.auditlogStore.GetUserInvite(ctx, tx, qUserInvite.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit log user invite: %w", err)
+	}
+
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.user_invites.create",
-		EventDetails: &backendv1.UserInviteCreated{
-			UserInvite: userInvite,
+		EventDetails: &auditlogv1.CreateUserInvite{
+			UserInvite: auditUserInvite,
 		},
 		OrganizationID: &qOrg.ID,
 		ResourceType:   queries.AuditLogEventResourceTypeUserInvite,
@@ -191,11 +196,11 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *backendv1.CreateUserI
 		}
 	}
 
-	return &backendv1.CreateUserInviteResponse{UserInvite: userInvite}, nil
+	return &backendv1.CreateUserInviteResponse{UserInvite: parseUserInvite(qUserInvite)}, nil
 }
 
 func (s *Store) DeleteUserInvite(ctx context.Context, req *backendv1.DeleteUserInviteRequest) (*backendv1.DeleteUserInviteResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -218,14 +223,19 @@ func (s *Store) DeleteUserInvite(ctx context.Context, req *backendv1.DeleteUserI
 		return nil, fmt.Errorf("get user invite: %w", err)
 	}
 
+	auditUserInvite, err := s.auditlogStore.GetUserInvite(ctx, tx, userInviteID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit log user invite: %w", err)
+	}
+
 	if err := q.DeleteUserInvite(ctx, userInviteID); err != nil {
 		return nil, fmt.Errorf("delete user invite: %w", err)
 	}
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.user_invites.delete",
-		EventDetails: &backendv1.UserInviteDeleted{
-			UserInvite: parseUserInvite(qUserInvite),
+		EventDetails: &auditlogv1.DeleteUserInvite{
+			UserInvite: auditUserInvite,
 		},
 		OrganizationID: &qUserInvite.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeUserInvite,
