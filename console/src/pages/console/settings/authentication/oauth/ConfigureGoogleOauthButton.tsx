@@ -116,12 +116,12 @@ export function ConfigureGoogleOAuthButton() {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Configure Google OAuth</DialogTitle>
-          <DialogDescription className="flex flex-col gap-2">
-            <span>
-              Configure Google OAuth settings for your project. You will need to
-              provide the Client ID and Client Secret obtained from your Google
-              OAuth application.
-            </span>
+          <DialogDescription>
+            Configure Google OAuth settings for your project. You will need to
+            provide the Client ID and Client Secret obtained from your Google
+            OAuth application.
+          </DialogDescription>
+          <div className="flex flex-col gap-2 text-muted-foreground text-sm">
             <Separator className="my-4" />
             <Label className="font-semibold">Callback URL</Label>
             <span>
@@ -135,15 +135,13 @@ export function ConfigureGoogleOAuthButton() {
                 Docs <ExternalLink className="inline size-3" />
               </Link>
             </span>
-            <span>
-              <ValueCopier
-                value={`https://${getProjectResponse?.project?.vaultDomain}/google-oauth-callback`}
-              />
-            </span>
-          </DialogDescription>
+            <ValueCopier
+              value={`https://${getProjectResponse?.project?.vaultDomain}/microsoft-oauth-callback`}
+            />
+          </div>
+          <Separator className="my-4" />
         </DialogHeader>
 
-        <Separator className="my-4" />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
             <div className="space-y-6">
