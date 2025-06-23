@@ -1525,6 +1525,50 @@ func (x *UnassignUserRole) GetUserRoleAssignment() *UserRoleAssignment {
 	return nil
 }
 
+type CreateSession struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Session       *Session               `protobuf:"bytes,1,opt,name=session,proto3" json:"session,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateSession) Reset() {
+	*x = CreateSession{}
+	mi := &file_tesseral_auditlog_v1_auditlog_proto_msgTypes[32]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateSession) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateSession) ProtoMessage() {}
+
+func (x *CreateSession) ProtoReflect() protoreflect.Message {
+	mi := &file_tesseral_auditlog_v1_auditlog_proto_msgTypes[32]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateSession.ProtoReflect.Descriptor instead.
+func (*CreateSession) Descriptor() ([]byte, []int) {
+	return file_tesseral_auditlog_v1_auditlog_proto_rawDescGZIP(), []int{32}
+}
+
+func (x *CreateSession) GetSession() *Session {
+	if x != nil {
+		return x.Session
+	}
+	return nil
+}
+
 var File_tesseral_auditlog_v1_auditlog_proto protoreflect.FileDescriptor
 
 var file_tesseral_auditlog_v1_auditlog_proto_rawDesc = string([]byte{
@@ -1758,22 +1802,27 @@ var file_tesseral_auditlog_v1_auditlog_proto_rawDesc = string([]byte{
 	0x64, 0x69, 0x74, 0x6c, 0x6f, 0x67, 0x2e, 0x76, 0x31, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x6f,
 	0x6c, 0x65, 0x41, 0x73, 0x73, 0x69, 0x67, 0x6e, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x12, 0x75, 0x73,
 	0x65, 0x72, 0x52, 0x6f, 0x6c, 0x65, 0x41, 0x73, 0x73, 0x69, 0x67, 0x6e, 0x6d, 0x65, 0x6e, 0x74,
-	0x42, 0xf4, 0x01, 0x0a, 0x18, 0x63, 0x6f, 0x6d, 0x2e, 0x74, 0x65, 0x73, 0x73, 0x65, 0x72, 0x61,
-	0x6c, 0x2e, 0x61, 0x75, 0x64, 0x69, 0x74, 0x6c, 0x6f, 0x67, 0x2e, 0x76, 0x31, 0x42, 0x0d, 0x41,
-	0x75, 0x64, 0x69, 0x74, 0x6c, 0x6f, 0x67, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x57,
-	0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x74, 0x65, 0x73, 0x73, 0x65,
-	0x72, 0x61, 0x6c, 0x2d, 0x6c, 0x61, 0x62, 0x73, 0x2f, 0x74, 0x65, 0x73, 0x73, 0x65, 0x72, 0x61,
-	0x6c, 0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x61, 0x75, 0x64, 0x69, 0x74,
-	0x6c, 0x6f, 0x67, 0x2f, 0x67, 0x65, 0x6e, 0x2f, 0x74, 0x65, 0x73, 0x73, 0x65, 0x72, 0x61, 0x6c,
-	0x2f, 0x61, 0x75, 0x64, 0x69, 0x74, 0x6c, 0x6f, 0x67, 0x2f, 0x76, 0x31, 0x3b, 0x61, 0x75, 0x64,
-	0x69, 0x74, 0x6c, 0x6f, 0x67, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x54, 0x41, 0x58, 0xaa, 0x02, 0x14,
-	0x54, 0x65, 0x73, 0x73, 0x65, 0x72, 0x61, 0x6c, 0x2e, 0x41, 0x75, 0x64, 0x69, 0x74, 0x6c, 0x6f,
-	0x67, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x14, 0x54, 0x65, 0x73, 0x73, 0x65, 0x72, 0x61, 0x6c, 0x5c,
-	0x41, 0x75, 0x64, 0x69, 0x74, 0x6c, 0x6f, 0x67, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x20, 0x54, 0x65,
-	0x73, 0x73, 0x65, 0x72, 0x61, 0x6c, 0x5c, 0x41, 0x75, 0x64, 0x69, 0x74, 0x6c, 0x6f, 0x67, 0x5c,
-	0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02,
-	0x16, 0x54, 0x65, 0x73, 0x73, 0x65, 0x72, 0x61, 0x6c, 0x3a, 0x3a, 0x41, 0x75, 0x64, 0x69, 0x74,
-	0x6c, 0x6f, 0x67, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x22, 0x48, 0x0a, 0x0d, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f,
+	0x6e, 0x12, 0x37, 0x0a, 0x07, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x74, 0x65, 0x73, 0x73, 0x65, 0x72, 0x61, 0x6c, 0x2e, 0x61, 0x75,
+	0x64, 0x69, 0x74, 0x6c, 0x6f, 0x67, 0x2e, 0x76, 0x31, 0x2e, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f,
+	0x6e, 0x52, 0x07, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x42, 0xf4, 0x01, 0x0a, 0x18, 0x63,
+	0x6f, 0x6d, 0x2e, 0x74, 0x65, 0x73, 0x73, 0x65, 0x72, 0x61, 0x6c, 0x2e, 0x61, 0x75, 0x64, 0x69,
+	0x74, 0x6c, 0x6f, 0x67, 0x2e, 0x76, 0x31, 0x42, 0x0d, 0x41, 0x75, 0x64, 0x69, 0x74, 0x6c, 0x6f,
+	0x67, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x57, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
+	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x74, 0x65, 0x73, 0x73, 0x65, 0x72, 0x61, 0x6c, 0x2d, 0x6c, 0x61,
+	0x62, 0x73, 0x2f, 0x74, 0x65, 0x73, 0x73, 0x65, 0x72, 0x61, 0x6c, 0x2f, 0x69, 0x6e, 0x74, 0x65,
+	0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x61, 0x75, 0x64, 0x69, 0x74, 0x6c, 0x6f, 0x67, 0x2f, 0x67, 0x65,
+	0x6e, 0x2f, 0x74, 0x65, 0x73, 0x73, 0x65, 0x72, 0x61, 0x6c, 0x2f, 0x61, 0x75, 0x64, 0x69, 0x74,
+	0x6c, 0x6f, 0x67, 0x2f, 0x76, 0x31, 0x3b, 0x61, 0x75, 0x64, 0x69, 0x74, 0x6c, 0x6f, 0x67, 0x76,
+	0x31, 0xa2, 0x02, 0x03, 0x54, 0x41, 0x58, 0xaa, 0x02, 0x14, 0x54, 0x65, 0x73, 0x73, 0x65, 0x72,
+	0x61, 0x6c, 0x2e, 0x41, 0x75, 0x64, 0x69, 0x74, 0x6c, 0x6f, 0x67, 0x2e, 0x56, 0x31, 0xca, 0x02,
+	0x14, 0x54, 0x65, 0x73, 0x73, 0x65, 0x72, 0x61, 0x6c, 0x5c, 0x41, 0x75, 0x64, 0x69, 0x74, 0x6c,
+	0x6f, 0x67, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x20, 0x54, 0x65, 0x73, 0x73, 0x65, 0x72, 0x61, 0x6c,
+	0x5c, 0x41, 0x75, 0x64, 0x69, 0x74, 0x6c, 0x6f, 0x67, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42,
+	0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x16, 0x54, 0x65, 0x73, 0x73, 0x65,
+	0x72, 0x61, 0x6c, 0x3a, 0x3a, 0x41, 0x75, 0x64, 0x69, 0x74, 0x6c, 0x6f, 0x67, 0x3a, 0x3a, 0x56,
+	0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 })
 
 var (
@@ -1788,7 +1837,7 @@ func file_tesseral_auditlog_v1_auditlog_proto_rawDescGZIP() []byte {
 	return file_tesseral_auditlog_v1_auditlog_proto_rawDescData
 }
 
-var file_tesseral_auditlog_v1_auditlog_proto_msgTypes = make([]protoimpl.MessageInfo, 32)
+var file_tesseral_auditlog_v1_auditlog_proto_msgTypes = make([]protoimpl.MessageInfo, 33)
 var file_tesseral_auditlog_v1_auditlog_proto_goTypes = []any{
 	(*AssignAPIKeyRole)(nil),                      // 0: tesseral.auditlog.v1.AssignAPIKeyRole
 	(*UnassignAPIKeyRole)(nil),                    // 1: tesseral.auditlog.v1.UnassignAPIKeyRole
@@ -1822,61 +1871,64 @@ var file_tesseral_auditlog_v1_auditlog_proto_goTypes = []any{
 	(*DeleteUserInvite)(nil),                      // 29: tesseral.auditlog.v1.DeleteUserInvite
 	(*AssignUserRole)(nil),                        // 30: tesseral.auditlog.v1.AssignUserRole
 	(*UnassignUserRole)(nil),                      // 31: tesseral.auditlog.v1.UnassignUserRole
-	(*APIKeyRoleAssignment)(nil),                  // 32: tesseral.auditlog.v1.APIKeyRoleAssignment
-	(*APIKey)(nil),                                // 33: tesseral.auditlog.v1.APIKey
-	(*Organization)(nil),                          // 34: tesseral.auditlog.v1.Organization
-	(*Passkey)(nil),                               // 35: tesseral.auditlog.v1.Passkey
-	(*Role)(nil),                                  // 36: tesseral.auditlog.v1.Role
-	(*SAMLConnection)(nil),                        // 37: tesseral.auditlog.v1.SAMLConnection
-	(*SCIMAPIKey)(nil),                            // 38: tesseral.auditlog.v1.SCIMAPIKey
-	(*User)(nil),                                  // 39: tesseral.auditlog.v1.User
-	(*UserInvite)(nil),                            // 40: tesseral.auditlog.v1.UserInvite
-	(*UserRoleAssignment)(nil),                    // 41: tesseral.auditlog.v1.UserRoleAssignment
+	(*CreateSession)(nil),                         // 32: tesseral.auditlog.v1.CreateSession
+	(*APIKeyRoleAssignment)(nil),                  // 33: tesseral.auditlog.v1.APIKeyRoleAssignment
+	(*APIKey)(nil),                                // 34: tesseral.auditlog.v1.APIKey
+	(*Organization)(nil),                          // 35: tesseral.auditlog.v1.Organization
+	(*Passkey)(nil),                               // 36: tesseral.auditlog.v1.Passkey
+	(*Role)(nil),                                  // 37: tesseral.auditlog.v1.Role
+	(*SAMLConnection)(nil),                        // 38: tesseral.auditlog.v1.SAMLConnection
+	(*SCIMAPIKey)(nil),                            // 39: tesseral.auditlog.v1.SCIMAPIKey
+	(*User)(nil),                                  // 40: tesseral.auditlog.v1.User
+	(*UserInvite)(nil),                            // 41: tesseral.auditlog.v1.UserInvite
+	(*UserRoleAssignment)(nil),                    // 42: tesseral.auditlog.v1.UserRoleAssignment
+	(*Session)(nil),                               // 43: tesseral.auditlog.v1.Session
 }
 var file_tesseral_auditlog_v1_auditlog_proto_depIdxs = []int32{
-	32, // 0: tesseral.auditlog.v1.AssignAPIKeyRole.api_key_role_assignment:type_name -> tesseral.auditlog.v1.APIKeyRoleAssignment
-	32, // 1: tesseral.auditlog.v1.UnassignAPIKeyRole.api_key_role_assignment:type_name -> tesseral.auditlog.v1.APIKeyRoleAssignment
-	33, // 2: tesseral.auditlog.v1.CreateAPIKey.api_key:type_name -> tesseral.auditlog.v1.APIKey
-	33, // 3: tesseral.auditlog.v1.UpdateAPIKey.api_key:type_name -> tesseral.auditlog.v1.APIKey
-	33, // 4: tesseral.auditlog.v1.UpdateAPIKey.previous_api_key:type_name -> tesseral.auditlog.v1.APIKey
-	33, // 5: tesseral.auditlog.v1.RevokeAPIKey.api_key:type_name -> tesseral.auditlog.v1.APIKey
-	33, // 6: tesseral.auditlog.v1.RevokeAPIKey.previous_api_key:type_name -> tesseral.auditlog.v1.APIKey
-	33, // 7: tesseral.auditlog.v1.DeleteAPIKey.api_key:type_name -> tesseral.auditlog.v1.APIKey
-	34, // 8: tesseral.auditlog.v1.CreateOrganization.organization:type_name -> tesseral.auditlog.v1.Organization
-	34, // 9: tesseral.auditlog.v1.UpdateOrganization.organization:type_name -> tesseral.auditlog.v1.Organization
-	34, // 10: tesseral.auditlog.v1.UpdateOrganization.previous_organization:type_name -> tesseral.auditlog.v1.Organization
-	34, // 11: tesseral.auditlog.v1.DeleteOrganization.organization:type_name -> tesseral.auditlog.v1.Organization
-	35, // 12: tesseral.auditlog.v1.CreatePasskey.passkey:type_name -> tesseral.auditlog.v1.Passkey
-	35, // 13: tesseral.auditlog.v1.UpdatePasskey.passkey:type_name -> tesseral.auditlog.v1.Passkey
-	35, // 14: tesseral.auditlog.v1.UpdatePasskey.previous_passkey:type_name -> tesseral.auditlog.v1.Passkey
-	35, // 15: tesseral.auditlog.v1.DeletePasskey.passkey:type_name -> tesseral.auditlog.v1.Passkey
-	36, // 16: tesseral.auditlog.v1.CreateRole.role:type_name -> tesseral.auditlog.v1.Role
-	36, // 17: tesseral.auditlog.v1.UpdateRole.role:type_name -> tesseral.auditlog.v1.Role
-	36, // 18: tesseral.auditlog.v1.UpdateRole.previous_role:type_name -> tesseral.auditlog.v1.Role
-	36, // 19: tesseral.auditlog.v1.DeleteRole.role:type_name -> tesseral.auditlog.v1.Role
-	37, // 20: tesseral.auditlog.v1.CreateSAMLConnection.saml_connection:type_name -> tesseral.auditlog.v1.SAMLConnection
-	37, // 21: tesseral.auditlog.v1.UpdateSAMLConnection.saml_connection:type_name -> tesseral.auditlog.v1.SAMLConnection
-	37, // 22: tesseral.auditlog.v1.UpdateSAMLConnection.previous_saml_connection:type_name -> tesseral.auditlog.v1.SAMLConnection
-	37, // 23: tesseral.auditlog.v1.DeleteSAMLConnection.saml_connection:type_name -> tesseral.auditlog.v1.SAMLConnection
-	38, // 24: tesseral.auditlog.v1.CreateSCIMAPIKey.scim_api_key:type_name -> tesseral.auditlog.v1.SCIMAPIKey
-	38, // 25: tesseral.auditlog.v1.UpdateSCIMAPIKey.scim_api_key:type_name -> tesseral.auditlog.v1.SCIMAPIKey
-	38, // 26: tesseral.auditlog.v1.UpdateSCIMAPIKey.previous_scim_api_key:type_name -> tesseral.auditlog.v1.SCIMAPIKey
-	38, // 27: tesseral.auditlog.v1.RevokeSCIMAPIKey.scim_api_key:type_name -> tesseral.auditlog.v1.SCIMAPIKey
-	38, // 28: tesseral.auditlog.v1.RevokeSCIMAPIKey.previous_scim_api_key:type_name -> tesseral.auditlog.v1.SCIMAPIKey
-	38, // 29: tesseral.auditlog.v1.DeleteSCIMAPIKey.scim_api_key:type_name -> tesseral.auditlog.v1.SCIMAPIKey
-	39, // 30: tesseral.auditlog.v1.CreateUser.user:type_name -> tesseral.auditlog.v1.User
-	39, // 31: tesseral.auditlog.v1.UpdateUser.user:type_name -> tesseral.auditlog.v1.User
-	39, // 32: tesseral.auditlog.v1.UpdateUser.previous_user:type_name -> tesseral.auditlog.v1.User
-	39, // 33: tesseral.auditlog.v1.DeleteUser.user:type_name -> tesseral.auditlog.v1.User
-	40, // 34: tesseral.auditlog.v1.CreateUserInvite.user_invite:type_name -> tesseral.auditlog.v1.UserInvite
-	40, // 35: tesseral.auditlog.v1.DeleteUserInvite.user_invite:type_name -> tesseral.auditlog.v1.UserInvite
-	41, // 36: tesseral.auditlog.v1.AssignUserRole.user_role_assignment:type_name -> tesseral.auditlog.v1.UserRoleAssignment
-	41, // 37: tesseral.auditlog.v1.UnassignUserRole.user_role_assignment:type_name -> tesseral.auditlog.v1.UserRoleAssignment
-	38, // [38:38] is the sub-list for method output_type
-	38, // [38:38] is the sub-list for method input_type
-	38, // [38:38] is the sub-list for extension type_name
-	38, // [38:38] is the sub-list for extension extendee
-	0,  // [0:38] is the sub-list for field type_name
+	33, // 0: tesseral.auditlog.v1.AssignAPIKeyRole.api_key_role_assignment:type_name -> tesseral.auditlog.v1.APIKeyRoleAssignment
+	33, // 1: tesseral.auditlog.v1.UnassignAPIKeyRole.api_key_role_assignment:type_name -> tesseral.auditlog.v1.APIKeyRoleAssignment
+	34, // 2: tesseral.auditlog.v1.CreateAPIKey.api_key:type_name -> tesseral.auditlog.v1.APIKey
+	34, // 3: tesseral.auditlog.v1.UpdateAPIKey.api_key:type_name -> tesseral.auditlog.v1.APIKey
+	34, // 4: tesseral.auditlog.v1.UpdateAPIKey.previous_api_key:type_name -> tesseral.auditlog.v1.APIKey
+	34, // 5: tesseral.auditlog.v1.RevokeAPIKey.api_key:type_name -> tesseral.auditlog.v1.APIKey
+	34, // 6: tesseral.auditlog.v1.RevokeAPIKey.previous_api_key:type_name -> tesseral.auditlog.v1.APIKey
+	34, // 7: tesseral.auditlog.v1.DeleteAPIKey.api_key:type_name -> tesseral.auditlog.v1.APIKey
+	35, // 8: tesseral.auditlog.v1.CreateOrganization.organization:type_name -> tesseral.auditlog.v1.Organization
+	35, // 9: tesseral.auditlog.v1.UpdateOrganization.organization:type_name -> tesseral.auditlog.v1.Organization
+	35, // 10: tesseral.auditlog.v1.UpdateOrganization.previous_organization:type_name -> tesseral.auditlog.v1.Organization
+	35, // 11: tesseral.auditlog.v1.DeleteOrganization.organization:type_name -> tesseral.auditlog.v1.Organization
+	36, // 12: tesseral.auditlog.v1.CreatePasskey.passkey:type_name -> tesseral.auditlog.v1.Passkey
+	36, // 13: tesseral.auditlog.v1.UpdatePasskey.passkey:type_name -> tesseral.auditlog.v1.Passkey
+	36, // 14: tesseral.auditlog.v1.UpdatePasskey.previous_passkey:type_name -> tesseral.auditlog.v1.Passkey
+	36, // 15: tesseral.auditlog.v1.DeletePasskey.passkey:type_name -> tesseral.auditlog.v1.Passkey
+	37, // 16: tesseral.auditlog.v1.CreateRole.role:type_name -> tesseral.auditlog.v1.Role
+	37, // 17: tesseral.auditlog.v1.UpdateRole.role:type_name -> tesseral.auditlog.v1.Role
+	37, // 18: tesseral.auditlog.v1.UpdateRole.previous_role:type_name -> tesseral.auditlog.v1.Role
+	37, // 19: tesseral.auditlog.v1.DeleteRole.role:type_name -> tesseral.auditlog.v1.Role
+	38, // 20: tesseral.auditlog.v1.CreateSAMLConnection.saml_connection:type_name -> tesseral.auditlog.v1.SAMLConnection
+	38, // 21: tesseral.auditlog.v1.UpdateSAMLConnection.saml_connection:type_name -> tesseral.auditlog.v1.SAMLConnection
+	38, // 22: tesseral.auditlog.v1.UpdateSAMLConnection.previous_saml_connection:type_name -> tesseral.auditlog.v1.SAMLConnection
+	38, // 23: tesseral.auditlog.v1.DeleteSAMLConnection.saml_connection:type_name -> tesseral.auditlog.v1.SAMLConnection
+	39, // 24: tesseral.auditlog.v1.CreateSCIMAPIKey.scim_api_key:type_name -> tesseral.auditlog.v1.SCIMAPIKey
+	39, // 25: tesseral.auditlog.v1.UpdateSCIMAPIKey.scim_api_key:type_name -> tesseral.auditlog.v1.SCIMAPIKey
+	39, // 26: tesseral.auditlog.v1.UpdateSCIMAPIKey.previous_scim_api_key:type_name -> tesseral.auditlog.v1.SCIMAPIKey
+	39, // 27: tesseral.auditlog.v1.RevokeSCIMAPIKey.scim_api_key:type_name -> tesseral.auditlog.v1.SCIMAPIKey
+	39, // 28: tesseral.auditlog.v1.RevokeSCIMAPIKey.previous_scim_api_key:type_name -> tesseral.auditlog.v1.SCIMAPIKey
+	39, // 29: tesseral.auditlog.v1.DeleteSCIMAPIKey.scim_api_key:type_name -> tesseral.auditlog.v1.SCIMAPIKey
+	40, // 30: tesseral.auditlog.v1.CreateUser.user:type_name -> tesseral.auditlog.v1.User
+	40, // 31: tesseral.auditlog.v1.UpdateUser.user:type_name -> tesseral.auditlog.v1.User
+	40, // 32: tesseral.auditlog.v1.UpdateUser.previous_user:type_name -> tesseral.auditlog.v1.User
+	40, // 33: tesseral.auditlog.v1.DeleteUser.user:type_name -> tesseral.auditlog.v1.User
+	41, // 34: tesseral.auditlog.v1.CreateUserInvite.user_invite:type_name -> tesseral.auditlog.v1.UserInvite
+	41, // 35: tesseral.auditlog.v1.DeleteUserInvite.user_invite:type_name -> tesseral.auditlog.v1.UserInvite
+	42, // 36: tesseral.auditlog.v1.AssignUserRole.user_role_assignment:type_name -> tesseral.auditlog.v1.UserRoleAssignment
+	42, // 37: tesseral.auditlog.v1.UnassignUserRole.user_role_assignment:type_name -> tesseral.auditlog.v1.UserRoleAssignment
+	43, // 38: tesseral.auditlog.v1.CreateSession.session:type_name -> tesseral.auditlog.v1.Session
+	39, // [39:39] is the sub-list for method output_type
+	39, // [39:39] is the sub-list for method input_type
+	39, // [39:39] is the sub-list for extension type_name
+	39, // [39:39] is the sub-list for extension extendee
+	0,  // [0:39] is the sub-list for field type_name
 }
 
 func init() { file_tesseral_auditlog_v1_auditlog_proto_init() }
@@ -1891,7 +1943,7 @@ func file_tesseral_auditlog_v1_auditlog_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_tesseral_auditlog_v1_auditlog_proto_rawDesc), len(file_tesseral_auditlog_v1_auditlog_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   32,
+			NumMessages:   33,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

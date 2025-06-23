@@ -303,6 +303,31 @@ func (q *Queries) GetSCIMAPIKey(ctx context.Context, id uuid.UUID) (ScimApiKey, 
 	return i, err
 }
 
+const getSession = `-- name: GetSession :one
+SELECT
+    id, user_id, create_time, expire_time, refresh_token_sha256, impersonator_user_id, last_active_time, primary_auth_factor
+FROM
+    sessions
+WHERE
+    id = $1
+`
+
+func (q *Queries) GetSession(ctx context.Context, id uuid.UUID) (Session, error) {
+	row := q.db.QueryRow(ctx, getSession, id)
+	var i Session
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.RefreshTokenSha256,
+		&i.ImpersonatorUserID,
+		&i.LastActiveTime,
+		&i.PrimaryAuthFactor,
+	)
+	return i, err
+}
+
 const getUser = `-- name: GetUser :one
 SELECT
     id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id

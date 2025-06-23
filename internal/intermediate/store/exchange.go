@@ -11,6 +11,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/svix/svix-webhooks/go/models"
+	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
 	intermediatev1 "github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1"
@@ -22,7 +23,7 @@ const sessionDuration = time.Hour * 24 * 7
 const relayedSessionTokenDuration = time.Minute
 
 func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *intermediatev1.ExchangeIntermediateSessionForSessionRequest) (*intermediatev1.ExchangeIntermediateSessionForSessionResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -91,10 +92,15 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 			return nil, fmt.Errorf("create user: %w", err)
 		}
 
+		auditUser, err := s.auditlogStore.GetUser(ctx, tx, qNewUser.ID)
+		if err != nil {
+			return nil, fmt.Errorf("get audit user: %w", err)
+		}
+
 		if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 			EventName: "tesseral.users.create",
-			EventDetails: &intermediatev1.UserCreated{
-				User: parseUser(qNewUser),
+			EventDetails: &auditlogv1.CreateUser{
+				User: auditUser,
 			},
 			OrganizationID: &qOrg.ID,
 			ResourceType:   queries.AuditLogEventResourceTypeUser,
@@ -115,6 +121,12 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 
 		if detailsUpdated {
 			slog.InfoContext(ctx, "update_user")
+
+			auditPreviousUser, err := s.auditlogStore.GetUser(ctx, tx, qUser.ID)
+			if err != nil {
+				return nil, fmt.Errorf("get audit user: %w", err)
+			}
+
 			qUpdatedUser, err := q.UpdateUserDetails(ctx, queries.UpdateUserDetailsParams{
 				ID:                qUser.ID,
 				GithubUserID:      qIntermediateSession.GithubUserID,
@@ -128,11 +140,16 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 				return nil, fmt.Errorf("update user: %w", err)
 			}
 
+			auditUser, err := s.auditlogStore.GetUser(ctx, tx, qUser.ID)
+			if err != nil {
+				return nil, fmt.Errorf("get audit user: %w", err)
+			}
+
 			if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 				EventName: "tesseral.users.update",
-				EventDetails: &intermediatev1.UserUpdated{
-					User:         parseUser(qUpdatedUser),
-					PreviousUser: parseUser(derefOrEmpty(qUser)),
+				EventDetails: &auditlogv1.UpdateUser{
+					User:         auditUser,
+					PreviousUser: auditPreviousUser,
 				},
 				OrganizationID: &qOrg.ID,
 				ResourceType:   queries.AuditLogEventResourceTypeUser,
@@ -233,9 +250,14 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		relayedSessionToken = idformat.RelayedSessionToken.Format(relayedSessionTokenUUID)
 	}
 
+	auditSession, err := s.auditlogStore.GetSession(ctx, tx, qSession.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit session: %w", err)
+	}
+
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName:      "tesseral.sessions.create",
-		EventDetails:   parseSessionEventDetails(qSession, nil),
+		EventDetails:   &auditlogv1.CreateSession{Session: auditSession},
 		OrganizationID: &qOrg.ID,
 		ResourceType:   queries.AuditLogEventResourceTypeSession,
 		ResourceID:     &qSession.ID,

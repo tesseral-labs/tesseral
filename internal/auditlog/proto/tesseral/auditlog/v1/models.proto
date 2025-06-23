@@ -107,3 +107,24 @@ message User {
   optional string display_name = 10;
   optional string profile_picture_url = 11;
 }
+
+message Session {
+  string id = 1;
+  string user_id = 2;
+  bool revoked = 3;
+  google.protobuf.Timestamp create_time = 4;
+  google.protobuf.Timestamp last_active_time = 5;
+  google.protobuf.Timestamp expire_time = 6;
+  PrimaryAuthFactor primary_auth_factor = 7;
+  string impersonator_email = 8;
+}
+
+enum PrimaryAuthFactor {
+  PRIMARY_AUTH_FACTOR_UNSPECIFIED = 0;
+  PRIMARY_AUTH_FACTOR_EMAIL = 1;
+  PRIMARY_AUTH_FACTOR_GOOGLE = 2;
+  PRIMARY_AUTH_FACTOR_MICROSOFT = 3;
+  PRIMARY_AUTH_FACTOR_GITHUB = 6;
+  PRIMARY_AUTH_FACTOR_SAML = 4;
+  PRIMARY_AUTH_FACTOR_IMPERSONATION = 5;
+}

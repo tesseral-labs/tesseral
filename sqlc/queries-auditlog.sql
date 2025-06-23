@@ -102,3 +102,10 @@ FROM
 WHERE
     id = $1;
 
+-- name: GetSession :one
+SELECT
+    *
+FROM
+    sessions
+WHERE
+    id = $1;

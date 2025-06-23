@@ -143,3 +143,7 @@ message AssignUserRole {
 message UnassignUserRole {
   UserRoleAssignment user_role_assignment = 1;
 }
+
+message CreateSession {
+  Session session = 1;
+}

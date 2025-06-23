@@ -32,7 +32,7 @@ type Store struct {
 	sessionSigningKeyKmsKeyID             string
 	authenticatorAppSecretsKMSKeyID       string
 	svixClient                            *svix.Svix
-	auditlogStore                         auditlogstore.Store
+	auditlogStore                         *auditlogstore.Store
 }
 
 type NewStoreParams struct {
@@ -46,7 +46,7 @@ type NewStoreParams struct {
 	SessionSigningKeyKmsKeyID             string
 	AuthenticatorAppSecretsKMSKeyID       string
 	SvixClient                            *svix.Svix
-	AuditlogStore                         auditlogstore.Store
+	AuditlogStore                         *auditlogstore.Store
 }
 
 func New(p NewStoreParams) *Store {

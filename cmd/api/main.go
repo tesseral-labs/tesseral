@@ -240,7 +240,7 @@ func main() {
 		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
 		AuthenticatorAppSecretsKMSKeyID:       config.AuthenticatorAppSecretsKMSKeyID,
 		SvixClient:                            svixClient,
-		AuditlogStore:                         auditlogStore,
+		AuditlogStore:                         &auditlogStore,
 	})
 	frontendConnectPath, frontendConnectHandler := frontendv1connect.NewFrontendServiceHandler(
 		&frontendservice.Service{
@@ -283,6 +283,7 @@ func main() {
 		S3UserContentBucketName:               config.S3UserContentBucketName,
 		StripeClient:                          stripeClient,
 		SvixClient:                            svixClient,
+		AuditlogStore:                         &auditlogStore,
 	})
 	intermediateConnectPath, intermediateConnectHandler := intermediatev1connect.NewIntermediateServiceHandler(
 		&intermediateservice.Service{

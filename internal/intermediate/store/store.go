@@ -13,6 +13,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	stripeclient "github.com/stripe/stripe-go/v82/client"
 	svix "github.com/svix/svix-webhooks/go"
+	auditlogstore "github.com/tesseral-labs/tesseral/internal/auditlog/store"
 	"github.com/tesseral-labs/tesseral/internal/githuboauth"
 	"github.com/tesseral-labs/tesseral/internal/googleoauth"
 	"github.com/tesseral-labs/tesseral/internal/hibp"
@@ -46,6 +47,7 @@ type Store struct {
 	s3UserContentBucketName               string
 	stripeClient                          *stripeclient.API
 	svixClient                            *svix.Svix
+	auditlogStore                         *auditlogstore.Store
 }
 
 type NewStoreParams struct {
@@ -70,6 +72,7 @@ type NewStoreParams struct {
 	S3UserContentBucketName               string
 	StripeClient                          *stripeclient.API
 	SvixClient                            *svix.Svix
+	AuditlogStore                         *auditlogstore.Store
 }
 
 func New(p NewStoreParams) *Store {
@@ -100,6 +103,7 @@ func New(p NewStoreParams) *Store {
 		s3UserContentBucketName:               p.S3UserContentBucketName,
 		stripeClient:                          p.StripeClient,
 		svixClient:                            p.SvixClient,
+		auditlogStore:                         p.AuditlogStore,
 	}
 
 	return store
