@@ -408,28 +408,10 @@ func main() {
 
 	slog.Info("serve")
 	if config.RunAsLambda {
-		// if running as lambda, flush traces at the end of every request; we
-		// may be paused between http requests
-		if tracerProvider != nil {
-			serve = withOtelFlush(serve, tracerProvider)
-		}
 		lambda.Start(httplambda.Handler(serve))
 	} else {
 		if err := http.ListenAndServe(config.ServeAddr, serve); err != nil {
 			panic(err)
 		}
 	}
-}
-
-func withOtelFlush(h http.Handler, tp *sdktrace.TracerProvider) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		h.ServeHTTP(w, r)
-
-		// Force flush after the request
-		slog.InfoContext(r.Context(), "force_flush")
-		if err := tp.ForceFlush(r.Context()); err != nil {
-			slog.ErrorContext(r.Context(), "force_flush", "err", err)
-		}
-		slog.InfoContext(r.Context(), "force_flush_done")
-	})
 }
