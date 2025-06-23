@@ -40,7 +40,7 @@
     "@radix-ui/react-tabs": "^1.1.12",
     "@radix-ui/react-tooltip": "^1.2.7",
     "@sentry/react": "^9.31.0",
-    "@tanstack/react-query": "^5.81.2",
+    "@tanstack/react-query": "~5.79.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
