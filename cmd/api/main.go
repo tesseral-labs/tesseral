@@ -372,9 +372,6 @@ func main() {
 	}))
 
 	mux.Handle("/api/internal/panic", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		sc := trace.SpanContextFromContext(r.Context())
-		slog.InfoContext(r.Context(), "span_ctx_debug", "trace_id", sc.TraceID().String(), "span_id", sc.SpanID().String(), "trace_flags", sc.TraceFlags().String(), "trace_state", sc.TraceState().String())
-
 		panic("deliberate panic")
 	}))
 
