@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"crypto/sha256"
+	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
@@ -71,7 +72,7 @@ func (s *Store) GetSCIMAPIKey(ctx context.Context, req *frontendv1.GetSCIMAPIKey
 		ID:             scimAPIKeyID,
 	})
 	if err != nil {
-		if err == pgx.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("scim api key not found", fmt.Errorf("get scim api key: %w", err))
 		}
 
@@ -95,7 +96,7 @@ func (s *Store) CreateSCIMAPIKey(ctx context.Context, req *frontendv1.CreateSCIM
 	// authz
 	qOrg, err := q.GetOrganizationByID(ctx, authn.OrganizationID(ctx))
 	if err != nil {
-		if err == pgx.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewFailedPreconditionError("organization not found", fmt.Errorf("get organization by id: %w", err))
 		}
 
@@ -161,7 +162,7 @@ func (s *Store) UpdateSCIMAPIKey(ctx context.Context, req *frontendv1.UpdateSCIM
 		ID:             scimAPIKeyID,
 	})
 	if err != nil {
-		if err == pgx.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("scim api key not found", fmt.Errorf("get scim api key: %w", err))
 		}
 		return nil, fmt.Errorf("get scim api key: %w", err)
@@ -223,7 +224,7 @@ func (s *Store) DeleteSCIMAPIKey(ctx context.Context, req *frontendv1.DeleteSCIM
 		ID:             scimAPIKeyID,
 	})
 	if err != nil {
-		if err == pgx.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("scim api key not found", fmt.Errorf("get scim api key: %w", err))
 		}
 
@@ -278,7 +279,7 @@ func (s *Store) RevokeSCIMAPIKey(ctx context.Context, req *frontendv1.RevokeSCIM
 		ID:             scimAPIKeyID,
 	})
 	if err != nil {
-		if err == pgx.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("scim api key not found", fmt.Errorf("get scim api key: %w", err))
 		}
 
