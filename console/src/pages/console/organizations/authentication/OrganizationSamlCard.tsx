@@ -151,7 +151,7 @@ export function OrganizationSamlCard() {
               <FormField
                 control={form.control}
                 name="domains"
-                render={({ field }: { field: any }) => (
+                render={({ field }) => (
                   <FormItem>
                     <FormLabel>SAML / SCIM Domains</FormLabel>
                     <FormDescription>
