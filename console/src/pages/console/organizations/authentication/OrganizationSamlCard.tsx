@@ -7,6 +7,7 @@ import { Link, useParams } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { InputTags } from "@/components/core/InputTags";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,6 +19,7 @@ import {
 } from "@/components/ui/card";
 import {
   Form,
+  FormControl,
   FormDescription,
   FormField,
   FormItem,
@@ -27,11 +29,14 @@ import {
 import { Switch } from "@/components/ui/switch";
 import {
   getOrganization,
+  getOrganizationDomains,
   getProject,
+  updateOrganizationDomains,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { updateOrganization } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 
 const schema = z.object({
+  domains: z.array(z.string()).optional(),
   logInWithSaml: z.boolean().default(false),
 });
 
@@ -40,12 +45,21 @@ export function OrganizationSamlCard() {
   const { data: getOrganizationResponse, refetch } = useQuery(getOrganization, {
     id: organizationId,
   });
+  const { data: getOrganizationDomainsResponse, refetch: refetchDomains } =
+    useQuery(getOrganizationDomains, {
+      organizationId: organizationId,
+    });
   const { data: getProjectResponse } = useQuery(getProject);
   const updateOrganizationMutation = useMutation(updateOrganization);
+  const updateOrganizationDomainsMutation = useMutation(
+    updateOrganizationDomains,
+  );
 
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
+      domains:
+        getOrganizationDomainsResponse?.organizationDomains?.domains || [],
       logInWithSaml:
         getOrganizationResponse?.organization?.logInWithSaml || false,
     },
@@ -58,18 +72,28 @@ export function OrganizationSamlCard() {
         logInWithSaml: data.logInWithSaml,
       },
     });
+    await updateOrganizationDomainsMutation.mutateAsync({
+      organizationId: organizationId,
+      organizationDomains: {
+        domains: data.domains || [],
+      },
+    });
     await refetch();
+    await refetchDomains();
     form.reset();
     toast.success("SAML configuration updated successfully.");
   }
 
   useEffect(() => {
-    if (getOrganizationResponse) {
+    if (getOrganizationResponse && getOrganizationDomainsResponse) {
       form.reset({
-        logInWithSaml: getOrganizationResponse.organization?.logInWithSaml,
+        logInWithSaml:
+          getOrganizationResponse.organization?.logInWithSaml || false,
+        domains:
+          getOrganizationDomainsResponse.organizationDomains?.domains || [],
       });
     }
-  }, [getOrganizationResponse, form]);
+  }, [getOrganizationResponse, getOrganizationDomainsResponse, form]);
 
   return (
     <Form {...form}>
@@ -104,11 +128,13 @@ export function OrganizationSamlCard() {
                         </FormDescription>
                         <FormMessage />
                       </div>
-                      <Switch
-                        id="logInWithSaml"
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
+                      <FormControl>
+                        <Switch
+                          id="logInWithSaml"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
                     </FormItem>
                   )}
                 />
@@ -121,6 +147,30 @@ export function OrganizationSamlCard() {
                   </div>
                 </>
               )}
+
+              <FormField
+                control={form.control}
+                name="domains"
+                render={({ field }: { field: any }) => (
+                  <FormItem>
+                    <FormLabel>SAML / SCIM Domains</FormLabel>
+                    <FormDescription>
+                      SAML and SCIM users must have emails from this list of
+                      domains.
+                    </FormDescription>
+                    <FormControl>
+                      <InputTags
+                        className="max-w-96"
+                        placeholder="example.com"
+                        {...field}
+                        value={field.value || []}
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
           </CardContent>
           <CardFooter className="mt-4">
