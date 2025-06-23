@@ -1,12 +1,13 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoaderCircle, Settings } from "lucide-react";
+import { ExternalLink, LoaderCircle, Settings } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { ValueCopier } from "@/components/core/ValueCopier";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -27,6 +28,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import {
   getProject,
@@ -125,10 +128,6 @@ export function ConfigureMicrosoftOAuthButton() {
     }
   }, [getProjectResponse, form]);
 
-  const callbackUrl =
-    getProjectResponse &&
-    `https://${getProjectResponse.project?.vaultDomain}/microsoft-oauth-callback`;
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -140,25 +139,33 @@ export function ConfigureMicrosoftOAuthButton() {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Configure Microsoft OAuth</DialogTitle>
-          <DialogDescription>
-            Configure Microsoft OAuth settings for your project. You will need
-            to provide the Client ID and Client Secret obtained from your
-            Microsoft OAuth application.
-            <br />
-            <br />
-            For instructions on how to set up a Microsoft OAuth application,
-            please refer to the{" "}
-            <Link
-              to="https://tesseral.com/docs/login-methods/primary-factors/log-in-with-microsoft"
-              target="_blank"
-              className="underline"
-            >
-              documentation
-            </Link>
-            .
+          <DialogDescription className="flex flex-col gap-2">
+            <span>
+              Configure Microsoft OAuth settings for your project. You will need
+              to provide the Client ID and Client Secret obtained from your
+              Microsoft OAuth application.
+            </span>
+            <Separator className="my-4" />
+            <Label className="font-semibold">Callback URL</Label>
+            <span>
+              Use this as the Redirect URI in your Microsoft app registration.{" "}
+              <Link
+                to="https://tesseral.com/docs/login-methods/primary-factors/log-in-with-microsoft"
+                target="_blank"
+                className="underline"
+              >
+                Docs <ExternalLink className="inline size-3" />
+              </Link>
+            </span>
+            <span>
+              <ValueCopier
+                value={`https://${getProjectResponse?.project?.vaultDomain}/microsoft-oauth-callback`}
+              />
+            </span>
           </DialogDescription>
         </DialogHeader>
 
+        <Separator className="my-4" />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
             <div className="space-y-6">
@@ -189,7 +196,7 @@ export function ConfigureMicrosoftOAuthButton() {
                 name="microsoftOauthClientId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel></FormLabel>
+                    <FormLabel>Client ID</FormLabel>
                     <FormDescription>
                       Your company's Microsoft OAuth Client ID.
                     </FormDescription>
@@ -208,7 +215,7 @@ export function ConfigureMicrosoftOAuthButton() {
                 name="microsoftOauthClientSecret"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel></FormLabel>
+                    <FormLabel>Client Secret</FormLabel>
                     <FormDescription>
                       Your company's Microsoft OAuth Client Secret.
                     </FormDescription>
@@ -223,20 +230,6 @@ export function ConfigureMicrosoftOAuthButton() {
                   </FormItem>
                 )}
               />
-              <div className="mt-4 space-y-2">
-                <FormLabel>Callback URL</FormLabel>
-                <FormDescription>
-                  Use this as the Redirect URI in your Microsoft app
-                  registration.
-                </FormDescription>
-                <Input
-                  value={callbackUrl || ""}
-                  readOnly
-                  tabIndex={0}
-                  className="bg-muted text-muted-foreground cursor-default"
-                  onFocus={(e) => e.target.select()}
-                />
-              </div>
             </div>
 
             <DialogFooter className="mt-8">
