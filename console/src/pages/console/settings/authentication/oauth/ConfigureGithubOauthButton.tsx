@@ -116,10 +116,6 @@ export function ConfigureGithubOAuthButton() {
     }
   }, [getProjectResponse, form]);
 
-  const callbackUrl =
-    getProjectResponse &&
-    `https://${getProjectResponse.project?.vaultDomain}/github-oauth-callback`;
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -151,7 +147,7 @@ export function ConfigureGithubOAuthButton() {
               </Link>
             </span>
             <ValueCopier
-              value={`https://${getProjectResponse?.project?.vaultDomain}/microsoft-oauth-callback`}
+              value={`https://${getProjectResponse?.project?.vaultDomain}/github-oauth-callback`}
             />
           </div>
           <Separator className="my-4" />

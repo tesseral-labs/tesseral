@@ -136,7 +136,7 @@ export function ConfigureGoogleOAuthButton() {
               </Link>
             </span>
             <ValueCopier
-              value={`https://${getProjectResponse?.project?.vaultDomain}/microsoft-oauth-callback`}
+              value={`https://${getProjectResponse?.project?.vaultDomain}/google-oauth-callback`}
             />
           </div>
           <Separator className="my-4" />
