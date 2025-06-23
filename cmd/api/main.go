@@ -427,7 +427,7 @@ func withOtelFlush(h http.Handler, tp *sdktrace.TracerProvider) http.Handler {
 
 		// Force flush after the request
 		if err := tp.ForceFlush(r.Context()); err != nil {
-			panic(fmt.Errorf("force flush: %w", err))
+			slog.ErrorContext(r.Context(), "force_flush", "err", err)
 		}
 	})
 }
