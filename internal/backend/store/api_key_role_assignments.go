@@ -112,7 +112,7 @@ func (s *Store) DeleteAPIKeyRoleAssignment(ctx context.Context, req *backendv1.D
 		ProjectID: authn.ProjectID(ctx),
 	})
 	if err != nil {
-		if err == pgx.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("api key role assignment not found", fmt.Errorf("get api key role assignment: %w", err))
 		}
 		return nil, fmt.Errorf("get api key role assignment: %w", err)
