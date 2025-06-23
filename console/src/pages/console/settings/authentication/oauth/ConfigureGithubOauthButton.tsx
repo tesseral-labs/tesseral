@@ -3,9 +3,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircle, Settings } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { ValueCopier } from "@/components/core/ValueCopier";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -112,6 +114,10 @@ export function ConfigureGithubOAuthButton() {
     }
   }, [getProjectResponse, form]);
 
+  const callbackUrl =
+    getProjectResponse &&
+    `https://${getProjectResponse.project?.vaultDomain}/github-oauth-callback`;
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -127,6 +133,18 @@ export function ConfigureGithubOAuthButton() {
             Configure GitHub OAuth settings for your project. You will need to
             provide the Client ID and Client Secret obtained from your GitHub
             OAuth application.
+            <br />
+            <br />
+            For instructions on how to set up a GitHub OAuth application, please
+            refer to the{" "}
+            <Link
+              to="https://tesseral.com/docs/login-methods/primary-factors/log-in-with-github"
+              target="_blank"
+              className="underline"
+            >
+              documentation
+            </Link>
+            .
           </DialogDescription>
         </DialogHeader>
 
@@ -191,6 +209,20 @@ export function ConfigureGithubOAuthButton() {
                   </FormItem>
                 )}
               />
+              <div className="mt-4 space-y-2">
+                <FormLabel>Callback URL</FormLabel>
+                <FormDescription>
+                  Use this as the Authorization callback URL in your GitHub
+                  OAuth app settings.
+                </FormDescription>
+                <Input
+                  value={callbackUrl || ""}
+                  readOnly
+                  tabIndex={0}
+                  className="bg-muted text-muted-foreground cursor-default"
+                  onFocus={(e) => e.target.select()}
+                />
+              </div>
             </div>
 
             <DialogFooter className="mt-8">
