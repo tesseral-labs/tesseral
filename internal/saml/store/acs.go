@@ -55,7 +55,7 @@ func (s *Store) GetSAMLConnectionACSData(ctx context.Context, samlConnectionID s
 		panic(fmt.Errorf("parse idp x509 certificate: %w", err))
 	}
 
-	spEntityID := fmt.Sprintf("https://%s/api/saml/v1/%s", qProject.VaultDomain, samlConnectionID) // todo
+	spEntityID := fmt.Sprintf("https://%s/api/saml/v1/%s", qProject.VaultDomain, samlConnectionID)
 
 	organizationDomains, err := q.GetOrganizationDomains(ctx, qSAMLConnection.OrganizationID)
 	if err != nil {

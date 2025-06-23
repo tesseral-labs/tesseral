@@ -26,6 +26,11 @@ func (s *Store) GetSAMLConnectionInitData(ctx context.Context, samlConnectionID 
 		return nil, fmt.Errorf("parse saml connection id: %w", err)
 	}
 
+	qProject, err := q.GetProject(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project: %w", err)
+	}
+
 	qSAMLConnection, err := q.GetSAMLConnection(ctx, queries.GetSAMLConnectionParams{
 		ProjectID: authn.ProjectID(ctx),
 		ID:        samlConnectionUUID,
@@ -34,7 +39,7 @@ func (s *Store) GetSAMLConnectionInitData(ctx context.Context, samlConnectionID 
 		return nil, fmt.Errorf("get saml connection: %w", err)
 	}
 
-	spEntityID := fmt.Sprintf("http://localhost:3001/saml/v1/%s", samlConnectionID) // todo
+	spEntityID := fmt.Sprintf("https://%s/api/saml/v1/%s", qProject.VaultDomain, samlConnectionID)
 
 	return &SAMLConnectionInitData{
 		SPEntityID:     spEntityID,
