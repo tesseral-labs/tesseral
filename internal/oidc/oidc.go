@@ -37,7 +37,9 @@ func (c *Client) GetConfiguration(ctx context.Context, configURL string) (*Confi
 	if err != nil {
 		return nil, fmt.Errorf("fetch OIDC configuration: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("fetch OIDC configuration: unexpected status code %d", resp.StatusCode)
@@ -91,7 +93,9 @@ func (c *Client) ExchangeCode(ctx context.Context, req ExchangeCodeRequest) (*Ex
 	if err != nil {
 		return nil, fmt.Errorf("send token request: %w", err)
 	}
-	defer httpResponse.Body.Close()
+	defer func() {
+		_ = httpResponse.Body.Close()
+	}()
 	if httpResponse.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(httpResponse.Body)
 		return nil, fmt.Errorf("OIDC token exchange failed: %s\n%s", httpResponse.Status, body)
