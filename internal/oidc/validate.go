@@ -55,7 +55,9 @@ func (c *Client) fetchJWKS(ctx context.Context, jwksURI string) (*jwks, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch JWKS: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("received non-200 status code fetching JWKS: %s", resp.Status)
