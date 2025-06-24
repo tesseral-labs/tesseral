@@ -66,6 +66,10 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 		return nil, apierror.NewPermissionDeniedError("log in with saml is not enabled for this project", fmt.Errorf("log in with saml is not enabled for this project"))
 	}
 
+	if derefOrEmpty(req.Organization.LogInWithOidc) && !qProject.LogInWithOidc {
+		return nil, apierror.NewPermissionDeniedError("log in with oidc is not enabled for this project", fmt.Errorf("log in with oidc is not enabled for this project"))
+	}
+
 	if derefOrEmpty(req.Organization.LogInWithAuthenticatorApp) && !qProject.LogInWithAuthenticatorApp {
 		return nil, apierror.NewPermissionDeniedError("log in with authenticator app is not enabled for this project", fmt.Errorf("log in with authenticator app is not enabled for this project"))
 	}
@@ -89,6 +93,7 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 		LogInWithEmail:            derefOrEmpty(req.Organization.LogInWithEmail),
 		LogInWithPassword:         derefOrEmpty(req.Organization.LogInWithPassword),
 		LogInWithSaml:             derefOrEmpty(req.Organization.LogInWithSaml),
+		LogInWithOidc:             derefOrEmpty(req.Organization.LogInWithOidc),
 		LogInWithAuthenticatorApp: derefOrEmpty(req.Organization.LogInWithAuthenticatorApp),
 		LogInWithPasskey:          derefOrEmpty(req.Organization.LogInWithPasskey),
 		ScimEnabled:               scimEnabled,
@@ -306,6 +311,15 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 		}
 
 		updates.LogInWithSaml = *req.Organization.LogInWithSaml
+	}
+
+	updates.LogInWithOidc = qOrg.LogInWithOidc
+	if req.Organization.LogInWithOidc != nil {
+		if *req.Organization.LogInWithOidc && !qProject.LogInWithOidc {
+			return nil, apierror.NewPermissionDeniedError("log in with oidc is not enabled for this project", fmt.Errorf("log in with oidc is not enabled for this project"))
+		}
+
+		updates.LogInWithOidc = *req.Organization.LogInWithOidc
 	}
 
 	updates.LogInWithAuthenticatorApp = qOrg.LogInWithAuthenticatorApp
@@ -533,6 +547,7 @@ func parseOrganization(qProject queries.Project, qOrg queries.Organization) *bac
 		LogInWithEmail:            &qOrg.LogInWithEmail,
 		LogInWithPassword:         &qOrg.LogInWithPassword,
 		LogInWithSaml:             &qOrg.LogInWithSaml,
+		LogInWithOidc:             &qOrg.LogInWithOidc,
 		LogInWithAuthenticatorApp: &qOrg.LogInWithAuthenticatorApp,
 		LogInWithPasskey:          &qOrg.LogInWithPasskey,
 		RequireMfa:                &qOrg.RequireMfa,

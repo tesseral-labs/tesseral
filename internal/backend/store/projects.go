@@ -210,6 +210,11 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		updates.LogInWithSaml = *req.Project.LogInWithSaml
 	}
 
+	updates.LogInWithOidc = qProject.LogInWithOidc
+	if req.Project.LogInWithOidc != nil {
+		updates.LogInWithOidc = *req.Project.LogInWithOidc
+	}
+
 	updates.LogInWithAuthenticatorApp = qProject.LogInWithAuthenticatorApp
 	if req.Project.LogInWithAuthenticatorApp != nil {
 		updates.LogInWithAuthenticatorApp = *req.Project.LogInWithAuthenticatorApp
@@ -334,6 +339,13 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		}
 	}
 
+	if !qUpdatedProject.LogInWithOidc {
+		slog.InfoContext(ctx, "disable_project_organizations_log_in_with_oidc")
+		if err := q.DisableProjectOrganizationsLogInWithOIDC(ctx, authn.ProjectID(ctx)); err != nil {
+			return nil, fmt.Errorf("disable project organizations log in with OIDC: %w", err)
+		}
+	}
+
 	if !qUpdatedProject.LogInWithAuthenticatorApp {
 		slog.InfoContext(ctx, "disable_project_organizations_log_in_with_authenticator_app")
 		if err := q.DisableProjectOrganizationsLogInWithAuthenticatorApp(ctx, authn.ProjectID(ctx)); err != nil {
@@ -412,6 +424,7 @@ func (s *Store) parseProject(qProject *queries.Project, qProjectTrustedDomains [
 		LogInWithEmail:             &qProject.LogInWithEmail,
 		LogInWithPassword:          &qProject.LogInWithPassword,
 		LogInWithSaml:              &qProject.LogInWithSaml,
+		LogInWithOidc:              &qProject.LogInWithOidc,
 		LogInWithAuthenticatorApp:  &qProject.LogInWithAuthenticatorApp,
 		LogInWithPasskey:           &qProject.LogInWithPasskey,
 		GoogleOauthClientId:        derefOrEmpty(qProject.GoogleOauthClientID),

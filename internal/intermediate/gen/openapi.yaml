@@ -294,6 +294,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/oidc-organizations:
+        post:
+            tags:
+                - IntermediateService
+            operationId: IntermediateService_ListOIDCOrganizations
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ListOIDCOrganizationsRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListOIDCOrganizationsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/organizations:
         get:
             tags:
@@ -932,6 +956,18 @@ components:
         IssuePasswordResetCodeResponse:
             type: object
             properties: {}
+        ListOIDCOrganizationsRequest:
+            type: object
+            properties:
+                email:
+                    type: string
+        ListOIDCOrganizationsResponse:
+            type: object
+            properties:
+                organizations:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Organization'
         ListOrganizationsResponse:
             type: object
             properties:
@@ -970,6 +1006,8 @@ components:
                     type: boolean
                 logInWithSaml:
                     type: boolean
+                logInWithOidc:
+                    type: boolean
                 logInWithAuthenticatorApp:
                     type: boolean
                 logInWithPasskey:
@@ -977,6 +1015,8 @@ components:
                 requireMfa:
                     type: boolean
                 primarySamlConnectionId:
+                    type: string
+                primaryOidcConnectionId:
                     type: string
                 userExists:
                     type: boolean

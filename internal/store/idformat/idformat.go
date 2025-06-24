@@ -47,6 +47,9 @@ var (
 
 	ProjectWebhookSettings = prettyuuid.MustNewFormat("project_webhook_settings_", alphabet)
 	AuditLogEvent          = prettyuuid.MustNewFormat("audit_log_event_", alphabet)
+
+	OIDCConnection          = prettyuuid.MustNewFormat("oidc_connection_", alphabet)
+	OIDCIntermediateSession = prettyuuid.MustNewFormat("oidc_intermediate_session_", alphabet)
 )
 
 func MustNewFormat(prefix string) prettyuuid.Format {

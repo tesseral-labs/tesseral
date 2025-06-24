@@ -1,6 +1,6 @@
 -- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_github, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, scim_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+INSERT INTO organizations (id, project_id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_github, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_oidc, log_in_with_authenticator_app, log_in_with_passkey, scim_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
 RETURNING
     *;
 
@@ -81,6 +81,7 @@ SET
     log_in_with_authenticator_app = $7,
     log_in_with_passkey = $8,
     log_in_with_saml = $9,
+    log_in_with_oidc = $15,
     scim_enabled = $10,
     require_mfa = $11,
     custom_roles_enabled = $12,
@@ -106,6 +107,7 @@ SET
     log_in_with_email = $5,
     log_in_with_password = $6,
     log_in_with_saml = $7,
+    log_in_with_oidc = $24,
     log_in_with_authenticator_app = $8,
     log_in_with_passkey = $9,
     google_oauth_client_id = $10,
@@ -198,6 +200,14 @@ SET
 WHERE
     project_id = $1;
 
+-- name: DisableProjectOrganizationsLogInWithOIDC :exec
+UPDATE
+    organizations
+SET
+    log_in_with_oidc = FALSE
+WHERE
+    project_id = $1;
+
 -- name: DisableProjectOrganizationsLogInWithAuthenticatorApp :exec
 UPDATE
     organizations
@@ -287,6 +297,61 @@ RETURNING
 
 -- name: DeleteSAMLConnection :exec
 DELETE FROM saml_connections
+WHERE id = $1;
+
+-- name: ListOIDCConnections :many
+SELECT
+    *
+FROM
+    oidc_connections
+WHERE
+    organization_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3;
+
+-- name: GetOIDCConnection :one
+SELECT
+    oidc_connections.*
+FROM
+    oidc_connections
+    JOIN organizations ON oidc_connections.organization_id = organizations.id
+WHERE
+    oidc_connections.id = $1
+    AND organizations.project_id = $2;
+
+-- name: CreateOIDCConnection :one
+INSERT INTO oidc_connections (id, organization_id, is_primary, configuration_url, issuer, client_id, client_secret_ciphertext)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+RETURNING
+    *;
+
+-- name: UpdatePrimaryOIDCConnection :exec
+UPDATE
+    oidc_connections
+SET
+    is_primary = (id = $1)
+WHERE
+    organization_id = $2;
+
+-- name: UpdateOIDCConnection :one
+UPDATE
+    oidc_connections
+SET
+    update_time = now(),
+    is_primary = $1,
+    configuration_url = $2,
+    issuer = $3,
+    client_id = $4,
+    client_secret_ciphertext = $5
+WHERE
+    id = $6
+RETURNING
+    *;
+
+-- name: DeleteOIDCConnection :exec
+DELETE FROM oidc_connections
 WHERE id = $1;
 
 -- name: ListSCIMAPIKeys :many

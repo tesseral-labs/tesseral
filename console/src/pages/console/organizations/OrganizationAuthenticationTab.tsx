@@ -7,12 +7,13 @@ import {
   getProject,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 
+import { ListOrganizationOidcConnectionsCard } from "./authentication/ListOrganizationOidcConnectionsCard";
 import { ListOrganizationSamlConnectionsCard } from "./authentication/ListOrganizationSamlConnectionsCard";
 import { ListOrganizationScimApiKeysCard } from "./authentication/ListOrganizationScimApiKeysCard";
 import { OrganizationBasicAuthCard } from "./authentication/OrganizationBasicAuthCard";
 import { OrganizationMFACard } from "./authentication/OrganizationMfaCard";
 import { OrganizationOAuthCard } from "./authentication/OrganizationOauthCard";
-import { OrganizationSamlCard } from "./authentication/OrganizationSamlCard";
+import { OrganizationSsoCard } from "./authentication/OrganizationSamlCard";
 import { OrganizationScimCard } from "./authentication/OrganizationScimCard";
 
 export function OrganizationAuthentication() {
@@ -42,7 +43,10 @@ export function OrganizationAuthentication() {
           <OrganizationMFACard />
         )}
 
-        {getProjectResponse?.project?.logInWithSaml && <OrganizationSamlCard />}
+        {getProjectResponse?.project?.logInWithSaml ||
+          (getProjectResponse?.project?.logInWithOidc && (
+            <OrganizationSsoCard />
+          ))}
 
         <OrganizationScimCard />
       </div>
@@ -50,6 +54,10 @@ export function OrganizationAuthentication() {
       {getProjectResponse?.project?.logInWithSaml &&
         getOrganizationResponse?.organization?.logInWithSaml && (
           <ListOrganizationSamlConnectionsCard />
+        )}
+      {getProjectResponse?.project?.logInWithOidc &&
+        getOrganizationResponse?.organization?.logInWithOidc && (
+          <ListOrganizationOidcConnectionsCard />
         )}
       {getOrganizationResponse?.organization?.scimEnabled && (
         <ListOrganizationScimApiKeysCard />

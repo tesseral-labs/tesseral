@@ -28,6 +28,7 @@ func TestGetProject_Exists(t *testing.T) {
 	require.True(t, resp.Project.GetLogInWithEmail())
 	require.True(t, resp.Project.GetLogInWithPassword())
 	require.True(t, resp.Project.GetLogInWithSaml())
+	require.True(t, resp.Project.GetLogInWithOidc())
 	require.True(t, resp.Project.GetLogInWithAuthenticatorApp())
 	require.True(t, resp.Project.GetLogInWithPasskey())
 	require.Empty(t, resp.Project.GoogleOauthClientId)

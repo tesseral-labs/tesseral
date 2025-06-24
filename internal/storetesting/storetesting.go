@@ -60,8 +60,8 @@ func (e *Environment) seed() {
 	const sql = `
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
-INSERT INTO projects (id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, vault_domain, email_send_from_domain, redirect_uri, cookie_domain)
-	VALUES ('252491cc-76e3-4957-ab23-47d83c34f240'::uuid, 'Tesseral Test', true, true, true, true, true, true, true, 'vault.console.tesseral.example.com', 'vault.console.tesseral.example.com', 'https://console.tesseral.example.com', 'console.tesseral.example.com');
+INSERT INTO projects (id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_oidc, log_in_with_authenticator_app, log_in_with_passkey, vault_domain, email_send_from_domain, redirect_uri, cookie_domain)
+	VALUES ('252491cc-76e3-4957-ab23-47d83c34f240'::uuid, 'Tesseral Test', true, true, true, true, true, true, true, true, 'vault.console.tesseral.example.com', 'vault.console.tesseral.example.com', 'https://console.tesseral.example.com', 'console.tesseral.example.com');
 
 INSERT INTO project_trusted_domains (id, project_id, domain)
 VALUES
@@ -97,8 +97,8 @@ func (e *Environment) NewProject(t *testing.T) (string, string) {
 	// Create the backing organization for the new project
 	organizationID := uuid.New()
 	_, err := e.DB.Exec(t.Context(), `
-INSERT INTO organizations (id, display_name, project_id, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, scim_enabled)
-  VALUES ($1::uuid, $2, $3::uuid, true, true, true, true, true, true, true, true);
+INSERT INTO organizations (id, display_name, project_id, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_oidc, log_in_with_authenticator_app, log_in_with_passkey, scim_enabled)
+  VALUES ($1::uuid, $2, $3::uuid, true, true, true, true, true, true, true, true, true);
 `,
 		organizationID.String(),
 		fmt.Sprintf("%s Backing Organization", formattedProjectID),
@@ -110,8 +110,8 @@ INSERT INTO organizations (id, display_name, project_id, log_in_with_google, log
 
 	// Create the project with the new vault domain
 	_, err = e.DB.Exec(t.Context(), `
-INSERT INTO projects (id, organization_id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_github, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, vault_domain, email_send_from_domain, redirect_uri, cookie_domain, api_keys_enabled, api_key_secret_token_prefix, entitled_backend_api_keys, entitled_custom_vault_domains, audit_logs_enabled)
-  VALUES ($1::uuid, $2::uuid, $3, true, true, true, true, true, true, true, true, $4, $4, $4, $4, true, 'test_sk_', true, true, true);
+INSERT INTO projects (id, organization_id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_github, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_oidc, log_in_with_authenticator_app, log_in_with_passkey, vault_domain, email_send_from_domain, redirect_uri, cookie_domain, api_keys_enabled, api_key_secret_token_prefix, entitled_backend_api_keys, entitled_custom_vault_domains, audit_logs_enabled)
+  VALUES ($1::uuid, $2::uuid, $3, true, true, true, true, true, true, true, true, true, $4, $4, $4, $4, true, 'test_sk_', true, true, true);
 `,
 		projectID.String(),
 		organizationID.String(),
@@ -193,8 +193,8 @@ func (e *Environment) NewOrganization(t *testing.T, projectID string, organizati
 
 	// Create the organization
 	_, err = e.DB.Exec(t.Context(), `
-INSERT INTO organizations (id, display_name, project_id, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, scim_enabled, api_keys_enabled)
-  VALUES ($1::uuid, $2, $3::uuid, $4, $5, $6, $7, $8, $9, $10, $11, $12);
+INSERT INTO organizations (id, display_name, project_id, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_oidc, log_in_with_authenticator_app, log_in_with_passkey, scim_enabled, api_keys_enabled)
+  VALUES ($1::uuid, $2, $3::uuid, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13);
 `,
 		organizationID.String(),
 		organization.DisplayName,
@@ -204,6 +204,7 @@ INSERT INTO organizations (id, display_name, project_id, log_in_with_google, log
 		organization.GetLogInWithEmail(),
 		organization.GetLogInWithPassword(),
 		organization.GetLogInWithSaml(),
+		organization.GetLogInWithOidc(),
 		organization.GetLogInWithAuthenticatorApp(),
 		organization.GetLogInWithPasskey(),
 		organization.GetScimEnabled(),

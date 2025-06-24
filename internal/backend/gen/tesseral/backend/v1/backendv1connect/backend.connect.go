@@ -84,6 +84,21 @@ const (
 	// BackendServiceDeleteSAMLConnectionProcedure is the fully-qualified name of the BackendService's
 	// DeleteSAMLConnection RPC.
 	BackendServiceDeleteSAMLConnectionProcedure = "/tesseral.backend.v1.BackendService/DeleteSAMLConnection"
+	// BackendServiceListOIDCConnectionsProcedure is the fully-qualified name of the BackendService's
+	// ListOIDCConnections RPC.
+	BackendServiceListOIDCConnectionsProcedure = "/tesseral.backend.v1.BackendService/ListOIDCConnections"
+	// BackendServiceGetOIDCConnectionProcedure is the fully-qualified name of the BackendService's
+	// GetOIDCConnection RPC.
+	BackendServiceGetOIDCConnectionProcedure = "/tesseral.backend.v1.BackendService/GetOIDCConnection"
+	// BackendServiceCreateOIDCConnectionProcedure is the fully-qualified name of the BackendService's
+	// CreateOIDCConnection RPC.
+	BackendServiceCreateOIDCConnectionProcedure = "/tesseral.backend.v1.BackendService/CreateOIDCConnection"
+	// BackendServiceUpdateOIDCConnectionProcedure is the fully-qualified name of the BackendService's
+	// UpdateOIDCConnection RPC.
+	BackendServiceUpdateOIDCConnectionProcedure = "/tesseral.backend.v1.BackendService/UpdateOIDCConnection"
+	// BackendServiceDeleteOIDCConnectionProcedure is the fully-qualified name of the BackendService's
+	// DeleteOIDCConnection RPC.
+	BackendServiceDeleteOIDCConnectionProcedure = "/tesseral.backend.v1.BackendService/DeleteOIDCConnection"
 	// BackendServiceListSCIMAPIKeysProcedure is the fully-qualified name of the BackendService's
 	// ListSCIMAPIKeys RPC.
 	BackendServiceListSCIMAPIKeysProcedure = "/tesseral.backend.v1.BackendService/ListSCIMAPIKeys"
@@ -333,6 +348,16 @@ type BackendServiceClient interface {
 	UpdateSAMLConnection(context.Context, *connect.Request[v1.UpdateSAMLConnectionRequest]) (*connect.Response[v1.UpdateSAMLConnectionResponse], error)
 	// Delete a SAML Connection.
 	DeleteSAMLConnection(context.Context, *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error)
+	// List OIDC Connections.
+	ListOIDCConnections(context.Context, *connect.Request[v1.ListOIDCConnectionsRequest]) (*connect.Response[v1.ListOIDCConnectionsResponse], error)
+	// Get an OIDC Connection.
+	GetOIDCConnection(context.Context, *connect.Request[v1.GetOIDCConnectionRequest]) (*connect.Response[v1.GetOIDCConnectionResponse], error)
+	// Create an OIDC Connection.
+	CreateOIDCConnection(context.Context, *connect.Request[v1.CreateOIDCConnectionRequest]) (*connect.Response[v1.CreateOIDCConnectionResponse], error)
+	// Update an OIDC Connection.
+	UpdateOIDCConnection(context.Context, *connect.Request[v1.UpdateOIDCConnectionRequest]) (*connect.Response[v1.UpdateOIDCConnectionResponse], error)
+	// Delete an OIDC Connection.
+	DeleteOIDCConnection(context.Context, *connect.Request[v1.DeleteOIDCConnectionRequest]) (*connect.Response[v1.DeleteOIDCConnectionResponse], error)
 	// List SCIM API Keys.
 	ListSCIMAPIKeys(context.Context, *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error)
 	// Get a SCIM API Key.
@@ -553,6 +578,36 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			httpClient,
 			baseURL+BackendServiceDeleteSAMLConnectionProcedure,
 			connect.WithSchema(backendServiceMethods.ByName("DeleteSAMLConnection")),
+			connect.WithClientOptions(opts...),
+		),
+		listOIDCConnections: connect.NewClient[v1.ListOIDCConnectionsRequest, v1.ListOIDCConnectionsResponse](
+			httpClient,
+			baseURL+BackendServiceListOIDCConnectionsProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("ListOIDCConnections")),
+			connect.WithClientOptions(opts...),
+		),
+		getOIDCConnection: connect.NewClient[v1.GetOIDCConnectionRequest, v1.GetOIDCConnectionResponse](
+			httpClient,
+			baseURL+BackendServiceGetOIDCConnectionProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("GetOIDCConnection")),
+			connect.WithClientOptions(opts...),
+		),
+		createOIDCConnection: connect.NewClient[v1.CreateOIDCConnectionRequest, v1.CreateOIDCConnectionResponse](
+			httpClient,
+			baseURL+BackendServiceCreateOIDCConnectionProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("CreateOIDCConnection")),
+			connect.WithClientOptions(opts...),
+		),
+		updateOIDCConnection: connect.NewClient[v1.UpdateOIDCConnectionRequest, v1.UpdateOIDCConnectionResponse](
+			httpClient,
+			baseURL+BackendServiceUpdateOIDCConnectionProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("UpdateOIDCConnection")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteOIDCConnection: connect.NewClient[v1.DeleteOIDCConnectionRequest, v1.DeleteOIDCConnectionResponse](
+			httpClient,
+			baseURL+BackendServiceDeleteOIDCConnectionProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("DeleteOIDCConnection")),
 			connect.WithClientOptions(opts...),
 		),
 		listSCIMAPIKeys: connect.NewClient[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse](
@@ -1003,6 +1058,11 @@ type backendServiceClient struct {
 	createSAMLConnection                  *connect.Client[v1.CreateSAMLConnectionRequest, v1.CreateSAMLConnectionResponse]
 	updateSAMLConnection                  *connect.Client[v1.UpdateSAMLConnectionRequest, v1.UpdateSAMLConnectionResponse]
 	deleteSAMLConnection                  *connect.Client[v1.DeleteSAMLConnectionRequest, v1.DeleteSAMLConnectionResponse]
+	listOIDCConnections                   *connect.Client[v1.ListOIDCConnectionsRequest, v1.ListOIDCConnectionsResponse]
+	getOIDCConnection                     *connect.Client[v1.GetOIDCConnectionRequest, v1.GetOIDCConnectionResponse]
+	createOIDCConnection                  *connect.Client[v1.CreateOIDCConnectionRequest, v1.CreateOIDCConnectionResponse]
+	updateOIDCConnection                  *connect.Client[v1.UpdateOIDCConnectionRequest, v1.UpdateOIDCConnectionResponse]
+	deleteOIDCConnection                  *connect.Client[v1.DeleteOIDCConnectionRequest, v1.DeleteOIDCConnectionResponse]
 	listSCIMAPIKeys                       *connect.Client[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse]
 	getSCIMAPIKey                         *connect.Client[v1.GetSCIMAPIKeyRequest, v1.GetSCIMAPIKeyResponse]
 	createSCIMAPIKey                      *connect.Client[v1.CreateSCIMAPIKeyRequest, v1.CreateSCIMAPIKeyResponse]
@@ -1163,6 +1223,31 @@ func (c *backendServiceClient) UpdateSAMLConnection(ctx context.Context, req *co
 // DeleteSAMLConnection calls tesseral.backend.v1.BackendService.DeleteSAMLConnection.
 func (c *backendServiceClient) DeleteSAMLConnection(ctx context.Context, req *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error) {
 	return c.deleteSAMLConnection.CallUnary(ctx, req)
+}
+
+// ListOIDCConnections calls tesseral.backend.v1.BackendService.ListOIDCConnections.
+func (c *backendServiceClient) ListOIDCConnections(ctx context.Context, req *connect.Request[v1.ListOIDCConnectionsRequest]) (*connect.Response[v1.ListOIDCConnectionsResponse], error) {
+	return c.listOIDCConnections.CallUnary(ctx, req)
+}
+
+// GetOIDCConnection calls tesseral.backend.v1.BackendService.GetOIDCConnection.
+func (c *backendServiceClient) GetOIDCConnection(ctx context.Context, req *connect.Request[v1.GetOIDCConnectionRequest]) (*connect.Response[v1.GetOIDCConnectionResponse], error) {
+	return c.getOIDCConnection.CallUnary(ctx, req)
+}
+
+// CreateOIDCConnection calls tesseral.backend.v1.BackendService.CreateOIDCConnection.
+func (c *backendServiceClient) CreateOIDCConnection(ctx context.Context, req *connect.Request[v1.CreateOIDCConnectionRequest]) (*connect.Response[v1.CreateOIDCConnectionResponse], error) {
+	return c.createOIDCConnection.CallUnary(ctx, req)
+}
+
+// UpdateOIDCConnection calls tesseral.backend.v1.BackendService.UpdateOIDCConnection.
+func (c *backendServiceClient) UpdateOIDCConnection(ctx context.Context, req *connect.Request[v1.UpdateOIDCConnectionRequest]) (*connect.Response[v1.UpdateOIDCConnectionResponse], error) {
+	return c.updateOIDCConnection.CallUnary(ctx, req)
+}
+
+// DeleteOIDCConnection calls tesseral.backend.v1.BackendService.DeleteOIDCConnection.
+func (c *backendServiceClient) DeleteOIDCConnection(ctx context.Context, req *connect.Request[v1.DeleteOIDCConnectionRequest]) (*connect.Response[v1.DeleteOIDCConnectionResponse], error) {
+	return c.deleteOIDCConnection.CallUnary(ctx, req)
 }
 
 // ListSCIMAPIKeys calls tesseral.backend.v1.BackendService.ListSCIMAPIKeys.
@@ -1559,6 +1644,16 @@ type BackendServiceHandler interface {
 	UpdateSAMLConnection(context.Context, *connect.Request[v1.UpdateSAMLConnectionRequest]) (*connect.Response[v1.UpdateSAMLConnectionResponse], error)
 	// Delete a SAML Connection.
 	DeleteSAMLConnection(context.Context, *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error)
+	// List OIDC Connections.
+	ListOIDCConnections(context.Context, *connect.Request[v1.ListOIDCConnectionsRequest]) (*connect.Response[v1.ListOIDCConnectionsResponse], error)
+	// Get an OIDC Connection.
+	GetOIDCConnection(context.Context, *connect.Request[v1.GetOIDCConnectionRequest]) (*connect.Response[v1.GetOIDCConnectionResponse], error)
+	// Create an OIDC Connection.
+	CreateOIDCConnection(context.Context, *connect.Request[v1.CreateOIDCConnectionRequest]) (*connect.Response[v1.CreateOIDCConnectionResponse], error)
+	// Update an OIDC Connection.
+	UpdateOIDCConnection(context.Context, *connect.Request[v1.UpdateOIDCConnectionRequest]) (*connect.Response[v1.UpdateOIDCConnectionResponse], error)
+	// Delete an OIDC Connection.
+	DeleteOIDCConnection(context.Context, *connect.Request[v1.DeleteOIDCConnectionRequest]) (*connect.Response[v1.DeleteOIDCConnectionResponse], error)
 	// List SCIM API Keys.
 	ListSCIMAPIKeys(context.Context, *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error)
 	// Get a SCIM API Key.
@@ -1775,6 +1870,36 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		BackendServiceDeleteSAMLConnectionProcedure,
 		svc.DeleteSAMLConnection,
 		connect.WithSchema(backendServiceMethods.ByName("DeleteSAMLConnection")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceListOIDCConnectionsHandler := connect.NewUnaryHandler(
+		BackendServiceListOIDCConnectionsProcedure,
+		svc.ListOIDCConnections,
+		connect.WithSchema(backendServiceMethods.ByName("ListOIDCConnections")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceGetOIDCConnectionHandler := connect.NewUnaryHandler(
+		BackendServiceGetOIDCConnectionProcedure,
+		svc.GetOIDCConnection,
+		connect.WithSchema(backendServiceMethods.ByName("GetOIDCConnection")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceCreateOIDCConnectionHandler := connect.NewUnaryHandler(
+		BackendServiceCreateOIDCConnectionProcedure,
+		svc.CreateOIDCConnection,
+		connect.WithSchema(backendServiceMethods.ByName("CreateOIDCConnection")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceUpdateOIDCConnectionHandler := connect.NewUnaryHandler(
+		BackendServiceUpdateOIDCConnectionProcedure,
+		svc.UpdateOIDCConnection,
+		connect.WithSchema(backendServiceMethods.ByName("UpdateOIDCConnection")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceDeleteOIDCConnectionHandler := connect.NewUnaryHandler(
+		BackendServiceDeleteOIDCConnectionProcedure,
+		svc.DeleteOIDCConnection,
+		connect.WithSchema(backendServiceMethods.ByName("DeleteOIDCConnection")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceListSCIMAPIKeysHandler := connect.NewUnaryHandler(
@@ -2239,6 +2364,16 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceUpdateSAMLConnectionHandler.ServeHTTP(w, r)
 		case BackendServiceDeleteSAMLConnectionProcedure:
 			backendServiceDeleteSAMLConnectionHandler.ServeHTTP(w, r)
+		case BackendServiceListOIDCConnectionsProcedure:
+			backendServiceListOIDCConnectionsHandler.ServeHTTP(w, r)
+		case BackendServiceGetOIDCConnectionProcedure:
+			backendServiceGetOIDCConnectionHandler.ServeHTTP(w, r)
+		case BackendServiceCreateOIDCConnectionProcedure:
+			backendServiceCreateOIDCConnectionHandler.ServeHTTP(w, r)
+		case BackendServiceUpdateOIDCConnectionProcedure:
+			backendServiceUpdateOIDCConnectionHandler.ServeHTTP(w, r)
+		case BackendServiceDeleteOIDCConnectionProcedure:
+			backendServiceDeleteOIDCConnectionHandler.ServeHTTP(w, r)
 		case BackendServiceListSCIMAPIKeysProcedure:
 			backendServiceListSCIMAPIKeysHandler.ServeHTTP(w, r)
 		case BackendServiceGetSCIMAPIKeyProcedure:
@@ -2456,6 +2591,26 @@ func (UnimplementedBackendServiceHandler) UpdateSAMLConnection(context.Context, 
 
 func (UnimplementedBackendServiceHandler) DeleteSAMLConnection(context.Context, *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.DeleteSAMLConnection is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) ListOIDCConnections(context.Context, *connect.Request[v1.ListOIDCConnectionsRequest]) (*connect.Response[v1.ListOIDCConnectionsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.ListOIDCConnections is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) GetOIDCConnection(context.Context, *connect.Request[v1.GetOIDCConnectionRequest]) (*connect.Response[v1.GetOIDCConnectionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetOIDCConnection is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) CreateOIDCConnection(context.Context, *connect.Request[v1.CreateOIDCConnectionRequest]) (*connect.Response[v1.CreateOIDCConnectionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.CreateOIDCConnection is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) UpdateOIDCConnection(context.Context, *connect.Request[v1.UpdateOIDCConnectionRequest]) (*connect.Response[v1.UpdateOIDCConnectionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.UpdateOIDCConnection is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) DeleteOIDCConnection(context.Context, *connect.Request[v1.DeleteOIDCConnectionRequest]) (*connect.Response[v1.DeleteOIDCConnectionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.DeleteOIDCConnection is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) ListSCIMAPIKeys(context.Context, *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error) {

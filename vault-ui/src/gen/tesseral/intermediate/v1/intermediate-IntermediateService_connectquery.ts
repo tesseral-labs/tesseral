@@ -10,6 +10,11 @@ import { IntermediateService } from "./intermediate_pb";
 export const listSAMLOrganizations = IntermediateService.method.listSAMLOrganizations;
 
 /**
+ * @generated from rpc tesseral.intermediate.v1.IntermediateService.ListOIDCOrganizations
+ */
+export const listOIDCOrganizations = IntermediateService.method.listOIDCOrganizations;
+
+/**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.GetSettings
  */
 export const getSettings = IntermediateService.method.getSettings;
