@@ -57,6 +57,7 @@ const schema = z.object({
   primary: z.boolean(),
 });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function useDebounce<T extends any[]>(
   callback: (...args: T) => void,
   delay: number,
@@ -180,7 +181,7 @@ export function OrganizationOidcConnectionPage() {
         console.error("Failed to fetch configuration:", error);
       }
     },
-    [form.getValues, form.setValue],
+    [form],
   );
 
   const debouncedFetch = useDebounce(fetchConfiguration, 500);
