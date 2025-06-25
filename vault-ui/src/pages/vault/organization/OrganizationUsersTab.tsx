@@ -1,15 +1,6 @@
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { useInfiniteQuery, useMutation } from "@connectrpc/connect-query";
-import {
-  Activity,
-  AlignLeft,
-  History,
-  Key,
-  Settings,
-  ShieldPlus,
-  Trash,
-  UserLock,
-} from "lucide-react";
+import { AlignLeft, Settings, Trash, UserLock } from "lucide-react";
 import { DateTime } from "luxon";
 import React, { useState } from "react";
 import { Link } from "react-router";
@@ -186,33 +177,9 @@ function ManageUserButton({ user }: { user: User }) {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link to={`/organization/users/${user.id}/sessions`}>
-              <ShieldPlus />
-              Sessions
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
             <Link to={`/organization/users/${user.id}/roles`}>
               <UserLock />
               Roles
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link to={`/organization/users/${user.id}/passkeys`}>
-              <Key />
-              Passkeys
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link to={`/organization/users/${user.id}/history`}>
-              <History />
-              User History
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link to={`/organization/users/${user.id}/activity`}>
-              <Activity />
-              User Activity
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
