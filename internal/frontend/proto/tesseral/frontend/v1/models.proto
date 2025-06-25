@@ -35,6 +35,7 @@ message Organization {
   optional bool log_in_with_email = 16;
   optional bool log_in_with_password = 6;
   optional bool log_in_with_saml = 12;
+  optional bool log_in_with_oidc = 21;
   optional bool log_in_with_authenticator_app = 13;
   optional bool log_in_with_passkey = 14;
   optional bool require_mfa = 15;
