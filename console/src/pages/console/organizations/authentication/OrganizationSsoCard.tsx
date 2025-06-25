@@ -193,9 +193,9 @@ export function OrganizationSsoCard() {
                 name="domains"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>OIDC / SAML / SCIM Domains</FormLabel>
+                    <FormLabel>Allowed Domains</FormLabel>
                     <FormDescription>
-                      OIDC, SAML, and SCIM users must have emails from this list
+                      SAML, OIDC, and SCIM users must have emails from this list
                       of domains.
                     </FormDescription>
                     <FormControl>

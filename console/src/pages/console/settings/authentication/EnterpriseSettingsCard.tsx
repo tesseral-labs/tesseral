@@ -145,7 +145,7 @@ function ConfigureEnterpriseSettingsButton() {
         <DialogHeader>
           <DialogTitle>Configure Enterprise Settings</DialogTitle>
           <DialogDescription>
-            Configure whether users can log in with OIDC/SAML SSO.
+            Configure whether users can log in with SAML/OIDC SSO.
           </DialogDescription>
         </DialogHeader>
 

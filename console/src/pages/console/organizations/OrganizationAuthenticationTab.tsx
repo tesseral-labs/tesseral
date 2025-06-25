@@ -13,8 +13,8 @@ import { ListOrganizationScimApiKeysCard } from "./authentication/ListOrganizati
 import { OrganizationBasicAuthCard } from "./authentication/OrganizationBasicAuthCard";
 import { OrganizationMFACard } from "./authentication/OrganizationMfaCard";
 import { OrganizationOAuthCard } from "./authentication/OrganizationOauthCard";
-import { OrganizationSsoCard } from "./authentication/OrganizationSamlCard";
 import { OrganizationScimCard } from "./authentication/OrganizationScimCard";
+import { OrganizationSsoCard } from "./authentication/OrganizationSsoCard";
 
 export function OrganizationAuthentication() {
   const { organizationId } = useParams();
