@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, LoaderCircle, Trash, TriangleAlert } from "lucide-react";
 import { DateTime } from "luxon";
 import React, { useEffect, useState } from "react";
-import { Helmet } from "react-helmet";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router";
 import { toast } from "sonner";

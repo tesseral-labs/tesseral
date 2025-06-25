@@ -3,7 +3,6 @@ import { useQuery } from "@connectrpc/connect-query";
 import { ArrowLeft, ChevronDown } from "lucide-react";
 import { DateTime } from "luxon";
 import React from "react";
-import { Helmet } from "react-helmet";
 import { Link, Outlet, useLocation, useParams } from "react-router";
 
 import { Title } from "@/components/core/Title";
