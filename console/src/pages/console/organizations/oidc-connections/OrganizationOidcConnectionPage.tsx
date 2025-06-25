@@ -52,7 +52,7 @@ import { NotFound } from "@/pages/NotFoundPage";
 const schema = z.object({
   configurationUrl: z.string().url("Must be a valid URL"),
   clientId: z.string().nonempty("Client ID is required"),
-  clientSecret: z.string().nonempty("Client Secret is required"),
+  clientSecret: z.string().optional(),
   primary: z.boolean(),
 });
 
