@@ -6,7 +6,6 @@ import {
   ProjectSettingsProvider,
   useProjectSettings,
 } from "@/lib/project-settings";
-import { cn } from "@/lib/utils";
 
 import { SidebarInset, SidebarProvider } from "../ui/sidebar";
 import { VaultSidebar } from "./VaultSidebar";
