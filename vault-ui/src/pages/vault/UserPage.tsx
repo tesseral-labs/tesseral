@@ -2,7 +2,7 @@ import { useQuery } from "@connectrpc/connect-query";
 import { ChevronDown } from "lucide-react";
 import React from "react";
 import { Helmet } from "react-helmet";
-import { Link, Outlet, useLocation, useParams } from "react-router";
+import { Link, Outlet, useLocation } from "react-router";
 
 import { PageContent } from "@/components/page";
 import { TabLink, Tabs } from "@/components/page/Tabs";
