@@ -108,7 +108,7 @@ export function OrganizationUserDetailsTab() {
                   className="w-16 h-16 rounded-full"
                 />
               ) : (
-                <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center">
+                <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center text-md">
                   <span className="text-muted-foreground">
                     {(user?.displayName || user?.email || "user")
                       ?.charAt(0)
