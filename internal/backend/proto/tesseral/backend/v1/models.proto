@@ -336,6 +336,9 @@ enum PrimaryAuthFactor {
   // Log in with SAML.
   PRIMARY_AUTH_FACTOR_SAML = 4;
 
+  // Log in with OIDC.
+  PRIMARY_AUTH_FACTOR_OIDC = 7;
+
   // Impersonated sessions use this special primary authentication factor.
   PRIMARY_AUTH_FACTOR_IMPERSONATION = 5;
 }

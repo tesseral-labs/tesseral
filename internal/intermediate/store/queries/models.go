@@ -158,6 +158,7 @@ const (
 	PrimaryAuthFactorImpersonation PrimaryAuthFactor = "impersonation"
 	PrimaryAuthFactorGithub        PrimaryAuthFactor = "github"
 	PrimaryAuthFactorPassword      PrimaryAuthFactor = "password"
+	PrimaryAuthFactorOidc          PrimaryAuthFactor = "oidc"
 )
 
 func (e *PrimaryAuthFactor) Scan(src interface{}) error {
