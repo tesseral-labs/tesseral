@@ -13,15 +13,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  getOrganization,
-  whoami,
-} from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
+import { getOrganization } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 
 export function UserPage() {
-  const { data: whoamiResponse } = useQuery(whoami);
-  const user = whoamiResponse?.user;
-
   return (
     <PageContent>
       <Helmet>
