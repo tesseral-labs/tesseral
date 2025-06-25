@@ -174,8 +174,6 @@ function ConfigureEnterpriseSettingsButton() {
                   </FormItem>
                 )}
               />
-            </div>
-            <div className="space-y-4">
               <FormField
                 control={form.control}
                 name="logInWithOidc"
