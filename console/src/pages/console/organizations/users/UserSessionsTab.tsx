@@ -184,6 +184,8 @@ function primaryAuthFactorLabel(primaryAuthFactor: PrimaryAuthFactor) {
       return "SAML";
     case PrimaryAuthFactor.OIDC:
       return "OIDC";
+    case PrimaryAuthFactor.IMPERSONATION:
+      return "Impersonation";
     default:
       return "Unknown";
   }
