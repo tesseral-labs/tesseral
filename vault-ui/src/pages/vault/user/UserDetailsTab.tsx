@@ -64,7 +64,7 @@ export function UserDetailsTab() {
           displayName: data.displayName || undefined,
         },
       });
-      refetch();
+      await refetch();
       form.reset(data);
       toast.success("Account details updated successfully.");
     } catch {

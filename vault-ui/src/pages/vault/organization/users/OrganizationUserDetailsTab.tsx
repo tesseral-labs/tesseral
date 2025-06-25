@@ -39,7 +39,7 @@ export function OrganizationUserDetailsTab() {
   const { userId } = useParams();
 
   const { data: organizationResponse } = useQuery(getOrganization);
-  const { data: getUserResponse } = useQuery(getUser, {
+  const { data: getUserResponse, refetch } = useQuery(getUser, {
     id: userId,
   });
   const { data: whoamiResponse } = useQuery(whoami);
@@ -64,8 +64,9 @@ export function OrganizationUserDetailsTab() {
           displayName: data.displayName,
         },
       });
-      toast.success("User details updated successfully");
+      await refetch();
       form.reset(data);
+      toast.success("User details updated successfully");
     } catch {
       toast.error("Failed to update user details");
     }
