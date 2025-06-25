@@ -30,7 +30,6 @@ import {
   listSessions,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { PrimaryAuthFactor } from "@/gen/tesseral/backend/v1/models_pb";
-import { toTitleCase } from "@/lib/utils";
 
 export function UserSessionsTab() {
   const { organizationId, userId } = useParams();
