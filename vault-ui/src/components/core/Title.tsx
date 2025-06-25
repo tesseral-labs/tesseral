@@ -13,7 +13,7 @@ export function Title({ title }: { title?: string }) {
         <title>
           {title}
           {getProjectResponse?.project?.displayName
-            ? `| ${getProjectResponse?.project?.displayName}`
+            ? ` | ${getProjectResponse?.project?.displayName}`
             : ""}
         </title>
       )}
