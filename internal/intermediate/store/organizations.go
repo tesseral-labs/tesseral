@@ -151,8 +151,21 @@ func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListO
 			qSAMLConnection = &qPrimarySAMLConnection
 		}
 
+		var qOidcConnection *queries.OidcConnection
+		qPrimaryOIDCConnection, err := q.GetOrganizationPrimaryOIDCConnection(ctx, qOrg.ID)
+		if err != nil {
+			// it's ok if org has no primary oidc connection
+			if !errors.Is(err, pgx.ErrNoRows) {
+				return nil, fmt.Errorf("get organization primary oidc connection: %w", err)
+			}
+		}
+
+		if qPrimaryOIDCConnection.ID != uuid.Nil {
+			qOidcConnection = &qPrimaryOIDCConnection
+		}
+
 		// Parse the organization before performing additional checks
-		org := parseOrganization(qOrg, qSAMLConnection, nil)
+		org := parseOrganization(qOrg, qSAMLConnection, qOidcConnection)
 
 		// Check if the user exists on the organization.
 		existingUser, err := s.matchEmailUser(ctx, q, qOrg, qIntermediateSession)
