@@ -28,7 +28,7 @@ type OIDCUserData struct {
 }
 
 func (s *Store) ExchangeOIDCCode(ctx context.Context, oidcConnectionID string, oidcIntermediateSessionID string, code string) (*OIDCUserData, error) {
-	_, q, _, rollback, err := s.tx(ctx)
+	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -113,6 +113,10 @@ func (s *Store) ExchangeOIDCCode(ctx context.Context, oidcConnectionID string, o
 	organizationDomains, err := q.GetOrganizationDomains(ctx, qOIDCConnection.OrganizationID)
 	if err != nil {
 		return nil, fmt.Errorf("get organization domains: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit transaction: %w", err)
 	}
 
 	return &OIDCUserData{
