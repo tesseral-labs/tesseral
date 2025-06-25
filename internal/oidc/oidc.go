@@ -10,6 +10,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"slices"
 	"strings"
 )
 
@@ -51,6 +52,46 @@ func (c *Client) GetConfiguration(ctx context.Context, configURL string) (*Confi
 	}
 
 	return &config, nil
+}
+
+// Validate performs basic validation on the OIDC configuration.
+func (c *Configuration) Validate() error {
+	if c.AuthorizationEndpoint == "" {
+		return fmt.Errorf("authorization endpoint is required")
+	}
+	if c.TokenEndpoint == "" {
+		return fmt.Errorf("token endpoint is required")
+	}
+	if c.JwksURI == "" {
+		return fmt.Errorf("jwks uri is required")
+	}
+
+	// Sanity checks for downstream OIDC operations.
+	//
+	// If the OIDC configuration is not well-formed or missing these values, we are okay failing hard later.
+
+	if len(c.GrantTypesSupported) != 0 {
+		if !slices.Contains(c.GrantTypesSupported, "authorization_code") {
+			return fmt.Errorf("grant type 'authorization_code' is required")
+		}
+	}
+	if len(c.TokenEndpointAuthMethodsSupported) != 0 {
+		if !slices.Contains(c.TokenEndpointAuthMethodsSupported, "client_secret_post") &&
+			!slices.Contains(c.TokenEndpointAuthMethodsSupported, "client_secret_basic") {
+			return fmt.Errorf("token endpoint auth method must be either 'client_secret_post' or 'client_secret_basic'")
+		}
+	}
+	if len(c.CodeChallengeMethodsSupported) != 0 {
+		if !slices.Contains(c.CodeChallengeMethodsSupported, "S256") {
+			return fmt.Errorf("code challenge method 'S256' is required")
+		}
+	}
+	if len(c.IDTokenSigningAlgValuesSupported) != 0 {
+		if !slices.Contains(c.IDTokenSigningAlgValuesSupported, "RS256") {
+			return fmt.Errorf("ID token signing algorithm 'RS256' is required")
+		}
+	}
+	return nil
 }
 
 type ExchangeCodeRequest struct {

@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
-	"slices"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
@@ -16,7 +15,6 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
-	"github.com/tesseral-labs/tesseral/internal/oidc"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -141,7 +139,7 @@ func (s *Store) CreateOIDCConnection(ctx context.Context, req *frontendv1.Create
 			return nil, fmt.Errorf("get OIDC configuration: %w", err)
 		}
 
-		if err := s.validateOidcConfiguration(config); err != nil {
+		if err := config.Validate(); err != nil {
 			return nil, apierror.NewInvalidArgumentError("invalid oidc configuration", fmt.Errorf("validate oidc configuration: %w", err))
 		}
 	}
@@ -204,46 +202,6 @@ func (s *Store) CreateOIDCConnection(ctx context.Context, req *frontendv1.Create
 	}
 
 	return &frontendv1.CreateOIDCConnectionResponse{OidcConnection: oidcConnection}, nil
-}
-
-// validateOidcConfiguration performs basic validation on the OIDC configuration.
-func (s *Store) validateOidcConfiguration(config *oidc.Configuration) error {
-	if config.AuthorizationEndpoint == "" {
-		return fmt.Errorf("authorization endpoint is required")
-	}
-	if config.TokenEndpoint == "" {
-		return fmt.Errorf("token endpoint is required")
-	}
-	if config.JwksURI == "" {
-		return fmt.Errorf("jwks uri is required")
-	}
-
-	// Sanity checks for downstream OIDC operations.
-	//
-	// If the OIDC configuration is not well-formed or missing these values, we are okay failing hard later.
-
-	if len(config.GrantTypesSupported) != 0 {
-		if !slices.Contains(config.GrantTypesSupported, "authorization_code") {
-			return fmt.Errorf("grant type 'authorization_code' is required")
-		}
-	}
-	if len(config.TokenEndpointAuthMethodsSupported) != 0 {
-		if !slices.Contains(config.TokenEndpointAuthMethodsSupported, "client_secret_post") &&
-			!slices.Contains(config.TokenEndpointAuthMethodsSupported, "client_secret_basic") {
-			return fmt.Errorf("token endpoint auth method must be either 'client_secret_post' or 'client_secret_basic'")
-		}
-	}
-	if len(config.CodeChallengeMethodsSupported) != 0 {
-		if !slices.Contains(config.CodeChallengeMethodsSupported, "S256") {
-			return fmt.Errorf("code challenge method 'S256' is required")
-		}
-	}
-	if len(config.IDTokenSigningAlgValuesSupported) != 0 {
-		if !slices.Contains(config.IDTokenSigningAlgValuesSupported, "RS256") {
-			return fmt.Errorf("ID token signing algorithm 'RS256' is required")
-		}
-	}
-	return nil
 }
 
 func (s *Store) UpdateOIDCConnection(ctx context.Context, req *frontendv1.UpdateOIDCConnectionRequest) (*frontendv1.UpdateOIDCConnectionResponse, error) {
@@ -309,7 +267,7 @@ func (s *Store) UpdateOIDCConnection(ctx context.Context, req *frontendv1.Update
 			return nil, fmt.Errorf("get OIDC configuration: %w", err)
 		}
 
-		if err := s.validateOidcConfiguration(config); err != nil {
+		if err := config.Validate(); err != nil {
 			return nil, apierror.NewInvalidArgumentError("invalid oidc configuration", fmt.Errorf("validate oidc configuration: %w", err))
 		}
 
