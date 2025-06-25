@@ -340,7 +340,7 @@ func (s *Store) UpdateOIDCConnection(ctx context.Context, req *frontendv1.Update
 	}
 
 	if req.OidcConnection.Primary != nil {
-		updates.IsPrimary = derefOrEmpty(req.OidcConnection.Primary)
+		updates.IsPrimary = *req.OidcConnection.Primary
 	}
 
 	qUpdatedOIDCConnection, err := q.UpdateOIDCConnection(ctx, updates)
