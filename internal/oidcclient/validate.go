@@ -156,11 +156,6 @@ func (c *Client) ValidateIDToken(ctx context.Context, req ValidateIDTokenRequest
 		return nil, fmt.Errorf("could not find matching key: %w", err)
 	}
 
-	// TODO: Support for other algorithms can be added later
-	if key.Alg != "RS256" {
-		return nil, fmt.Errorf("unsupported key algorithm: %s, expected RS256", key.Alg)
-	}
-
 	if err := verifyRSASignature(req.IDToken, key); err != nil {
 		return nil, fmt.Errorf("signature verification failed: %w", err)
 	}

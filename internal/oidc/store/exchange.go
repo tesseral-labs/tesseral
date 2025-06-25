@@ -115,7 +115,7 @@ func (s *Store) ExchangeOIDCCode(ctx context.Context, oidcConnectionID string, o
 		IDToken:       tokenRes.IDToken,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("get user info: %w", err)
+		return nil, fmt.Errorf("validate id token: %w", err)
 	}
 
 	return &OIDCUserData{
