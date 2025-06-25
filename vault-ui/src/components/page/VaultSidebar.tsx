@@ -192,7 +192,7 @@ export function VaultSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        {project?.auditLogsEnabled && (
+        {user?.owner && project?.auditLogsEnabled && (
           <>
             <SidebarSeparator />
             <SidebarGroup>

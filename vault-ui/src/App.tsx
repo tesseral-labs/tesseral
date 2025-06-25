@@ -35,6 +35,7 @@ import { VerifySecondaryFactorPage } from "@/pages/login/VerifySecondaryFactorPa
 
 import { Page } from "./components/page";
 import { LoggedInGate } from "./components/page/LoggedInGate";
+import { OwnerGate } from "./components/page/OwnerGate";
 import { GithubOAuthCallbackPage } from "./pages/login/GithubOAuthCallbackPage";
 import { AuditLogsPage } from "./pages/vault/AuditLogsPage";
 import { OrganizationPage } from "./pages/vault/OrganizationPage";
@@ -89,45 +90,52 @@ function AppWithRoutes() {
 
             <Route path="/" element={<LoggedInGate />}>
               <Route path="" element={<Page />}>
-                <Route path="logs" element={<AuditLogsPage />} />
-                <Route path="organization" element={<OrganizationPage />}>
-                  <Route index element={<OrganizationDetailsTab />} />
-                  <Route path="users" element={<OrganizationUsersTab />} />
+                <Route path="logs" element={<OwnerGate />}>
+                  <Route index element={<AuditLogsPage />} />
+                </Route>
+                <Route path="organization" element={<OwnerGate />}>
+                  <Route path="" element={<OrganizationPage />}>
+                    <Route index element={<OrganizationDetailsTab />} />
+                    <Route path="users" element={<OrganizationUsersTab />} />
+                    <Route
+                      path="user-invites"
+                      element={<OrganizationUserInvitesTab />}
+                    />
+                    <Route
+                      path="authentication"
+                      element={<OrganizationAuthenticationTab />}
+                    />
+                    <Route
+                      path="api-keys"
+                      element={<OrganizationApiKeysTab />}
+                    />
+                  </Route>
+                  <Route path="api-keys/:apiKeyId" element={<ApiKeyPage />}>
+                    <Route index element={<ApiKeyDetailsTab />} />
+                    <Route path="roles" element={<ApiKeyRolesTab />} />
+                  </Route>
                   <Route
-                    path="user-invites"
-                    element={<OrganizationUserInvitesTab />}
+                    path="saml-connections"
+                    element={<SamlConnectionsPage />}
                   />
                   <Route
-                    path="authentication"
-                    element={<OrganizationAuthenticationTab />}
+                    path="saml-connections/:samlConnectionId"
+                    element={<SamlConnectionPage />}
                   />
-                  <Route path="api-keys" element={<OrganizationApiKeysTab />} />
-                </Route>
-                <Route
-                  path="organization/api-keys/:apiKeyId"
-                  element={<ApiKeyPage />}
-                >
-                  <Route index element={<ApiKeyDetailsTab />} />
-                  <Route path="roles" element={<ApiKeyRolesTab />} />
-                </Route>
-                <Route
-                  path="organization/saml-connections"
-                  element={<SamlConnectionsPage />}
-                />
-                <Route
-                  path="organization/saml-connections/:samlConnectionId"
-                  element={<SamlConnectionPage />}
-                />
-                <Route
-                  path="organization/scim-api-keys/:scimApiKeyId"
-                  element={<ScimApiKeyPage />}
-                />
-                <Route
-                  path="organization/users/:userId"
-                  element={<OrganizationUserPage />}
-                >
-                  <Route index element={<OrganizationUserDetailsTab />} />
-                  <Route path="roles" element={<OrganizationUserRolesTab />} />
+                  <Route
+                    path="scim-api-keys/:scimApiKeyId"
+                    element={<ScimApiKeyPage />}
+                  />
+                  <Route
+                    path="users/:userId"
+                    element={<OrganizationUserPage />}
+                  >
+                    <Route index element={<OrganizationUserDetailsTab />} />
+                    <Route
+                      path="roles"
+                      element={<OrganizationUserRolesTab />}
+                    />
+                  </Route>
                 </Route>
 
                 <Route path="user" element={<UserPage />}>

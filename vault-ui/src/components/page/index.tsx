@@ -60,7 +60,7 @@ function PageOuter({ children }: PropsWithChildren) {
         }
       }
     }
-  }, [projectSettings, rootRef]);
+  }, [darkMode, projectSettings, rootRef]);
 
   return <>{children}</>;
 }
