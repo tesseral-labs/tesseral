@@ -55,7 +55,7 @@ export function VaultSidebar() {
   const user = whoamiResponse?.user;
 
   return (
-    <Sidebar>
+    <Sidebar variant="inset">
       <SidebarContent className="overflow-x-hidden">
         <SidebarGroup>
           <SidebarGroupContent>

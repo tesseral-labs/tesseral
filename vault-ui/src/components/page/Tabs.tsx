@@ -29,7 +29,7 @@ export function Tabs({
   return (
     <div
       className={cn(
-        "relative inline-block bg-gradient-to-br from-gray-100/50 to-gray-200/50 rounded-md p-1",
+        "relative inline-block bg-gradient-to-br from-gray-100/50 to-gray-200/50 dark:from-card dark:to-card rounded-md p-1",
         className,
       )}
     >
@@ -37,7 +37,7 @@ export function Tabs({
         <motion.div
           layout
           transition={{ type: "spring", stiffness: 400, damping: 30 }}
-          className="absolute top-0 bottom-0 bg-white rounded-sm shadow-sm"
+          className="absolute top-0 bottom-0 bg-white dark:bg-background rounded-sm shadow-sm"
           style={{
             left: indicatorStyle.left,
             width: indicatorStyle.width,
@@ -58,8 +58,8 @@ export function Tab({
       className={cn(
         "relative z-1 inline-block px-4 py-2 text-sm rounded-sm cursor-pointer transition-colors ",
         active
-          ? "bg-white font-medium shadow-sm"
-          : "text-muted-foreground hover:shadow-sm hover:bg-white/50 hover:text-foreground/80",
+          ? "bg-white dark:bg-background text-foreground font-medium shadow-sm"
+          : "text-muted-foreground hover:shadow-sm hover:bg-background/50 hover:text-foreground/80",
       )}
       data-active={active || undefined}
     >
