@@ -155,15 +155,23 @@ func (s *Store) ConsoleListCustomAuditLogEvents(ctx context.Context, req *backen
 			resourceType := queries.AuditLogEventResourceTypeSamlConnection
 			samlConnectionID, err := idformat.SAMLConnection.Parse(req.ResourceId)
 			if err != nil {
-				return nil, apierror.NewInvalidArgumentError("invalid backend_api_key_id", fmt.Errorf("parse backend api key id: %w", err))
+				return nil, apierror.NewInvalidArgumentError("invalid resource id", fmt.Errorf("parse saml connection id: %w", err))
 			}
 			listParams.ResourceID = (*uuid.UUID)(&samlConnectionID)
+			listParams.ResourceType = &resourceType
+		case backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_OIDC_CONNECTION:
+			resourceType := queries.AuditLogEventResourceTypeOidcConnection
+			oidcConnectionID, err := idformat.OIDCConnection.Parse(req.ResourceId)
+			if err != nil {
+				return nil, apierror.NewInvalidArgumentError("invalid resource id", fmt.Errorf("parse oidc connection id: %w", err))
+			}
+			listParams.ResourceID = (*uuid.UUID)(&oidcConnectionID)
 			listParams.ResourceType = &resourceType
 		case backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SCIM_API_KEY:
 			resourceType := queries.AuditLogEventResourceTypeScimApiKey
 			scimAPIKeyID, err := idformat.SCIMAPIKey.Parse(req.ResourceId)
 			if err != nil {
-				return nil, apierror.NewInvalidArgumentError("invalid intermediate_session_id", fmt.Errorf("parse intermediate session id: %w", err))
+				return nil, apierror.NewInvalidArgumentError("invalid resource id", fmt.Errorf("parse scim api key id: %w", err))
 			}
 			listParams.ResourceID = (*uuid.UUID)(&scimAPIKeyID)
 			listParams.ResourceType = &resourceType
@@ -312,6 +320,9 @@ func (s *Store) ConsoleListAuditLogEventNames(ctx context.Context, req *backendv
 			listParams.ResourceType = &resourceType
 		case backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SAML_CONNECTION:
 			resourceType := queries.AuditLogEventResourceTypeSamlConnection
+			listParams.ResourceType = &resourceType
+		case backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_OIDC_CONNECTION:
+			resourceType := queries.AuditLogEventResourceTypeOidcConnection
 			listParams.ResourceType = &resourceType
 		case backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_SCIM_API_KEY:
 			resourceType := queries.AuditLogEventResourceTypeScimApiKey
