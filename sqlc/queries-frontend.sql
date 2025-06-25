@@ -240,7 +240,19 @@ UPDATE
     users
 SET
     update_time = now(),
-    is_owner = $1
+    is_owner = $1,
+    display_name = $3
+WHERE
+    id = $2
+RETURNING
+    *;
+
+-- name: UpdateMe :one
+UPDATE
+    users
+SET
+    display_name = $1,
+    update_time = now()
 WHERE
     id = $2
 RETURNING

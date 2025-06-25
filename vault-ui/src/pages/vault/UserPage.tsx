@@ -25,7 +25,7 @@ export function UserPage() {
   return (
     <PageContent>
       <Helmet>
-        <title>{user?.displayName || user?.email || "User"} Settings</title>
+        <title>User Settings</title>
       </Helmet>
       <div>
         <h1 className="text-2xl font-semibold">Account settings</h1>

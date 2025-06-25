@@ -36,7 +36,7 @@ import {
 import { Input } from "@/components/ui/input";
 import {
   setPassword,
-  updateUser,
+  updateMe,
   whoami,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 
@@ -46,7 +46,7 @@ const schema = z.object({
 
 export function UserDetailsTab() {
   const { data: whoamiResponse, refetch } = useQuery(whoami);
-  const updateUserMutation = useMutation(updateUser);
+  const updateMeMutation = useMutation(updateMe);
 
   const user = whoamiResponse?.user;
 
@@ -59,8 +59,7 @@ export function UserDetailsTab() {
 
   async function handleSubmit(data: z.infer<typeof schema>) {
     try {
-      await updateUserMutation.mutateAsync({
-        id: user?.id,
+      await updateMeMutation.mutateAsync({
         user: {
           displayName: data.displayName || undefined,
         },
@@ -94,7 +93,7 @@ export function UserDetailsTab() {
                   size="sm"
                   type="submit"
                   disabled={
-                    !form.formState.isDirty || updateUserMutation.isPending
+                    !form.formState.isDirty || updateMeMutation.isPending
                   }
                 >
                   Save changes
