@@ -177,7 +177,12 @@ export function OrganizationOidcConnectionPage() {
         if (clientId && !form.getValues("clientId")) {
           form.setValue("clientId", clientId, { shouldValidate: true });
         }
+        form.clearErrors("configurationUrl");
       } catch (error) {
+        form.setError("configurationUrl", {
+          type: "manual",
+          message: "Failed to fetch OIDC configuration. Please check the URL.",
+        });
         console.error("Failed to fetch configuration:", error);
       }
     },
@@ -333,9 +338,9 @@ export function OrganizationOidcConnectionPage() {
                     name="issuer"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>OIDC Issuer URL</FormLabel>
+                        <FormLabel>OIDC Issuer</FormLabel>
                         <FormDescription>
-                          The OIDC Issuer URL, as configured in the customer's
+                          The OIDC Issuer, as configured in the customer's
                           Identity Provider.
                         </FormDescription>
                         <FormMessage />

@@ -120,6 +120,32 @@ func (q *Queries) GetActions(ctx context.Context, projectID uuid.UUID) ([]Action
 	return items, nil
 }
 
+const getOIDCConnection = `-- name: GetOIDCConnection :one
+SELECT
+    id, organization_id, create_time, update_time, is_primary, configuration_url, issuer, client_id, client_secret_ciphertext
+FROM
+    oidc_connections
+WHERE
+    id = $1
+`
+
+func (q *Queries) GetOIDCConnection(ctx context.Context, id uuid.UUID) (OidcConnection, error) {
+	row := q.db.QueryRow(ctx, getOIDCConnection, id)
+	var i OidcConnection
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.IsPrimary,
+		&i.ConfigurationUrl,
+		&i.Issuer,
+		&i.ClientID,
+		&i.ClientSecretCiphertext,
+	)
+	return i, err
+}
+
 const getOrganization = `-- name: GetOrganization :one
 SELECT
     id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml, custom_roles_enabled, log_in_with_github, api_keys_enabled, log_in_with_oidc

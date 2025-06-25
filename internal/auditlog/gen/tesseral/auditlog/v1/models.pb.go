@@ -523,6 +523,98 @@ func (x *SAMLConnection) GetIdpEntityId() string {
 	return ""
 }
 
+type OIDCConnection struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	CreateTime    *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
+	UpdateTime    *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	Primary       *bool                  `protobuf:"varint,4,opt,name=primary,proto3,oneof" json:"primary,omitempty"`
+	ClientId      string                 `protobuf:"bytes,5,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
+	Issuer        string                 `protobuf:"bytes,6,opt,name=issuer,proto3" json:"issuer,omitempty"`
+	RedirectUri   string                 `protobuf:"bytes,7,opt,name=redirect_uri,json=redirectUri,proto3" json:"redirect_uri,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *OIDCConnection) Reset() {
+	*x = OIDCConnection{}
+	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *OIDCConnection) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OIDCConnection) ProtoMessage() {}
+
+func (x *OIDCConnection) ProtoReflect() protoreflect.Message {
+	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OIDCConnection.ProtoReflect.Descriptor instead.
+func (*OIDCConnection) Descriptor() ([]byte, []int) {
+	return file_tesseral_auditlog_v1_models_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *OIDCConnection) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *OIDCConnection) GetCreateTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreateTime
+	}
+	return nil
+}
+
+func (x *OIDCConnection) GetUpdateTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.UpdateTime
+	}
+	return nil
+}
+
+func (x *OIDCConnection) GetPrimary() bool {
+	if x != nil && x.Primary != nil {
+		return *x.Primary
+	}
+	return false
+}
+
+func (x *OIDCConnection) GetClientId() string {
+	if x != nil {
+		return x.ClientId
+	}
+	return ""
+}
+
+func (x *OIDCConnection) GetIssuer() string {
+	if x != nil {
+		return x.Issuer
+	}
+	return ""
+}
+
+func (x *OIDCConnection) GetRedirectUri() string {
+	if x != nil {
+		return x.RedirectUri
+	}
+	return ""
+}
+
 type SCIMAPIKey struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -536,7 +628,7 @@ type SCIMAPIKey struct {
 
 func (x *SCIMAPIKey) Reset() {
 	*x = SCIMAPIKey{}
-	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[4]
+	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -548,7 +640,7 @@ func (x *SCIMAPIKey) String() string {
 func (*SCIMAPIKey) ProtoMessage() {}
 
 func (x *SCIMAPIKey) ProtoReflect() protoreflect.Message {
-	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[4]
+	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -561,7 +653,7 @@ func (x *SCIMAPIKey) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SCIMAPIKey.ProtoReflect.Descriptor instead.
 func (*SCIMAPIKey) Descriptor() ([]byte, []int) {
-	return file_tesseral_auditlog_v1_models_proto_rawDescGZIP(), []int{4}
+	return file_tesseral_auditlog_v1_models_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *SCIMAPIKey) GetId() string {
@@ -613,7 +705,7 @@ type Role struct {
 
 func (x *Role) Reset() {
 	*x = Role{}
-	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[5]
+	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -625,7 +717,7 @@ func (x *Role) String() string {
 func (*Role) ProtoMessage() {}
 
 func (x *Role) ProtoReflect() protoreflect.Message {
-	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[5]
+	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -638,7 +730,7 @@ func (x *Role) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Role.ProtoReflect.Descriptor instead.
 func (*Role) Descriptor() ([]byte, []int) {
-	return file_tesseral_auditlog_v1_models_proto_rawDescGZIP(), []int{5}
+	return file_tesseral_auditlog_v1_models_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *Role) GetId() string {
@@ -694,7 +786,7 @@ type UserRoleAssignment struct {
 
 func (x *UserRoleAssignment) Reset() {
 	*x = UserRoleAssignment{}
-	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[6]
+	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -706,7 +798,7 @@ func (x *UserRoleAssignment) String() string {
 func (*UserRoleAssignment) ProtoMessage() {}
 
 func (x *UserRoleAssignment) ProtoReflect() protoreflect.Message {
-	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[6]
+	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -719,7 +811,7 @@ func (x *UserRoleAssignment) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserRoleAssignment.ProtoReflect.Descriptor instead.
 func (*UserRoleAssignment) Descriptor() ([]byte, []int) {
-	return file_tesseral_auditlog_v1_models_proto_rawDescGZIP(), []int{6}
+	return file_tesseral_auditlog_v1_models_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *UserRoleAssignment) GetId() string {
@@ -756,7 +848,7 @@ type UserInvite struct {
 
 func (x *UserInvite) Reset() {
 	*x = UserInvite{}
-	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[7]
+	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -768,7 +860,7 @@ func (x *UserInvite) String() string {
 func (*UserInvite) ProtoMessage() {}
 
 func (x *UserInvite) ProtoReflect() protoreflect.Message {
-	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[7]
+	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -781,7 +873,7 @@ func (x *UserInvite) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserInvite.ProtoReflect.Descriptor instead.
 func (*UserInvite) Descriptor() ([]byte, []int) {
-	return file_tesseral_auditlog_v1_models_proto_rawDescGZIP(), []int{7}
+	return file_tesseral_auditlog_v1_models_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *UserInvite) GetId() string {
@@ -834,7 +926,7 @@ type APIKey struct {
 
 func (x *APIKey) Reset() {
 	*x = APIKey{}
-	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[8]
+	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -846,7 +938,7 @@ func (x *APIKey) String() string {
 func (*APIKey) ProtoMessage() {}
 
 func (x *APIKey) ProtoReflect() protoreflect.Message {
-	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[8]
+	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -859,7 +951,7 @@ func (x *APIKey) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use APIKey.ProtoReflect.Descriptor instead.
 func (*APIKey) Descriptor() ([]byte, []int) {
-	return file_tesseral_auditlog_v1_models_proto_rawDescGZIP(), []int{8}
+	return file_tesseral_auditlog_v1_models_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *APIKey) GetId() string {
@@ -930,7 +1022,7 @@ type User struct {
 
 func (x *User) Reset() {
 	*x = User{}
-	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[9]
+	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -942,7 +1034,7 @@ func (x *User) String() string {
 func (*User) ProtoMessage() {}
 
 func (x *User) ProtoReflect() protoreflect.Message {
-	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[9]
+	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -955,7 +1047,7 @@ func (x *User) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use User.ProtoReflect.Descriptor instead.
 func (*User) Descriptor() ([]byte, []int) {
-	return file_tesseral_auditlog_v1_models_proto_rawDescGZIP(), []int{9}
+	return file_tesseral_auditlog_v1_models_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *User) GetId() string {
@@ -1051,7 +1143,7 @@ type Session struct {
 
 func (x *Session) Reset() {
 	*x = Session{}
-	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[10]
+	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1063,7 +1155,7 @@ func (x *Session) String() string {
 func (*Session) ProtoMessage() {}
 
 func (x *Session) ProtoReflect() protoreflect.Message {
-	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[10]
+	mi := &file_tesseral_auditlog_v1_models_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1076,7 +1168,7 @@ func (x *Session) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Session.ProtoReflect.Descriptor instead.
 func (*Session) Descriptor() ([]byte, []int) {
-	return file_tesseral_auditlog_v1_models_proto_rawDescGZIP(), []int{10}
+	return file_tesseral_auditlog_v1_models_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *Session) GetId() string {
@@ -1262,6 +1354,24 @@ var file_tesseral_auditlog_v1_models_proto_rawDesc = string([]byte{
 	0x65, 0x72, 0x74, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x65, 0x12, 0x22, 0x0a, 0x0d, 0x69, 0x64,
 	0x70, 0x5f, 0x65, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x5f, 0x69, 0x64, 0x18, 0x09, 0x20, 0x01, 0x28,
 	0x09, 0x52, 0x0b, 0x69, 0x64, 0x70, 0x45, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x49, 0x64, 0x42, 0x0a,
+	0x0a, 0x08, 0x5f, 0x70, 0x72, 0x69, 0x6d, 0x61, 0x72, 0x79, 0x22, 0x9d, 0x02, 0x0a, 0x0e, 0x4f,
+	0x49, 0x44, 0x43, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0e, 0x0a,
+	0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x3b, 0x0a,
+	0x0b, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x0a,
+	0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x3b, 0x0a, 0x0b, 0x75, 0x70,
+	0x64, 0x61, 0x74, 0x65, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
+	0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x0a, 0x75, 0x70, 0x64,
+	0x61, 0x74, 0x65, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x1d, 0x0a, 0x07, 0x70, 0x72, 0x69, 0x6d, 0x61,
+	0x72, 0x79, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x48, 0x00, 0x52, 0x07, 0x70, 0x72, 0x69, 0x6d,
+	0x61, 0x72, 0x79, 0x88, 0x01, 0x01, 0x12, 0x1b, 0x0a, 0x09, 0x63, 0x6c, 0x69, 0x65, 0x6e, 0x74,
+	0x5f, 0x69, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x63, 0x6c, 0x69, 0x65, 0x6e,
+	0x74, 0x49, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x69, 0x73, 0x73, 0x75, 0x65, 0x72, 0x18, 0x06, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x06, 0x69, 0x73, 0x73, 0x75, 0x65, 0x72, 0x12, 0x21, 0x0a, 0x0c, 0x72,
+	0x65, 0x64, 0x69, 0x72, 0x65, 0x63, 0x74, 0x5f, 0x75, 0x72, 0x69, 0x18, 0x07, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0b, 0x72, 0x65, 0x64, 0x69, 0x72, 0x65, 0x63, 0x74, 0x55, 0x72, 0x69, 0x42, 0x0a,
 	0x0a, 0x08, 0x5f, 0x70, 0x72, 0x69, 0x6d, 0x61, 0x72, 0x79, 0x22, 0xd3, 0x01, 0x0a, 0x0a, 0x53,
 	0x43, 0x49, 0x4d, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18,
 	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x3b, 0x0a, 0x0b, 0x63, 0x72, 0x65,
@@ -1440,49 +1550,52 @@ func file_tesseral_auditlog_v1_models_proto_rawDescGZIP() []byte {
 }
 
 var file_tesseral_auditlog_v1_models_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_tesseral_auditlog_v1_models_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_tesseral_auditlog_v1_models_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_tesseral_auditlog_v1_models_proto_goTypes = []any{
 	(PrimaryAuthFactor)(0),        // 0: tesseral.auditlog.v1.PrimaryAuthFactor
 	(*APIKeyRoleAssignment)(nil),  // 1: tesseral.auditlog.v1.APIKeyRoleAssignment
 	(*Organization)(nil),          // 2: tesseral.auditlog.v1.Organization
 	(*Passkey)(nil),               // 3: tesseral.auditlog.v1.Passkey
 	(*SAMLConnection)(nil),        // 4: tesseral.auditlog.v1.SAMLConnection
-	(*SCIMAPIKey)(nil),            // 5: tesseral.auditlog.v1.SCIMAPIKey
-	(*Role)(nil),                  // 6: tesseral.auditlog.v1.Role
-	(*UserRoleAssignment)(nil),    // 7: tesseral.auditlog.v1.UserRoleAssignment
-	(*UserInvite)(nil),            // 8: tesseral.auditlog.v1.UserInvite
-	(*APIKey)(nil),                // 9: tesseral.auditlog.v1.APIKey
-	(*User)(nil),                  // 10: tesseral.auditlog.v1.User
-	(*Session)(nil),               // 11: tesseral.auditlog.v1.Session
-	(*timestamppb.Timestamp)(nil), // 12: google.protobuf.Timestamp
+	(*OIDCConnection)(nil),        // 5: tesseral.auditlog.v1.OIDCConnection
+	(*SCIMAPIKey)(nil),            // 6: tesseral.auditlog.v1.SCIMAPIKey
+	(*Role)(nil),                  // 7: tesseral.auditlog.v1.Role
+	(*UserRoleAssignment)(nil),    // 8: tesseral.auditlog.v1.UserRoleAssignment
+	(*UserInvite)(nil),            // 9: tesseral.auditlog.v1.UserInvite
+	(*APIKey)(nil),                // 10: tesseral.auditlog.v1.APIKey
+	(*User)(nil),                  // 11: tesseral.auditlog.v1.User
+	(*Session)(nil),               // 12: tesseral.auditlog.v1.Session
+	(*timestamppb.Timestamp)(nil), // 13: google.protobuf.Timestamp
 }
 var file_tesseral_auditlog_v1_models_proto_depIdxs = []int32{
-	12, // 0: tesseral.auditlog.v1.Organization.create_time:type_name -> google.protobuf.Timestamp
-	12, // 1: tesseral.auditlog.v1.Organization.update_time:type_name -> google.protobuf.Timestamp
-	12, // 2: tesseral.auditlog.v1.Passkey.create_time:type_name -> google.protobuf.Timestamp
-	12, // 3: tesseral.auditlog.v1.Passkey.update_time:type_name -> google.protobuf.Timestamp
-	12, // 4: tesseral.auditlog.v1.SAMLConnection.create_time:type_name -> google.protobuf.Timestamp
-	12, // 5: tesseral.auditlog.v1.SAMLConnection.update_time:type_name -> google.protobuf.Timestamp
-	12, // 6: tesseral.auditlog.v1.SCIMAPIKey.create_time:type_name -> google.protobuf.Timestamp
-	12, // 7: tesseral.auditlog.v1.SCIMAPIKey.update_time:type_name -> google.protobuf.Timestamp
-	12, // 8: tesseral.auditlog.v1.Role.create_time:type_name -> google.protobuf.Timestamp
-	12, // 9: tesseral.auditlog.v1.Role.update_time:type_name -> google.protobuf.Timestamp
-	12, // 10: tesseral.auditlog.v1.UserInvite.create_time:type_name -> google.protobuf.Timestamp
-	12, // 11: tesseral.auditlog.v1.UserInvite.update_time:type_name -> google.protobuf.Timestamp
-	12, // 12: tesseral.auditlog.v1.APIKey.create_time:type_name -> google.protobuf.Timestamp
-	12, // 13: tesseral.auditlog.v1.APIKey.update_time:type_name -> google.protobuf.Timestamp
-	12, // 14: tesseral.auditlog.v1.APIKey.expire_time:type_name -> google.protobuf.Timestamp
-	12, // 15: tesseral.auditlog.v1.User.create_time:type_name -> google.protobuf.Timestamp
-	12, // 16: tesseral.auditlog.v1.User.update_time:type_name -> google.protobuf.Timestamp
-	12, // 17: tesseral.auditlog.v1.Session.create_time:type_name -> google.protobuf.Timestamp
-	12, // 18: tesseral.auditlog.v1.Session.last_active_time:type_name -> google.protobuf.Timestamp
-	12, // 19: tesseral.auditlog.v1.Session.expire_time:type_name -> google.protobuf.Timestamp
-	0,  // 20: tesseral.auditlog.v1.Session.primary_auth_factor:type_name -> tesseral.auditlog.v1.PrimaryAuthFactor
-	21, // [21:21] is the sub-list for method output_type
-	21, // [21:21] is the sub-list for method input_type
-	21, // [21:21] is the sub-list for extension type_name
-	21, // [21:21] is the sub-list for extension extendee
-	0,  // [0:21] is the sub-list for field type_name
+	13, // 0: tesseral.auditlog.v1.Organization.create_time:type_name -> google.protobuf.Timestamp
+	13, // 1: tesseral.auditlog.v1.Organization.update_time:type_name -> google.protobuf.Timestamp
+	13, // 2: tesseral.auditlog.v1.Passkey.create_time:type_name -> google.protobuf.Timestamp
+	13, // 3: tesseral.auditlog.v1.Passkey.update_time:type_name -> google.protobuf.Timestamp
+	13, // 4: tesseral.auditlog.v1.SAMLConnection.create_time:type_name -> google.protobuf.Timestamp
+	13, // 5: tesseral.auditlog.v1.SAMLConnection.update_time:type_name -> google.protobuf.Timestamp
+	13, // 6: tesseral.auditlog.v1.OIDCConnection.create_time:type_name -> google.protobuf.Timestamp
+	13, // 7: tesseral.auditlog.v1.OIDCConnection.update_time:type_name -> google.protobuf.Timestamp
+	13, // 8: tesseral.auditlog.v1.SCIMAPIKey.create_time:type_name -> google.protobuf.Timestamp
+	13, // 9: tesseral.auditlog.v1.SCIMAPIKey.update_time:type_name -> google.protobuf.Timestamp
+	13, // 10: tesseral.auditlog.v1.Role.create_time:type_name -> google.protobuf.Timestamp
+	13, // 11: tesseral.auditlog.v1.Role.update_time:type_name -> google.protobuf.Timestamp
+	13, // 12: tesseral.auditlog.v1.UserInvite.create_time:type_name -> google.protobuf.Timestamp
+	13, // 13: tesseral.auditlog.v1.UserInvite.update_time:type_name -> google.protobuf.Timestamp
+	13, // 14: tesseral.auditlog.v1.APIKey.create_time:type_name -> google.protobuf.Timestamp
+	13, // 15: tesseral.auditlog.v1.APIKey.update_time:type_name -> google.protobuf.Timestamp
+	13, // 16: tesseral.auditlog.v1.APIKey.expire_time:type_name -> google.protobuf.Timestamp
+	13, // 17: tesseral.auditlog.v1.User.create_time:type_name -> google.protobuf.Timestamp
+	13, // 18: tesseral.auditlog.v1.User.update_time:type_name -> google.protobuf.Timestamp
+	13, // 19: tesseral.auditlog.v1.Session.create_time:type_name -> google.protobuf.Timestamp
+	13, // 20: tesseral.auditlog.v1.Session.last_active_time:type_name -> google.protobuf.Timestamp
+	13, // 21: tesseral.auditlog.v1.Session.expire_time:type_name -> google.protobuf.Timestamp
+	0,  // 22: tesseral.auditlog.v1.Session.primary_auth_factor:type_name -> tesseral.auditlog.v1.PrimaryAuthFactor
+	23, // [23:23] is the sub-list for method output_type
+	23, // [23:23] is the sub-list for method input_type
+	23, // [23:23] is the sub-list for extension type_name
+	23, // [23:23] is the sub-list for extension extendee
+	0,  // [0:23] is the sub-list for field type_name
 }
 
 func init() { file_tesseral_auditlog_v1_models_proto_init() }
@@ -1493,15 +1606,16 @@ func file_tesseral_auditlog_v1_models_proto_init() {
 	file_tesseral_auditlog_v1_models_proto_msgTypes[1].OneofWrappers = []any{}
 	file_tesseral_auditlog_v1_models_proto_msgTypes[2].OneofWrappers = []any{}
 	file_tesseral_auditlog_v1_models_proto_msgTypes[3].OneofWrappers = []any{}
-	file_tesseral_auditlog_v1_models_proto_msgTypes[8].OneofWrappers = []any{}
+	file_tesseral_auditlog_v1_models_proto_msgTypes[4].OneofWrappers = []any{}
 	file_tesseral_auditlog_v1_models_proto_msgTypes[9].OneofWrappers = []any{}
+	file_tesseral_auditlog_v1_models_proto_msgTypes[10].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_tesseral_auditlog_v1_models_proto_rawDesc), len(file_tesseral_auditlog_v1_models_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   11,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

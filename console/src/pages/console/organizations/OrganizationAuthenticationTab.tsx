@@ -43,10 +43,10 @@ export function OrganizationAuthentication() {
           <OrganizationMFACard />
         )}
 
-        {getProjectResponse?.project?.logInWithSaml ||
-          (getProjectResponse?.project?.logInWithOidc && (
-            <OrganizationSsoCard />
-          ))}
+        {(getProjectResponse?.project?.logInWithSaml ||
+          getProjectResponse?.project?.logInWithOidc) && (
+          <OrganizationSsoCard />
+        )}
 
         <OrganizationScimCard />
       </div>

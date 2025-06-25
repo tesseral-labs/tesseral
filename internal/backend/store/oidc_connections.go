@@ -11,6 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
@@ -114,7 +115,7 @@ func (s *Store) GetOIDCConnection(ctx context.Context, req *backendv1.GetOIDCCon
 }
 
 func (s *Store) CreateOIDCConnection(ctx context.Context, req *backendv1.CreateOIDCConnectionRequest) (*backendv1.CreateOIDCConnectionResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -202,6 +203,23 @@ func (s *Store) CreateOIDCConnection(ctx context.Context, req *backendv1.CreateO
 		}
 	}
 
+	auditOIDCConnection, err := s.auditlogStore.GetOIDCConnection(ctx, tx, qOIDCConnection.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get oidc connection for audit log: %w", err)
+	}
+
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.oidc_connections.create",
+		EventDetails: &auditlogv1.CreateOIDCConnection{
+			OidcConnection: auditOIDCConnection,
+		},
+		OrganizationID: &qOIDCConnection.OrganizationID,
+		ResourceType:   queries.AuditLogEventResourceTypeOidcConnection,
+		ResourceID:     &qOIDCConnection.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
@@ -220,6 +238,11 @@ func (s *Store) validateOidcConfiguration(config *oidc.Configuration) error {
 	if config.JwksURI == "" {
 		return fmt.Errorf("jwks uri is required")
 	}
+
+	// Sanity checks for downstream OIDC operations.
+	//
+	// If the OIDC configuration is not well-formed or missing these values, we are okay failing hard later.
+
 	if len(config.GrantTypesSupported) != 0 {
 		if !slices.Contains(config.GrantTypesSupported, "authorization_code") {
 			return fmt.Errorf("grant type 'authorization_code' is required")
@@ -245,7 +268,7 @@ func (s *Store) validateOidcConfiguration(config *oidc.Configuration) error {
 }
 
 func (s *Store) UpdateOIDCConnection(ctx context.Context, req *backendv1.UpdateOIDCConnectionRequest) (*backendv1.UpdateOIDCConnectionResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -272,6 +295,11 @@ func (s *Store) UpdateOIDCConnection(ctx context.Context, req *backendv1.UpdateO
 		}
 
 		return nil, fmt.Errorf("get oidc connection: %w", err)
+	}
+
+	auditPreviousOIDCConnection, err := s.auditlogStore.GetOIDCConnection(ctx, tx, qOIDCConnection.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit previous oidc connection: %w", err)
 	}
 
 	updates := queries.UpdateOIDCConnectionParams{
@@ -338,6 +366,24 @@ func (s *Store) UpdateOIDCConnection(ctx context.Context, req *backendv1.UpdateO
 		}
 	}
 
+	auditOIDCConnection, err := s.auditlogStore.GetOIDCConnection(ctx, tx, qUpdatedOIDCConnection.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit oidc connection: %w", err)
+	}
+
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.oidc_connections.update",
+		EventDetails: &auditlogv1.UpdateOIDCConnection{
+			OidcConnection:         auditOIDCConnection,
+			PreviousOidcConnection: auditPreviousOIDCConnection,
+		},
+		OrganizationID: &qOIDCConnection.OrganizationID,
+		ResourceType:   queries.AuditLogEventResourceTypeOidcConnection,
+		ResourceID:     &qOIDCConnection.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
@@ -346,7 +392,7 @@ func (s *Store) UpdateOIDCConnection(ctx context.Context, req *backendv1.UpdateO
 }
 
 func (s *Store) DeleteOIDCConnection(ctx context.Context, req *backendv1.DeleteOIDCConnectionRequest) (*backendv1.DeleteOIDCConnectionResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -357,8 +403,37 @@ func (s *Store) DeleteOIDCConnection(ctx context.Context, req *backendv1.DeleteO
 		return nil, apierror.NewInvalidArgumentError("invalid oidc connection id", fmt.Errorf("parse oidc connection id: %w", err))
 	}
 
+	qOIDCConnection, err := q.GetOIDCConnection(ctx, queries.GetOIDCConnectionParams{
+		ProjectID: authn.ProjectID(ctx),
+		ID:        oidcConnectionID,
+	})
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("oidc connection not found", fmt.Errorf("get oidc connection: %w", err))
+		}
+
+		return nil, fmt.Errorf("get oidc connection: %w", err)
+	}
+
+	auditOIDCConnection, err := s.auditlogStore.GetOIDCConnection(ctx, tx, qOIDCConnection.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit oidc connection: %w", err)
+	}
+
 	if err := q.DeleteOIDCConnection(ctx, oidcConnectionID); err != nil {
 		return nil, fmt.Errorf("delete oidc connection: %w", err)
+	}
+
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.oidc_connections.delete",
+		EventDetails: &auditlogv1.DeleteOIDCConnection{
+			OidcConnection: auditOIDCConnection,
+		},
+		OrganizationID: &qOIDCConnection.OrganizationID,
+		ResourceType:   queries.AuditLogEventResourceTypeOidcConnection,
+		ResourceID:     &qOIDCConnection.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
 	if err := commit(); err != nil {

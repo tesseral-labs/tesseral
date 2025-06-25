@@ -25,3 +25,5 @@ alter table organizations
     add column log_in_with_oidc boolean default false not null;
 
 alter type primary_auth_factor add value 'oidc';
+
+alter type audit_log_event_resource_type add value 'oidc_connection';

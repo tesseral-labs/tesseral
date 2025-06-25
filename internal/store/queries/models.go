@@ -25,6 +25,7 @@ const (
 	AuditLogEventResourceTypeSession        AuditLogEventResourceType = "session"
 	AuditLogEventResourceTypeUser           AuditLogEventResourceType = "user"
 	AuditLogEventResourceTypeUserInvite     AuditLogEventResourceType = "user_invite"
+	AuditLogEventResourceTypeOidcConnection AuditLogEventResourceType = "oidc_connection"
 )
 
 func (e *AuditLogEventResourceType) Scan(src interface{}) error {
