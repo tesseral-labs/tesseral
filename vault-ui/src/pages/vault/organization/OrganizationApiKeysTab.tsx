@@ -535,17 +535,6 @@ function ManageApiKeyButton({ apiKey }: { apiKey: APIKey }) {
               </div>
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link
-              className="w-full"
-              to={`/organization/api-keys/${apiKey.id}/logs`}
-            >
-              <div className="w-full flex items-center gap-2">
-                <Logs />
-                <span>Audit Logs</span>
-              </div>
-            </Link>
-          </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             className="group hover:bg-destructive/10"
