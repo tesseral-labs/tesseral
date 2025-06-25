@@ -60,6 +60,15 @@ func (s *Store) ExchangeOIDCCode(ctx context.Context, oidcConnectionID string, o
 		return nil, fmt.Errorf("get oidc connection: %w", err)
 	}
 
+	organizationDomains, err := q.GetOrganizationDomains(ctx, qOIDCConnection.OrganizationID)
+	if err != nil {
+		return nil, fmt.Errorf("get organization domains: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit transaction: %w", err)
+	}
+
 	config, err := s.oidc.GetConfiguration(ctx, qOIDCConnection.ConfigurationUrl)
 	if err != nil {
 		return nil, fmt.Errorf("get OIDC configuration: %w", err)
@@ -108,15 +117,6 @@ func (s *Store) ExchangeOIDCCode(ctx context.Context, oidcConnectionID string, o
 	})
 	if err != nil {
 		return nil, fmt.Errorf("get user info: %w", err)
-	}
-
-	organizationDomains, err := q.GetOrganizationDomains(ctx, qOIDCConnection.OrganizationID)
-	if err != nil {
-		return nil, fmt.Errorf("get organization domains: %w", err)
-	}
-
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit transaction: %w", err)
 	}
 
 	return &OIDCUserData{
