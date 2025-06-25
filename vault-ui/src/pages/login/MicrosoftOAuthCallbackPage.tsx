@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { LoaderCircleIcon } from "lucide-react";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router";
 
 import {
   issueEmailVerificationChallenge,

@@ -1,7 +1,7 @@
 import { useMutation } from "@connectrpc/connect-query";
 import { LoaderCircleIcon } from "lucide-react";
 import React, { useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router";
 
 import { redeemUserImpersonationToken } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import { useProjectSettings } from "@/lib/project-settings";

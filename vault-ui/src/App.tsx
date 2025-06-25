@@ -4,15 +4,11 @@ import { createConnectTransport } from "@connectrpc/connect-web";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
 import { Navigate, Route, Routes } from "react-router";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router";
 
+import { LoginFlowLayout } from "@/components/login/LoginFlowLayout";
 import { Toaster } from "@/components/ui/sonner";
 import { NotFoundPage } from "@/pages/NotFoundPage";
-import { LoggedInGate } from "@/pages/dashboard/LoggedInGate";
-import { OrganizationSettingsPage } from "@/pages/dashboard/OrganizationSettingsPage";
-import { OrganizationUsersTab } from "@/pages/dashboard/OrganizationUsersTab";
-import { CreateRolePage } from "@/pages/dashboard/roles/CreateRolePage";
-import { EditRolePage } from "@/pages/dashboard/roles/EditRolePage";
 import { AuthenticateAnotherWayPage } from "@/pages/login/AuthenticateAnotherWayPage";
 import { ChooseOrganizationPage } from "@/pages/login/ChooseOrganizationPage";
 import { CreateOrganizationPage } from "@/pages/login/CreateOrganizationPage";
@@ -20,7 +16,6 @@ import { FinishLoginPage } from "@/pages/login/FinishLoginPage";
 import { ForgotPasswordPage } from "@/pages/login/ForgotPasswordPage";
 import { GoogleOAuthCallbackPage } from "@/pages/login/GoogleOAuthCallbackPage";
 import { ImpersonatePage } from "@/pages/login/ImpersonatePage";
-import { LoginFlowLayout } from "@/pages/login/LoginFlowLayout";
 import { LoginPage } from "@/pages/login/LoginPage";
 import { LogoutPage } from "@/pages/login/LogoutPage";
 import { MicrosoftOAuthCallbackPage } from "@/pages/login/MicrosoftOAuthCallbackPage";
@@ -38,17 +33,28 @@ import { VerifyPasskeyPage } from "@/pages/login/VerifyPasskeyPage";
 import { VerifyPasswordPage } from "@/pages/login/VerifyPasswordPage";
 import { VerifySecondaryFactorPage } from "@/pages/login/VerifySecondaryFactorPage";
 
-import { APIKeysTab } from "./pages/dashboard/APIKeysTab";
-import { AuditLogEventsPage } from "./pages/dashboard/AuditLogEventsPage";
-import { DashboardLayout } from "./pages/dashboard/DashboardLayout";
-import { OrganizationLoginSettingsTab } from "./pages/dashboard/OrganizationLoginSettingsTab";
-import { OrganizationSAMLConnectionsTab } from "./pages/dashboard/OrganizationSAMLConnectionsTab";
-import { OrganizationSCIMAPIKeysTab } from "./pages/dashboard/OrganizationSCIMAPIKeysTab";
-import { UserSettingsPage } from "./pages/dashboard/UserSettingsPage";
-import { ViewAPIKeyPage } from "./pages/dashboard/api-keys/ViewAPIKeyPage";
-import { ViewSAMLConnectionPage } from "./pages/dashboard/saml-connections/ViewSAMLConnectionPage";
-import { ViewSCIMAPIKeyPage } from "./pages/dashboard/scim-api-keys/ViewSCIMAPIKeyPage";
+import { Page } from "./components/page";
+import { LoggedInGate } from "./components/page/LoggedInGate";
 import { GithubOAuthCallbackPage } from "./pages/login/GithubOAuthCallbackPage";
+import { AuditLogsPage } from "./pages/vault/AuditLogsPage";
+import { OrganizationPage } from "./pages/vault/OrganizationPage";
+import { UserPage } from "./pages/vault/UserPage";
+import { OrganizationApiKeysTab } from "./pages/vault/organization/OrganizationApiKeysTab";
+import { OrganizationAuthenticationTab } from "./pages/vault/organization/OrganizationAuthenticationTab";
+import { OrganizationDetailsTab } from "./pages/vault/organization/OrganizationDetailsTab";
+import { OrganizationUserInvitesTab } from "./pages/vault/organization/OrganizationUserInvitesTab";
+import { OrganizationUsersTab } from "./pages/vault/organization/OrganizationUsersTab";
+import { ApiKeyDetailsTab } from "./pages/vault/organization/api-keys/ApiKeyDetailsTab";
+import { ApiKeyPage } from "./pages/vault/organization/api-keys/ApiKeyPage";
+import { ApiKeyRolesTab } from "./pages/vault/organization/api-keys/ApiKeyRolesTab";
+import { SamlConnectionPage } from "./pages/vault/organization/saml-connections/SamlConnectionPage";
+import { SamlConnectionsPage } from "./pages/vault/organization/saml-connections/SamlConnectionsPage";
+import { ScimApiKeyPage } from "./pages/vault/organization/scim-api-keys/ScimApiKeyPage";
+import { OrganizationUserDetailsTab } from "./pages/vault/organization/users/OrganizationUserDetailsTab";
+import { OrganizationUserPage } from "./pages/vault/organization/users/OrganizationUserPage";
+import { OrganizationUserRolesTab } from "./pages/vault/organization/users/OrganizationUserRolesTab";
+import { UserAuthenticationTab } from "./pages/vault/user/UserAuthenticationTab";
+import { UserDetailsTab } from "./pages/vault/user/UserDetailsTab";
 
 const queryClient = new QueryClient();
 
@@ -68,9 +74,72 @@ function AppWithRoutes() {
         <BrowserRouter>
           <Routes>
             <Route
-              path="/"
-              element={<Navigate to="/user-settings" replace />}
+              path="/audit-logs"
+              element={<Navigate to="/logs" replace />}
             />
+            <Route
+              path="/user-settings"
+              element={<Navigate to="/user" replace />}
+            />
+            <Route
+              path="/organization-settings"
+              element={<Navigate to="/organization" replace />}
+            />
+            <Route path="/" element={<Navigate to="/user" replace />} />
+
+            <Route path="/" element={<LoggedInGate />}>
+              <Route path="" element={<Page />}>
+                <Route path="logs" element={<AuditLogsPage />} />
+                <Route path="organization" element={<OrganizationPage />}>
+                  <Route index element={<OrganizationDetailsTab />} />
+                  <Route path="users" element={<OrganizationUsersTab />} />
+                  <Route
+                    path="user-invites"
+                    element={<OrganizationUserInvitesTab />}
+                  />
+                  <Route
+                    path="authentication"
+                    element={<OrganizationAuthenticationTab />}
+                  />
+                  <Route path="api-keys" element={<OrganizationApiKeysTab />} />
+                </Route>
+                <Route
+                  path="organization/api-keys/:apiKeyId"
+                  element={<ApiKeyPage />}
+                >
+                  <Route index element={<ApiKeyDetailsTab />} />
+                  <Route path="roles" element={<ApiKeyRolesTab />} />
+                </Route>
+                <Route
+                  path="organization/saml-connections"
+                  element={<SamlConnectionsPage />}
+                />
+                <Route
+                  path="organization/saml-connections/:samlConnectionId"
+                  element={<SamlConnectionPage />}
+                />
+                <Route
+                  path="organization/scim-api-keys/:scimApiKeyId"
+                  element={<ScimApiKeyPage />}
+                />
+                <Route
+                  path="organization/users/:userId"
+                  element={<OrganizationUserPage />}
+                >
+                  <Route index element={<OrganizationUserDetailsTab />} />
+                  <Route path="roles" element={<OrganizationUserRolesTab />} />
+                </Route>
+
+                <Route path="user" element={<UserPage />}>
+                  <Route index element={<UserDetailsTab />} />
+                  <Route
+                    path="authentication"
+                    element={<UserAuthenticationTab />}
+                  />
+                </Route>
+              </Route>
+            </Route>
+
             <Route path="login" element={<LoginPage />} />
             <Route path="signup" element={<SignupPage />} />
 
@@ -147,51 +216,7 @@ function AppWithRoutes() {
             </Route>
 
             <Route path="" element={<LoggedInGate />}>
-              <Route path="" element={<DashboardLayout />}>
-                <Route path="user-settings" element={<UserSettingsPage />} />
-                <Route
-                  path="organization-settings"
-                  element={<OrganizationSettingsPage />}
-                >
-                  <Route path="" element={<OrganizationUsersTab />} />
-                  <Route path="api-keys" element={<APIKeysTab />} />
-                  <Route
-                    path="api-keys/:apiKeyId"
-                    element={<ViewAPIKeyPage />}
-                  />
-                  <Route
-                    path="login-settings"
-                    element={<OrganizationLoginSettingsTab />}
-                  />
-                  <Route
-                    path="saml-connections"
-                    element={<OrganizationSAMLConnectionsTab />}
-                  />
-                  <Route
-                    path="saml-connections/:samlConnectionId"
-                    element={<ViewSAMLConnectionPage />}
-                  />
-                  <Route
-                    path="scim-api-keys"
-                    element={<OrganizationSCIMAPIKeysTab />}
-                  />
-                  <Route
-                    path="scim-api-keys/:scimApiKeyId"
-                    element={<ViewSCIMAPIKeyPage />}
-                  />
-                </Route>
-
-                <Route
-                  path="organization-settings/roles/new"
-                  element={<CreateRolePage />}
-                />
-                <Route
-                  path="organization-settings/roles/:roleId/edit"
-                  element={<EditRolePage />}
-                />
-
-                <Route path="audit-logs" element={<AuditLogEventsPage />} />
-              </Route>
+              <Route path="" element={<Page />} />
             </Route>
 
             <Route path="*" element={<NotFoundPage />} />
