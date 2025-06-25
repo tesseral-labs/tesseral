@@ -22,6 +22,7 @@ func TestCreateSAMLConnection_SAMLEnabled(t *testing.T) {
 		SamlConnection: &frontendv1.SAMLConnection{
 			IdpRedirectUrl: "https://idp.example.com/saml/redirect",
 			IdpEntityId:    "https://idp.example.com/saml/idp",
+			Primary:        refOrNil(true),
 		},
 	})
 	require.NoError(t, err)
@@ -30,6 +31,9 @@ func TestCreateSAMLConnection_SAMLEnabled(t *testing.T) {
 	require.NotEmpty(t, res.SamlConnection.SpEntityId)
 	require.Equal(t, "https://idp.example.com/saml/redirect", res.SamlConnection.IdpRedirectUrl)
 	require.Equal(t, "https://idp.example.com/saml/idp", res.SamlConnection.IdpEntityId)
+	require.NotEmpty(t, res.SamlConnection.CreateTime)
+	require.NotEmpty(t, res.SamlConnection.UpdateTime)
+	require.True(t, res.SamlConnection.GetPrimary())
 }
 
 func TestCreateSAMLConnection_SAMLDisabled(t *testing.T) {
