@@ -116,7 +116,7 @@ export function ScimApiKeysCard() {
         ) : (
           <>
             {scimApiKeys?.length === 0 ? (
-              <div className="text-muted-foreground text-sm py-6 text-center">
+              <div className="text-muted-foreground text-sm text-center pt-8">
                 No SCIM API keys found for this organization.
               </div>
             ) : (

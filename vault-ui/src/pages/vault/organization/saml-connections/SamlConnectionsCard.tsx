@@ -179,7 +179,7 @@ export function SamlConnectionsCard() {
                 </TableBody>
               </Table>
             ) : (
-              <div className="text-center text-muted-foreground text-sm">
+              <div className="text-center text-muted-foreground text-sm pt-8">
                 No SAML Connections found. Create one to get started.
               </div>
             )}
