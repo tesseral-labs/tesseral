@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router";
 
-import { UISettingsInjector } from "@/components/login/UISettingsInjector";
+import { UISettingsInjector } from "@/components/core/UISettingsInjector";
 import { ProjectSettingsProvider } from "@/lib/project-settings";
 
 export function LoginFlowLayout() {

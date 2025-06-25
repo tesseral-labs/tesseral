@@ -8,8 +8,8 @@ import { Link, useSearchParams } from "react-router";
 import { z } from "zod";
 
 import { Title } from "@/components/core/Title";
+import { UISettingsInjector } from "@/components/core/UISettingsInjector";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
-import { UISettingsInjector } from "@/components/login/UISettingsInjector";
 import { GithubIcon } from "@/components/login/icons/GithubIcon";
 import { GoogleIcon } from "@/components/login/icons/GoogleIcon";
 import { MicrosoftIcon } from "@/components/login/icons/MicrosoftIcon";
