@@ -1,7 +1,7 @@
 import React from "react";
-import { Helmet } from "react-helmet";
 
 import { ListAuditLogEventsTable } from "@/components/audit-logs/ListAuditLogEventsTable";
+import { Title } from "@/components/core/Title";
 import { PageContent } from "@/components/page";
 import {
   Card,
@@ -15,9 +15,7 @@ import { ListAuditLogEventsRequest } from "@/gen/tesseral/frontend/v1/frontend_p
 export function AuditLogsPage() {
   return (
     <PageContent>
-      <Helmet>
-        <title>Audit Logs</title>
-      </Helmet>
+      <Title title="Audit Logs" />
       <Card>
         <CardHeader>
           <CardTitle>Audit Logs</CardTitle>

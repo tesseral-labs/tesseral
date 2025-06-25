@@ -6,6 +6,7 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import { Link, Outlet, useLocation, useParams } from "react-router";
 
+import { Title } from "@/components/core/Title";
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { PageContent } from "@/components/page";
 import { TabLink, Tabs } from "@/components/page/Tabs";
@@ -30,9 +31,7 @@ export function OrganizationUserPage() {
 
   return (
     <PageContent>
-      <Helmet>
-        <title>{user?.displayName || user?.email || "User"} Settings</title>
-      </Helmet>
+      <Title title={user?.displayName || user?.email || "User"} />
 
       <div>
         <Link to={`/organization/users`}>

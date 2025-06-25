@@ -3,9 +3,9 @@ import { useQuery } from "@connectrpc/connect-query";
 import { ArrowLeft, ChevronDown } from "lucide-react";
 import { DateTime } from "luxon";
 import React from "react";
-import { Helmet } from "react-helmet";
 import { Link, Outlet, useLocation, useParams } from "react-router";
 
+import { Title } from "@/components/core/Title";
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { PageContent } from "@/components/page";
 import { TabLink, Tabs } from "@/components/page/Tabs";
@@ -29,9 +29,7 @@ export function ApiKeyPage() {
 
   return (
     <PageContent>
-      <Helmet>
-        <title>{apiKey?.displayName || "API Key"} Details</title>
-      </Helmet>
+      <Title title={`${apiKey?.displayName || "API Key"} Details`} />
 
       <div>
         <Link to={`/organization/api-keys`}>

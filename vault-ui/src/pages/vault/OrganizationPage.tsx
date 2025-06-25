@@ -1,9 +1,9 @@
 import { useQuery } from "@connectrpc/connect-query";
 import { ChevronDown } from "lucide-react";
 import React from "react";
-import { Helmet } from "react-helmet";
 import { Link, Outlet, useLocation } from "react-router";
 
+import { Title } from "@/components/core/Title";
 import { PageContent } from "@/components/page";
 import { TabLink, Tabs } from "@/components/page/Tabs";
 import { Button } from "@/components/ui/button";
@@ -24,9 +24,9 @@ export function OrganizationPage() {
 
   return (
     <PageContent>
-      <Helmet>
-        <title>{organization?.displayName || "Organization"} Settings</title>
-      </Helmet>
+      <Title
+        title={`${organization?.displayName || "Organization"} Settings`}
+      />
 
       <div>
         <h1 className="text-2xl font-semibold">Organization</h1>

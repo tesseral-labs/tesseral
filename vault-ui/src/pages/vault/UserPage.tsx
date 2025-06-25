@@ -1,9 +1,9 @@
 import { useQuery } from "@connectrpc/connect-query";
 import { ChevronDown } from "lucide-react";
 import React from "react";
-import { Helmet } from "react-helmet";
 import { Link, Outlet, useLocation } from "react-router";
 
+import { Title } from "@/components/core/Title";
 import { PageContent } from "@/components/page";
 import { TabLink, Tabs } from "@/components/page/Tabs";
 import { Button } from "@/components/ui/button";
@@ -18,9 +18,7 @@ import { getOrganization } from "@/gen/tesseral/frontend/v1/frontend-FrontendSer
 export function UserPage() {
   return (
     <PageContent>
-      <Helmet>
-        <title>User Settings</title>
-      </Helmet>
+      <Title title="User Settings" />
       <div>
         <h1 className="text-2xl font-semibold">Account settings</h1>
         <p className="text-muted-foreground">

@@ -10,6 +10,7 @@ import { Link, useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { Title } from "@/components/core/Title";
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { PageContent } from "@/components/page";
 import {
@@ -111,9 +112,8 @@ export function SamlConnectionPage() {
 
   return (
     <PageContent>
-      <Helmet>
-        <title>SAML Connection Details</title>
-      </Helmet>
+      <Title title="SAML Connection Details" />
+
       <div>
         <Link to="/organization/authentication">
           <Button variant="ghost" size="sm">
