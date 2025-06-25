@@ -2,11 +2,13 @@ package store
 
 import (
 	"context"
+	"net/http"
 	"testing"
 
 	"github.com/google/uuid"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
+	"github.com/tesseral-labs/tesseral/internal/oidc"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/storetesting"
 )
@@ -33,9 +35,11 @@ func newTestUtil(t *testing.T) *testUtil {
 	store := New(NewStoreParams{
 		DB:                        environment.DB,
 		KMS:                       environment.KMS.Client,
+		OIDCClientSecretsKMSKeyID: environment.KMS.OIDCClientSecretsKMSKeyID,
 		SessionSigningKeyKmsKeyID: environment.KMS.SessionSigningKeyID,
 		DogfoodProjectID:          environment.DogfoodProjectID,
 		ConsoleDomain:             environment.ConsoleDomain,
+		OIDCClient:                &oidc.Client{HTTPClient: http.DefaultClient},
 	})
 	projectID, _ := environment.NewProject(t)
 

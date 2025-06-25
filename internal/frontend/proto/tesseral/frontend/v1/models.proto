@@ -109,6 +109,18 @@ message SAMLConnection {
   string idp_entity_id = 9;
 }
 
+message OIDCConnection {
+  string id = 1;
+  google.protobuf.Timestamp create_time = 2;
+  google.protobuf.Timestamp update_time = 3;
+  optional bool primary = 4;
+  string configuration_url = 5;
+  string issuer = 6;
+  string client_id = 7;
+  string client_secret = 8;
+  string redirect_uri = 9;
+}
+
 message SCIMAPIKey {
   string id = 1;
   string display_name = 2;

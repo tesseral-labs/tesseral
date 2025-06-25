@@ -102,6 +102,31 @@ export const updateSAMLConnection = FrontendService.method.updateSAMLConnection;
 export const deleteSAMLConnection = FrontendService.method.deleteSAMLConnection;
 
 /**
+ * @generated from rpc tesseral.frontend.v1.FrontendService.ListOIDCConnections
+ */
+export const listOIDCConnections = FrontendService.method.listOIDCConnections;
+
+/**
+ * @generated from rpc tesseral.frontend.v1.FrontendService.GetOIDCConnection
+ */
+export const getOIDCConnection = FrontendService.method.getOIDCConnection;
+
+/**
+ * @generated from rpc tesseral.frontend.v1.FrontendService.CreateOIDCConnection
+ */
+export const createOIDCConnection = FrontendService.method.createOIDCConnection;
+
+/**
+ * @generated from rpc tesseral.frontend.v1.FrontendService.UpdateOIDCConnection
+ */
+export const updateOIDCConnection = FrontendService.method.updateOIDCConnection;
+
+/**
+ * @generated from rpc tesseral.frontend.v1.FrontendService.DeleteOIDCConnection
+ */
+export const deleteOIDCConnection = FrontendService.method.deleteOIDCConnection;
+
+/**
  * @generated from rpc tesseral.frontend.v1.FrontendService.ListSCIMAPIKeys
  */
 export const listSCIMAPIKeys = FrontendService.method.listSCIMAPIKeys;

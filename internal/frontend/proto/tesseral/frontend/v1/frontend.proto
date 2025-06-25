@@ -111,6 +111,32 @@ service FrontendService {
     option (google.api.http) = {delete: "/frontend/v1/saml-connections/{id}"};
   }
 
+  rpc ListOIDCConnections(ListOIDCConnectionsRequest) returns (ListOIDCConnectionsResponse) {
+    option (google.api.http) = {get: "/frontend/v1/oidc-connections"};
+  }
+
+  rpc GetOIDCConnection(GetOIDCConnectionRequest) returns (GetOIDCConnectionResponse) {
+    option (google.api.http) = {get: "/frontend/v1/oidc-connections/{id}"};
+  }
+
+  rpc CreateOIDCConnection(CreateOIDCConnectionRequest) returns (CreateOIDCConnectionResponse) {
+    option (google.api.http) = {
+      post: "/frontend/v1/oidc-connections"
+      body: "oidc_connection"
+    };
+  }
+
+  rpc UpdateOIDCConnection(UpdateOIDCConnectionRequest) returns (UpdateOIDCConnectionResponse) {
+    option (google.api.http) = {
+      patch: "/frontend/v1/oidc-connections/{id}"
+      body: "oidc_connection"
+    };
+  }
+
+  rpc DeleteOIDCConnection(DeleteOIDCConnectionRequest) returns (DeleteOIDCConnectionResponse) {
+    option (google.api.http) = {delete: "/frontend/v1/oidc-connections/{id}"};
+  }
+
   rpc ListSCIMAPIKeys(ListSCIMAPIKeysRequest) returns (ListSCIMAPIKeysResponse) {
     option (google.api.http) = {get: "/frontend/v1/scim-api-keys"};
   }
@@ -449,6 +475,46 @@ message DeleteSAMLConnectionRequest {
 }
 
 message DeleteSAMLConnectionResponse {}
+
+message ListOIDCConnectionsRequest {
+  string page_token = 1;
+}
+
+message ListOIDCConnectionsResponse {
+  repeated OIDCConnection oidc_connections = 1;
+  string next_page_token = 2;
+}
+
+message GetOIDCConnectionRequest {
+  string id = 1;
+}
+
+message GetOIDCConnectionResponse {
+  OIDCConnection oidc_connection = 1;
+}
+
+message CreateOIDCConnectionRequest {
+  OIDCConnection oidc_connection = 1;
+}
+
+message CreateOIDCConnectionResponse {
+  OIDCConnection oidc_connection = 1;
+}
+
+message UpdateOIDCConnectionRequest {
+  string id = 1;
+  OIDCConnection oidc_connection = 2;
+}
+
+message UpdateOIDCConnectionResponse {
+  OIDCConnection oidc_connection = 1;
+}
+
+message DeleteOIDCConnectionRequest {
+  string id = 1;
+}
+
+message DeleteOIDCConnectionResponse {}
 
 message ListSCIMAPIKeysRequest {
   string page_token = 1;

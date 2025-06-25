@@ -111,13 +111,18 @@ func TestUpdateOIDCConnection_UpdatesFields(t *testing.T) {
 	updateResp, err := u.Store.UpdateOIDCConnection(ctx, &backendv1.UpdateOIDCConnectionRequest{
 		Id: connID,
 		OidcConnection: &backendv1.OIDCConnection{
-			Issuer:  "https://issuer2.example.com",
-			Primary: refOrNil(true),
+			ConfigurationUrl: "https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration",
+			Issuer:           "https://issuer2.example.com",
+			ClientId:         "new-client-id",
+			ClientSecret:     "new-client-secret",
+			Primary:          refOrNil(true),
 		},
 	})
 	require.NoError(t, err)
 	updated := updateResp.OidcConnection
+	require.Equal(t, "https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration", updated.ConfigurationUrl)
 	require.Equal(t, "https://issuer2.example.com", updated.Issuer)
+	require.Equal(t, "new-client-id", updated.ClientId)
 	require.True(t, updated.GetPrimary())
 }
 

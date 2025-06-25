@@ -150,6 +150,60 @@ RETURNING
 DELETE FROM saml_connections
 WHERE id = $1;
 
+-- name: ListOIDCConnections :many
+SELECT
+    *
+FROM
+    oidc_connections
+WHERE
+    organization_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3;
+
+-- name: GetOIDCConnection :one
+SELECT
+    *
+FROM
+    oidc_connections
+WHERE
+    id = $1
+    AND organization_id = $2;
+
+-- name: CreateOIDCConnection :one
+INSERT INTO oidc_connections (id, organization_id, is_primary, configuration_url, issuer, client_id, client_secret_ciphertext)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+RETURNING
+    *;
+
+-- name: UpdatePrimaryOIDCConnection :exec
+UPDATE
+    oidc_connections
+SET
+    is_primary = (id = $1)
+WHERE
+    organization_id = $2;
+
+-- name: UpdateOIDCConnection :one
+UPDATE
+    oidc_connections
+SET
+    update_time = now(),
+    is_primary = $1,
+    configuration_url = $2,
+    issuer = $3,
+    client_id = $4,
+    client_secret_ciphertext = $5
+WHERE
+    id = $6
+RETURNING
+    *;
+
+-- name: DeleteOIDCConnection :exec
+DELETE FROM oidc_connections
+WHERE id = $1;
+
 -- name: ListSCIMAPIKeys :many
 SELECT
     *

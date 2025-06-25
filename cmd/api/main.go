@@ -244,6 +244,7 @@ func main() {
 		DogfoodProjectID:                      &uuidDogfoodProjectID,
 		ConsoleDomain:                         config.ConsoleDomain,
 		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
+		OIDCClientSecretsKMSKeyID:             config.OIDCClientSecretsKMSKeyID,
 		KMS:                                   kms_,
 		SES:                                   ses_,
 		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
@@ -251,6 +252,7 @@ func main() {
 		AuthenticatorAppSecretsKMSKeyID:       config.AuthenticatorAppSecretsKMSKeyID,
 		SvixClient:                            svixClient,
 		AuditlogStore:                         &auditlogStore,
+		OIDCClient:                            oidcClient,
 	})
 	frontendConnectPath, frontendConnectHandler := frontendv1connect.NewFrontendServiceHandler(
 		&frontendservice.Service{

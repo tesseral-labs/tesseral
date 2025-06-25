@@ -159,6 +159,48 @@ func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEve
 	return i, err
 }
 
+const createOIDCConnection = `-- name: CreateOIDCConnection :one
+INSERT INTO oidc_connections (id, organization_id, is_primary, configuration_url, issuer, client_id, client_secret_ciphertext)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+RETURNING
+    id, organization_id, create_time, update_time, is_primary, configuration_url, issuer, client_id, client_secret_ciphertext
+`
+
+type CreateOIDCConnectionParams struct {
+	ID                     uuid.UUID
+	OrganizationID         uuid.UUID
+	IsPrimary              bool
+	ConfigurationUrl       string
+	Issuer                 string
+	ClientID               string
+	ClientSecretCiphertext []byte
+}
+
+func (q *Queries) CreateOIDCConnection(ctx context.Context, arg CreateOIDCConnectionParams) (OidcConnection, error) {
+	row := q.db.QueryRow(ctx, createOIDCConnection,
+		arg.ID,
+		arg.OrganizationID,
+		arg.IsPrimary,
+		arg.ConfigurationUrl,
+		arg.Issuer,
+		arg.ClientID,
+		arg.ClientSecretCiphertext,
+	)
+	var i OidcConnection
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.IsPrimary,
+		&i.ConfigurationUrl,
+		&i.Issuer,
+		&i.ClientID,
+		&i.ClientSecretCiphertext,
+	)
+	return i, err
+}
+
 const createOrganizationGoogleHostedDomain = `-- name: CreateOrganizationGoogleHostedDomain :one
 INSERT INTO organization_google_hosted_domains (id, organization_id, google_hosted_domain)
     VALUES ($1, $2, $3)
@@ -493,6 +535,16 @@ func (q *Queries) DeleteAPIKeyRoleAssignment(ctx context.Context, arg DeleteAPIK
 	return err
 }
 
+const deleteOIDCConnection = `-- name: DeleteOIDCConnection :exec
+DELETE FROM oidc_connections
+WHERE id = $1
+`
+
+func (q *Queries) DeleteOIDCConnection(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteOIDCConnection, id)
+	return err
+}
+
 const deleteOrganizationGoogleHostedDomains = `-- name: DeleteOrganizationGoogleHostedDomains :exec
 DELETE FROM organization_google_hosted_domains
 WHERE organization_id = $1
@@ -781,6 +833,38 @@ func (q *Queries) GetCurrentSessionKeyByProjectID(ctx context.Context, projectID
 		&i.PrivateKeyCipherText,
 		&i.CreateTime,
 		&i.ExpireTime,
+	)
+	return i, err
+}
+
+const getOIDCConnection = `-- name: GetOIDCConnection :one
+SELECT
+    id, organization_id, create_time, update_time, is_primary, configuration_url, issuer, client_id, client_secret_ciphertext
+FROM
+    oidc_connections
+WHERE
+    id = $1
+    AND organization_id = $2
+`
+
+type GetOIDCConnectionParams struct {
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
+}
+
+func (q *Queries) GetOIDCConnection(ctx context.Context, arg GetOIDCConnectionParams) (OidcConnection, error) {
+	row := q.db.QueryRow(ctx, getOIDCConnection, arg.ID, arg.OrganizationID)
+	var i OidcConnection
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.IsPrimary,
+		&i.ConfigurationUrl,
+		&i.Issuer,
+		&i.ClientID,
+		&i.ClientSecretCiphertext,
 	)
 	return i, err
 }
@@ -1693,6 +1777,55 @@ func (q *Queries) ListAuditLogEvents(ctx context.Context, arg ListAuditLogEvents
 	return items, nil
 }
 
+const listOIDCConnections = `-- name: ListOIDCConnections :many
+SELECT
+    id, organization_id, create_time, update_time, is_primary, configuration_url, issuer, client_id, client_secret_ciphertext
+FROM
+    oidc_connections
+WHERE
+    organization_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3
+`
+
+type ListOIDCConnectionsParams struct {
+	OrganizationID uuid.UUID
+	ID             uuid.UUID
+	Limit          int32
+}
+
+func (q *Queries) ListOIDCConnections(ctx context.Context, arg ListOIDCConnectionsParams) ([]OidcConnection, error) {
+	rows, err := q.db.Query(ctx, listOIDCConnections, arg.OrganizationID, arg.ID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []OidcConnection
+	for rows.Next() {
+		var i OidcConnection
+		if err := rows.Scan(
+			&i.ID,
+			&i.OrganizationID,
+			&i.CreateTime,
+			&i.UpdateTime,
+			&i.IsPrimary,
+			&i.ConfigurationUrl,
+			&i.Issuer,
+			&i.ClientID,
+			&i.ClientSecretCiphertext,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listPasskeys = `-- name: ListPasskeys :many
 SELECT
     id, user_id, create_time, update_time, credential_id, public_key, aaguid, disabled, rp_id
@@ -2263,6 +2396,55 @@ func (q *Queries) UpdateAPIKey(ctx context.Context, arg UpdateAPIKeyParams) (Api
 	return i, err
 }
 
+const updateOIDCConnection = `-- name: UpdateOIDCConnection :one
+UPDATE
+    oidc_connections
+SET
+    update_time = now(),
+    is_primary = $1,
+    configuration_url = $2,
+    issuer = $3,
+    client_id = $4,
+    client_secret_ciphertext = $5
+WHERE
+    id = $6
+RETURNING
+    id, organization_id, create_time, update_time, is_primary, configuration_url, issuer, client_id, client_secret_ciphertext
+`
+
+type UpdateOIDCConnectionParams struct {
+	IsPrimary              bool
+	ConfigurationUrl       string
+	Issuer                 string
+	ClientID               string
+	ClientSecretCiphertext []byte
+	ID                     uuid.UUID
+}
+
+func (q *Queries) UpdateOIDCConnection(ctx context.Context, arg UpdateOIDCConnectionParams) (OidcConnection, error) {
+	row := q.db.QueryRow(ctx, updateOIDCConnection,
+		arg.IsPrimary,
+		arg.ConfigurationUrl,
+		arg.Issuer,
+		arg.ClientID,
+		arg.ClientSecretCiphertext,
+		arg.ID,
+	)
+	var i OidcConnection
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.IsPrimary,
+		&i.ConfigurationUrl,
+		&i.Issuer,
+		&i.ClientID,
+		&i.ClientSecretCiphertext,
+	)
+	return i, err
+}
+
 const updateOrganization = `-- name: UpdateOrganization :one
 UPDATE
     organizations
@@ -2332,6 +2514,25 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 		&i.LogInWithOidc,
 	)
 	return i, err
+}
+
+const updatePrimaryOIDCConnection = `-- name: UpdatePrimaryOIDCConnection :exec
+UPDATE
+    oidc_connections
+SET
+    is_primary = (id = $1)
+WHERE
+    organization_id = $2
+`
+
+type UpdatePrimaryOIDCConnectionParams struct {
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
+}
+
+func (q *Queries) UpdatePrimaryOIDCConnection(ctx context.Context, arg UpdatePrimaryOIDCConnectionParams) error {
+	_, err := q.db.Exec(ctx, updatePrimaryOIDCConnection, arg.ID, arg.OrganizationID)
+	return err
 }
 
 const updatePrimarySAMLConnection = `-- name: UpdatePrimarySAMLConnection :exec

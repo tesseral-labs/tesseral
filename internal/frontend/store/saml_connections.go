@@ -230,6 +230,11 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *frontendv1.Update
 		return nil, fmt.Errorf("get saml connection: %w", err)
 	}
 
+	auditPreviousSAMLConnection, err := s.auditlogStore.GetSAMLConnection(ctx, tx, qSAMLConnection.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit previous saml connection: %w", err)
+	}
+
 	updates := queries.UpdateSAMLConnectionParams{
 		ID:                 samlConnectionID,
 		IsPrimary:          qSAMLConnection.IsPrimary,
@@ -285,11 +290,6 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *frontendv1.Update
 		}); err != nil {
 			return nil, fmt.Errorf("update primary saml connection: %w", err)
 		}
-	}
-
-	auditPreviousSAMLConnection, err := s.auditlogStore.GetSAMLConnection(ctx, tx, qSAMLConnection.ID)
-	if err != nil {
-		return nil, fmt.Errorf("get audit previous saml connection: %w", err)
 	}
 
 	auditSAMLConnection, err := s.auditlogStore.GetSAMLConnection(ctx, tx, qUpdatedSAMLConnection.ID)
