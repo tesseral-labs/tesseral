@@ -61,16 +61,12 @@ function useDebounce<T extends any[]>(
   callback: (...args: T) => void,
   delay: number,
 ) {
-  // The useCallback hook infers the type of the debounced callback.
   const debouncedCallback = useCallback(
     (...args: T) => {
-      // setTimeout returns a timer ID, which can be a number or a NodeJS.Timeout object.
-      // ReturnType<typeof setTimeout> correctly types it for both environments.
-      const handler = setTimeout(() => {
+      const handler: ReturnType<typeof setTimeout> = setTimeout(() => {
         callback(...args);
       }, delay);
 
-      // The cleanup function clears the timeout.
       return () => {
         clearTimeout(handler);
       };
