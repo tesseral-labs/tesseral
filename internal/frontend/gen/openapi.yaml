@@ -1875,8 +1875,6 @@ components:
                     type: boolean
                 configurationUrl:
                     type: string
-                issuer:
-                    type: string
                 clientId:
                     type: string
                 clientSecret:

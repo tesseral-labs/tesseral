@@ -28,12 +28,12 @@ func (s *Store) GetOIDCConnection(ctx context.Context, db queries.DBTX, id uuid.
 	}
 
 	return &auditlogv1.OIDCConnection{
-		Id:          idformat.OIDCConnection.Format(qOIDCConnection.ID),
-		CreateTime:  timestamppb.New(*qOIDCConnection.CreateTime),
-		UpdateTime:  timestamppb.New(*qOIDCConnection.UpdateTime),
-		Primary:     &qOIDCConnection.IsPrimary,
-		ClientId:    qOIDCConnection.ClientID,
-		Issuer:      qOIDCConnection.Issuer,
-		RedirectUri: fmt.Sprintf("https://%s/api/oidc/v1/%s/callback", qProject.VaultDomain, idformat.OIDCConnection.Format(qOIDCConnection.ID)),
+		Id:               idformat.OIDCConnection.Format(qOIDCConnection.ID),
+		CreateTime:       timestamppb.New(*qOIDCConnection.CreateTime),
+		UpdateTime:       timestamppb.New(*qOIDCConnection.UpdateTime),
+		Primary:          &qOIDCConnection.IsPrimary,
+		ConfigurationUrl: qOIDCConnection.ConfigurationUrl,
+		ClientId:         qOIDCConnection.ClientID,
+		RedirectUri:      fmt.Sprintf("https://%s/api/oidc/v1/%s/callback", qProject.VaultDomain, idformat.OIDCConnection.Format(qOIDCConnection.ID)),
 	}, nil
 }

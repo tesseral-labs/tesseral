@@ -305,7 +305,6 @@ type OidcConnection struct {
 	UpdateTime             *time.Time
 	IsPrimary              bool
 	ConfigurationUrl       string
-	Issuer                 string
 	ClientID               string
 	ClientSecretCiphertext []byte
 }

@@ -6,7 +6,7 @@ import {
 } from "@connectrpc/connect-query";
 import { AlignLeft, Plus, Settings, Trash, TriangleAlert } from "lucide-react";
 import { DateTime } from "luxon";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 
@@ -135,7 +135,11 @@ export function ListOrganizationOidcConnectionsCard() {
                           <Badge variant="secondary">No</Badge>
                         )}
                       </TableCell>
-                      <TableCell>{oidcConnection.issuer || "—"}</TableCell>
+                      <TableCell>
+                        <Issuer
+                          configurationUrl={oidcConnection.configurationUrl}
+                        />
+                      </TableCell>
                       <TableCell>{oidcConnection.clientId || "—"}</TableCell>
                       <TableCell>
                         {oidcConnection.createTime &&
@@ -170,6 +174,32 @@ export function ListOrganizationOidcConnectionsCard() {
       )}
     </Card>
   );
+}
+
+function Issuer({ configurationUrl }: { configurationUrl: string }) {
+  const [issuer, setIssuer] = useState<string | null>(null);
+  useEffect(() => {
+    if (!configurationUrl) {
+      setIssuer(null);
+      return;
+    }
+    (async () => {
+      try {
+        const response = await fetch(configurationUrl);
+        if (!response.ok) {
+          setIssuer("—");
+          return;
+        }
+        const data = await response.json();
+        setIssuer(data.issuer);
+      } catch (error) {
+        console.error("Failed to fetch OIDC issuer:", error);
+        setIssuer("—");
+      }
+    })();
+  }, [configurationUrl]);
+
+  return <>{issuer || "—"}</>;
 }
 
 function CreateOidcConnectionButton() {

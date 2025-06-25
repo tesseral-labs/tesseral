@@ -21,7 +21,6 @@ func TestCreateOIDCConnection_OIDCEnabled(t *testing.T) {
 	res, err := u.Store.CreateOIDCConnection(ctx, &frontendv1.CreateOIDCConnectionRequest{
 		OidcConnection: &frontendv1.OIDCConnection{
 			ConfigurationUrl: "https://accounts.google.com/.well-known/openid-configuration",
-			Issuer:           "https://idp.example.com/",
 			ClientId:         "client-id",
 			ClientSecret:     "client-secret",
 			Primary:          refOrNil(true),
@@ -31,7 +30,6 @@ func TestCreateOIDCConnection_OIDCEnabled(t *testing.T) {
 	require.NotNil(t, res.OidcConnection)
 	require.NotEmpty(t, res.OidcConnection.RedirectUri)
 	require.Equal(t, "https://accounts.google.com/.well-known/openid-configuration", res.OidcConnection.ConfigurationUrl)
-	require.Equal(t, "https://idp.example.com/", res.OidcConnection.Issuer)
 	require.Equal(t, "client-id", res.OidcConnection.ClientId)
 	require.True(t, res.OidcConnection.GetPrimary())
 }
@@ -48,7 +46,6 @@ func TestCreateOIDCConnection_OIDCDisabled(t *testing.T) {
 	_, err := u.Store.CreateOIDCConnection(ctx, &frontendv1.CreateOIDCConnectionRequest{
 		OidcConnection: &frontendv1.OIDCConnection{
 			ConfigurationUrl: "https://accounts.google.com/.well-known/openid-configuration",
-			Issuer:           "https://idp.example.com/",
 			ClientId:         "client-id",
 			ClientSecret:     "client-secret",
 		},
@@ -69,7 +66,6 @@ func TestGetOIDCConnection_Exists(t *testing.T) {
 	createResp, err := u.Store.CreateOIDCConnection(ctx, &frontendv1.CreateOIDCConnectionRequest{
 		OidcConnection: &frontendv1.OIDCConnection{
 			ConfigurationUrl: "https://accounts.google.com/.well-known/openid-configuration",
-			Issuer:           "https://idp.example.com/",
 			ClientId:         "client-id",
 			ClientSecret:     "client-secret",
 		},
@@ -109,7 +105,6 @@ func TestUpdateOIDCConnection_UpdatesFields(t *testing.T) {
 	createResp, err := u.Store.CreateOIDCConnection(ctx, &frontendv1.CreateOIDCConnectionRequest{
 		OidcConnection: &frontendv1.OIDCConnection{
 			ConfigurationUrl: "https://accounts.google.com/.well-known/openid-configuration",
-			Issuer:           "https://idp.example.com/",
 			ClientId:         "client-id",
 			ClientSecret:     "client-secret",
 		},
@@ -121,7 +116,6 @@ func TestUpdateOIDCConnection_UpdatesFields(t *testing.T) {
 		Id: connID,
 		OidcConnection: &frontendv1.OIDCConnection{
 			ConfigurationUrl: "https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration",
-			Issuer:           "https://idp.example.com/2/",
 			ClientId:         "client-id-2",
 			ClientSecret:     "client-secret-2",
 			Primary:          refOrNil(true),
@@ -130,7 +124,6 @@ func TestUpdateOIDCConnection_UpdatesFields(t *testing.T) {
 	require.NoError(t, err)
 	updated := updateResp.OidcConnection
 	require.Equal(t, "https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration", updated.ConfigurationUrl)
-	require.Equal(t, "https://idp.example.com/2/", updated.Issuer)
 	require.Equal(t, "client-id-2", updated.ClientId)
 	require.True(t, updated.GetPrimary())
 }
@@ -147,7 +140,6 @@ func TestUpdateOIDCConnection_SetPrimary(t *testing.T) {
 	original, err := u.Store.CreateOIDCConnection(ctx, &frontendv1.CreateOIDCConnectionRequest{
 		OidcConnection: &frontendv1.OIDCConnection{
 			ConfigurationUrl: "https://accounts.google.com/.well-known/openid-configuration",
-			Issuer:           "https://idp.example.com/",
 			ClientId:         "client-id",
 			ClientSecret:     "client-secret",
 			Primary:          refOrNil(true),
@@ -159,7 +151,6 @@ func TestUpdateOIDCConnection_SetPrimary(t *testing.T) {
 	new, err := u.Store.CreateOIDCConnection(ctx, &frontendv1.CreateOIDCConnectionRequest{
 		OidcConnection: &frontendv1.OIDCConnection{
 			ConfigurationUrl: "https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration",
-			Issuer:           "https://idp.example.com/2/",
 			ClientId:         "client-id-2",
 			ClientSecret:     "client-secret-2",
 			Primary:          refOrNil(true),
@@ -185,7 +176,6 @@ func TestDeleteOIDCConnection_RemovesConnection(t *testing.T) {
 	createResp, err := u.Store.CreateOIDCConnection(ctx, &frontendv1.CreateOIDCConnectionRequest{
 		OidcConnection: &frontendv1.OIDCConnection{
 			ConfigurationUrl: "https://accounts.google.com/.well-known/openid-configuration",
-			Issuer:           "https://idp.example.com/",
 			ClientId:         "client-id",
 			ClientSecret:     "client-secret",
 		},
@@ -216,7 +206,6 @@ func TestListOIDCConnections_ReturnsAll(t *testing.T) {
 		resp, err := u.Store.CreateOIDCConnection(ctx, &frontendv1.CreateOIDCConnectionRequest{
 			OidcConnection: &frontendv1.OIDCConnection{
 				ConfigurationUrl: "https://accounts.google.com/.well-known/openid-configuration",
-				Issuer:           "https://idp.example.com/",
 				ClientId:         "client-id",
 				ClientSecret:     "client-secret",
 			},
@@ -251,7 +240,6 @@ func TestListOIDCConnections_Pagination(t *testing.T) {
 		resp, err := u.Store.CreateOIDCConnection(ctx, &frontendv1.CreateOIDCConnectionRequest{
 			OidcConnection: &frontendv1.OIDCConnection{
 				ConfigurationUrl: "https://accounts.google.com/.well-known/openid-configuration",
-				Issuer:           "https://idp.example.com/",
 				ClientId:         "client-id",
 				ClientSecret:     "client-secret",
 			},

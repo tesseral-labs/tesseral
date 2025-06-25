@@ -364,10 +364,10 @@ func (q *Queries) CreateBackendAPIKey(ctx context.Context, arg CreateBackendAPIK
 }
 
 const createOIDCConnection = `-- name: CreateOIDCConnection :one
-INSERT INTO oidc_connections (id, organization_id, is_primary, configuration_url, issuer, client_id, client_secret_ciphertext)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+INSERT INTO oidc_connections (id, organization_id, is_primary, configuration_url, client_id, client_secret_ciphertext)
+    VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING
-    id, organization_id, create_time, update_time, is_primary, configuration_url, issuer, client_id, client_secret_ciphertext
+    id, organization_id, create_time, update_time, is_primary, configuration_url, client_id, client_secret_ciphertext
 `
 
 type CreateOIDCConnectionParams struct {
@@ -375,7 +375,6 @@ type CreateOIDCConnectionParams struct {
 	OrganizationID         uuid.UUID
 	IsPrimary              bool
 	ConfigurationUrl       string
-	Issuer                 string
 	ClientID               string
 	ClientSecretCiphertext []byte
 }
@@ -386,7 +385,6 @@ func (q *Queries) CreateOIDCConnection(ctx context.Context, arg CreateOIDCConnec
 		arg.OrganizationID,
 		arg.IsPrimary,
 		arg.ConfigurationUrl,
-		arg.Issuer,
 		arg.ClientID,
 		arg.ClientSecretCiphertext,
 	)
@@ -398,7 +396,6 @@ func (q *Queries) CreateOIDCConnection(ctx context.Context, arg CreateOIDCConnec
 		&i.UpdateTime,
 		&i.IsPrimary,
 		&i.ConfigurationUrl,
-		&i.Issuer,
 		&i.ClientID,
 		&i.ClientSecretCiphertext,
 	)
@@ -1600,7 +1597,7 @@ func (q *Queries) GetBackendAPIKeyBySecretTokenSHA256(ctx context.Context, secre
 
 const getOIDCConnection = `-- name: GetOIDCConnection :one
 SELECT
-    oidc_connections.id, oidc_connections.organization_id, oidc_connections.create_time, oidc_connections.update_time, oidc_connections.is_primary, oidc_connections.configuration_url, oidc_connections.issuer, oidc_connections.client_id, oidc_connections.client_secret_ciphertext
+    oidc_connections.id, oidc_connections.organization_id, oidc_connections.create_time, oidc_connections.update_time, oidc_connections.is_primary, oidc_connections.configuration_url, oidc_connections.client_id, oidc_connections.client_secret_ciphertext
 FROM
     oidc_connections
     JOIN organizations ON oidc_connections.organization_id = organizations.id
@@ -1624,7 +1621,6 @@ func (q *Queries) GetOIDCConnection(ctx context.Context, arg GetOIDCConnectionPa
 		&i.UpdateTime,
 		&i.IsPrimary,
 		&i.ConfigurationUrl,
-		&i.Issuer,
 		&i.ClientID,
 		&i.ClientSecretCiphertext,
 	)
@@ -2570,7 +2566,7 @@ func (q *Queries) ListBackendAPIKeys(ctx context.Context, arg ListBackendAPIKeys
 
 const listOIDCConnections = `-- name: ListOIDCConnections :many
 SELECT
-    id, organization_id, create_time, update_time, is_primary, configuration_url, issuer, client_id, client_secret_ciphertext
+    id, organization_id, create_time, update_time, is_primary, configuration_url, client_id, client_secret_ciphertext
 FROM
     oidc_connections
 WHERE
@@ -2603,7 +2599,6 @@ func (q *Queries) ListOIDCConnections(ctx context.Context, arg ListOIDCConnectio
 			&i.UpdateTime,
 			&i.IsPrimary,
 			&i.ConfigurationUrl,
-			&i.Issuer,
 			&i.ClientID,
 			&i.ClientSecretCiphertext,
 		); err != nil {
@@ -3413,19 +3408,17 @@ SET
     update_time = now(),
     is_primary = $1,
     configuration_url = $2,
-    issuer = $3,
-    client_id = $4,
-    client_secret_ciphertext = $5
+    client_id = $3,
+    client_secret_ciphertext = $4
 WHERE
-    id = $6
+    id = $5
 RETURNING
-    id, organization_id, create_time, update_time, is_primary, configuration_url, issuer, client_id, client_secret_ciphertext
+    id, organization_id, create_time, update_time, is_primary, configuration_url, client_id, client_secret_ciphertext
 `
 
 type UpdateOIDCConnectionParams struct {
 	IsPrimary              bool
 	ConfigurationUrl       string
-	Issuer                 string
 	ClientID               string
 	ClientSecretCiphertext []byte
 	ID                     uuid.UUID
@@ -3435,7 +3428,6 @@ func (q *Queries) UpdateOIDCConnection(ctx context.Context, arg UpdateOIDCConnec
 	row := q.db.QueryRow(ctx, updateOIDCConnection,
 		arg.IsPrimary,
 		arg.ConfigurationUrl,
-		arg.Issuer,
 		arg.ClientID,
 		arg.ClientSecretCiphertext,
 		arg.ID,
@@ -3448,7 +3440,6 @@ func (q *Queries) UpdateOIDCConnection(ctx context.Context, arg UpdateOIDCConnec
 		&i.UpdateTime,
 		&i.IsPrimary,
 		&i.ConfigurationUrl,
-		&i.Issuer,
 		&i.ClientID,
 		&i.ClientSecretCiphertext,
 	)

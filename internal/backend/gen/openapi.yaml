@@ -2170,9 +2170,6 @@ components:
                 configurationUrl:
                     type: string
                     description: The OIDC Provider's configuration URL.
-                issuer:
-                    type: string
-                    description: The OIDC Provider's issuer.
                 clientId:
                     type: string
                     description: The OIDC Provider's Client ID.

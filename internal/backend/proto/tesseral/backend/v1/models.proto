@@ -430,18 +430,15 @@ message OIDCConnection {
   // The OIDC Provider's configuration URL.
   string configuration_url = 6;
 
-  // The OIDC Provider's issuer.
-  string issuer = 7;
-
   // The OIDC Provider's Client ID.
-  string client_id = 8;
+  string client_id = 7;
 
   // The OIDC Provider's Client Secret.
   // This field is write-only.
-  string client_secret = 9;
+  string client_secret = 8;
 
   // The OIDC Provider's redirect URI.
-  string redirect_uri = 10;
+  string redirect_uri = 9;
 }
 
 // SCIMAPIKey represents an API key for SCIM operations.

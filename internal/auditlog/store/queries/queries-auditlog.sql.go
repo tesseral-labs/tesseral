@@ -122,7 +122,7 @@ func (q *Queries) GetActions(ctx context.Context, projectID uuid.UUID) ([]Action
 
 const getOIDCConnection = `-- name: GetOIDCConnection :one
 SELECT
-    id, organization_id, create_time, update_time, is_primary, configuration_url, issuer, client_id, client_secret_ciphertext
+    id, organization_id, create_time, update_time, is_primary, configuration_url, client_id, client_secret_ciphertext
 FROM
     oidc_connections
 WHERE
@@ -139,7 +139,6 @@ func (q *Queries) GetOIDCConnection(ctx context.Context, id uuid.UUID) (OidcConn
 		&i.UpdateTime,
 		&i.IsPrimary,
 		&i.ConfigurationUrl,
-		&i.Issuer,
 		&i.ClientID,
 		&i.ClientSecretCiphertext,
 	)

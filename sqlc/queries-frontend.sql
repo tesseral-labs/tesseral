@@ -172,8 +172,8 @@ WHERE
     AND organization_id = $2;
 
 -- name: CreateOIDCConnection :one
-INSERT INTO oidc_connections (id, organization_id, is_primary, configuration_url, issuer, client_id, client_secret_ciphertext)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+INSERT INTO oidc_connections (id, organization_id, is_primary, configuration_url, client_id, client_secret_ciphertext)
+    VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING
     *;
 
@@ -184,11 +184,10 @@ SET
     update_time = now(),
     is_primary = $1,
     configuration_url = $2,
-    issuer = $3,
-    client_id = $4,
-    client_secret_ciphertext = $5
+    client_id = $3,
+    client_secret_ciphertext = $4
 WHERE
-    id = $6
+    id = $5
 RETURNING
     *;
 

@@ -932,7 +932,7 @@ func (q *Queries) GetIntermediateSessionByTokenSHA256AndProjectID(ctx context.Co
 
 const getOrganizationPrimaryOIDCConnection = `-- name: GetOrganizationPrimaryOIDCConnection :one
 SELECT
-    id, organization_id, create_time, update_time, is_primary, configuration_url, issuer, client_id, client_secret_ciphertext
+    id, organization_id, create_time, update_time, is_primary, configuration_url, client_id, client_secret_ciphertext
 FROM
     oidc_connections
 WHERE
@@ -951,7 +951,6 @@ func (q *Queries) GetOrganizationPrimaryOIDCConnection(ctx context.Context, orga
 		&i.UpdateTime,
 		&i.IsPrimary,
 		&i.ConfigurationUrl,
-		&i.Issuer,
 		&i.ClientID,
 		&i.ClientSecretCiphertext,
 	)

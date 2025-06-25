@@ -609,10 +609,10 @@ func TestConsoleListCustomAuditLogEvents_ResourceTypeOIDCConnection(t *testing.T
 	for range 3 {
 		resp, err := u.Store.CreateOIDCConnection(ctx, &backendv1.CreateOIDCConnectionRequest{
 			OidcConnection: &backendv1.OIDCConnection{
-				OrganizationId: orgID,
-				Issuer:         "https://accounts.google.com/.well-known/openid-configuration",
-				ClientId:       "client-id",
-				ClientSecret:   "client-secret",
+				OrganizationId:   orgID,
+				ConfigurationUrl: "https://accounts.google.com/.well-known/openid-configuration",
+				ClientId:         "client-id",
+				ClientSecret:     "client-secret",
 			},
 		})
 		require.NoError(t, err)

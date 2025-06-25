@@ -51,7 +51,6 @@ import { NotFound } from "@/pages/NotFoundPage";
 
 const schema = z.object({
   configurationUrl: z.string().url("Must be a valid URL"),
-  issuer: z.string().url("Must be a valid URL"),
   clientId: z.string().nonempty("Client ID is required"),
   clientSecret: z.string().nonempty("Client Secret is required"),
   primary: z.boolean(),
@@ -106,7 +105,6 @@ export function OrganizationOidcConnectionPage() {
     defaultValues: {
       configurationUrl:
         getOidcConnectionResponse?.oidcConnection?.configurationUrl || "",
-      issuer: getOidcConnectionResponse?.oidcConnection?.issuer || "",
       clientId: getOidcConnectionResponse?.oidcConnection?.clientId || "",
       clientSecret:
         getOidcConnectionResponse?.oidcConnection?.clientSecret || "",
@@ -119,7 +117,6 @@ export function OrganizationOidcConnectionPage() {
       id: oidcConnectionId,
       oidcConnection: {
         configurationUrl: data.configurationUrl,
-        issuer: data.issuer,
         clientId: data.clientId,
         clientSecret: data.clientSecret,
         primary: data.primary,
@@ -135,7 +132,6 @@ export function OrganizationOidcConnectionPage() {
       form.reset({
         configurationUrl:
           getOidcConnectionResponse.oidcConnection?.configurationUrl || "",
-        issuer: getOidcConnectionResponse.oidcConnection?.issuer || "",
         clientId: getOidcConnectionResponse.oidcConnection?.clientId || "",
         clientSecret:
           getOidcConnectionResponse.oidcConnection?.clientSecret || "",
@@ -164,19 +160,16 @@ export function OrganizationOidcConnectionPage() {
         clientId = entraMatch[1];
       }
 
+      if (clientId && !form.getValues("clientId")) {
+        form.setValue("clientId", clientId, { shouldValidate: true });
+      }
+
       try {
         const response = await fetch(url);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
-        const data: { issuer: string } = await response.json();
-
-        if (data.issuer && !form.getValues("issuer")) {
-          form.setValue("issuer", data.issuer, { shouldValidate: true });
-        }
-        if (clientId && !form.getValues("clientId")) {
-          form.setValue("clientId", clientId, { shouldValidate: true });
-        }
+        await response.json();
         form.clearErrors("configurationUrl");
       } catch (error) {
         form.setError("configurationUrl", {
@@ -325,23 +318,6 @@ export function OrganizationOidcConnectionPage() {
                         <FormDescription>
                           The OIDC Configuration URL, as configured in the
                           customer's Identity Provider.
-                        </FormDescription>
-                        <FormMessage />
-                        <FormControl>
-                          <Input className="max-w-xl" {...field} />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="issuer"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>OIDC Issuer</FormLabel>
-                        <FormDescription>
-                          The OIDC Issuer, as configured in the customer's
-                          Identity Provider.
                         </FormDescription>
                         <FormMessage />
                         <FormControl>

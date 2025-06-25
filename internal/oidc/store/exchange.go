@@ -112,7 +112,6 @@ func (s *Store) ExchangeOIDCCode(ctx context.Context, oidcConnectionID string, o
 
 	claims, err := s.oidc.ValidateIDToken(ctx, oidcclient.ValidateIDTokenRequest{
 		Configuration: config,
-		Issuer:        qOIDCConnection.Issuer,
 		IDToken:       tokenRes.IDToken,
 	})
 	if err != nil {

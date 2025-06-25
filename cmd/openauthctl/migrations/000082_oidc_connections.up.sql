@@ -6,7 +6,6 @@ create table oidc_connections
     update_time                 timestamp with time zone not null default now(),
     is_primary                  boolean                           default false not null,
     configuration_url           varchar not null,
-    issuer                      varchar not null,
     client_id                   varchar not null,
     client_secret_ciphertext    bytea
 );

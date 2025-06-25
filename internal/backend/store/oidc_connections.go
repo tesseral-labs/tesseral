@@ -184,7 +184,6 @@ func (s *Store) CreateOIDCConnection(ctx context.Context, req *backendv1.CreateO
 		OrganizationID:         orgID,
 		IsPrimary:              derefOrEmpty(req.OidcConnection.Primary),
 		ConfigurationUrl:       req.OidcConnection.ConfigurationUrl,
-		Issuer:                 req.OidcConnection.Issuer,
 		ClientID:               req.OidcConnection.ClientId,
 		ClientSecretCiphertext: clientSecretCiphertext,
 	})
@@ -264,7 +263,6 @@ func (s *Store) UpdateOIDCConnection(ctx context.Context, req *backendv1.UpdateO
 		ID:                     oidcConnectionID,
 		IsPrimary:              qOIDCConnection.IsPrimary,
 		ConfigurationUrl:       qOIDCConnection.ConfigurationUrl,
-		Issuer:                 qOIDCConnection.Issuer,
 		ClientID:               qOIDCConnection.ClientID,
 		ClientSecretCiphertext: qOIDCConnection.ClientSecretCiphertext,
 	}
@@ -289,13 +287,6 @@ func (s *Store) UpdateOIDCConnection(ctx context.Context, req *backendv1.UpdateO
 		}
 
 		updates.ConfigurationUrl = req.OidcConnection.ConfigurationUrl
-	}
-
-	if req.OidcConnection.Issuer != "" {
-		if _, err := url.Parse(req.OidcConnection.Issuer); err != nil {
-			return nil, apierror.NewInvalidArgumentError("invalid oidc issuer", fmt.Errorf("invalid oidc issuer: %w", err))
-		}
-		updates.Issuer = req.OidcConnection.Issuer
 	}
 
 	if req.OidcConnection.ClientId != "" {
@@ -409,7 +400,6 @@ func parseOIDCConnection(qProject queries.Project, qOIDCConnection queries.OidcC
 		CreateTime:       timestamppb.New(*qOIDCConnection.CreateTime),
 		UpdateTime:       timestamppb.New(*qOIDCConnection.UpdateTime),
 		Primary:          &qOIDCConnection.IsPrimary,
-		Issuer:           qOIDCConnection.Issuer,
 		ConfigurationUrl: qOIDCConnection.ConfigurationUrl,
 		ClientId:         qOIDCConnection.ClientID,
 		ClientSecret:     "",

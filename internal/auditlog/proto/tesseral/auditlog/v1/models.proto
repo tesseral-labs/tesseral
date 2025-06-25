@@ -58,8 +58,8 @@ message OIDCConnection {
   google.protobuf.Timestamp create_time = 2;
   google.protobuf.Timestamp update_time = 3;
   optional bool primary = 4;
-  string client_id = 5;
-  string issuer = 6;
+  string configuration_url = 5;
+  string client_id = 6;
   string redirect_uri = 7;
 }
 

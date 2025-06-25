@@ -129,7 +129,7 @@ func (q *Queries) DeleteOIDCIntermediateSession(ctx context.Context, oidcInterme
 
 const getOIDCConnection = `-- name: GetOIDCConnection :one
 SELECT
-    oidc_connections.id, oidc_connections.organization_id, oidc_connections.create_time, oidc_connections.update_time, oidc_connections.is_primary, oidc_connections.configuration_url, oidc_connections.issuer, oidc_connections.client_id, oidc_connections.client_secret_ciphertext
+    oidc_connections.id, oidc_connections.organization_id, oidc_connections.create_time, oidc_connections.update_time, oidc_connections.is_primary, oidc_connections.configuration_url, oidc_connections.client_id, oidc_connections.client_secret_ciphertext
 FROM
     oidc_connections
     JOIN organizations ON oidc_connections.organization_id = organizations.id
@@ -154,7 +154,6 @@ func (q *Queries) GetOIDCConnection(ctx context.Context, arg GetOIDCConnectionPa
 		&i.UpdateTime,
 		&i.IsPrimary,
 		&i.ConfigurationUrl,
-		&i.Issuer,
 		&i.ClientID,
 		&i.ClientSecretCiphertext,
 	)

@@ -127,7 +127,6 @@ func verifyRSASignature(tokenString string, jwk *jwk) error {
 
 type ValidateIDTokenRequest struct {
 	IDToken       string
-	Issuer        string
 	Configuration *Configuration
 }
 
@@ -175,8 +174,8 @@ func (c *Client) ValidateIDToken(ctx context.Context, req ValidateIDTokenRequest
 		return nil, fmt.Errorf("failed to unmarshal token claims: %w", err)
 	}
 
-	if claims.Iss != req.Issuer {
-		return nil, fmt.Errorf("issuer mismatch: expected %s, got %s", req.Issuer, claims.Iss)
+	if claims.Iss != req.Configuration.Issuer {
+		return nil, fmt.Errorf("issuer mismatch: expected %s, got %s", req.Configuration.Issuer, claims.Iss)
 	}
 	if claims.Exp < time.Now().Unix() {
 		return nil, errors.New("token has expired")
