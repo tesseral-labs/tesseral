@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	commonstore "github.com/tesseral-labs/tesseral/internal/common/store"
-	"github.com/tesseral-labs/tesseral/internal/oidc"
+	"github.com/tesseral-labs/tesseral/internal/oidcclient"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/storetesting"
 )
@@ -46,7 +46,7 @@ func newTestUtil(t *testing.T) (context.Context, *testUtil) {
 		DogfoodProjectID:                    environment.DogfoodProjectID,
 		ConsoleDomain:                       environment.ConsoleDomain,
 		AuthAppsRootDomain:                  environment.AuthAppsRootDomain,
-		OIDCClient:                          &oidc.Client{HTTPClient: http.DefaultClient},
+		OIDCClient:                          &oidcclient.Client{HTTPClient: http.DefaultClient},
 	})
 	commonStore := commonstore.New(commonstore.NewStoreParams{
 		AppAuthRootDomain:         environment.ConsoleDomain,

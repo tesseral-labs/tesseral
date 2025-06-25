@@ -1,4 +1,4 @@
-package oidc
+package oidcclient
 
 import (
 	"context"
@@ -147,7 +147,7 @@ func (c *Client) ValidateIDToken(ctx context.Context, req ValidateIDTokenRequest
 		return nil, fmt.Errorf("failed to unmarshal token header: %w", err)
 	}
 
-	jwks, err := c.fetchJWKS(ctx, req.Configuration.JwksURI)
+	jwks, err := c.fetchJWKS(ctx, req.Configuration.JWKSURI)
 	if err != nil {
 		return nil, fmt.Errorf("could not fetch JWKS: %w", err)
 	}

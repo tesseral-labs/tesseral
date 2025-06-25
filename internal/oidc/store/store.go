@@ -7,8 +7,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/tesseral-labs/tesseral/internal/oidc"
 	"github.com/tesseral-labs/tesseral/internal/oidc/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/oidcclient"
 )
 
 type Store struct {
@@ -16,14 +16,14 @@ type Store struct {
 	q                         *queries.Queries
 	oidcClientSecretsKMSKeyID string
 	kms                       *kms.Client
-	oidc                      *oidc.Client
+	oidc                      *oidcclient.Client
 }
 
 type NewStoreParams struct {
 	DB                        *pgxpool.Pool
 	KMS                       *kms.Client
 	OIDCClientSecretsKMSKeyID string
-	OIDCClient                *oidc.Client
+	OIDCClient                *oidcclient.Client
 }
 
 func New(p NewStoreParams) *Store {

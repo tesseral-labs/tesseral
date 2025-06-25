@@ -13,9 +13,9 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/tesseral-labs/tesseral/internal/oidc"
 	"github.com/tesseral-labs/tesseral/internal/oidc/authn"
 	"github.com/tesseral-labs/tesseral/internal/oidc/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/oidcclient"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
@@ -97,7 +97,7 @@ func (s *Store) ExchangeOIDCCode(ctx context.Context, oidcConnectionID string, o
 		}
 	}
 
-	tokenRes, err := s.oidc.ExchangeCode(ctx, oidc.ExchangeCodeRequest{
+	tokenRes, err := s.oidc.ExchangeCode(ctx, oidcclient.ExchangeCodeRequest{
 		TokenEndpoint:   config.TokenEndpoint,
 		Code:            code,
 		RedirectURI:     fmt.Sprintf("https://%s/api/oidc/v1/%s/callback", qProject.VaultDomain, idformat.OIDCConnection.Format(qOIDCConnection.ID)),
@@ -110,7 +110,7 @@ func (s *Store) ExchangeOIDCCode(ctx context.Context, oidcConnectionID string, o
 		return nil, fmt.Errorf("exchange OIDC code: %w", err)
 	}
 
-	claims, err := s.oidc.ValidateIDToken(ctx, oidc.ValidateIDTokenRequest{
+	claims, err := s.oidc.ValidateIDToken(ctx, oidcclient.ValidateIDTokenRequest{
 		Configuration: config,
 		Issuer:        qOIDCConnection.Issuer,
 		IDToken:       tokenRes.IDToken,

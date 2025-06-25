@@ -342,6 +342,14 @@ WHERE
 RETURNING
     *;
 
+-- name: UpdatePrimaryOIDCConnection :exec
+UPDATE
+    oidc_connections
+SET
+    is_primary = (id = $1)
+WHERE
+    organization_id = $2;
+
 -- name: DeleteOIDCConnection :exec
 DELETE FROM oidc_connections
 WHERE id = $1;

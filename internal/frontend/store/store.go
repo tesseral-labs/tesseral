@@ -15,7 +15,7 @@ import (
 	auditlogstore "github.com/tesseral-labs/tesseral/internal/auditlog/store"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/hibp"
-	"github.com/tesseral-labs/tesseral/internal/oidc"
+	"github.com/tesseral-labs/tesseral/internal/oidcclient"
 	"github.com/tesseral-labs/tesseral/internal/pagetoken"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -35,7 +35,7 @@ type Store struct {
 	authenticatorAppSecretsKMSKeyID       string
 	svixClient                            *svix.Svix
 	auditlogStore                         *auditlogstore.Store
-	oidc                                  *oidc.Client
+	oidc                                  *oidcclient.Client
 }
 
 type NewStoreParams struct {
@@ -51,7 +51,7 @@ type NewStoreParams struct {
 	AuthenticatorAppSecretsKMSKeyID       string
 	SvixClient                            *svix.Svix
 	AuditlogStore                         *auditlogstore.Store
-	OIDCClient                            *oidc.Client
+	OIDCClient                            *oidcclient.Client
 }
 
 func New(p NewStoreParams) *Store {

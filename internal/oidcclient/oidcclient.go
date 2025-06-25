@@ -1,4 +1,4 @@
-package oidc
+package oidcclient
 
 import (
 	"context"
@@ -22,7 +22,7 @@ type Configuration struct {
 	AuthorizationEndpoint             string   `json:"authorization_endpoint"`
 	TokenEndpoint                     string   `json:"token_endpoint"`
 	TokenEndpointAuthMethodsSupported []string `json:"token_endpoint_auth_methods_supported"`
-	JwksURI                           string   `json:"jwks_uri"`
+	JWKSURI                           string   `json:"jwks_uri"`
 	GrantTypesSupported               []string `json:"grant_types_supported"`
 	CodeChallengeMethodsSupported     []string `json:"code_challenge_methods_supported"`
 	IDTokenSigningAlgValuesSupported  []string `json:"id_token_signing_alg_values_supported"`
@@ -62,7 +62,7 @@ func (c *Configuration) Validate() error {
 	if c.TokenEndpoint == "" {
 		return fmt.Errorf("token endpoint is required")
 	}
-	if c.JwksURI == "" {
+	if c.JWKSURI == "" {
 		return fmt.Errorf("jwks uri is required")
 	}
 

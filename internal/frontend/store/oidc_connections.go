@@ -170,7 +170,14 @@ func (s *Store) CreateOIDCConnection(ctx context.Context, req *frontendv1.Create
 		return nil, fmt.Errorf("create oidc connection: %w", err)
 	}
 
-	oidcConnection := parseOIDCConnection(qProject, qOIDCConnection)
+	if req.OidcConnection.GetPrimary() {
+		if err := q.UpdatePrimaryOIDCConnection(ctx, queries.UpdatePrimaryOIDCConnectionParams{
+			OrganizationID: authn.OrganizationID(ctx),
+			ID:             qOIDCConnection.ID,
+		}); err != nil {
+			return nil, fmt.Errorf("update primary oidc connection: %w", err)
+		}
+	}
 
 	auditOIDCConnection, err := s.auditlogStore.GetOIDCConnection(ctx, tx, qOIDCConnection.ID)
 	if err != nil {
@@ -192,7 +199,7 @@ func (s *Store) CreateOIDCConnection(ctx context.Context, req *frontendv1.Create
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &frontendv1.CreateOIDCConnectionResponse{OidcConnection: oidcConnection}, nil
+	return &frontendv1.CreateOIDCConnectionResponse{OidcConnection: parseOIDCConnection(qProject, qOIDCConnection)}, nil
 }
 
 func (s *Store) UpdateOIDCConnection(ctx context.Context, req *frontendv1.UpdateOIDCConnectionRequest) (*frontendv1.UpdateOIDCConnectionResponse, error) {

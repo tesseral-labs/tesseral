@@ -127,6 +127,47 @@ func TestUpdateOIDCConnection_UpdatesFields(t *testing.T) {
 	require.True(t, updated.GetPrimary())
 }
 
+func TestUpdateOIDCConnection_SetPrimary(t *testing.T) {
+	t.Parallel()
+
+	ctx, u := newTestUtil(t)
+	organizationID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName:   "test",
+		LogInWithOidc: refOrNil(true),
+	})
+
+	original, err := u.Store.CreateOIDCConnection(ctx, &backendv1.CreateOIDCConnectionRequest{
+		OidcConnection: &backendv1.OIDCConnection{
+			OrganizationId:   organizationID,
+			ConfigurationUrl: "https://accounts.google.com/.well-known/openid-configuration",
+			Issuer:           "https://idp.example.com/",
+			ClientId:         "client-id",
+			ClientSecret:     "client-secret",
+			Primary:          refOrNil(true),
+		},
+	})
+	require.NoError(t, err)
+	require.True(t, original.OidcConnection.GetPrimary())
+
+	new, err := u.Store.CreateOIDCConnection(ctx, &backendv1.CreateOIDCConnectionRequest{
+		OidcConnection: &backendv1.OIDCConnection{
+			OrganizationId:   organizationID,
+			ConfigurationUrl: "https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration",
+			Issuer:           "https://idp.example.com/2/",
+			ClientId:         "client-id-2",
+			ClientSecret:     "client-secret-2",
+			Primary:          refOrNil(true),
+		},
+	})
+	require.NoError(t, err)
+	require.True(t, new.OidcConnection.GetPrimary())
+
+	getResp, err := u.Store.GetOIDCConnection(ctx, &backendv1.GetOIDCConnectionRequest{Id: original.OidcConnection.Id})
+	require.NoError(t, err)
+	require.NotNil(t, getResp.OidcConnection)
+	require.False(t, getResp.OidcConnection.GetPrimary(), "original connection should no longer be primary")
+}
+
 func TestDeleteOIDCConnection_RemovesConnection(t *testing.T) {
 	t.Parallel()
 	ctx, u := newTestUtil(t)

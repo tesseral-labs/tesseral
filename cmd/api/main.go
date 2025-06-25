@@ -53,10 +53,10 @@ import (
 	intermediatestore "github.com/tesseral-labs/tesseral/internal/intermediate/store"
 	"github.com/tesseral-labs/tesseral/internal/loadenv"
 	"github.com/tesseral-labs/tesseral/internal/microsoftoauth"
-	"github.com/tesseral-labs/tesseral/internal/oidc"
 	oidcinterceptor "github.com/tesseral-labs/tesseral/internal/oidc/authn/interceptor"
 	oidcservice "github.com/tesseral-labs/tesseral/internal/oidc/service"
 	oidcstore "github.com/tesseral-labs/tesseral/internal/oidc/store"
+	"github.com/tesseral-labs/tesseral/internal/oidcclient"
 	"github.com/tesseral-labs/tesseral/internal/opaqueinternalerror"
 	"github.com/tesseral-labs/tesseral/internal/pagetoken"
 	samlinterceptor "github.com/tesseral-labs/tesseral/internal/saml/authn/interceptor"
@@ -189,7 +189,7 @@ func main() {
 	cookier := cookies.Cookier{Store: commonStore}
 
 	auditlogStore := auditlogstore.Store{}
-	oidcClient := &oidc.Client{
+	oidcClient := &oidcclient.Client{
 		HTTPClient: http.DefaultClient,
 	}
 

@@ -2,6 +2,7 @@ package cookies
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -29,11 +30,14 @@ func (c *Cookier) GetIntermediateAccessToken(projectID uuid.UUID, req connect.An
 }
 
 func (c *Cookier) GetOIDCIntermediateSessionToken(projectID uuid.UUID, req *http.Request) (string, error) {
-	cookies := req.CookiesNamed(c.cookieName("oidc_intermediate_session", projectID))
-	if len(cookies) != 1 {
-		return "", fmt.Errorf("expected exactly one oidc_intermediate_session cookie, got %d", len(cookies))
+	cookie, err := req.Cookie(c.cookieName("oidc_intermediate_session", projectID))
+	if err != nil {
+		if errors.Is(err, http.ErrNoCookie) {
+			return "", nil // No cookie found, return empty string
+		}
+		return "", fmt.Errorf("get oidc intermediate session cookie: %w", err)
 	}
-	return cookies[0].Value, nil
+	return cookie.Value, nil
 }
 
 func (c *Cookier) getCookie(name string, projectID uuid.UUID, req connect.AnyRequest) (string, error) {

@@ -1,4 +1,4 @@
-package oidc
+package oidcclient
 
 import (
 	"context"
@@ -22,7 +22,7 @@ func TestGetConfiguration_Google(t *testing.T) {
 	require.NotNil(t, config)
 	require.NotEmpty(t, config.AuthorizationEndpoint)
 	require.NotEmpty(t, config.TokenEndpoint)
-	require.NotEmpty(t, config.JwksURI)
+	require.NotEmpty(t, config.JWKSURI)
 	require.NotEmpty(t, config.GrantTypesSupported)
 	require.NotEmpty(t, config.TokenEndpointAuthMethodsSupported)
 }

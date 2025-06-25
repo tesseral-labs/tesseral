@@ -19,7 +19,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/cloudflaredoh"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
-	"github.com/tesseral-labs/tesseral/internal/oidc"
+	"github.com/tesseral-labs/tesseral/internal/oidcclient"
 	"github.com/tesseral-labs/tesseral/internal/pagetoken"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -52,7 +52,7 @@ type Store struct {
 	stripePriceIDGrowthTier               string
 	svixClient                            *svix.Svix
 	auditlogStore                         *auditlogstore.Store
-	oidc                                  *oidc.Client
+	oidc                                  *oidcclient.Client
 }
 
 type NewStoreParams struct {
@@ -81,7 +81,7 @@ type NewStoreParams struct {
 	StripePriceIDGrowthTier               string
 	SvixClient                            *svix.Svix
 	AuditlogStore                         *auditlogstore.Store
-	OIDCClient                            *oidc.Client
+	OIDCClient                            *oidcclient.Client
 }
 
 func New(p NewStoreParams) *Store {

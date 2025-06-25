@@ -3575,6 +3575,25 @@ func (q *Queries) UpdatePasskey(ctx context.Context, arg UpdatePasskeyParams) (P
 	return i, err
 }
 
+const updatePrimaryOIDCConnection = `-- name: UpdatePrimaryOIDCConnection :exec
+UPDATE
+    oidc_connections
+SET
+    is_primary = (id = $1)
+WHERE
+    organization_id = $2
+`
+
+type UpdatePrimaryOIDCConnectionParams struct {
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
+}
+
+func (q *Queries) UpdatePrimaryOIDCConnection(ctx context.Context, arg UpdatePrimaryOIDCConnectionParams) error {
+	_, err := q.db.Exec(ctx, updatePrimaryOIDCConnection, arg.ID, arg.OrganizationID)
+	return err
+}
+
 const updatePrimarySAMLConnection = `-- name: UpdatePrimarySAMLConnection :exec
 UPDATE
     saml_connections

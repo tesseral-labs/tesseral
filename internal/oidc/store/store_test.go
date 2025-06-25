@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/tesseral-labs/tesseral/internal/oidc"
 	"github.com/tesseral-labs/tesseral/internal/oidc/authn"
+	"github.com/tesseral-labs/tesseral/internal/oidcclient"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/storetesting"
 )
@@ -35,7 +35,7 @@ func newTestUtil(t *testing.T) (context.Context, *testUtil) {
 		DB:                        environment.DB,
 		KMS:                       environment.KMS.Client,
 		OIDCClientSecretsKMSKeyID: environment.KMS.OIDCClientSecretsKMSKeyID,
-		OIDCClient:                &oidc.Client{HTTPClient: http.DefaultClient},
+		OIDCClient:                &oidcclient.Client{HTTPClient: http.DefaultClient},
 	})
 
 	projectID, _ := environment.NewProject(t)
