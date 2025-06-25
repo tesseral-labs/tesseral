@@ -5,7 +5,6 @@ FROM
     projects
 WHERE
     id = $1;
-    
 
 -- name: GetOIDCConnection :one
 SELECT
@@ -19,20 +18,16 @@ WHERE
     AND oidc_connections.id = $2;
 
 -- name: CreateOIDCIntermediateSession :one
-INSERT INTO
-    oidc_intermediate_sessions (oidc_intermediate_session_id, oidc_connection_id, code_verifier)
-VALUES
-    ($1, $2, $3)
+INSERT INTO oidc_intermediate_sessions (oidc_intermediate_session_id, oidc_connection_id, code_verifier)
+    VALUES ($1, $2, $3)
 RETURNING
     *;
 
 -- name: DeleteOIDCIntermediateSession :one
-DELETE FROM
-    oidc_intermediate_sessions
-WHERE
-    oidc_intermediate_session_id = $1
+DELETE FROM oidc_intermediate_sessions
+WHERE oidc_intermediate_session_id = $1
 RETURNING
-*;
+    *;
 
 -- name: GetOrganizationDomains :many
 SELECT
@@ -62,3 +57,4 @@ INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, primary_au
     VALUES ($1, $2, $3, $4, 'oidc')
 RETURNING
     *;
+

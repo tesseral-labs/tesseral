@@ -13,10 +13,8 @@ import (
 )
 
 const createOIDCIntermediateSession = `-- name: CreateOIDCIntermediateSession :one
-INSERT INTO
-    oidc_intermediate_sessions (oidc_intermediate_session_id, oidc_connection_id, code_verifier)
-VALUES
-    ($1, $2, $3)
+INSERT INTO oidc_intermediate_sessions (oidc_intermediate_session_id, oidc_connection_id, code_verifier)
+    VALUES ($1, $2, $3)
 RETURNING
     oidc_intermediate_session_id, oidc_connection_id, code_verifier
 `
@@ -116,12 +114,10 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const deleteOIDCIntermediateSession = `-- name: DeleteOIDCIntermediateSession :one
-DELETE FROM
-    oidc_intermediate_sessions
-WHERE
-    oidc_intermediate_session_id = $1
+DELETE FROM oidc_intermediate_sessions
+WHERE oidc_intermediate_session_id = $1
 RETURNING
-oidc_intermediate_session_id, oidc_connection_id, code_verifier
+    oidc_intermediate_session_id, oidc_connection_id, code_verifier
 `
 
 func (q *Queries) DeleteOIDCIntermediateSession(ctx context.Context, oidcIntermediateSessionID uuid.UUID) (OidcIntermediateSession, error) {
