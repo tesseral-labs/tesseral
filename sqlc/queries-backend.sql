@@ -327,14 +327,6 @@ INSERT INTO oidc_connections (id, organization_id, is_primary, configuration_url
 RETURNING
     *;
 
--- name: UpdatePrimaryOIDCConnection :exec
-UPDATE
-    oidc_connections
-SET
-    is_primary = (id = $1)
-WHERE
-    organization_id = $2;
-
 -- name: UpdateOIDCConnection :one
 UPDATE
     oidc_connections

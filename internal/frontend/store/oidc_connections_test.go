@@ -33,6 +33,7 @@ func TestCreateOIDCConnection_OIDCEnabled(t *testing.T) {
 	require.Equal(t, "https://accounts.google.com/.well-known/openid-configuration", res.OidcConnection.ConfigurationUrl)
 	require.Equal(t, "https://idp.example.com/", res.OidcConnection.Issuer)
 	require.Equal(t, "client-id", res.OidcConnection.ClientId)
+	require.True(t, res.OidcConnection.GetPrimary())
 }
 
 func TestCreateOIDCConnection_OIDCDisabled(t *testing.T) {

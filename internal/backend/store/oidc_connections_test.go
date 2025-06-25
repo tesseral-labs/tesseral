@@ -32,6 +32,7 @@ func TestCreateOIDCConnection_OIDCEnabled(t *testing.T) {
 	require.Equal(t, organizationID, res.OidcConnection.OrganizationId)
 	require.NotEmpty(t, res.OidcConnection.CreateTime)
 	require.NotEmpty(t, res.OidcConnection.UpdateTime)
+	require.True(t, res.OidcConnection.GetPrimary())
 }
 
 func TestCreateOIDCConnection_OIDCDisabled(t *testing.T) {
