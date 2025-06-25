@@ -11,7 +11,6 @@ import {
   CalendarIcon,
   GlobeLock,
   LoaderCircle,
-  Logs,
   Plus,
   Settings,
   ShieldBan,
