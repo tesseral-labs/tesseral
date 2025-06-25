@@ -51,7 +51,7 @@ export function EnterpriseSettingsCard() {
           Enterprise Auth
         </CardTitle>
         <CardDescription>
-          Configure whether users can log in with SAML SSO and use SCIM
+          Configure whether users can log in with SAML/OIDC SSO and use SCIM
           provisioning.
         </CardDescription>
       </CardHeader>
