@@ -148,22 +148,6 @@ export function OrganizationOidcConnectionPage() {
         return;
       }
 
-      // Parse out client ID for known OIDC providers
-      let clientId: string | null = null;
-      // Okta
-      clientId = urlData.searchParams.get("client_id");
-      // Entra
-      const entraRegex =
-        /^https:\/\/login\.microsoftonline\.com\/(.*?)\/v2\.0\/\.well-known\/openid-configuration$/;
-      const entraMatch = url.match(entraRegex);
-      if (entraMatch && entraMatch[1]) {
-        clientId = entraMatch[1];
-      }
-
-      if (clientId && !form.getValues("clientId")) {
-        form.setValue("clientId", clientId, { shouldValidate: true });
-      }
-
       try {
         const response = await fetch(url);
         if (!response.ok) {
