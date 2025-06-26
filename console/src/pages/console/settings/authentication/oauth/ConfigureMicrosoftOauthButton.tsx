@@ -1,11 +1,13 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoaderCircle, Settings } from "lucide-react";
+import { ExternalLink, LoaderCircle, Settings } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { ValueCopier } from "@/components/core/ValueCopier";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -26,6 +28,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import {
   getProject,
@@ -140,6 +144,24 @@ export function ConfigureMicrosoftOAuthButton() {
             to provide the Client ID and Client Secret obtained from your
             Microsoft OAuth application.
           </DialogDescription>
+          <div className="flex flex-col gap-2 text-muted-foreground text-sm">
+            <Separator className="my-4" />
+            <Label className="font-semibold">Callback URL</Label>
+            <span>
+              Use this as the Redirect URI in your Microsoft app registration.{" "}
+              <Link
+                to="https://tesseral.com/docs/login-methods/primary-factors/log-in-with-microsoft"
+                target="_blank"
+                className="underline"
+              >
+                Docs <ExternalLink className="inline size-3" />
+              </Link>
+            </span>
+            <ValueCopier
+              value={`https://${getProjectResponse?.project?.vaultDomain}/microsoft-oauth-callback`}
+            />
+          </div>
+          <Separator className="my-4" />
         </DialogHeader>
 
         <Form {...form}>
@@ -172,7 +194,7 @@ export function ConfigureMicrosoftOAuthButton() {
                 name="microsoftOauthClientId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel></FormLabel>
+                    <FormLabel>Client ID</FormLabel>
                     <FormDescription>
                       Your company's Microsoft OAuth Client ID.
                     </FormDescription>
@@ -191,7 +213,7 @@ export function ConfigureMicrosoftOAuthButton() {
                 name="microsoftOauthClientSecret"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel></FormLabel>
+                    <FormLabel>Client Secret</FormLabel>
                     <FormDescription>
                       Your company's Microsoft OAuth Client Secret.
                     </FormDescription>

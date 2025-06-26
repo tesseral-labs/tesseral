@@ -23,6 +23,7 @@ import (
 	"github.com/ssoready/conf"
 	stripeclient "github.com/stripe/stripe-go/v82/client"
 	svix "github.com/svix/svix-webhooks/go"
+	auditlogstore "github.com/tesseral-labs/tesseral/internal/auditlog/store"
 	backendinterceptor "github.com/tesseral-labs/tesseral/internal/backend/authn/interceptor"
 	"github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1/backendv1connect"
 	backendservice "github.com/tesseral-labs/tesseral/internal/backend/service"
@@ -31,6 +32,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/common/accesstoken"
 	"github.com/tesseral-labs/tesseral/internal/common/corstrusteddomains"
 	"github.com/tesseral-labs/tesseral/internal/common/projectid"
+	"github.com/tesseral-labs/tesseral/internal/common/sentryintegration"
 	commonstore "github.com/tesseral-labs/tesseral/internal/common/store"
 	configapiservice "github.com/tesseral-labs/tesseral/internal/configapi/service"
 	configapistore "github.com/tesseral-labs/tesseral/internal/configapi/store"
@@ -75,7 +77,12 @@ func main() {
 		panic(fmt.Errorf("init sentry: %w", err))
 	}
 
-	slog.SetDefault(slog.New(ctxlog.NewHandler(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{AddSource: true}))))
+	slogHandler := ctxlog.NewHandler(
+		sentryintegration.NewSlogHandler(
+			slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{AddSource: true}),
+		),
+	)
+	slog.SetDefault(slog.New(slogHandler))
 
 	if err := secretload.Load(context.Background()); err != nil {
 		panic(fmt.Errorf("load secrets: %w", err))
@@ -109,7 +116,7 @@ func main() {
 		TesseralDNSCloudflareZoneID         string        `conf:"tesseral_dns_cloudflare_zone_id,noredact"`
 		StripeAPIKey                        string        `conf:"stripe_api_key"`
 		StripePriceIDGrowthTier             string        `conf:"stripe_price_id_growth_tier,noredact"`
-		SvixApiKey                          string        `conf:"svix_api_key,noredact"`
+		SvixApiKey                          string        `conf:"svix_api_key"`
 	}{
 		PageEncodingValue: "0000000000000000000000000000000000000000000000000000000000000000",
 	}
@@ -176,6 +183,8 @@ func main() {
 
 	cookier := cookies.Cookier{Store: commonStore}
 
+	auditlogStore := auditlogstore.Store{}
+
 	// Register the backend service
 	backendStore := backendstore.New(backendstore.NewStoreParams{
 		DB:                                    db,
@@ -201,6 +210,7 @@ func main() {
 		Stripe:                                stripeClient,
 		StripePriceIDGrowthTier:               config.StripePriceIDGrowthTier,
 		SvixClient:                            svixClient,
+		AuditlogStore:                         &auditlogStore,
 	})
 	backendConnectPath, backendConnectHandler := backendv1connect.NewBackendServiceHandler(
 		&backendservice.Service{
@@ -230,6 +240,7 @@ func main() {
 		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
 		AuthenticatorAppSecretsKMSKeyID:       config.AuthenticatorAppSecretsKMSKeyID,
 		SvixClient:                            svixClient,
+		AuditlogStore:                         &auditlogStore,
 	})
 	frontendConnectPath, frontendConnectHandler := frontendv1connect.NewFrontendServiceHandler(
 		&frontendservice.Service{
@@ -272,6 +283,7 @@ func main() {
 		S3UserContentBucketName:               config.S3UserContentBucketName,
 		StripeClient:                          stripeClient,
 		SvixClient:                            svixClient,
+		AuditlogStore:                         &auditlogStore,
 	})
 	intermediateConnectPath, intermediateConnectHandler := intermediatev1connect.NewIntermediateServiceHandler(
 		&intermediateservice.Service{
@@ -340,6 +352,7 @@ func main() {
 	}))
 
 	mux.Handle("/api/internal/panic", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		slog.InfoContext(r.Context(), "panic_request", "remote_addr", r.RemoteAddr)
 		panic("deliberate panic")
 	}))
 
@@ -366,13 +379,13 @@ func main() {
 	// These handlers are registered in a FILO order much like
 	// a Matryoshka doll
 
-	// wrap all http requests with sentry
-	serve := sentryhttp.New(sentryhttp.Options{
-		Repanic: true,
-	}).Handle(mux)
-
 	// add correlation IDs to logs
-	serve = slogcorrelation.NewHandler(serve)
+	serve := slogcorrelation.NewHandler(mux)
+
+	// wrap all http requests with sentry
+	serve = sentryhttp.New(sentryhttp.Options{
+		Repanic: true,
+	}).Handle(serve)
 
 	slog.Info("serve")
 	if config.RunAsLambda {

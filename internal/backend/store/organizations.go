@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/svix/svix-webhooks/go/models"
+	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
@@ -18,7 +19,7 @@ import (
 )
 
 func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrganizationRequest) (*backendv1.CreateOrganizationResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -96,11 +97,15 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 		return nil, fmt.Errorf("create organization: %w", err)
 	}
 
-	organization := parseOrganization(qProject, qOrg)
+	auditOrganization, err := s.auditlogStore.GetOrganization(ctx, tx, qOrg.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit organization: %w", err)
+	}
+
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.organizations.create",
-		EventDetails: &backendv1.OrganizationCreated{
-			Organization: organization,
+		EventDetails: &auditlogv1.CreateOrganization{
+			Organization: auditOrganization,
 		},
 		OrganizationID: &qOrg.ID,
 		ResourceType:   queries.AuditLogEventResourceTypeOrganization,
@@ -118,7 +123,7 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 		return nil, fmt.Errorf("send sync organization event: %w", err)
 	}
 
-	return &backendv1.CreateOrganizationResponse{Organization: organization}, nil
+	return &backendv1.CreateOrganizationResponse{Organization: parseOrganization(qProject, qOrg)}, nil
 }
 
 func (s *Store) ListOrganizations(ctx context.Context, req *backendv1.ListOrganizationsRequest) (*backendv1.ListOrganizationsResponse, error) {
@@ -195,6 +200,10 @@ func (s *Store) GetOrganization(ctx context.Context, req *backendv1.GetOrganizat
 		ID:        organizationId,
 	})
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("organization not found", fmt.Errorf("get organization by id: %w", err))
+		}
+
 		return nil, fmt.Errorf("get organization: %w", err)
 	}
 
@@ -202,7 +211,7 @@ func (s *Store) GetOrganization(ctx context.Context, req *backendv1.GetOrganizat
 }
 
 func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrganizationRequest) (*backendv1.UpdateOrganizationResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -229,6 +238,11 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 		}
 
 		return nil, fmt.Errorf("get organization: %w", err)
+	}
+
+	auditPreviousOrganization, err := s.auditlogStore.GetOrganization(ctx, tx, qOrg.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit organization: %w", err)
 	}
 
 	updates := queries.UpdateOrganizationParams{
@@ -343,12 +357,16 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 		return nil, fmt.Errorf("update organization: %w", err)
 	}
 
-	organization := parseOrganization(qProject, qUpdatedOrg)
+	auditOrganization, err := s.auditlogStore.GetOrganization(ctx, tx, qUpdatedOrg.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit organization: %w", err)
+	}
+
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.organizations.update",
-		EventDetails: &backendv1.OrganizationUpdated{
-			Organization:         organization,
-			PreviousOrganization: parseOrganization(qProject, qOrg),
+		EventDetails: &auditlogv1.UpdateOrganization{
+			Organization:         auditOrganization,
+			PreviousOrganization: auditPreviousOrganization,
 		},
 		OrganizationID: &qOrg.ID,
 		ResourceType:   queries.AuditLogEventResourceTypeOrganization,
@@ -366,20 +384,15 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 		return nil, fmt.Errorf("send sync organization event: %w", err)
 	}
 
-	return &backendv1.UpdateOrganizationResponse{Organization: organization}, nil
+	return &backendv1.UpdateOrganizationResponse{Organization: parseOrganization(qProject, qUpdatedOrg)}, nil
 }
 
 func (s *Store) DeleteOrganization(ctx context.Context, req *backendv1.DeleteOrganizationRequest) (*backendv1.DeleteOrganizationResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer rollback()
-
-	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
-	if err != nil {
-		return nil, fmt.Errorf("get project by id: %w", err)
-	}
 
 	orgID, err := idformat.Organization.Parse(req.Id)
 	if err != nil {
@@ -399,14 +412,19 @@ func (s *Store) DeleteOrganization(ctx context.Context, req *backendv1.DeleteOrg
 		return nil, fmt.Errorf("get organization: %w", err)
 	}
 
+	auditOrganization, err := s.auditlogStore.GetOrganization(ctx, tx, qOrg.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit organization: %w", err)
+	}
+
 	if err := q.DeleteOrganization(ctx, orgID); err != nil {
 		return nil, fmt.Errorf("delete organization: %w", err)
 	}
 
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.organizations.delete",
-		EventDetails: &backendv1.OrganizationDeleted{
-			Organization: parseOrganization(qProject, qOrg),
+		EventDetails: &auditlogv1.DeleteOrganization{
+			Organization: auditOrganization,
 		},
 		OrganizationID: &qOrg.ID,
 		ResourceType:   queries.AuditLogEventResourceTypeOrganization,

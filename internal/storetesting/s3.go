@@ -4,12 +4,19 @@ import (
 	"context"
 	"log"
 
+	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/wait"
 )
 
-func newS3() (*s3.Client, func()) {
+type testS3 struct {
+	Client                *s3.Client
+	UserContentBucketName string
+}
+
+func newS3() (*testS3, func()) {
+	const bucketName = "tesseral-user-content"
 	container, err := testcontainers.GenericContainer(
 		context.Background(),
 		testcontainers.GenericContainerRequest{
@@ -17,11 +24,11 @@ func newS3() (*s3.Client, func()) {
 				Image:        "adobe/s3mock:latest",
 				ExposedPorts: []string{"9090/tcp"},
 				Env: map[string]string{
-					"initialBuckets":    "tesseral-user-content",
+					"initialBuckets":    bucketName,
 					"root":              "containers3root",
 					"retainFilesOnExit": "false",
 				},
-				WaitingFor: wait.ForLog("Tomcat started on ports"),
+				WaitingFor: wait.ForLog("Started S3MockApplication"),
 			},
 			Started: true,
 		},
@@ -39,8 +46,13 @@ func newS3() (*s3.Client, func()) {
 		log.Panicf("failed to get S3 mock endpoint: %v", err)
 	}
 	cfg := s3.Options{
-		Region:           awsTestRegion,
-		EndpointResolver: s3.EndpointResolverFromURL(endpoint),
+		Region:       awsTestRegion,
+		BaseEndpoint: &endpoint,
+		UsePathStyle: true,
+		Credentials:  credentials.NewStaticCredentialsProvider("foo", "bar", ""),
 	}
-	return s3.New(cfg), cleanup
+	return &testS3{
+		Client:                s3.New(cfg),
+		UserContentBucketName: bucketName,
+	}, cleanup
 }

@@ -2260,6 +2260,50 @@ func (q *Queries) UpdateAPIKey(ctx context.Context, arg UpdateAPIKeyParams) (Api
 	return i, err
 }
 
+const updateMe = `-- name: UpdateMe :one
+UPDATE
+    users
+SET
+    display_name = $1,
+    update_time = now()
+WHERE
+    id = $2
+RETURNING
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+`
+
+type UpdateMeParams struct {
+	DisplayName *string
+	ID          uuid.UUID
+}
+
+func (q *Queries) UpdateMe(ctx context.Context, arg UpdateMeParams) (User, error) {
+	row := q.db.QueryRow(ctx, updateMe, arg.DisplayName, arg.ID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DeactivateTime,
+		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
+		&i.AuthenticatorAppSecretCiphertext,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
+		&i.AuthenticatorAppRecoveryCodeSha256s,
+		&i.DisplayName,
+		&i.ProfilePictureUrl,
+		&i.GithubUserID,
+	)
+	return i, err
+}
+
 const updateOrganization = `-- name: UpdateOrganization :one
 UPDATE
     organizations
@@ -2464,7 +2508,8 @@ UPDATE
     users
 SET
     update_time = now(),
-    is_owner = $1
+    is_owner = $1,
+    display_name = $3
 WHERE
     id = $2
 RETURNING
@@ -2472,12 +2517,13 @@ RETURNING
 `
 
 type UpdateUserParams struct {
-	IsOwner bool
-	ID      uuid.UUID
+	IsOwner     bool
+	ID          uuid.UUID
+	DisplayName *string
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
-	row := q.db.QueryRow(ctx, updateUser, arg.IsOwner, arg.ID)
+	row := q.db.QueryRow(ctx, updateUser, arg.IsOwner, arg.ID, arg.DisplayName)
 	var i User
 	err := row.Scan(
 		&i.ID,

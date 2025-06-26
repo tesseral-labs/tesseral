@@ -1,11 +1,13 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoaderCircle, Settings } from "lucide-react";
+import { ExternalLink, LoaderCircle, Settings } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { ValueCopier } from "@/components/core/ValueCopier";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -26,6 +28,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import {
   getProject,
@@ -117,6 +121,25 @@ export function ConfigureGoogleOAuthButton() {
             provide the Client ID and Client Secret obtained from your Google
             OAuth application.
           </DialogDescription>
+          <div className="flex flex-col gap-2 text-muted-foreground text-sm">
+            <Separator className="my-4" />
+            <Label className="font-semibold">Callback URL</Label>
+            <span>
+              Use this as the Authorized redirect URI in your Google OAuth app
+              settings.{" "}
+              <Link
+                to="https://tesseral.com/docs/login-methods/primary-factors/log-in-with-google"
+                target="_blank"
+                className="underline"
+              >
+                Docs <ExternalLink className="inline size-3" />
+              </Link>
+            </span>
+            <ValueCopier
+              value={`https://${getProjectResponse?.project?.vaultDomain}/google-oauth-callback`}
+            />
+          </div>
+          <Separator className="my-4" />
         </DialogHeader>
 
         <Form {...form}>
@@ -149,7 +172,7 @@ export function ConfigureGoogleOAuthButton() {
                 name="googleOauthClientId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel></FormLabel>
+                    <FormLabel>Client ID</FormLabel>
                     <FormDescription>
                       Your company's Google OAuth Client ID.
                     </FormDescription>
@@ -165,7 +188,7 @@ export function ConfigureGoogleOAuthButton() {
                 name="googleOauthClientSecret"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel></FormLabel>
+                    <FormLabel>Client Secret</FormLabel>
                     <FormDescription>
                       Your company's Google OAuth Client Secret.
                     </FormDescription>

@@ -1,9 +1,9 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
-import { Title } from "@/components/Title";
+import { Title } from "@/components/core/Title";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";

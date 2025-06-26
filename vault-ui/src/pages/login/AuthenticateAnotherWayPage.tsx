@@ -6,11 +6,12 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { z } from "zod";
 
-import { Title } from "@/components/Title";
-import { GithubIcon } from "@/components/login/GithubIcon";
-import { GoogleIcon } from "@/components/login/GoogleIcon";
+import { TextDivider } from "@/components/core/TextDivider";
+import { Title } from "@/components/core/Title";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
-import { MicrosoftIcon } from "@/components/login/MicrosoftIcon";
+import { GithubIcon } from "@/components/login/icons/GithubIcon";
+import { GoogleIcon } from "@/components/login/icons/GoogleIcon";
+import { MicrosoftIcon } from "@/components/login/icons/MicrosoftIcon";
 import { Button } from "@/components/ui/button";
 import {
   CardContent,
@@ -27,7 +28,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import TextDivider from "@/components/ui/text-divider";
 import {
   getGithubOAuthRedirectURL,
   getGoogleOAuthRedirectURL,

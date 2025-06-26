@@ -8,13 +8,14 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	intermediatev1 "github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
 func (s *Store) RedeemUserImpersonationToken(ctx context.Context, req *intermediatev1.RedeemUserImpersonationTokenRequest) (*intermediatev1.RedeemUserImpersonationTokenResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -32,12 +33,6 @@ func (s *Store) RedeemUserImpersonationToken(ctx context.Context, req *intermedi
 	}
 
 	expireTime := time.Now().Add(sessionDuration)
-
-	// Get impersonating user for logging purposes
-	qImpersonatingUser, err := q.GetUserByID(ctx, qUserImpersonationToken.ImpersonatorID)
-	if err != nil {
-		return nil, fmt.Errorf("get impersonating user by id: %w", err)
-	}
 
 	// Create a new session for the user
 	slog.InfoContext(ctx, "impersonate_user",
@@ -68,9 +63,14 @@ func (s *Store) RedeemUserImpersonationToken(ctx context.Context, req *intermedi
 		return nil, fmt.Errorf("get impersonated user by id: %w", err)
 	}
 
+	auditSession, err := s.auditlogStore.GetSession(ctx, tx, qSession.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit session: %w", err)
+	}
+
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName:      "tesseral.sessions.create",
-		EventDetails:   parseSessionEventDetails(qSession, &qImpersonatingUser.Email),
+		EventDetails:   &auditlogv1.CreateSession{Session: auditSession},
 		OrganizationID: &qImpersonatedUser.OrganizationID,
 		ResourceType:   queries.AuditLogEventResourceTypeSession,
 		ResourceID:     &qSession.ID,

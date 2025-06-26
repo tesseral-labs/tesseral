@@ -3,10 +3,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircleIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { z } from "zod";
 
-import { Title } from "@/components/Title";
+import { Title } from "@/components/core/Title";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { Button } from "@/components/ui/button";
 import {

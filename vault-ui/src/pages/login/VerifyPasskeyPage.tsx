@@ -1,7 +1,7 @@
 import { useMutation } from "@connectrpc/connect-query";
 import React, { useCallback, useEffect } from "react";
 
-import { Title } from "@/components/Title";
+import { Title } from "@/components/core/Title";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { Button } from "@/components/ui/button";
 import {

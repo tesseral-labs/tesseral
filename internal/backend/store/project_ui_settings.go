@@ -58,6 +58,8 @@ func (s *Store) GetProjectUISettings(ctx context.Context, req *backendv1.GetProj
 
 	return &backendv1.GetProjectUISettingsResponse{
 		ProjectUiSettings: &backendv1.ProjectUISettings{
+			Id:                      idformat.ProjectUISettings.Format(qProjectUISettings.ID),
+			ProjectId:               idformat.Project.Format(projectID),
 			PrimaryColor:            derefOrEmpty(qProjectUISettings.PrimaryColor),
 			DetectDarkModeEnabled:   qProjectUISettings.DetectDarkModeEnabled,
 			DarkModePrimaryColor:    derefOrEmpty(qProjectUISettings.DarkModePrimaryColor),
@@ -135,6 +137,7 @@ func (s *Store) UpdateProjectUISettings(ctx context.Context, req *backendv1.Upda
 		DetectDarkModeEnabled:   qUpdatedProjectUISettings.DetectDarkModeEnabled,
 		PrimaryColor:            derefOrEmpty(qUpdatedProjectUISettings.PrimaryColor),
 		AutoCreateOrganizations: qUpdatedProjectUISettings.AutoCreateOrganizations,
+		LogInLayout:             string(qUpdatedProjectUISettings.LogInLayout),
 	}
 
 	// generate a presigned URL for the dark mode logo file

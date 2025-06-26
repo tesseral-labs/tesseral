@@ -33,6 +33,12 @@ func (s *Store) CreateCustomAuditLogEvent(ctx context.Context, req *backendv1.Cr
 	}
 	defer rollback()
 
+	if req.AuditLogEvent.ActorBackendApiKeyId != "" {
+		return nil, apierror.NewInvalidArgumentError("cannot specify actor_backend_api_key_id", nil)
+	}
+	if req.AuditLogEvent.ActorIntermediateSessionId != "" {
+		return nil, apierror.NewInvalidArgumentError("cannot specify actor_intermediate_session_id", nil)
+	}
 	if err := enforceSingleActor(req); err != nil {
 		return nil, fmt.Errorf("enforce single actor: %w", err)
 	}
