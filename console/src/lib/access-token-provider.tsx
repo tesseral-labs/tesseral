@@ -52,7 +52,7 @@ function useAccessTokenInternal(): string | undefined {
         }
       }
     })();
-  }, [accessTokenLikelyValid]);
+  }, [accessTokenLikelyValid, navigate, refreshMutation]);
 
   useEffect(() => {
     // Proactively refresh the access token every 10 seconds.
