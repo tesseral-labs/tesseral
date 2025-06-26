@@ -223,9 +223,6 @@ func (s *Store) ListSAMLOrganizations(ctx context.Context, req *intermediatev1.L
 		Domain:    domain,
 	})
 	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return &intermediatev1.ListSAMLOrganizationsResponse{}, nil
-		}
 		return nil, fmt.Errorf("list saml organizations: %w", err)
 	}
 
@@ -278,9 +275,6 @@ func (s *Store) ListOIDCOrganizations(ctx context.Context, req *intermediatev1.L
 		Domain:    domain,
 	})
 	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return &intermediatev1.ListOIDCOrganizationsResponse{}, nil
-		}
 		return nil, fmt.Errorf("list oidc organizations: %w", err)
 	}
 

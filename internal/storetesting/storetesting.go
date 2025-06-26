@@ -70,7 +70,7 @@ VALUES
 
 -- Create the Dogfood Project's backing organization
 INSERT INTO organizations (id, display_name, project_id, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, scim_enabled)
-  VALUES ('7a76decb-6d79-49ce-9449-34fcc53151df'::uuid, 'project_54vwf0clhh0caqe20eujxgpeq Backing Organization', '252491cc-76e3-4957-ab23-47d83c34f240', true, false, true, true, true, true, true, true);
+  VALUES ('7a76decb-6d79-49ce-9449-34fcc53151df'::uuid, 'project_54vwf0clhh0caqe20eujxgpeq Backing Organization', '252491cc-76e3-4957-ab23-47d83c34f240', false, false, false, false, false, false, false, false);
 
 UPDATE projects SET organization_id = '7a76decb-6d79-49ce-9449-34fcc53151df'::uuid where id = '252491cc-76e3-4957-ab23-47d83c34f240'::uuid;
 

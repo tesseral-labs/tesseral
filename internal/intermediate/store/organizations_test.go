@@ -13,7 +13,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
-func TestListSAMLOrganizations_SAMLEnabled(t *testing.T) {
+func TestListSAMLOrganizations_ProjectSAMLEnabled(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
@@ -25,7 +25,7 @@ func TestListSAMLOrganizations_SAMLEnabled(t *testing.T) {
 	require.Empty(t, res.Organizations)
 }
 
-func TestListSAMLOrganizations_SAMLDisabled(t *testing.T) {
+func TestListSAMLOrganizations_ProjectSAMLDisabled(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
@@ -47,6 +47,97 @@ func TestListSAMLOrganizations_SAMLDisabled(t *testing.T) {
 	var connectErr *connect.Error
 	require.ErrorAs(t, err, &connectErr)
 	require.Equal(t, connect.CodeFailedPrecondition, connectErr.Code())
+}
+
+func TestListSAMLOrganizations_OrganizationSAMLDisabled(t *testing.T) {
+	t.Parallel()
+
+	ctx, u := newTestUtil(t)
+	organizationID := u.NewOrganization(t, &backendv1.Organization{
+		DisplayName:   "Test Organization",
+		LogInWithSaml: refOrNil(false),
+	})
+	organizationUUID, err := idformat.Organization.Parse(organizationID)
+	require.NoError(t, err)
+
+	// Create the organization domain
+	_, err = u.Environment.DB.Exec(t.Context(), `
+INSERT INTO organization_domains (id, organization_id, domain)
+VALUES (gen_random_uuid(), $1::uuid, $2);
+`,
+		organizationUUID,
+		environment.ConsoleDomain)
+	require.NoError(t, err)
+
+	res, err := u.Store.ListSAMLOrganizations(ctx, &intermediatev1.ListSAMLOrganizationsRequest{
+		Email: authn.IntermediateSession(ctx).Email,
+	})
+	require.NoError(t, err)
+	require.Empty(t, res.Organizations)
+}
+
+func TestListSAMLOrganizations_OrganizationSAMLEnabled(t *testing.T) {
+	t.Parallel()
+
+	ctx, u := newTestUtil(t)
+	organizationID := u.NewOrganization(t, &backendv1.Organization{
+		DisplayName:   "Test Organization",
+		LogInWithSaml: refOrNil(true),
+	})
+	organizationUUID, err := idformat.Organization.Parse(organizationID)
+	require.NoError(t, err)
+
+	// Create the organization domain
+	_, err = u.Environment.DB.Exec(t.Context(), `
+INSERT INTO organization_domains (id, organization_id, domain)
+VALUES (gen_random_uuid(), $1::uuid, $2);
+`,
+		organizationUUID,
+		environment.ConsoleDomain)
+	require.NoError(t, err)
+
+	res, err := u.Store.ListSAMLOrganizations(ctx, &intermediatev1.ListSAMLOrganizationsRequest{
+		Email: authn.IntermediateSession(ctx).Email,
+	})
+	require.NoError(t, err)
+	require.Empty(t, res.Organizations)
+}
+
+func TestListSAMLOrganizations_OrganizationSAMLNonPrimary(t *testing.T) {
+	t.Parallel()
+
+	ctx, u := newTestUtil(t)
+	organizationID := u.NewOrganization(t, &backendv1.Organization{
+		DisplayName:   "Test Organization",
+		LogInWithSaml: refOrNil(true),
+	})
+	organizationUUID, err := idformat.Organization.Parse(organizationID)
+	require.NoError(t, err)
+
+	// Create the organization domain
+	_, err = u.Environment.DB.Exec(t.Context(), `
+INSERT INTO organization_domains (id, organization_id, domain)
+VALUES (gen_random_uuid(), $1::uuid, $2);
+`,
+		organizationUUID,
+		environment.ConsoleDomain)
+	require.NoError(t, err)
+
+	// Create a non-primary SAML connection for the organization
+	samlConnectionID := uuid.New()
+	_, err = u.Environment.DB.Exec(t.Context(), `
+INSERT INTO saml_connections (id, organization_id, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id)
+VALUES ($1::uuid, $2::uuid, false, 'https://idp.example.com/saml/redirect', ''::bytea, 'https://idp.example.com/saml/idp');
+`,
+		samlConnectionID.String(),
+		organizationUUID)
+	require.NoError(t, err)
+
+	res, err := u.Store.ListSAMLOrganizations(ctx, &intermediatev1.ListSAMLOrganizationsRequest{
+		Email: authn.IntermediateSession(ctx).Email,
+	})
+	require.NoError(t, err)
+	require.Empty(t, res.Organizations)
 }
 
 func TestListSAMLOrganizations_ForActiveDomain(t *testing.T) {
@@ -129,7 +220,7 @@ VALUES ($1::uuid, $2::uuid, true, 'https://idp.example.com/saml/redirect', ''::b
 	require.Empty(t, res.Organizations)
 }
 
-func TestListOIDCOrganizations_OIDCEnabled(t *testing.T) {
+func TestListOIDCOrganizations_ProjectOIDCEnabled(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
@@ -141,7 +232,7 @@ func TestListOIDCOrganizations_OIDCEnabled(t *testing.T) {
 	require.Empty(t, res.Organizations)
 }
 
-func TestListOIDCOrganizations_OIDCDisabled(t *testing.T) {
+func TestListOIDCOrganizations_ProjectOIDCDisabled(t *testing.T) {
 	t.Parallel()
 
 	ctx, u := newTestUtil(t)
@@ -163,6 +254,97 @@ func TestListOIDCOrganizations_OIDCDisabled(t *testing.T) {
 	var connectErr *connect.Error
 	require.ErrorAs(t, err, &connectErr)
 	require.Equal(t, connect.CodeFailedPrecondition, connectErr.Code())
+}
+
+func TestListOIDCOrganizations_OrganizationOIDCDisabled(t *testing.T) {
+	t.Parallel()
+
+	ctx, u := newTestUtil(t)
+	organizationID := u.NewOrganization(t, &backendv1.Organization{
+		DisplayName:   "Test Organization",
+		LogInWithOidc: refOrNil(false),
+	})
+	organizationUUID, err := idformat.Organization.Parse(organizationID)
+	require.NoError(t, err)
+
+	// Create the organization domain
+	_, err = u.Environment.DB.Exec(t.Context(), `
+INSERT INTO organization_domains (id, organization_id, domain)
+VALUES (gen_random_uuid(), $1::uuid, $2);
+`,
+		organizationUUID,
+		environment.ConsoleDomain)
+	require.NoError(t, err)
+
+	res, err := u.Store.ListOIDCOrganizations(ctx, &intermediatev1.ListOIDCOrganizationsRequest{
+		Email: authn.IntermediateSession(ctx).Email,
+	})
+	require.NoError(t, err)
+	require.Empty(t, res.Organizations)
+}
+
+func TestListOIDCOrganizations_OrganizationOIDCEnabled(t *testing.T) {
+	t.Parallel()
+
+	ctx, u := newTestUtil(t)
+	organizationID := u.NewOrganization(t, &backendv1.Organization{
+		DisplayName:   "Test Organization",
+		LogInWithOidc: refOrNil(true),
+	})
+	organizationUUID, err := idformat.Organization.Parse(organizationID)
+	require.NoError(t, err)
+
+	// Create the organization domain
+	_, err = u.Environment.DB.Exec(t.Context(), `
+INSERT INTO organization_domains (id, organization_id, domain)
+VALUES (gen_random_uuid(), $1::uuid, $2);
+`,
+		organizationUUID,
+		environment.ConsoleDomain)
+	require.NoError(t, err)
+
+	res, err := u.Store.ListOIDCOrganizations(ctx, &intermediatev1.ListOIDCOrganizationsRequest{
+		Email: authn.IntermediateSession(ctx).Email,
+	})
+	require.NoError(t, err)
+	require.Empty(t, res.Organizations)
+}
+
+func TestListOIDCOrganizations_OrganizationOIDCNonPrimary(t *testing.T) {
+	t.Parallel()
+
+	ctx, u := newTestUtil(t)
+	organizationID := u.NewOrganization(t, &backendv1.Organization{
+		DisplayName:   "Test Organization",
+		LogInWithSaml: refOrNil(true),
+	})
+	organizationUUID, err := idformat.Organization.Parse(organizationID)
+	require.NoError(t, err)
+
+	// Create the organization domain
+	_, err = u.Environment.DB.Exec(t.Context(), `
+INSERT INTO organization_domains (id, organization_id, domain)
+VALUES (gen_random_uuid(), $1::uuid, $2);
+`,
+		organizationUUID,
+		environment.ConsoleDomain)
+	require.NoError(t, err)
+
+	// Create a non-primary OIDC connection for the organization
+	oidcConnectionID := uuid.New()
+	_, err = u.Environment.DB.Exec(t.Context(), `
+INSERT INTO oidc_connections (id, organization_id, is_primary, configuration_url, client_id)
+VALUES ($1::uuid, $2::uuid, false, 'https://accounts.google.com/.well-known/openid-configuration', 'client-id');
+`,
+		oidcConnectionID.String(),
+		organizationUUID)
+	require.NoError(t, err)
+
+	res, err := u.Store.ListOIDCOrganizations(ctx, &intermediatev1.ListOIDCOrganizationsRequest{
+		Email: authn.IntermediateSession(ctx).Email,
+	})
+	require.NoError(t, err)
+	require.Empty(t, res.Organizations)
 }
 
 func TestListOIDCOrganizations_ForActiveDomain(t *testing.T) {
@@ -193,7 +375,7 @@ VALUES (gen_random_uuid(), $1::uuid, $2);
 	oidcConnectionID := uuid.New()
 	_, err = u.Environment.DB.Exec(t.Context(), `
 INSERT INTO oidc_connections (id, organization_id, is_primary, configuration_url, client_id)
-VALUES ($1::uuid, $2::uuid, true, 'https://issuer.example.com/.well-known/openid-configuration', 'client-id');
+VALUES ($1::uuid, $2::uuid, true, 'https://accounts.google.com/.well-known/openid-configuration', 'client-id');
 `,
 		oidcConnectionID.String(),
 		uuid.UUID(organizationUUID).String())
@@ -232,7 +414,7 @@ VALUES (gen_random_uuid(), $1::uuid, 'otherdomain.com');
 	oidcConnectionID := uuid.New()
 	_, err = u.Environment.DB.Exec(t.Context(), `
 INSERT INTO oidc_connections (id, organization_id, is_primary, configuration_url, client_id)
-VALUES ($1::uuid, $2::uuid, true, 'https://issuer.example.com/.well-known/openid-configuration', 'client-id');
+VALUES ($1::uuid, $2::uuid, true, 'https://accounts.google.com/.well-known/openid-configuration', 'client-id');
 `,
 		oidcConnectionID.String(),
 		uuid.UUID(organizationUUID).String())
