@@ -29,7 +29,7 @@ function useAccessTokenInternal(): string | undefined {
   const [accessToken, setAccessToken] = useState(() => {
     return getCookie(`tesseral_${DOGFOOD_PROJECT_ID}_access_token`);
   });
-  const refreshMutation = useMutation(refresh);
+  const { mutateAsync: refreshAsync } = useMutation(refresh);
   const { accessTokenLikelyValid, exp } = useAccessTokenLikelyValid(
     accessToken ?? "",
   );
@@ -42,7 +42,7 @@ function useAccessTokenInternal(): string | undefined {
 
     (async () => {
       try {
-        const { accessToken } = await refreshMutation.mutateAsync({});
+        const { accessToken } = await refreshAsync({});
         setAccessToken(accessToken);
       } catch (e) {
         if (e instanceof ConnectError && e.code === Code.Unauthenticated) {
@@ -52,7 +52,7 @@ function useAccessTokenInternal(): string | undefined {
         }
       }
     })();
-  }, [accessTokenLikelyValid, navigate, refreshMutation]);
+  }, [accessTokenLikelyValid, navigate, refreshAsync]);
 
   useEffect(() => {
     // Proactively refresh the access token every 10 seconds.
@@ -60,8 +60,7 @@ function useAccessTokenInternal(): string | undefined {
       const now = Date.now() / 1000;
 
       if (exp && exp - now < 10) {
-        refreshMutation
-          .mutateAsync({})
+        refreshAsync({})
           .then(({ accessToken }) => {
             setAccessToken(accessToken);
           })
@@ -76,7 +75,7 @@ function useAccessTokenInternal(): string | undefined {
     }, ACCESS_TOKEN_EXPIRY_BUFFER_MILLIS); // every 10 seconds
 
     return () => clearInterval(interval);
-  }, [exp, refreshMutation, setAccessToken, navigate]);
+  }, [exp, refreshAsync, setAccessToken, navigate]);
 
   if (error) {
     throw error;
