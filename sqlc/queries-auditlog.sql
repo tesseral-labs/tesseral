@@ -109,3 +109,4 @@ FROM
     sessions
 WHERE
     id = $1;
+

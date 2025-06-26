@@ -3,12 +3,12 @@ import { LoaderCircleIcon } from "lucide-react";
 import React, { useEffect } from "react";
 import { useParams } from "react-router";
 
+import { clearAccessToken } from "@/components/page/LoggedInGate";
 import {
   exchangeSessionForIntermediateSession,
   setOrganization,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
-import { clearAccessToken } from "@/pages/dashboard/LoggedInGate";
 
 export function SwitchOrganizationsPage() {
   const { organizationId } = useParams();

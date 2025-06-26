@@ -4,7 +4,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { Title } from "@/components/Title";
+import { Title } from "@/components/core/Title";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { Button } from "@/components/ui/button";
 import {
