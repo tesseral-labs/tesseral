@@ -52,7 +52,8 @@ Tesseral currently offers several SDKs for common web development frameworks.
   * [React](https://tesseral.com/docs/sdks/clientside-sdks/tesseral-sdk-react)
 * Serverside SDKs
   * [Express](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-express)
-  * [Flask](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-flask)
+  * [Python (Flask)](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-flask)
+  * [Python (FastAPI)](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-fastapi)
   * [Golang](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-go)
   * [Rust (Axum)](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-axum)
 
@@ -115,7 +116,8 @@ following:
 
 * [Next.js](https://tesseral.com/docs/sdks/tesseral-sdk-nextjs)
 * [Express](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-express)
-* [Flask](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-flask)
+* [Python (Flask)](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-flask)
+* [Python (FastAPI)](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-fastapi)
 * [Golang](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-go)
 * [Rust (Axum)](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-axum)
 
