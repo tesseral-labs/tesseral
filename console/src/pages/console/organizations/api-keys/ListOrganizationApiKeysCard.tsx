@@ -1,9 +1,5 @@
 import { timestampDate, timestampFromDate } from "@bufbuild/protobuf/wkt";
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery,
-} from "@connectrpc/connect-query";
+import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import {
@@ -25,6 +21,7 @@ import { Link, useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { Pagination } from "@/components/core/Pagination";
 import { SecretCopier } from "@/components/core/SecretCopier";
 import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 import {
@@ -101,6 +98,11 @@ import {
   revokeAPIKey,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { APIKey } from "@/gen/tesseral/backend/v1/models_pb";
+import {
+  PaginationProvider,
+  usePaginatedInfiniteQuery,
+  usePagination,
+} from "@/hooks/use-paginate";
 import { cn } from "@/lib/utils";
 
 export function ListOrganizationApiKeysCard() {
@@ -111,120 +113,132 @@ export function ListOrganizationApiKeysCard() {
   });
   const { data: getProjectResponse } = useQuery(getProject);
 
-  const {
-    data: listApiKeysResponses,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-  } = useInfiniteQuery(
+  const query = usePaginatedInfiniteQuery(
     listAPIKeys,
     {
-      organizationId: organizationId,
+      organizationId,
       pageToken: "",
     },
     {
       pageParamKey: "pageToken",
       getNextPageParam: (page) => page.nextPageToken || undefined,
+      queryKey: ["listAPIKeys", organizationId, "ListOrganizationApiKeysCard"],
     },
   );
 
-  const apiKeys =
-    listApiKeysResponses?.pages?.flatMap((page) => page.apiKeys) || [];
+  const {
+    consoleFetchNextPage: fetchNextPage,
+    consoleFetchPreviousPage: fetchPreviousPage,
+    hasNextPage,
+    hasPreviousPage,
+    isFetching,
+    page,
+  } = query;
+
+  const apiKeys = page?.apiKeys || [];
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Managed API Keys</CardTitle>
-        <CardDescription>
-          Managed API keys for{" "}
-          <span className="font-semibold">
-            {getOrganizationResponse?.organization?.displayName}
-          </span>{" "}
-          to authenticate to your service.
-        </CardDescription>
-        <CardAction>
-          <CreateApiKeyButton />
-        </CardAction>
-      </CardHeader>
-      <CardContent>
-        {isLoading ? (
-          <TableSkeleton columns={4} />
-        ) : (
-          <>
-            {apiKeys.length === 0 ? (
-              <div className="text-center text-muted-foreground text-sm py-6">
-                No Managed API Keys found. Create a new API Key to get started.
-              </div>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>API Key</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Created</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {apiKeys?.map((apiKey) => (
-                    <TableRow key={apiKey.id}>
-                      <TableCell>
-                        <Link
-                          to={`/organizations/${organizationId}/api-keys/${apiKey.id}`}
-                        >
-                          <div className="space-y-2">
-                            <h3 className="font-semibold">
-                              {apiKey.displayName}
-                            </h3>
-                            <div className="inline bg-muted text-muted-foreground font-mono text-xs py-1 px-2 rounded-sm">
-                              {
-                                getProjectResponse?.project
-                                  ?.apiKeySecretTokenPrefix
-                              }
-                              ...
-                              {apiKey.secretTokenSuffix}
-                            </div>
-                          </div>
-                        </Link>
-                      </TableCell>
-                      <TableCell>
-                        {apiKey.revoked ? (
-                          <Badge>Active</Badge>
-                        ) : (
-                          <Badge variant="secondary">Revoked</Badge>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {apiKey.createTime &&
-                          DateTime.fromJSDate(
-                            timestampDate(apiKey.createTime),
-                          ).toRelative()}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <ManageApiKeyButton apiKey={apiKey} />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
-          </>
-        )}
-      </CardContent>
-      <CardFooter className="flex justify-center">
-        {hasNextPage && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => fetchNextPage()}
-            disabled={isFetchingNextPage}
-          >
-            {isFetchingNextPage ? "Loading more..." : "Load More"}
-          </Button>
-        )}
-      </CardFooter>
-    </Card>
+    <PaginationProvider query={query}>
+      <Card>
+        <CardHeader>
+          <CardTitle>Managed API Keys</CardTitle>
+          <CardDescription>
+            Managed API keys for{" "}
+            <span className="font-semibold">
+              {getOrganizationResponse?.organization?.displayName}
+            </span>{" "}
+            to authenticate to your service.
+          </CardDescription>
+          <CardAction>
+            <CreateApiKeyButton />
+          </CardAction>
+        </CardHeader>
+        <CardContent>
+          {isFetching ? (
+            <TableSkeleton columns={4} />
+          ) : (
+            <>
+              {apiKeys.length === 0 ? (
+                <div className="text-center text-muted-foreground text-sm py-6">
+                  No Managed API Keys found. Create a new API Key to get
+                  started.
+                </div>
+              ) : (
+                <>
+                  <Pagination
+                    count={apiKeys.length}
+                    hasNextPage={hasNextPage}
+                    hasPreviousPage={hasPreviousPage}
+                    fetchNextPage={fetchNextPage}
+                    fetchPreviousPage={fetchPreviousPage}
+                  />
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>API Key</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Created</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {apiKeys?.map((apiKey) => (
+                        <TableRow key={apiKey.id}>
+                          <TableCell>
+                            <Link
+                              to={`/organizations/${organizationId}/api-keys/${apiKey.id}`}
+                            >
+                              <div className="space-y-2">
+                                <h3 className="font-semibold">
+                                  {apiKey.displayName}
+                                </h3>
+                                <div className="inline bg-muted text-muted-foreground font-mono text-xs py-1 px-2 rounded-sm">
+                                  {
+                                    getProjectResponse?.project
+                                      ?.apiKeySecretTokenPrefix
+                                  }
+                                  ...
+                                  {apiKey.secretTokenSuffix}
+                                </div>
+                              </div>
+                            </Link>
+                          </TableCell>
+                          <TableCell>
+                            {apiKey.revoked ? (
+                              <Badge>Active</Badge>
+                            ) : (
+                              <Badge variant="secondary">Revoked</Badge>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {apiKey.createTime &&
+                              DateTime.fromJSDate(
+                                timestampDate(apiKey.createTime),
+                              ).toRelative()}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <ManageApiKeyButton apiKey={apiKey} />
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </>
+              )}
+            </>
+          )}
+        </CardContent>
+        <CardFooter>
+          <Pagination
+            count={apiKeys.length}
+            hasNextPage={hasNextPage}
+            hasPreviousPage={hasPreviousPage}
+            fetchNextPage={fetchNextPage}
+            fetchPreviousPage={fetchPreviousPage}
+          />
+        </CardFooter>
+      </Card>
+    </PaginationProvider>
   );
 }
 
@@ -242,18 +256,8 @@ function CreateApiKeyButton() {
   const [customDate, setCustomDate] = useState<Date>();
 
   const { organizationId } = useParams();
+  const { refetch } = usePagination();
   const { data: getProjectResponse } = useQuery(getProject);
-  const { refetch } = useInfiniteQuery(
-    listAPIKeys,
-    {
-      organizationId,
-      pageToken: "",
-    },
-    {
-      pageParamKey: "pageToken",
-      getNextPageParam: (page) => page.nextPageToken || undefined,
-    },
-  );
 
   const createApiKeyMutation = useMutation(createAPIKey);
 
@@ -488,17 +492,8 @@ function CreateApiKeyButton() {
 
 function ManageApiKeyButton({ apiKey }: { apiKey: APIKey }) {
   const { organizationId } = useParams();
-  const { refetch } = useInfiniteQuery(
-    listAPIKeys,
-    {
-      organizationId: organizationId,
-      pageToken: "",
-    },
-    {
-      pageParamKey: "pageToken",
-      getNextPageParam: (page) => page.nextPageToken || undefined,
-    },
-  );
+
+  const { refetch } = usePagination();
   const deleteApiKeyMutation = useMutation(deleteAPIKey);
   const revokeApiKeyMutation = useMutation(revokeAPIKey);
 
@@ -518,7 +513,7 @@ function ManageApiKeyButton({ apiKey }: { apiKey: APIKey }) {
     await revokeApiKeyMutation.mutateAsync({
       id: apiKey.id,
     });
-    await refetch();
+    // await refetch();
     setRevokeOpen(false);
     toast.success("API Key revoked successfully");
   }

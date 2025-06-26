@@ -1,9 +1,5 @@
 import { timestampDate } from "@bufbuild/protobuf/wkt";
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery,
-} from "@connectrpc/connect-query";
+import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   AlignLeft,
@@ -23,6 +19,7 @@ import { Link } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { Pagination } from "@/components/core/Pagination";
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { PageContent } from "@/components/page";
 import { Title } from "@/components/page/Title";
@@ -40,6 +37,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -87,15 +85,14 @@ import {
   listOrganizations,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { Organization } from "@/gen/tesseral/backend/v1/models_pb";
+import {
+  PaginationProvider,
+  usePaginatedInfiniteQuery,
+  usePagination,
+} from "@/hooks/use-paginate";
 
 export function ListOrganizationsPage() {
-  const {
-    data: listOrganizationsResponses,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-  } = useInfiniteQuery(
+  const query = usePaginatedInfiniteQuery(
     listOrganizations,
     {
       pageToken: "",
@@ -106,9 +103,16 @@ export function ListOrganizationsPage() {
     },
   );
 
-  const organizations = listOrganizationsResponses?.pages?.flatMap(
-    (page) => page.organizations,
-  );
+  const {
+    consoleFetchNextPage: fetchNextPage,
+    consoleFetchPreviousPage: fetchPreviousPage,
+    hasNextPage,
+    hasPreviousPage,
+    page,
+    isLoading,
+  } = query;
+
+  const organizations = page?.organizations || [];
 
   return (
     <PageContent>
@@ -121,105 +125,122 @@ export function ListOrganizationsPage() {
             Manage organizations and their authentication settings.
           </p>
         </div>
-        <CreateOrganizationButton />
       </div>
       <div>
-        <Card>
-          <CardHeader>
-            <CardTitle>All Organizations</CardTitle>
-            <CardDescription>
-              Showing {organizations?.length || 0} Organizations
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <TableSkeleton />
-            ) : (
-              <>
-                {organizations?.length === 0 ? (
-                  <div className="text-center text-muted-foreground py-6">
-                    No Organizations Found
-                  </div>
-                ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Organization</TableHead>
-                        <TableHead>Auth Methods</TableHead>
-                        <TableHead>MFA</TableHead>
-                        <TableHead>Created</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {organizations?.map((org) => (
-                        <TableRow key={org.id}>
-                          <TableCell className="font-medium">
-                            <div className="flex flex-col items-start gap-2">
-                              <Link to={`/organizations/${org.id}`}>
-                                {org.displayName}
-                              </Link>
-                              <ValueCopier
-                                value={org.id}
-                                label="Organization ID"
-                              />
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center flex-wrap gap-2">
-                              {org.logInWithGoogle && (
-                                <Badge variant="outline">Google</Badge>
-                              )}
-                              {org.logInWithMicrosoft && (
-                                <Badge variant="outline">Microsoft</Badge>
-                              )}
-                              {org.logInWithGithub && (
-                                <Badge variant="outline">GitHub</Badge>
-                              )}
-                              {org.logInWithEmail && (
-                                <Badge variant="outline">Email</Badge>
-                              )}
-                              {org.logInWithSaml && (
-                                <Badge variant="outline">SAML</Badge>
-                              )}
-                            </div>
-                            {/* {org.authenticationMethods.join(", ")} */}
-                          </TableCell>
-                          <TableCell>
-                            {org.requireMfa ? (
-                              <Badge>Required</Badge>
-                            ) : (
-                              <Badge variant="secondary">Not Required</Badge>
-                            )}
-                          </TableCell>
-                          <TableCell>
-                            {org.createTime &&
-                              DateTime.fromJSDate(
-                                timestampDate(org.createTime),
-                              ).toRelative()}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <ManageOrganizationButton organization={org} />
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                )}
-              </>
-            )}
-          </CardContent>
-          {hasNextPage && (
-            <CardFooter className="justify-center">
-              <Button
-                disabled={isFetchingNextPage}
-                onClick={() => fetchNextPage()}
-              >
-                Load More
-              </Button>
+        <PaginationProvider query={query}>
+          <Card>
+            <CardHeader>
+              <CardTitle>All Organizations</CardTitle>
+              <CardDescription>
+                This is the list of Organizations that have been created within
+                your Project.
+              </CardDescription>
+              <CardAction>
+                <CreateOrganizationButton />
+              </CardAction>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {isLoading ? (
+                <TableSkeleton />
+              ) : (
+                <>
+                  {organizations?.length === 0 ? (
+                    <div className="text-center text-muted-foreground py-6">
+                      No Organizations Found
+                    </div>
+                  ) : (
+                    <>
+                      <Pagination
+                        count={organizations?.length || 0}
+                        hasNextPage={hasNextPage}
+                        hasPreviousPage={hasPreviousPage}
+                        fetchNextPage={fetchNextPage}
+                        fetchPreviousPage={fetchPreviousPage}
+                      />
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Organization</TableHead>
+                            <TableHead>Auth Methods</TableHead>
+                            <TableHead>MFA</TableHead>
+                            <TableHead>Created</TableHead>
+                            <TableHead className="text-right">
+                              Actions
+                            </TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {organizations?.map((org) => (
+                            <TableRow key={org.id}>
+                              <TableCell className="font-medium">
+                                <div className="flex flex-col items-start gap-2">
+                                  <Link to={`/organizations/${org.id}`}>
+                                    {org.displayName}
+                                  </Link>
+                                  <ValueCopier
+                                    value={org.id}
+                                    label="Organization ID"
+                                  />
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex items-center flex-wrap gap-2">
+                                  {org.logInWithGoogle && (
+                                    <Badge variant="outline">Google</Badge>
+                                  )}
+                                  {org.logInWithMicrosoft && (
+                                    <Badge variant="outline">Microsoft</Badge>
+                                  )}
+                                  {org.logInWithGithub && (
+                                    <Badge variant="outline">GitHub</Badge>
+                                  )}
+                                  {org.logInWithEmail && (
+                                    <Badge variant="outline">Email</Badge>
+                                  )}
+                                  {org.logInWithSaml && (
+                                    <Badge variant="outline">SAML</Badge>
+                                  )}
+                                </div>
+                                {/* {org.authenticationMethods.join(", ")} */}
+                              </TableCell>
+                              <TableCell>
+                                {org.requireMfa ? (
+                                  <Badge>Required</Badge>
+                                ) : (
+                                  <Badge variant="secondary">
+                                    Not Required
+                                  </Badge>
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                {org.createTime &&
+                                  DateTime.fromJSDate(
+                                    timestampDate(org.createTime),
+                                  ).toRelative()}
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <ManageOrganizationButton organization={org} />
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </>
+                  )}
+                </>
+              )}
+            </CardContent>
+            <CardFooter>
+              <Pagination
+                count={organizations?.length || 0}
+                hasNextPage={hasNextPage}
+                hasPreviousPage={hasPreviousPage}
+                fetchNextPage={fetchNextPage}
+                fetchPreviousPage={fetchPreviousPage}
+              />
             </CardFooter>
-          )}
-        </Card>
+          </Card>
+        </PaginationProvider>
       </div>
     </PageContent>
   );
@@ -230,16 +251,7 @@ function ManageOrganizationButton({
 }: {
   organization: Organization;
 }) {
-  const { refetch } = useInfiniteQuery(
-    listOrganizations,
-    {
-      pageToken: "",
-    },
-    {
-      pageParamKey: "pageToken",
-      getNextPageParam: (page) => page.nextPageToken || undefined,
-    },
-  );
+  const { refetch } = usePagination();
   const { data: getOrganizationResponse } = useQuery(getOrganization, {
     id: organization.id,
   });
@@ -360,16 +372,7 @@ const schema = z.object({
 });
 
 function CreateOrganizationButton() {
-  const { refetch } = useInfiniteQuery(
-    listOrganizations,
-    {
-      pageToken: "",
-    },
-    {
-      pageParamKey: "pageToken",
-      getNextPageParam: (page) => page.nextPageToken || undefined,
-    },
-  );
+  const { refetch } = usePagination();
   const createOrganizationMutation = useMutation(createOrganization);
 
   const [open, setOpen] = useState(false);
