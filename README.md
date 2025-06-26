@@ -53,6 +53,7 @@ Tesseral currently offers several SDKs for common web development frameworks.
   * [Express](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-express)
   * [Flask](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-flask)
   * [Golang](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-go)
+  * [Rust (Axum)](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-axum)
 
 More SDKs, in particular Next.js, are in active development. If you do not see
 your preferred framework listed here, please get in touch with
@@ -115,6 +116,7 @@ following:
 * [Express](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-express)
 * [Flask](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-flask)
 * [Golang](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-go)
+* [Rust (Axum)](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-axum)
 
 Your app might look something like this example, using the [Flask
 SDK](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-flask):
