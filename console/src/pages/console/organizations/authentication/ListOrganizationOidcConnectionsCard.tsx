@@ -110,7 +110,6 @@ export function ListOrganizationOidcConnectionsCard() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Connection</TableHead>
-                    <TableHead>Primary</TableHead>
                     <TableHead>Issuer</TableHead>
                     <TableHead>Client ID</TableHead>
                     <TableHead>Created</TableHead>
@@ -126,13 +125,6 @@ export function ListOrganizationOidcConnectionsCard() {
                         </span>
                         {oidcConnection.primary && (
                           <Badge variant="outline">Primary</Badge>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {oidcConnection.primary ? (
-                          <Badge>Yes</Badge>
-                        ) : (
-                          <Badge variant="secondary">No</Badge>
                         )}
                       </TableCell>
                       <TableCell>

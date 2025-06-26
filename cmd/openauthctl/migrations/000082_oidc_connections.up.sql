@@ -12,9 +12,9 @@ create table oidc_connections
 
 create table oidc_intermediate_sessions
 (
-    oidc_intermediate_session_id    uuid primary key not null,
-    oidc_connection_id              uuid not null references oidc_connections (id),
-    code_verifier                   varchar
+    id                      uuid primary key not null,
+    oidc_connection_id      uuid not null references oidc_connections (id),
+    code_verifier           varchar
 );
 
 alter table projects

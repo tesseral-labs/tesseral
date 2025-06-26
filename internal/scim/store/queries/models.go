@@ -310,9 +310,9 @@ type OidcConnection struct {
 }
 
 type OidcIntermediateSession struct {
-	OidcIntermediateSessionID uuid.UUID
-	OidcConnectionID          uuid.UUID
-	CodeVerifier              *string
+	ID               uuid.UUID
+	OidcConnectionID uuid.UUID
+	CodeVerifier     *string
 }
 
 type Organization struct {

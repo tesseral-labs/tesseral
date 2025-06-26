@@ -82,9 +82,9 @@ func (s *Store) GetOIDCConnectionInitData(ctx context.Context, oidcConnectionID 
 	authorizationURL.RawQuery = query.Encode()
 
 	if _, err := q.CreateOIDCIntermediateSession(ctx, queries.CreateOIDCIntermediateSessionParams{
-		OidcIntermediateSessionID: intermediateSessionID,
-		OidcConnectionID:          oidcConnectionUUID,
-		CodeVerifier:              codeVerifier,
+		ID:               intermediateSessionID,
+		OidcConnectionID: oidcConnectionUUID,
+		CodeVerifier:     codeVerifier,
 	}); err != nil {
 		return nil, fmt.Errorf("create OIDC session: %w", err)
 	}

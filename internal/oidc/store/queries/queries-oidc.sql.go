@@ -13,22 +13,22 @@ import (
 )
 
 const createOIDCIntermediateSession = `-- name: CreateOIDCIntermediateSession :one
-INSERT INTO oidc_intermediate_sessions (oidc_intermediate_session_id, oidc_connection_id, code_verifier)
+INSERT INTO oidc_intermediate_sessions (id, oidc_connection_id, code_verifier)
     VALUES ($1, $2, $3)
 RETURNING
-    oidc_intermediate_session_id, oidc_connection_id, code_verifier
+    id, oidc_connection_id, code_verifier
 `
 
 type CreateOIDCIntermediateSessionParams struct {
-	OidcIntermediateSessionID uuid.UUID
-	OidcConnectionID          uuid.UUID
-	CodeVerifier              *string
+	ID               uuid.UUID
+	OidcConnectionID uuid.UUID
+	CodeVerifier     *string
 }
 
 func (q *Queries) CreateOIDCIntermediateSession(ctx context.Context, arg CreateOIDCIntermediateSessionParams) (OidcIntermediateSession, error) {
-	row := q.db.QueryRow(ctx, createOIDCIntermediateSession, arg.OidcIntermediateSessionID, arg.OidcConnectionID, arg.CodeVerifier)
+	row := q.db.QueryRow(ctx, createOIDCIntermediateSession, arg.ID, arg.OidcConnectionID, arg.CodeVerifier)
 	var i OidcIntermediateSession
-	err := row.Scan(&i.OidcIntermediateSessionID, &i.OidcConnectionID, &i.CodeVerifier)
+	err := row.Scan(&i.ID, &i.OidcConnectionID, &i.CodeVerifier)
 	return i, err
 }
 
@@ -115,15 +115,15 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 
 const deleteOIDCIntermediateSession = `-- name: DeleteOIDCIntermediateSession :one
 DELETE FROM oidc_intermediate_sessions
-WHERE oidc_intermediate_session_id = $1
+WHERE id = $1
 RETURNING
-    oidc_intermediate_session_id, oidc_connection_id, code_verifier
+    id, oidc_connection_id, code_verifier
 `
 
-func (q *Queries) DeleteOIDCIntermediateSession(ctx context.Context, oidcIntermediateSessionID uuid.UUID) (OidcIntermediateSession, error) {
-	row := q.db.QueryRow(ctx, deleteOIDCIntermediateSession, oidcIntermediateSessionID)
+func (q *Queries) DeleteOIDCIntermediateSession(ctx context.Context, id uuid.UUID) (OidcIntermediateSession, error) {
+	row := q.db.QueryRow(ctx, deleteOIDCIntermediateSession, id)
 	var i OidcIntermediateSession
-	err := row.Scan(&i.OidcIntermediateSessionID, &i.OidcConnectionID, &i.CodeVerifier)
+	err := row.Scan(&i.ID, &i.OidcConnectionID, &i.CodeVerifier)
 	return i, err
 }
 

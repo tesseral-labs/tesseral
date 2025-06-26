@@ -18,14 +18,14 @@ WHERE
     AND oidc_connections.id = $2;
 
 -- name: CreateOIDCIntermediateSession :one
-INSERT INTO oidc_intermediate_sessions (oidc_intermediate_session_id, oidc_connection_id, code_verifier)
+INSERT INTO oidc_intermediate_sessions (id, oidc_connection_id, code_verifier)
     VALUES ($1, $2, $3)
 RETURNING
     *;
 
 -- name: DeleteOIDCIntermediateSession :one
 DELETE FROM oidc_intermediate_sessions
-WHERE oidc_intermediate_session_id = $1
+WHERE id = $1
 RETURNING
     *;
 
