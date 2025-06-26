@@ -10,6 +10,7 @@ import {
 import { OrganizationBasicAuthCard } from "./authentication/OrganizationBasicAuthCard";
 import { OrganizationMfaCard } from "./authentication/OrganizationMfaCard";
 import { OrganizationOAuthCard } from "./authentication/OrganizationOAuthCard";
+import { OidcConnectionsCard } from "./oidc-connections/OidcConnectionsCard";
 import { SamlConnectionsCard } from "./saml-connections/SamlConnectionsCard";
 import { ScimApiKeysCard } from "./scim-api-keys/ScimApiKeysCard";
 
@@ -35,6 +36,7 @@ export function OrganizationAuthenticationTab() {
       </div>
 
       {organization?.logInWithSaml && <SamlConnectionsCard />}
+      {organization?.logInWithOidc && <OidcConnectionsCard />}
       {organization?.scimEnabled && <ScimApiKeysCard />}
     </TabContent>
   );

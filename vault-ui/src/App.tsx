@@ -48,6 +48,8 @@ import { OrganizationUsersTab } from "./pages/vault/organization/OrganizationUse
 import { ApiKeyDetailsTab } from "./pages/vault/organization/api-keys/ApiKeyDetailsTab";
 import { ApiKeyPage } from "./pages/vault/organization/api-keys/ApiKeyPage";
 import { ApiKeyRolesTab } from "./pages/vault/organization/api-keys/ApiKeyRolesTab";
+import { OidcConnectionPage } from "./pages/vault/organization/oidc-connections/OidcConnectionPage";
+import { OidcConnectionsPage } from "./pages/vault/organization/oidc-connections/OidcConnectionsPage";
 import { SamlConnectionPage } from "./pages/vault/organization/saml-connections/SamlConnectionPage";
 import { SamlConnectionsPage } from "./pages/vault/organization/saml-connections/SamlConnectionsPage";
 import { ScimApiKeyPage } from "./pages/vault/organization/scim-api-keys/ScimApiKeyPage";
@@ -121,6 +123,14 @@ function AppWithRoutes() {
                   <Route
                     path="saml-connections/:samlConnectionId"
                     element={<SamlConnectionPage />}
+                  />
+                  <Route
+                    path="oidc-connections"
+                    element={<OidcConnectionsPage />}
+                  />
+                  <Route
+                    path="oidc-connections/:oidcConnectionId"
+                    element={<OidcConnectionPage />}
                   />
                   <Route
                     path="scim-api-keys/:scimApiKeyId"
