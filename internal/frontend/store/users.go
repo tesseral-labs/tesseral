@@ -166,6 +166,10 @@ func (s *Store) UpdateUser(ctx context.Context, req *frontendv1.UpdateUserReques
 		updates.IsOwner = *req.User.Owner
 	}
 
+	if req.User.DisplayName != nil && derefOrEmpty(req.User.DisplayName) != "" {
+		updates.DisplayName = req.User.DisplayName
+	}
+
 	// Perform the update.
 	qUpdatedUser, err := q.UpdateUser(ctx, updates)
 	if err != nil {

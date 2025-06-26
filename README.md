@@ -47,15 +47,17 @@ the docs to illustrate some basic ideas.
 
 Tesseral currently offers several SDKs for common web development frameworks.
 
+* [Next.js](https://tesseral.com/docs/sdks/tesseral-sdk-nextjs)
 * Clientside SDKs
   * [React](https://tesseral.com/docs/sdks/clientside-sdks/tesseral-sdk-react)
 * Serverside SDKs
   * [Express](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-express)
-  * [Flask](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-flask)
+  * [Python (Flask)](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-flask)
+  * [Python (FastAPI)](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-fastapi)
   * [Golang](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-go)
+  * [Rust (Axum)](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-axum)
 
-More SDKs, in particular Next.js, are in active development. If you do not see
-your preferred framework listed here, please get in touch with
+If you do not see your preferred framework listed here, please get in touch with
 support@tesseral.com; we may be able to give you early access.
 
 ### Sign up
@@ -112,9 +114,12 @@ integrate your backend.
 Tesseral works with any backend or framework. SDKs are available for the
 following:
 
+* [Next.js](https://tesseral.com/docs/sdks/tesseral-sdk-nextjs)
 * [Express](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-express)
-* [Flask](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-flask)
+* [Python (Flask)](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-flask)
+* [Python (FastAPI)](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-fastapi)
 * [Golang](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-go)
+* [Rust (Axum)](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-axum)
 
 Your app might look something like this example, using the [Flask
 SDK](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-flask):

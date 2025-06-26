@@ -4,15 +4,15 @@ import { LoaderCircleIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router";
 import { z } from "zod";
 
-import { Title } from "@/components/Title";
-import { GithubIcon } from "@/components/login/GithubIcon";
-import { GoogleIcon } from "@/components/login/GoogleIcon";
+import { Title } from "@/components/core/Title";
+import { UISettingsInjector } from "@/components/core/UISettingsInjector";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
-import { MicrosoftIcon } from "@/components/login/MicrosoftIcon";
-import { UISettingsInjector } from "@/components/login/UISettingsInjector";
+import { GithubIcon } from "@/components/login/icons/GithubIcon";
+import { GoogleIcon } from "@/components/login/icons/GoogleIcon";
+import { MicrosoftIcon } from "@/components/login/icons/MicrosoftIcon";
 import { Button } from "@/components/ui/button";
 import {
   CardContent,

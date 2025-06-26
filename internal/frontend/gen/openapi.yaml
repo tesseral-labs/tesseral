@@ -374,6 +374,29 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - FrontendService
+            operationId: FrontendService_UpdateMe
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/User'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateMeResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/me/authenticator-app/options:
         post:
             tags:
@@ -2162,6 +2185,11 @@ components:
                     type: string
                 apiKey:
                     $ref: '#/components/schemas/APIKey'
+        UpdateMeResponse:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/User'
         UpdateOIDCConnectionResponse:
             type: object
             properties:

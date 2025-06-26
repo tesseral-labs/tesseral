@@ -66,6 +66,9 @@ const (
 	// FrontendServiceUpdateUserProcedure is the fully-qualified name of the FrontendService's
 	// UpdateUser RPC.
 	FrontendServiceUpdateUserProcedure = "/tesseral.frontend.v1.FrontendService/UpdateUser"
+	// FrontendServiceUpdateMeProcedure is the fully-qualified name of the FrontendService's UpdateMe
+	// RPC.
+	FrontendServiceUpdateMeProcedure = "/tesseral.frontend.v1.FrontendService/UpdateMe"
 	// FrontendServiceDeleteUserProcedure is the fully-qualified name of the FrontendService's
 	// DeleteUser RPC.
 	FrontendServiceDeleteUserProcedure = "/tesseral.frontend.v1.FrontendService/DeleteUser"
@@ -230,6 +233,7 @@ type FrontendServiceClient interface {
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
+	UpdateMe(context.Context, *connect.Request[v1.UpdateMeRequest]) (*connect.Response[v1.UpdateMeResponse], error)
 	DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error)
 	// Sets a user's password.
 	SetPassword(context.Context, *connect.Request[v1.SetPasswordRequest]) (*connect.Response[v1.SetPasswordResponse], error)
@@ -380,6 +384,12 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			httpClient,
 			baseURL+FrontendServiceUpdateUserProcedure,
 			connect.WithSchema(frontendServiceMethods.ByName("UpdateUser")),
+			connect.WithClientOptions(opts...),
+		),
+		updateMe: connect.NewClient[v1.UpdateMeRequest, v1.UpdateMeResponse](
+			httpClient,
+			baseURL+FrontendServiceUpdateMeProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("UpdateMe")),
 			connect.WithClientOptions(opts...),
 		),
 		deleteUser: connect.NewClient[v1.DeleteUserRequest, v1.DeleteUserResponse](
@@ -699,6 +709,7 @@ type frontendServiceClient struct {
 	listUsers                             *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
 	getUser                               *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
 	updateUser                            *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
+	updateMe                              *connect.Client[v1.UpdateMeRequest, v1.UpdateMeResponse]
 	deleteUser                            *connect.Client[v1.DeleteUserRequest, v1.DeleteUserResponse]
 	setPassword                           *connect.Client[v1.SetPasswordRequest, v1.SetPasswordResponse]
 	listSAMLConnections                   *connect.Client[v1.ListSAMLConnectionsRequest, v1.ListSAMLConnectionsResponse]
@@ -813,6 +824,11 @@ func (c *frontendServiceClient) GetUser(ctx context.Context, req *connect.Reques
 // UpdateUser calls tesseral.frontend.v1.FrontendService.UpdateUser.
 func (c *frontendServiceClient) UpdateUser(ctx context.Context, req *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error) {
 	return c.updateUser.CallUnary(ctx, req)
+}
+
+// UpdateMe calls tesseral.frontend.v1.FrontendService.UpdateMe.
+func (c *frontendServiceClient) UpdateMe(ctx context.Context, req *connect.Request[v1.UpdateMeRequest]) (*connect.Response[v1.UpdateMeResponse], error) {
+	return c.updateMe.CallUnary(ctx, req)
 }
 
 // DeleteUser calls tesseral.frontend.v1.FrontendService.DeleteUser.
@@ -1080,6 +1096,7 @@ type FrontendServiceHandler interface {
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
+	UpdateMe(context.Context, *connect.Request[v1.UpdateMeRequest]) (*connect.Response[v1.UpdateMeResponse], error)
 	DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error)
 	// Sets a user's password.
 	SetPassword(context.Context, *connect.Request[v1.SetPasswordRequest]) (*connect.Response[v1.SetPasswordResponse], error)
@@ -1226,6 +1243,12 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		FrontendServiceUpdateUserProcedure,
 		svc.UpdateUser,
 		connect.WithSchema(frontendServiceMethods.ByName("UpdateUser")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceUpdateMeHandler := connect.NewUnaryHandler(
+		FrontendServiceUpdateMeProcedure,
+		svc.UpdateMe,
+		connect.WithSchema(frontendServiceMethods.ByName("UpdateMe")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceDeleteUserHandler := connect.NewUnaryHandler(
@@ -1554,6 +1577,8 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 			frontendServiceGetUserHandler.ServeHTTP(w, r)
 		case FrontendServiceUpdateUserProcedure:
 			frontendServiceUpdateUserHandler.ServeHTTP(w, r)
+		case FrontendServiceUpdateMeProcedure:
+			frontendServiceUpdateMeHandler.ServeHTTP(w, r)
 		case FrontendServiceDeleteUserProcedure:
 			frontendServiceDeleteUserHandler.ServeHTTP(w, r)
 		case FrontendServiceSetPasswordProcedure:
@@ -1709,6 +1734,10 @@ func (UnimplementedFrontendServiceHandler) GetUser(context.Context, *connect.Req
 
 func (UnimplementedFrontendServiceHandler) UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.UpdateUser is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) UpdateMe(context.Context, *connect.Request[v1.UpdateMeRequest]) (*connect.Response[v1.UpdateMeResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.UpdateMe is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error) {

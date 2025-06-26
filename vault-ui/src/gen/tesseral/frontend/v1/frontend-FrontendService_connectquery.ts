@@ -65,6 +65,11 @@ export const getUser = FrontendService.method.getUser;
 export const updateUser = FrontendService.method.updateUser;
 
 /**
+ * @generated from rpc tesseral.frontend.v1.FrontendService.UpdateMe
+ */
+export const updateMe = FrontendService.method.updateMe;
+
+/**
  * @generated from rpc tesseral.frontend.v1.FrontendService.DeleteUser
  */
 export const deleteUser = FrontendService.method.deleteUser;

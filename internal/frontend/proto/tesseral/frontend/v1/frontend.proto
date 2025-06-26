@@ -73,6 +73,13 @@ service FrontendService {
     };
   }
 
+  rpc UpdateMe(UpdateMeRequest) returns (UpdateMeResponse) {
+    option (google.api.http) = {
+      patch: "/frontend/v1/me"
+      body: "user"
+    };
+  }
+
   rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
     option (google.api.http) = {delete: "/frontend/v1/users/{id}"};
   }
@@ -826,4 +833,12 @@ message ListAuditLogEventsRequest {
 message ListAuditLogEventsResponse {
   repeated AuditLogEvent audit_log_events = 1;
   string next_page_token = 2;
+}
+
+message UpdateMeRequest {
+  User user = 1;
+}
+
+message UpdateMeResponse {
+  User user = 1;
 }
