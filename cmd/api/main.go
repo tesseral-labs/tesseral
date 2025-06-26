@@ -415,6 +415,7 @@ func main() {
 		}
 		lambda.Start(httplambda.Handler(serve))
 	} else {
+		serve = withOtelFlush(serve, tracerProvider)
 		if err := http.ListenAndServe(config.ServeAddr, serve); err != nil {
 			panic(err)
 		}
