@@ -25,8 +25,8 @@ func TestGetOIDCConnectionInitData(t *testing.T) {
 	oidcConnectionID := idformat.OIDCConnection.Format(oidcConnectionUUID)
 
 	_, err = u.Environment.DB.Exec(t.Context(), `
-	INSERT INTO oidc_connections (id, organization_id, configuration_url, issuer, client_id, is_primary)
-	VALUES ($1::uuid, $2::uuid, 'https://accounts.google.com/.well-known/openid-configuration', 'https://issuer.example.com', 'client-id', true);
+	INSERT INTO oidc_connections (id, organization_id, configuration_url, client_id, is_primary)
+	VALUES ($1::uuid, $2::uuid, 'https://accounts.google.com/.well-known/openid-configuration', 'client-id', true);
 	`, oidcConnectionUUID, organizationUUID)
 	require.NoError(t, err)
 
