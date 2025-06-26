@@ -192,8 +192,8 @@ VALUES (gen_random_uuid(), $1::uuid, $2);
 	// Create an OIDC connection for the organization
 	oidcConnectionID := uuid.New()
 	_, err = u.Environment.DB.Exec(t.Context(), `
-INSERT INTO oidc_connections (id, organization_id, is_primary, configuration_url, issuer, client_id)
-VALUES ($1::uuid, $2::uuid, true, 'https://issuer.example.com/.well-known/openid-configuration', 'https://issuer.example.com', 'client-id');
+INSERT INTO oidc_connections (id, organization_id, is_primary, configuration_url, client_id)
+VALUES ($1::uuid, $2::uuid, true, 'https://issuer.example.com/.well-known/openid-configuration', 'client-id');
 `,
 		oidcConnectionID.String(),
 		uuid.UUID(organizationUUID).String())
@@ -231,8 +231,8 @@ VALUES (gen_random_uuid(), $1::uuid, 'otherdomain.com');
 	// Create an OIDC connection for the organization
 	oidcConnectionID := uuid.New()
 	_, err = u.Environment.DB.Exec(t.Context(), `
-INSERT INTO oidc_connections (id, organization_id, is_primary, configuration_url, issuer, client_id)
-VALUES ($1::uuid, $2::uuid, true, 'https://issuer.example.com/.well-known/openid-configuration', 'https://issuer.example.com', 'client-id');
+INSERT INTO oidc_connections (id, organization_id, is_primary, configuration_url, client_id)
+VALUES ($1::uuid, $2::uuid, true, 'https://issuer.example.com/.well-known/openid-configuration', 'client-id');
 `,
 		oidcConnectionID.String(),
 		uuid.UUID(organizationUUID).String())
