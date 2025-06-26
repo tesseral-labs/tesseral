@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
@@ -98,7 +99,7 @@ func (s *Store) UpdateOrganizationDomains(ctx context.Context, req *backendv1.Up
 	organizationDomains := parseOrganizationDomains(qOrg, qDomains)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.organizations.update_domains",
-		EventDetails: &backendv1.OrganizationDomainsUpdated{
+		EventDetails: &auditlogv1.UpdateOrganizationDomains{
 			Domains:         organizationDomains.Domains,
 			PreviousDomains: parseOrganizationDomains(qOrg, qPreviousDomains).Domains,
 		},

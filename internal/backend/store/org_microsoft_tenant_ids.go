@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
@@ -98,7 +99,7 @@ func (s *Store) UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, req *b
 	microsoftTenantIDs := parseOrganizationMicrosoftTenantIDs(qOrg, qMicrosoftTenantIDs)
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.organizations.update_microsoft_tenant_ids",
-		EventDetails: &backendv1.OrganizationMicrosoftTenantIDsUpdated{
+		EventDetails: &auditlogv1.UpdateOrganizationMicrosoftTenantIDs{
 			MicrosoftTenantIds:         microsoftTenantIDs.MicrosoftTenantIds,
 			PreviousMicrosoftTenantIds: parseOrganizationMicrosoftTenantIDs(qOrg, qPreviousMicrosoftTenantIDs).MicrosoftTenantIds,
 		},

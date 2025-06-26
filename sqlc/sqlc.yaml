@@ -53,6 +53,13 @@ sql:
             go_type:
               type: "*AuditLogEventResourceType"
   - engine: "postgresql"
+    queries: "queries-auditlog.sql"
+    schema: "../cmd/openauthctl/migrations"
+    gen:
+      go:
+        <<: *go
+        out: "../internal/auditlog/store/queries"
+  - engine: "postgresql"
     queries: "queries-backend.sql"
     schema: "../cmd/openauthctl/migrations"
     gen:

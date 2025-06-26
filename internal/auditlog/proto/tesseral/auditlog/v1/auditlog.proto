@@ -1,0 +1,149 @@
+syntax = "proto3";
+
+package tesseral.auditlog.v1;
+
+import "tesseral/auditlog/v1/models.proto";
+
+message AssignAPIKeyRole {
+  APIKeyRoleAssignment api_key_role_assignment = 1;
+}
+
+message UnassignAPIKeyRole {
+  APIKeyRoleAssignment api_key_role_assignment = 1;
+}
+
+message CreateAPIKey {
+  APIKey api_key = 1;
+}
+
+message UpdateAPIKey {
+  APIKey api_key = 1;
+  APIKey previous_api_key = 2;
+}
+
+message RevokeAPIKey {
+  APIKey api_key = 1;
+  APIKey previous_api_key = 2;
+}
+
+message DeleteAPIKey {
+  APIKey api_key = 1;
+}
+
+message UpdateOrganizationDomains {
+  repeated string domains = 1;
+  repeated string previous_domains = 2;
+}
+
+message UpdateOrganizationGoogleHostedDomains {
+  repeated string google_hosted_domains = 1;
+  repeated string previous_google_hosted_domains = 2;
+}
+
+message UpdateOrganizationMicrosoftTenantIDs {
+  repeated string microsoft_tenant_ids = 1;
+  repeated string previous_microsoft_tenant_ids = 2;
+}
+
+message CreateOrganization {
+  Organization organization = 1;
+}
+
+message UpdateOrganization {
+  Organization organization = 1;
+  Organization previous_organization = 2;
+}
+
+message DeleteOrganization {
+  Organization organization = 1;
+}
+
+message CreatePasskey {
+  Passkey passkey = 1;
+}
+
+message UpdatePasskey {
+  Passkey passkey = 1;
+  Passkey previous_passkey = 2;
+}
+
+message DeletePasskey {
+  Passkey passkey = 1;
+}
+
+message CreateRole {
+  Role role = 1;
+}
+
+message UpdateRole {
+  Role role = 1;
+  Role previous_role = 2;
+}
+
+message DeleteRole {
+  Role role = 1;
+}
+
+message CreateSAMLConnection {
+  SAMLConnection saml_connection = 1;
+}
+
+message UpdateSAMLConnection {
+  SAMLConnection saml_connection = 1;
+  SAMLConnection previous_saml_connection = 2;
+}
+
+message DeleteSAMLConnection {
+  SAMLConnection saml_connection = 1;
+}
+
+message CreateSCIMAPIKey {
+  SCIMAPIKey scim_api_key = 1;
+}
+
+message UpdateSCIMAPIKey {
+  SCIMAPIKey scim_api_key = 1;
+  SCIMAPIKey previous_scim_api_key = 2;
+}
+
+message RevokeSCIMAPIKey {
+  SCIMAPIKey scim_api_key = 1;
+  SCIMAPIKey previous_scim_api_key = 2;
+}
+
+message DeleteSCIMAPIKey {
+  SCIMAPIKey scim_api_key = 1;
+}
+
+message CreateUser {
+  User user = 1;
+}
+
+message UpdateUser {
+  User user = 1;
+  User previous_user = 2;
+}
+
+message DeleteUser {
+  User user = 1;
+}
+
+message CreateUserInvite {
+  UserInvite user_invite = 1;
+}
+
+message DeleteUserInvite {
+  UserInvite user_invite = 1;
+}
+
+message AssignUserRole {
+  UserRoleAssignment user_role_assignment = 1;
+}
+
+message UnassignUserRole {
+  UserRoleAssignment user_role_assignment = 1;
+}
+
+message CreateSession {
+  Session session = 1;
+}

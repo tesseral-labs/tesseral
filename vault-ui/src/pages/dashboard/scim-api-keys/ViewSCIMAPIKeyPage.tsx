@@ -300,7 +300,7 @@ function DangerZoneCard() {
         <CardContent>
           <div className="space-y-8">
             {!getSCIMAPIKeyResponse?.scimApiKey?.revoked && (
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center gap-7 w-full lg:w-auto flex-wrap lg:flex-nowrap">
                 <div>
                   <div className="text-sm font-semibold">
                     Revoke SCIM API Key

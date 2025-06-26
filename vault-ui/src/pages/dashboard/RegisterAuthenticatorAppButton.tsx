@@ -1,3 +1,4 @@
+import { ConnectError } from "@connectrpc/connect";
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
@@ -43,7 +44,7 @@ const schema = z.object({
 });
 
 export function RegisterAuthenticatorAppButton() {
-  const { data: whoamiResponse } = useQuery(whoami);
+  const { data: whoamiResponse, refetch } = useQuery(whoami);
   const { mutateAsync: getAuthenticatorAppOptionsAsync } = useMutation(
     getAuthenticatorAppOptions,
   );
@@ -75,10 +76,26 @@ export function RegisterAuthenticatorAppButton() {
   );
 
   async function handleSubmit(values: z.infer<typeof schema>) {
-    const { recoveryCodes } = await registerAuthenticatorAppAsync({
-      totpCode: values.totpCode,
-    });
-    setRecoveryCodes(recoveryCodes);
+    try {
+      const { recoveryCodes } = await registerAuthenticatorAppAsync({
+        totpCode: values.totpCode,
+      });
+      setRecoveryCodes(recoveryCodes);
+    } catch (e) {
+      if (
+        e instanceof ConnectError &&
+        e.message === "[invalid_argument] incorrect_totp_code"
+      ) {
+        form.setError("totpCode", {
+          message: "Incorrect code.",
+        });
+        return;
+      }
+
+      throw e; // unhandled
+    }
+
+    await refetch();
     setRegisterOpen(false);
     setRecoveryOpen(true);
   }
@@ -86,6 +103,10 @@ export function RegisterAuthenticatorAppButton() {
   async function handleCopy() {
     await navigator.clipboard.writeText(recoveryCodes!.join("\n"));
     toast.success("Copied recovery codes to clipboard");
+  }
+
+  function handleDone() {
+    toast.success("Authenticator app registered");
   }
 
   return (
@@ -107,7 +128,7 @@ export function RegisterAuthenticatorAppButton() {
           <img src={qrCode} className="w-full" />
 
           <Form {...form}>
-            <form className="mt-4" onSubmit={form.handleSubmit(handleSubmit)}>
+            <form onSubmit={form.handleSubmit(handleSubmit)}>
               <FormField
                 control={form.control}
                 name="totpCode"
@@ -140,7 +161,7 @@ export function RegisterAuthenticatorAppButton() {
                 )}
               />
 
-              <AlertDialogFooter>
+              <AlertDialogFooter className="mt-8">
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <Button type="submit">Set up authenticator app</Button>
               </AlertDialogFooter>
@@ -182,7 +203,7 @@ export function RegisterAuthenticatorAppButton() {
           </Button>
 
           <AlertDialogFooter>
-            <AlertDialogAction>Done</AlertDialogAction>
+            <AlertDialogAction onClick={handleDone}>Done</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

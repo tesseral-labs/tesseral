@@ -44,7 +44,7 @@ FROM
     organizations
 WHERE
     project_id = $1
-    AND id > $2
+    AND id >= $2
 ORDER BY
     id
 LIMIT $3;
@@ -1053,7 +1053,7 @@ FROM
 WHERE
     organization.id = $1
     AND organization.project_id = $2
-    AND api_keys.id > $3
+    AND api_keys.id >= $3
 ORDER BY
     api_keys.id
 LIMIT $4;
@@ -1110,7 +1110,7 @@ FROM
 WHERE
     api_key_role_assignments.api_key_id = $1
     AND organization.project_id = $2
-    AND api_key_role_assignments.id > $3
+    AND api_key_role_assignments.id >= $3
 ORDER BY
     api_key_role_assignments.id
 LIMIT $4;
@@ -1176,4 +1176,58 @@ FROM
 WHERE
     users.id = $1
     AND projects.id = @project_id;
+
+-- name: ConsoleListAuditLogEvents :many
+SELECT
+    *
+FROM
+    audit_log_events
+WHERE
+    project_id = @project_id
+    AND (organization_id = @organization_id
+        OR @organization_id IS NULL)
+    AND (event_time >= @start_time
+        OR @start_time IS NULL)
+    AND (event_time <= @end_time
+        OR @end_time IS NULL)
+    AND (event_name = sqlc.narg ('event_name')
+        OR sqlc.narg ('event_name') IS NULL)
+    AND (actor_user_id = @actor_user_id
+        OR @actor_user_id IS NULL)
+    AND (actor_session_id = @actor_session_id
+        OR @actor_session_id IS NULL)
+    AND (actor_api_key_id = @actor_api_key_id
+        OR @actor_api_key_id IS NULL)
+    AND (actor_backend_api_key_id = @actor_backend_api_key_id
+        OR @actor_backend_api_key_id IS NULL)
+    AND (resource_type = @resource_type
+        OR @resource_type IS NULL)
+    AND (resource_id = @resource_id
+        OR @resource_id IS NULL)
+    AND id <= @id
+ORDER BY
+    id DESC
+LIMIT $1;
+
+-- name: ConsoleListAuditLogEventNames :many
+SELECT DISTINCT
+    event_name
+FROM
+    audit_log_events
+WHERE
+    project_id = @project_id
+    AND (organization_id = @organization_id
+        OR @organization_id IS NULL)
+    AND (actor_api_key_id = @actor_api_key_id
+        OR @actor_api_key_id IS NULL)
+    AND (actor_user_id = @actor_user_id
+        OR @actor_user_id IS NULL)
+    AND (actor_session_id = @actor_session_id
+        OR @actor_session_id IS NULL)
+    AND (actor_backend_api_key_id = @actor_backend_api_key_id
+        OR @actor_backend_api_key_id IS NULL)
+    AND (resource_type = @resource_type
+        OR @resource_type IS NULL)
+ORDER BY
+    event_name;
 

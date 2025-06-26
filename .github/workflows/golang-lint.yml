@@ -39,3 +39,7 @@ jobs:
         run: |
           go install honnef.co/go/tools/cmd/staticcheck@latest
           staticcheck ./...
+      - name: errorlint
+        run: |
+          go install github.com/polyfloyd/go-errorlint@latest
+          go-errorlint ./...

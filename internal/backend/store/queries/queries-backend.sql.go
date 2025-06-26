@@ -42,6 +42,166 @@ func (q *Queries) BatchGetRoleActionsByRoleID(ctx context.Context, dollar_1 []uu
 	return items, nil
 }
 
+const consoleListAuditLogEventNames = `-- name: ConsoleListAuditLogEventNames :many
+SELECT DISTINCT
+    event_name
+FROM
+    audit_log_events
+WHERE
+    project_id = $1
+    AND (organization_id = $2
+        OR $2 IS NULL)
+    AND (actor_api_key_id = $3
+        OR $3 IS NULL)
+    AND (actor_user_id = $4
+        OR $4 IS NULL)
+    AND (actor_session_id = $5
+        OR $5 IS NULL)
+    AND (actor_backend_api_key_id = $6
+        OR $6 IS NULL)
+    AND (resource_type = $7
+        OR $7 IS NULL)
+ORDER BY
+    event_name
+`
+
+type ConsoleListAuditLogEventNamesParams struct {
+	ProjectID            uuid.UUID
+	OrganizationID       *uuid.UUID
+	ActorApiKeyID        *uuid.UUID
+	ActorUserID          *uuid.UUID
+	ActorSessionID       *uuid.UUID
+	ActorBackendApiKeyID *uuid.UUID
+	ResourceType         *AuditLogEventResourceType
+}
+
+func (q *Queries) ConsoleListAuditLogEventNames(ctx context.Context, arg ConsoleListAuditLogEventNamesParams) ([]string, error) {
+	rows, err := q.db.Query(ctx, consoleListAuditLogEventNames,
+		arg.ProjectID,
+		arg.OrganizationID,
+		arg.ActorApiKeyID,
+		arg.ActorUserID,
+		arg.ActorSessionID,
+		arg.ActorBackendApiKeyID,
+		arg.ResourceType,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var event_name string
+		if err := rows.Scan(&event_name); err != nil {
+			return nil, err
+		}
+		items = append(items, event_name)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const consoleListAuditLogEvents = `-- name: ConsoleListAuditLogEvents :many
+SELECT
+    id, project_id, organization_id, actor_user_id, actor_session_id, actor_api_key_id, actor_console_user_id, actor_console_session_id, actor_backend_api_key_id, actor_intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details
+FROM
+    audit_log_events
+WHERE
+    project_id = $2
+    AND (organization_id = $3
+        OR $3 IS NULL)
+    AND (event_time >= $4
+        OR $4 IS NULL)
+    AND (event_time <= $5
+        OR $5 IS NULL)
+    AND (event_name = $6
+        OR $6 IS NULL)
+    AND (actor_user_id = $7
+        OR $7 IS NULL)
+    AND (actor_session_id = $8
+        OR $8 IS NULL)
+    AND (actor_api_key_id = $9
+        OR $9 IS NULL)
+    AND (actor_backend_api_key_id = $10
+        OR $10 IS NULL)
+    AND (resource_type = $11
+        OR $11 IS NULL)
+    AND (resource_id = $12
+        OR $12 IS NULL)
+    AND id <= $13
+ORDER BY
+    id DESC
+LIMIT $1
+`
+
+type ConsoleListAuditLogEventsParams struct {
+	Limit                int32
+	ProjectID            uuid.UUID
+	OrganizationID       *uuid.UUID
+	StartTime            *time.Time
+	EndTime              *time.Time
+	EventName            *string
+	ActorUserID          *uuid.UUID
+	ActorSessionID       *uuid.UUID
+	ActorApiKeyID        *uuid.UUID
+	ActorBackendApiKeyID *uuid.UUID
+	ResourceType         *AuditLogEventResourceType
+	ResourceID           *uuid.UUID
+	ID                   uuid.UUID
+}
+
+func (q *Queries) ConsoleListAuditLogEvents(ctx context.Context, arg ConsoleListAuditLogEventsParams) ([]AuditLogEvent, error) {
+	rows, err := q.db.Query(ctx, consoleListAuditLogEvents,
+		arg.Limit,
+		arg.ProjectID,
+		arg.OrganizationID,
+		arg.StartTime,
+		arg.EndTime,
+		arg.EventName,
+		arg.ActorUserID,
+		arg.ActorSessionID,
+		arg.ActorApiKeyID,
+		arg.ActorBackendApiKeyID,
+		arg.ResourceType,
+		arg.ResourceID,
+		arg.ID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []AuditLogEvent
+	for rows.Next() {
+		var i AuditLogEvent
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProjectID,
+			&i.OrganizationID,
+			&i.ActorUserID,
+			&i.ActorSessionID,
+			&i.ActorApiKeyID,
+			&i.ActorConsoleUserID,
+			&i.ActorConsoleSessionID,
+			&i.ActorBackendApiKeyID,
+			&i.ActorIntermediateSessionID,
+			&i.ResourceType,
+			&i.ResourceID,
+			&i.EventName,
+			&i.EventTime,
+			&i.EventDetails,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const createAPIKey = `-- name: CreateAPIKey :one
 INSERT INTO api_keys (id, organization_id, display_name, secret_token_sha256, secret_token_suffix, expire_time)
     VALUES ($1, $2, $3, $4, $5, $6)
@@ -2117,7 +2277,7 @@ FROM
 WHERE
     api_key_role_assignments.api_key_id = $1
     AND organization.project_id = $2
-    AND api_key_role_assignments.id > $3
+    AND api_key_role_assignments.id >= $3
 ORDER BY
     api_key_role_assignments.id
 LIMIT $4
@@ -2169,7 +2329,7 @@ FROM
 WHERE
     organization.id = $1
     AND organization.project_id = $2
-    AND api_keys.id > $3
+    AND api_keys.id >= $3
 ORDER BY
     api_keys.id
 LIMIT $4
@@ -2311,7 +2471,7 @@ FROM
     organizations
 WHERE
     project_id = $1
-    AND id > $2
+    AND id >= $2
 ORDER BY
     id
 LIMIT $3

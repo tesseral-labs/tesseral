@@ -358,7 +358,7 @@ function DangerZoneCard() {
       <CardContent>
         <div className="space-y-8">
           {!getAPIKeyResponse?.apiKey?.revoked ? (
-            <div className="flex justify-between items-center space-y-2">
+            <div className="flex justify-between items-center space-y-2  w-full lg:w-auto flex-wrap lg:flex-nowrap">
               <div>
                 <div className="font-semibold text-sm">Revoke this API Key</div>
                 <div className="text-sm text-muted-foreground">
@@ -390,7 +390,7 @@ function DangerZoneCard() {
               </AlertDialog>
             </div>
           ) : (
-            <div className="flex justify-between items-center space-y-2">
+            <div className="flex justify-between items-center space-y-2  w-full lg:w-auto flex-wrap lg:flex-nowrap">
               <div>
                 <div className="font-semibold text-sm">Delete this API Key</div>
                 <div className="text-sm text-muted-foreground">

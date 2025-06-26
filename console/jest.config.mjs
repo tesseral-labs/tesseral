@@ -1,7 +1,7 @@
 /** @type {import('jest').Config} */
 export default {
-  preset: 'ts-jest',
+  preset: "ts-jest",
   moduleNameMapper: {
-    '^src/(.*)$': '<rootDir>/src/$1',
+    "^src/(.*)$": "<rootDir>/src/$1",
   },
 };
