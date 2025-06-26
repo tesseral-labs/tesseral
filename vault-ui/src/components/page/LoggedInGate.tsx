@@ -69,6 +69,29 @@ function useAccessTokenInternal(): string | undefined {
     void refreshAccessToken();
   }, [accessTokenIsLikelyValid, setAccessToken, refreshAsync, navigate]);
 
+  useEffect(() => {
+    // Proactively refresh the access token every 10 seconds.
+    const interval = setInterval(() => {
+      const now = Date.now() / 1000;
+
+      if (parsedAccessToken?.exp && parsedAccessToken.exp <= now) {
+        refreshAsync({})
+          .then(({ accessToken }) => {
+            setAccessToken(accessToken!);
+          })
+          .catch((e) => {
+            if (e instanceof ConnectError && e.code === Code.Unauthenticated) {
+              navigate("/login");
+            } else {
+              console.error("Error refreshing access token:", e);
+            }
+          });
+      }
+    }, 10_000);
+
+    return () => clearInterval(interval);
+  }, [parsedAccessToken?.exp, refreshAsync, setAccessToken, navigate]);
+
   if (accessTokenIsLikelyValid) {
     return accessToken!;
   }
