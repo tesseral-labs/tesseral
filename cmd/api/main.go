@@ -59,6 +59,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/oidcclient"
 	"github.com/tesseral-labs/tesseral/internal/opaqueinternalerror"
 	"github.com/tesseral-labs/tesseral/internal/pagetoken"
+	"github.com/tesseral-labs/tesseral/internal/restrictedhttp"
 	samlinterceptor "github.com/tesseral-labs/tesseral/internal/saml/authn/interceptor"
 	samlservice "github.com/tesseral-labs/tesseral/internal/saml/service"
 	samlstore "github.com/tesseral-labs/tesseral/internal/saml/store"
@@ -190,7 +191,7 @@ func main() {
 
 	auditlogStore := auditlogstore.Store{}
 	oidcClient := &oidcclient.Client{
-		HTTPClient: http.DefaultClient,
+		HTTPClient: restrictedhttp.NewClient(http.DefaultClient),
 	}
 
 	// Register the backend service
