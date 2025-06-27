@@ -166,7 +166,11 @@ func main() {
 				log.NewBatchProcessor(logExporter),
 			),
 		)
-		defer lp.Shutdown(context.Background())
+		defer func() {
+			if err := lp.Shutdown(context.Background()); err != nil {
+				panic(fmt.Errorf("shutdown logger provider: %w", err))
+			}
+		}()
 
 		global.SetLoggerProvider(lp)
 
