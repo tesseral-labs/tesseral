@@ -1,6 +1,10 @@
+import { Code, ConnectError } from "@connectrpc/connect";
+import { useMutation } from "@connectrpc/connect-query";
 import React, { createContext, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router";
 
-import { API_URL, DOGFOOD_PROJECT_ID } from "@/config";
+import { DOGFOOD_PROJECT_ID } from "@/config";
+import { refresh } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 
 import { parseAccessToken } from "./parse-access-token";
 
@@ -20,11 +24,15 @@ export function useAccessToken() {
 }
 
 function useAccessTokenInternal(): string | undefined {
+  const navigate = useNavigate();
   const [error, setError] = useState<unknown>();
   const [accessToken, setAccessToken] = useState(() => {
     return getCookie(`tesseral_${DOGFOOD_PROJECT_ID}_access_token`);
   });
-  const accessTokenLikelyValid = useAccessTokenLikelyValid(accessToken ?? "");
+  const { mutateAsync: refreshAsync } = useMutation(refresh);
+  const { accessTokenLikelyValid } = useAccessTokenLikelyValid(
+    accessToken ?? "",
+  );
 
   // whenever the access token is invalid or near-expired, refresh it
   useEffect(() => {
@@ -33,36 +41,18 @@ function useAccessTokenInternal(): string | undefined {
     }
 
     (async () => {
-      const response = await fetch(`${API_URL}/api/frontend/v1/refresh`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({}),
-        credentials: "include",
-      });
-
-      if (response.status === 401) {
-        // our refresh token is no good
-        window.location.href = `/login`;
-        return;
+      try {
+        const { accessToken } = await refreshAsync({});
+        setAccessToken(accessToken);
+      } catch (e) {
+        if (e instanceof ConnectError && e.code === Code.Unauthenticated) {
+          navigate("/login");
+        } else {
+          setError(`Unexpected response from /api/frontend/refresh: ${e}`);
+        }
       }
-
-      if (!response.ok) {
-        setError(
-          `Unexpected response from /api/frontend/refresh: ${response.status}`,
-        );
-        return;
-      }
-
-      const { accessToken } = await response.json();
-      if (!accessToken) {
-        setError("No access token returned from /api/frontend/refresh");
-        return;
-      }
-      setAccessToken(accessToken);
     })();
-  }, [accessTokenLikelyValid]);
+  }, [accessTokenLikelyValid, navigate, refreshAsync]);
 
   if (error) {
     throw error;
@@ -73,16 +63,24 @@ function useAccessTokenInternal(): string | undefined {
 
 const ACCESS_TOKEN_EXPIRY_BUFFER_MILLIS = 10 * 1000;
 
-function useAccessTokenLikelyValid(accessToken: string): boolean {
-  const now = useDebouncedNow(10 * 1000); // re-check expiration every 10 seconds
+function useAccessTokenLikelyValid(accessToken: string): {
+  accessTokenLikelyValid: boolean;
+  exp: number;
+} {
+  const now = useDebouncedNow(2 * 1000); // re-check expiration every 2 seconds
   return useMemo(() => {
     if (!accessToken) {
-      return false;
+      return {
+        accessTokenLikelyValid: false,
+        exp: 0,
+      };
     }
     const parsedAccessToken = parseAccessToken(accessToken);
-    return (
-      parsedAccessToken.exp! * 1000 > now + ACCESS_TOKEN_EXPIRY_BUFFER_MILLIS
-    );
+    return {
+      accessTokenLikelyValid:
+        parsedAccessToken.exp! * 1000 > now + ACCESS_TOKEN_EXPIRY_BUFFER_MILLIS,
+      exp: parsedAccessToken.exp,
+    };
   }, [accessToken, now]);
 }
 

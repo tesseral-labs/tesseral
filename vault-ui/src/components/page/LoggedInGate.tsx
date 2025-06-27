@@ -36,7 +36,7 @@ function useAccessTokenInternal(): string | undefined {
     return parseAccessToken(accessToken);
   }, [accessToken]);
 
-  const now = useDebouncedNow(1000 * 60);
+  const now = useDebouncedNow(1000 * 2); // Re-check every 2 seconds
   const accessTokenIsLikelyValid = useMemo(() => {
     if (!parsedAccessToken || !parsedAccessToken.exp) {
       return false;
@@ -73,7 +73,7 @@ function useAccessTokenInternal(): string | undefined {
     return accessToken!;
   }
 
-  return undefined;
+  return;
 }
 
 function useDebouncedNow(updatePeriodMillis: number): number {
