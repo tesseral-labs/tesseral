@@ -13,15 +13,21 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	"github.com/tesseral-labs/tesseral/internal/backend/store"
 	"github.com/tesseral-labs/tesseral/internal/ujwt"
+	"go.opentelemetry.io/otel"
 )
 
 var errAuthorizationHeaderRequired = errors.New("authorization header is required")
+
+var tracer = otel.Tracer("github.com/tesseral-labs/tesseral/internal/backend/authn/interceptor")
 
 func New(s *store.Store, dogfoodProjectID string) connect.UnaryInterceptorFunc {
 	cookieName := fmt.Sprintf("tesseral_%s_access_token", dogfoodProjectID)
 
 	return func(next connect.UnaryFunc) connect.UnaryFunc {
 		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
+			ctx, span := tracer.Start(ctx, "backend/authn/interceptor")
+			defer span.End()
+
 			authorizationHeader := req.Header().Get("Authorization")
 			if authorizationHeader != "" {
 				// look for backend API in Authorization header
