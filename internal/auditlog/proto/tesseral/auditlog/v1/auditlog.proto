@@ -97,6 +97,10 @@ message DeleteSAMLConnection {
   SAMLConnection saml_connection = 1;
 }
 
+message InitiateSAMLConnection {
+  SAMLConnection saml_connection = 1;
+}
+
 message CreateSCIMAPIKey {
   SCIMAPIKey scim_api_key = 1;
 }
@@ -146,4 +150,5 @@ message UnassignUserRole {
 
 message CreateSession {
   Session session = 1;
+  optional string saml_connection_id = 2;
 }
