@@ -398,7 +398,7 @@ export function AuditLogEventDetails({ event }: { event: AuditLogEvent }) {
               </div>
               <div className="space-y-2">
                 <div className="text-base font-semibold">Details</div>
-                <div className="font-mono text-xs whitespace-pre-wrap break-all p-2 rounded bg-white border">
+                <div className="font-mono text-xs whitespace-pre-wrap break-all p-2 rounded border bg-muted">
                   {JSON.stringify(event.eventDetails, null, 2)}
                 </div>
               </div>

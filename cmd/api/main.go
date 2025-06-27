@@ -304,7 +304,8 @@ func main() {
 	}
 
 	samlStore := samlstore.New(samlstore.NewStoreParams{
-		DB: db,
+		DB:            db,
+		AuditlogStore: &auditlogStore,
 	})
 	samlService := samlservice.Service{
 		Store:             samlStore,
