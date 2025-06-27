@@ -67,7 +67,7 @@ function useAccessTokenLikelyValid(accessToken: string): {
   accessTokenLikelyValid: boolean;
   exp: number;
 } {
-  const now = useDebouncedNow(10 * 1000); // re-check expiration every 10 seconds
+  const now = useDebouncedNow(2 * 1000); // re-check expiration every 2 seconds
   return useMemo(() => {
     if (!accessToken) {
       return {
