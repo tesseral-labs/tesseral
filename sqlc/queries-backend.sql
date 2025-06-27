@@ -1239,10 +1239,10 @@ FROM
     JOIN organizations ON api_keys.organization_id = organizations.id
 WHERE
     organizations.project_id = @project_id
-    AND (
-        (api_keys.display_name ILIKE '%' || @query::text || '%' AND @query::text != '')
-        OR (api_keys.id = sqlc.narg (id) OR sqlc.narg (id) IS NULL)
-    )
+    AND ((api_keys.display_name ILIKE '%' || @query::text || '%'
+            AND @query::text != '')
+        OR (api_keys.id = sqlc.narg (id)
+            AND sqlc.narg (id) IS NOT NULL))
 ORDER BY
     api_keys.id
 LIMIT $1;
@@ -1257,7 +1257,7 @@ WHERE
     AND ((display_name ILIKE '%' || @query::text || '%'
             AND @query::text != '')
         OR (id = sqlc.narg (id)
-            OR sqlc.narg (id) IS NULL))
+            AND sqlc.narg (id) IS NOT NULL))
 ORDER BY
     id
 LIMIT $1;
@@ -1272,7 +1272,7 @@ WHERE
     AND ((@query::text != ''
             AND display_name ILIKE '%' || @query::text || '%')
         OR (id = sqlc.narg (id)
-            OR sqlc.narg (id) IS NULL))
+            AND sqlc.narg (id) IS NOT NULL))
 ORDER BY
     id
 LIMIT $1;
@@ -1287,7 +1287,7 @@ WHERE
     AND ((@query::text != ''
             AND display_name ILIKE '%' || @query::text || '%')
         OR (id = sqlc.narg (id)
-            OR sqlc.narg (id) IS NULL))
+            AND sqlc.narg (id) IS NOT NULL))
 ORDER BY
     id
 LIMIT $1;
@@ -1300,26 +1300,15 @@ FROM
     JOIN organizations ON users.organization_id = organizations.id
 WHERE
     organizations.project_id = @project_id
-    AND ((@query::text != ''
-            AND (users.email ILIKE '%' || @query::text || '%'
+    AND (@query::text != ''
+        AND ((users.email ILIKE '%' || @query::text || '%'
                 OR users.display_name ILIKE '%' || @query::text || '%'
                 OR users.google_user_id = @query::text
                 OR users.microsoft_user_id ILIKE @query::text
-                OR users.github_user_id ILIKE @query::text))
-        OR (users.id = sqlc.narg (id)
-            OR sqlc.narg (id) IS NULL))
+                OR users.github_user_id ILIKE @query::text)
+            OR (users.id = sqlc.narg (id)
+                AND sqlc.narg (id) IS NOT NULL)))
 ORDER BY
     users.id
 LIMIT $1;
-
---name: ConsoleCountUsers :one
-SELECT
-    COUNT(*)
-FROM
-    users
-    JOIN organizations ON users.organization_id = organizations.id
-WHERE
-    organizations.project_id = @project_id
-    AND organizations.id = @organization_id
-;
 

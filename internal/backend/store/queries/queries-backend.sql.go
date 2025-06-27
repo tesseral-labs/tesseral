@@ -213,7 +213,7 @@ WHERE
     AND ((api_keys.display_name ILIKE '%' || $3::text || '%'
             AND $3::text != '')
         OR (api_keys.id = $4
-            OR $4 IS NULL))
+            AND $4 IS NOT NULL))
 ORDER BY
     api_keys.id
 LIMIT $1
@@ -270,7 +270,7 @@ WHERE
     AND ((display_name ILIKE '%' || $3::text || '%'
             AND $3::text != '')
         OR (id = $4
-            OR $4 IS NULL))
+            AND $4 IS NOT NULL))
 ORDER BY
     id
 LIMIT $1
@@ -325,7 +325,7 @@ WHERE
     AND (($3::text != ''
             AND display_name ILIKE '%' || $3::text || '%')
         OR (id = $4
-            OR $4 IS NULL))
+            AND $4 IS NOT NULL))
 ORDER BY
     id
 LIMIT $1
@@ -392,7 +392,7 @@ WHERE
     AND (($3::text != ''
             AND display_name ILIKE '%' || $3::text || '%')
         OR (id = $4
-            OR $4 IS NULL))
+            AND $4 IS NOT NULL))
 ORDER BY
     id
 LIMIT $1
@@ -445,14 +445,14 @@ FROM
     JOIN organizations ON users.organization_id = organizations.id
 WHERE
     organizations.project_id = $2
-    AND (($3::text != ''
-            AND (users.email ILIKE '%' || $3::text || '%'
+    AND ($3::text != ''
+        AND ((users.email ILIKE '%' || $3::text || '%'
                 OR users.display_name ILIKE '%' || $3::text || '%'
                 OR users.google_user_id = $3::text
                 OR users.microsoft_user_id ILIKE $3::text
-                OR users.github_user_id ILIKE $3::text))
-        OR (users.id = $4
-            OR $4 IS NULL))
+                OR users.github_user_id ILIKE $3::text)
+            OR (users.id = $4
+                AND $4 IS NOT NULL)))
 ORDER BY
     users.id
 LIMIT $1

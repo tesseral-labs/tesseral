@@ -5,13 +5,17 @@ import { toast } from "sonner";
 
 import { consoleSearch } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { ConsoleSearchResponse } from "@/gen/tesseral/backend/v1/backend_pb";
+import {
+  APIKey,
+  Organization,
+  User,
+} from "@/gen/tesseral/backend/v1/models_pb";
 import { useGlobalSearch } from "@/lib/search";
 
 import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
 } from "../ui/command";
@@ -22,26 +26,48 @@ export function Search() {
   const { open, setOpen } = useGlobalSearch();
   const navigate = useNavigate();
 
+  const [apiKeys, setApiKeys] = useState<APIKey[]>([]);
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [query, setQuery] = useState<string>("");
+  const [users, setUsers] = useState<User[]>([]);
 
-  const { data: result } = useQuery(
-    consoleSearch,
-    {
-      query,
-    },
-    {
-      retry: false,
-    },
-  );
+  const searchMutation = useMutation(consoleSearch);
+
+  useEffect(() => {
+    if (!query || query.length < 3) {
+      setApiKeys([]);
+      setOrganizations([]);
+      setUsers([]);
+      return;
+    }
+
+    async function search() {
+      try {
+        const { apiKeys, organizations, users } =
+          await searchMutation.mutateAsync({
+            query,
+          });
+        setApiKeys(apiKeys);
+        setOrganizations(organizations);
+        setUsers(users);
+      } catch (error) {
+        toast.error("Failed to perform search.");
+        console.error(error);
+      }
+    }
+
+    search();
+  }, [query]);
 
   return (
     <Dialog open={open || false} onOpenChange={setOpen}>
       <DialogHeader>
         <DialogTitle>Search</DialogTitle>
       </DialogHeader>
-      <DialogContent>
+      <DialogContent showCloseButton={false}>
         <Command>
           <Input
+            className="focus:ring-0 focus-visible:ring-0"
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search for a resource..."
             value={query}
@@ -49,12 +75,14 @@ export function Search() {
 
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
-            {(result?.apiKeys?.length || 0) > 0 && (
+            {(apiKeys?.length || 0) > 0 && (
               <CommandGroup heading="API Keys">
-                {result?.apiKeys?.map((apiKey) => (
+                {apiKeys?.map((apiKey) => (
                   <CommandItem
                     key={apiKey.id}
                     onSelect={() => {
+                      setOpen(false);
+                      setQuery("");
                       navigate(
                         `/organizations/${apiKey.organizationId}/api-keys/${apiKey.id}`,
                       );
@@ -65,12 +93,14 @@ export function Search() {
                 ))}
               </CommandGroup>
             )}
-            {(result?.organizations?.length || 0) > 0 && (
+            {(organizations?.length || 0) > 0 && (
               <CommandGroup heading="Organizations">
-                {result?.organizations?.map((org) => (
+                {organizations?.map((org) => (
                   <CommandItem
                     key={org.id}
                     onSelect={() => {
+                      setOpen(false);
+                      setQuery("");
                       navigate(`/organizations/${org.id}`);
                     }}
                   >
@@ -79,12 +109,14 @@ export function Search() {
                 ))}
               </CommandGroup>
             )}
-            {(result?.users?.length || 0) > 0 && (
+            {(users?.length || 0) > 0 && (
               <CommandGroup heading="Users">
-                {result?.users?.map((user) => (
+                {users?.map((user) => (
                   <CommandItem
                     key={user.id}
                     onSelect={() => {
+                      setOpen(false);
+                      setQuery("");
                       navigate(
                         `/organizations/${user.organizationId}/users/${user.id}`,
                       );
