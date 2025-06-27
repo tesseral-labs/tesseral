@@ -90,6 +90,21 @@ const (
 	// FrontendServiceDeleteSAMLConnectionProcedure is the fully-qualified name of the FrontendService's
 	// DeleteSAMLConnection RPC.
 	FrontendServiceDeleteSAMLConnectionProcedure = "/tesseral.frontend.v1.FrontendService/DeleteSAMLConnection"
+	// FrontendServiceListOIDCConnectionsProcedure is the fully-qualified name of the FrontendService's
+	// ListOIDCConnections RPC.
+	FrontendServiceListOIDCConnectionsProcedure = "/tesseral.frontend.v1.FrontendService/ListOIDCConnections"
+	// FrontendServiceGetOIDCConnectionProcedure is the fully-qualified name of the FrontendService's
+	// GetOIDCConnection RPC.
+	FrontendServiceGetOIDCConnectionProcedure = "/tesseral.frontend.v1.FrontendService/GetOIDCConnection"
+	// FrontendServiceCreateOIDCConnectionProcedure is the fully-qualified name of the FrontendService's
+	// CreateOIDCConnection RPC.
+	FrontendServiceCreateOIDCConnectionProcedure = "/tesseral.frontend.v1.FrontendService/CreateOIDCConnection"
+	// FrontendServiceUpdateOIDCConnectionProcedure is the fully-qualified name of the FrontendService's
+	// UpdateOIDCConnection RPC.
+	FrontendServiceUpdateOIDCConnectionProcedure = "/tesseral.frontend.v1.FrontendService/UpdateOIDCConnection"
+	// FrontendServiceDeleteOIDCConnectionProcedure is the fully-qualified name of the FrontendService's
+	// DeleteOIDCConnection RPC.
+	FrontendServiceDeleteOIDCConnectionProcedure = "/tesseral.frontend.v1.FrontendService/DeleteOIDCConnection"
 	// FrontendServiceListSCIMAPIKeysProcedure is the fully-qualified name of the FrontendService's
 	// ListSCIMAPIKeys RPC.
 	FrontendServiceListSCIMAPIKeysProcedure = "/tesseral.frontend.v1.FrontendService/ListSCIMAPIKeys"
@@ -227,6 +242,11 @@ type FrontendServiceClient interface {
 	CreateSAMLConnection(context.Context, *connect.Request[v1.CreateSAMLConnectionRequest]) (*connect.Response[v1.CreateSAMLConnectionResponse], error)
 	UpdateSAMLConnection(context.Context, *connect.Request[v1.UpdateSAMLConnectionRequest]) (*connect.Response[v1.UpdateSAMLConnectionResponse], error)
 	DeleteSAMLConnection(context.Context, *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error)
+	ListOIDCConnections(context.Context, *connect.Request[v1.ListOIDCConnectionsRequest]) (*connect.Response[v1.ListOIDCConnectionsResponse], error)
+	GetOIDCConnection(context.Context, *connect.Request[v1.GetOIDCConnectionRequest]) (*connect.Response[v1.GetOIDCConnectionResponse], error)
+	CreateOIDCConnection(context.Context, *connect.Request[v1.CreateOIDCConnectionRequest]) (*connect.Response[v1.CreateOIDCConnectionResponse], error)
+	UpdateOIDCConnection(context.Context, *connect.Request[v1.UpdateOIDCConnectionRequest]) (*connect.Response[v1.UpdateOIDCConnectionResponse], error)
+	DeleteOIDCConnection(context.Context, *connect.Request[v1.DeleteOIDCConnectionRequest]) (*connect.Response[v1.DeleteOIDCConnectionResponse], error)
 	ListSCIMAPIKeys(context.Context, *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error)
 	GetSCIMAPIKey(context.Context, *connect.Request[v1.GetSCIMAPIKeyRequest]) (*connect.Response[v1.GetSCIMAPIKeyResponse], error)
 	CreateSCIMAPIKey(context.Context, *connect.Request[v1.CreateSCIMAPIKeyRequest]) (*connect.Response[v1.CreateSCIMAPIKeyResponse], error)
@@ -412,6 +432,36 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			httpClient,
 			baseURL+FrontendServiceDeleteSAMLConnectionProcedure,
 			connect.WithSchema(frontendServiceMethods.ByName("DeleteSAMLConnection")),
+			connect.WithClientOptions(opts...),
+		),
+		listOIDCConnections: connect.NewClient[v1.ListOIDCConnectionsRequest, v1.ListOIDCConnectionsResponse](
+			httpClient,
+			baseURL+FrontendServiceListOIDCConnectionsProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("ListOIDCConnections")),
+			connect.WithClientOptions(opts...),
+		),
+		getOIDCConnection: connect.NewClient[v1.GetOIDCConnectionRequest, v1.GetOIDCConnectionResponse](
+			httpClient,
+			baseURL+FrontendServiceGetOIDCConnectionProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("GetOIDCConnection")),
+			connect.WithClientOptions(opts...),
+		),
+		createOIDCConnection: connect.NewClient[v1.CreateOIDCConnectionRequest, v1.CreateOIDCConnectionResponse](
+			httpClient,
+			baseURL+FrontendServiceCreateOIDCConnectionProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("CreateOIDCConnection")),
+			connect.WithClientOptions(opts...),
+		),
+		updateOIDCConnection: connect.NewClient[v1.UpdateOIDCConnectionRequest, v1.UpdateOIDCConnectionResponse](
+			httpClient,
+			baseURL+FrontendServiceUpdateOIDCConnectionProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("UpdateOIDCConnection")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteOIDCConnection: connect.NewClient[v1.DeleteOIDCConnectionRequest, v1.DeleteOIDCConnectionResponse](
+			httpClient,
+			baseURL+FrontendServiceDeleteOIDCConnectionProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("DeleteOIDCConnection")),
 			connect.WithClientOptions(opts...),
 		),
 		listSCIMAPIKeys: connect.NewClient[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse](
@@ -667,6 +717,11 @@ type frontendServiceClient struct {
 	createSAMLConnection                  *connect.Client[v1.CreateSAMLConnectionRequest, v1.CreateSAMLConnectionResponse]
 	updateSAMLConnection                  *connect.Client[v1.UpdateSAMLConnectionRequest, v1.UpdateSAMLConnectionResponse]
 	deleteSAMLConnection                  *connect.Client[v1.DeleteSAMLConnectionRequest, v1.DeleteSAMLConnectionResponse]
+	listOIDCConnections                   *connect.Client[v1.ListOIDCConnectionsRequest, v1.ListOIDCConnectionsResponse]
+	getOIDCConnection                     *connect.Client[v1.GetOIDCConnectionRequest, v1.GetOIDCConnectionResponse]
+	createOIDCConnection                  *connect.Client[v1.CreateOIDCConnectionRequest, v1.CreateOIDCConnectionResponse]
+	updateOIDCConnection                  *connect.Client[v1.UpdateOIDCConnectionRequest, v1.UpdateOIDCConnectionResponse]
+	deleteOIDCConnection                  *connect.Client[v1.DeleteOIDCConnectionRequest, v1.DeleteOIDCConnectionResponse]
 	listSCIMAPIKeys                       *connect.Client[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse]
 	getSCIMAPIKey                         *connect.Client[v1.GetSCIMAPIKeyRequest, v1.GetSCIMAPIKeyResponse]
 	createSCIMAPIKey                      *connect.Client[v1.CreateSCIMAPIKeyRequest, v1.CreateSCIMAPIKeyResponse]
@@ -809,6 +864,31 @@ func (c *frontendServiceClient) UpdateSAMLConnection(ctx context.Context, req *c
 // DeleteSAMLConnection calls tesseral.frontend.v1.FrontendService.DeleteSAMLConnection.
 func (c *frontendServiceClient) DeleteSAMLConnection(ctx context.Context, req *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error) {
 	return c.deleteSAMLConnection.CallUnary(ctx, req)
+}
+
+// ListOIDCConnections calls tesseral.frontend.v1.FrontendService.ListOIDCConnections.
+func (c *frontendServiceClient) ListOIDCConnections(ctx context.Context, req *connect.Request[v1.ListOIDCConnectionsRequest]) (*connect.Response[v1.ListOIDCConnectionsResponse], error) {
+	return c.listOIDCConnections.CallUnary(ctx, req)
+}
+
+// GetOIDCConnection calls tesseral.frontend.v1.FrontendService.GetOIDCConnection.
+func (c *frontendServiceClient) GetOIDCConnection(ctx context.Context, req *connect.Request[v1.GetOIDCConnectionRequest]) (*connect.Response[v1.GetOIDCConnectionResponse], error) {
+	return c.getOIDCConnection.CallUnary(ctx, req)
+}
+
+// CreateOIDCConnection calls tesseral.frontend.v1.FrontendService.CreateOIDCConnection.
+func (c *frontendServiceClient) CreateOIDCConnection(ctx context.Context, req *connect.Request[v1.CreateOIDCConnectionRequest]) (*connect.Response[v1.CreateOIDCConnectionResponse], error) {
+	return c.createOIDCConnection.CallUnary(ctx, req)
+}
+
+// UpdateOIDCConnection calls tesseral.frontend.v1.FrontendService.UpdateOIDCConnection.
+func (c *frontendServiceClient) UpdateOIDCConnection(ctx context.Context, req *connect.Request[v1.UpdateOIDCConnectionRequest]) (*connect.Response[v1.UpdateOIDCConnectionResponse], error) {
+	return c.updateOIDCConnection.CallUnary(ctx, req)
+}
+
+// DeleteOIDCConnection calls tesseral.frontend.v1.FrontendService.DeleteOIDCConnection.
+func (c *frontendServiceClient) DeleteOIDCConnection(ctx context.Context, req *connect.Request[v1.DeleteOIDCConnectionRequest]) (*connect.Response[v1.DeleteOIDCConnectionResponse], error) {
+	return c.deleteOIDCConnection.CallUnary(ctx, req)
 }
 
 // ListSCIMAPIKeys calls tesseral.frontend.v1.FrontendService.ListSCIMAPIKeys.
@@ -1025,6 +1105,11 @@ type FrontendServiceHandler interface {
 	CreateSAMLConnection(context.Context, *connect.Request[v1.CreateSAMLConnectionRequest]) (*connect.Response[v1.CreateSAMLConnectionResponse], error)
 	UpdateSAMLConnection(context.Context, *connect.Request[v1.UpdateSAMLConnectionRequest]) (*connect.Response[v1.UpdateSAMLConnectionResponse], error)
 	DeleteSAMLConnection(context.Context, *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error)
+	ListOIDCConnections(context.Context, *connect.Request[v1.ListOIDCConnectionsRequest]) (*connect.Response[v1.ListOIDCConnectionsResponse], error)
+	GetOIDCConnection(context.Context, *connect.Request[v1.GetOIDCConnectionRequest]) (*connect.Response[v1.GetOIDCConnectionResponse], error)
+	CreateOIDCConnection(context.Context, *connect.Request[v1.CreateOIDCConnectionRequest]) (*connect.Response[v1.CreateOIDCConnectionResponse], error)
+	UpdateOIDCConnection(context.Context, *connect.Request[v1.UpdateOIDCConnectionRequest]) (*connect.Response[v1.UpdateOIDCConnectionResponse], error)
+	DeleteOIDCConnection(context.Context, *connect.Request[v1.DeleteOIDCConnectionRequest]) (*connect.Response[v1.DeleteOIDCConnectionResponse], error)
 	ListSCIMAPIKeys(context.Context, *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error)
 	GetSCIMAPIKey(context.Context, *connect.Request[v1.GetSCIMAPIKeyRequest]) (*connect.Response[v1.GetSCIMAPIKeyResponse], error)
 	CreateSCIMAPIKey(context.Context, *connect.Request[v1.CreateSCIMAPIKeyRequest]) (*connect.Response[v1.CreateSCIMAPIKeyResponse], error)
@@ -1206,6 +1291,36 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		FrontendServiceDeleteSAMLConnectionProcedure,
 		svc.DeleteSAMLConnection,
 		connect.WithSchema(frontendServiceMethods.ByName("DeleteSAMLConnection")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceListOIDCConnectionsHandler := connect.NewUnaryHandler(
+		FrontendServiceListOIDCConnectionsProcedure,
+		svc.ListOIDCConnections,
+		connect.WithSchema(frontendServiceMethods.ByName("ListOIDCConnections")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceGetOIDCConnectionHandler := connect.NewUnaryHandler(
+		FrontendServiceGetOIDCConnectionProcedure,
+		svc.GetOIDCConnection,
+		connect.WithSchema(frontendServiceMethods.ByName("GetOIDCConnection")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceCreateOIDCConnectionHandler := connect.NewUnaryHandler(
+		FrontendServiceCreateOIDCConnectionProcedure,
+		svc.CreateOIDCConnection,
+		connect.WithSchema(frontendServiceMethods.ByName("CreateOIDCConnection")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceUpdateOIDCConnectionHandler := connect.NewUnaryHandler(
+		FrontendServiceUpdateOIDCConnectionProcedure,
+		svc.UpdateOIDCConnection,
+		connect.WithSchema(frontendServiceMethods.ByName("UpdateOIDCConnection")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceDeleteOIDCConnectionHandler := connect.NewUnaryHandler(
+		FrontendServiceDeleteOIDCConnectionProcedure,
+		svc.DeleteOIDCConnection,
+		connect.WithSchema(frontendServiceMethods.ByName("DeleteOIDCConnection")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceListSCIMAPIKeysHandler := connect.NewUnaryHandler(
@@ -1478,6 +1593,16 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 			frontendServiceUpdateSAMLConnectionHandler.ServeHTTP(w, r)
 		case FrontendServiceDeleteSAMLConnectionProcedure:
 			frontendServiceDeleteSAMLConnectionHandler.ServeHTTP(w, r)
+		case FrontendServiceListOIDCConnectionsProcedure:
+			frontendServiceListOIDCConnectionsHandler.ServeHTTP(w, r)
+		case FrontendServiceGetOIDCConnectionProcedure:
+			frontendServiceGetOIDCConnectionHandler.ServeHTTP(w, r)
+		case FrontendServiceCreateOIDCConnectionProcedure:
+			frontendServiceCreateOIDCConnectionHandler.ServeHTTP(w, r)
+		case FrontendServiceUpdateOIDCConnectionProcedure:
+			frontendServiceUpdateOIDCConnectionHandler.ServeHTTP(w, r)
+		case FrontendServiceDeleteOIDCConnectionProcedure:
+			frontendServiceDeleteOIDCConnectionHandler.ServeHTTP(w, r)
 		case FrontendServiceListSCIMAPIKeysProcedure:
 			frontendServiceListSCIMAPIKeysHandler.ServeHTTP(w, r)
 		case FrontendServiceGetSCIMAPIKeyProcedure:
@@ -1641,6 +1766,26 @@ func (UnimplementedFrontendServiceHandler) UpdateSAMLConnection(context.Context,
 
 func (UnimplementedFrontendServiceHandler) DeleteSAMLConnection(context.Context, *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.DeleteSAMLConnection is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) ListOIDCConnections(context.Context, *connect.Request[v1.ListOIDCConnectionsRequest]) (*connect.Response[v1.ListOIDCConnectionsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.ListOIDCConnections is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) GetOIDCConnection(context.Context, *connect.Request[v1.GetOIDCConnectionRequest]) (*connect.Response[v1.GetOIDCConnectionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.GetOIDCConnection is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) CreateOIDCConnection(context.Context, *connect.Request[v1.CreateOIDCConnectionRequest]) (*connect.Response[v1.CreateOIDCConnectionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.CreateOIDCConnection is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) UpdateOIDCConnection(context.Context, *connect.Request[v1.UpdateOIDCConnectionRequest]) (*connect.Response[v1.UpdateOIDCConnectionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.UpdateOIDCConnection is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) DeleteOIDCConnection(context.Context, *connect.Request[v1.DeleteOIDCConnectionRequest]) (*connect.Response[v1.DeleteOIDCConnectionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.DeleteOIDCConnection is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) ListSCIMAPIKeys(context.Context, *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error) {

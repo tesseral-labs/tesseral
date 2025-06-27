@@ -70,6 +70,14 @@ FROM
 WHERE
     id = $1;
 
+-- name: GetOIDCConnection :one
+SELECT
+    *
+FROM
+    oidc_connections
+WHERE
+    id = $1;
+
 -- name: GetSCIMAPIKey :one
 SELECT
     *

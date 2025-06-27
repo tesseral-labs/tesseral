@@ -596,6 +596,49 @@ func TestConsoleListCustomAuditLogEvents_ResourceTypeSAMLConnection(t *testing.T
 	}
 }
 
+func TestConsoleListCustomAuditLogEvents_ResourceTypeOIDCConnection(t *testing.T) {
+	t.Parallel()
+
+	ctx, u := newTestUtil(t)
+	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName:   "test",
+		LogInWithOidc: refOrNil(true),
+	})
+
+	var oidcConnectionIDs []string
+	for range 3 {
+		resp, err := u.Store.CreateOIDCConnection(ctx, &backendv1.CreateOIDCConnectionRequest{
+			OidcConnection: &backendv1.OIDCConnection{
+				OrganizationId:   orgID,
+				ConfigurationUrl: "https://accounts.google.com/.well-known/openid-configuration",
+				ClientId:         "client-id",
+				ClientSecret:     "client-secret",
+			},
+		})
+		require.NoError(t, err)
+		oidcConnectionIDs = append(oidcConnectionIDs, resp.OidcConnection.Id)
+	}
+
+	resp, err := u.Store.ConsoleListCustomAuditLogEvents(ctx, &backendv1.ConsoleListAuditLogEventsRequest{
+		OrganizationId: orgID,
+	})
+	require.NoError(t, err)
+	require.NotNil(t, resp)
+	require.Len(t, resp.AuditLogEvents, 3)
+	require.Empty(t, resp.NextPageToken)
+
+	for _, oidcConnectionID := range oidcConnectionIDs {
+		resp, err := u.Store.ConsoleListCustomAuditLogEvents(ctx, &backendv1.ConsoleListAuditLogEventsRequest{
+			ResourceType: backendv1.AuditLogEventResourceType_AUDIT_LOG_EVENT_RESOURCE_TYPE_OIDC_CONNECTION,
+			ResourceId:   oidcConnectionID,
+		})
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		require.Len(t, resp.AuditLogEvents, 1)
+		require.Empty(t, resp.NextPageToken)
+	}
+}
+
 func TestConsoleListCustomAuditLogEvents_ResourceTypeSCIMAPIKey(t *testing.T) {
 	t.Parallel()
 

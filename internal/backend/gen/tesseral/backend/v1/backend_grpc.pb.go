@@ -36,6 +36,11 @@ const (
 	BackendService_CreateSAMLConnection_FullMethodName                  = "/tesseral.backend.v1.BackendService/CreateSAMLConnection"
 	BackendService_UpdateSAMLConnection_FullMethodName                  = "/tesseral.backend.v1.BackendService/UpdateSAMLConnection"
 	BackendService_DeleteSAMLConnection_FullMethodName                  = "/tesseral.backend.v1.BackendService/DeleteSAMLConnection"
+	BackendService_ListOIDCConnections_FullMethodName                   = "/tesseral.backend.v1.BackendService/ListOIDCConnections"
+	BackendService_GetOIDCConnection_FullMethodName                     = "/tesseral.backend.v1.BackendService/GetOIDCConnection"
+	BackendService_CreateOIDCConnection_FullMethodName                  = "/tesseral.backend.v1.BackendService/CreateOIDCConnection"
+	BackendService_UpdateOIDCConnection_FullMethodName                  = "/tesseral.backend.v1.BackendService/UpdateOIDCConnection"
+	BackendService_DeleteOIDCConnection_FullMethodName                  = "/tesseral.backend.v1.BackendService/DeleteOIDCConnection"
 	BackendService_ListSCIMAPIKeys_FullMethodName                       = "/tesseral.backend.v1.BackendService/ListSCIMAPIKeys"
 	BackendService_GetSCIMAPIKey_FullMethodName                         = "/tesseral.backend.v1.BackendService/GetSCIMAPIKey"
 	BackendService_CreateSCIMAPIKey_FullMethodName                      = "/tesseral.backend.v1.BackendService/CreateSCIMAPIKey"
@@ -147,6 +152,16 @@ type BackendServiceClient interface {
 	UpdateSAMLConnection(ctx context.Context, in *UpdateSAMLConnectionRequest, opts ...grpc.CallOption) (*UpdateSAMLConnectionResponse, error)
 	// Delete a SAML Connection.
 	DeleteSAMLConnection(ctx context.Context, in *DeleteSAMLConnectionRequest, opts ...grpc.CallOption) (*DeleteSAMLConnectionResponse, error)
+	// List OIDC Connections.
+	ListOIDCConnections(ctx context.Context, in *ListOIDCConnectionsRequest, opts ...grpc.CallOption) (*ListOIDCConnectionsResponse, error)
+	// Get an OIDC Connection.
+	GetOIDCConnection(ctx context.Context, in *GetOIDCConnectionRequest, opts ...grpc.CallOption) (*GetOIDCConnectionResponse, error)
+	// Create an OIDC Connection.
+	CreateOIDCConnection(ctx context.Context, in *CreateOIDCConnectionRequest, opts ...grpc.CallOption) (*CreateOIDCConnectionResponse, error)
+	// Update an OIDC Connection.
+	UpdateOIDCConnection(ctx context.Context, in *UpdateOIDCConnectionRequest, opts ...grpc.CallOption) (*UpdateOIDCConnectionResponse, error)
+	// Delete an OIDC Connection.
+	DeleteOIDCConnection(ctx context.Context, in *DeleteOIDCConnectionRequest, opts ...grpc.CallOption) (*DeleteOIDCConnectionResponse, error)
 	// List SCIM API Keys.
 	ListSCIMAPIKeys(ctx context.Context, in *ListSCIMAPIKeysRequest, opts ...grpc.CallOption) (*ListSCIMAPIKeysResponse, error)
 	// Get a SCIM API Key.
@@ -428,6 +443,56 @@ func (c *backendServiceClient) DeleteSAMLConnection(ctx context.Context, in *Del
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DeleteSAMLConnectionResponse)
 	err := c.cc.Invoke(ctx, BackendService_DeleteSAMLConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) ListOIDCConnections(ctx context.Context, in *ListOIDCConnectionsRequest, opts ...grpc.CallOption) (*ListOIDCConnectionsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListOIDCConnectionsResponse)
+	err := c.cc.Invoke(ctx, BackendService_ListOIDCConnections_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) GetOIDCConnection(ctx context.Context, in *GetOIDCConnectionRequest, opts ...grpc.CallOption) (*GetOIDCConnectionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetOIDCConnectionResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetOIDCConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) CreateOIDCConnection(ctx context.Context, in *CreateOIDCConnectionRequest, opts ...grpc.CallOption) (*CreateOIDCConnectionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateOIDCConnectionResponse)
+	err := c.cc.Invoke(ctx, BackendService_CreateOIDCConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) UpdateOIDCConnection(ctx context.Context, in *UpdateOIDCConnectionRequest, opts ...grpc.CallOption) (*UpdateOIDCConnectionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateOIDCConnectionResponse)
+	err := c.cc.Invoke(ctx, BackendService_UpdateOIDCConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) DeleteOIDCConnection(ctx context.Context, in *DeleteOIDCConnectionRequest, opts ...grpc.CallOption) (*DeleteOIDCConnectionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteOIDCConnectionResponse)
+	err := c.cc.Invoke(ctx, BackendService_DeleteOIDCConnection_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1182,6 +1247,16 @@ type BackendServiceServer interface {
 	UpdateSAMLConnection(context.Context, *UpdateSAMLConnectionRequest) (*UpdateSAMLConnectionResponse, error)
 	// Delete a SAML Connection.
 	DeleteSAMLConnection(context.Context, *DeleteSAMLConnectionRequest) (*DeleteSAMLConnectionResponse, error)
+	// List OIDC Connections.
+	ListOIDCConnections(context.Context, *ListOIDCConnectionsRequest) (*ListOIDCConnectionsResponse, error)
+	// Get an OIDC Connection.
+	GetOIDCConnection(context.Context, *GetOIDCConnectionRequest) (*GetOIDCConnectionResponse, error)
+	// Create an OIDC Connection.
+	CreateOIDCConnection(context.Context, *CreateOIDCConnectionRequest) (*CreateOIDCConnectionResponse, error)
+	// Update an OIDC Connection.
+	UpdateOIDCConnection(context.Context, *UpdateOIDCConnectionRequest) (*UpdateOIDCConnectionResponse, error)
+	// Delete an OIDC Connection.
+	DeleteOIDCConnection(context.Context, *DeleteOIDCConnectionRequest) (*DeleteOIDCConnectionResponse, error)
 	// List SCIM API Keys.
 	ListSCIMAPIKeys(context.Context, *ListSCIMAPIKeysRequest) (*ListSCIMAPIKeysResponse, error)
 	// Get a SCIM API Key.
@@ -1349,6 +1424,21 @@ func (UnimplementedBackendServiceServer) UpdateSAMLConnection(context.Context, *
 }
 func (UnimplementedBackendServiceServer) DeleteSAMLConnection(context.Context, *DeleteSAMLConnectionRequest) (*DeleteSAMLConnectionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteSAMLConnection not implemented")
+}
+func (UnimplementedBackendServiceServer) ListOIDCConnections(context.Context, *ListOIDCConnectionsRequest) (*ListOIDCConnectionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListOIDCConnections not implemented")
+}
+func (UnimplementedBackendServiceServer) GetOIDCConnection(context.Context, *GetOIDCConnectionRequest) (*GetOIDCConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOIDCConnection not implemented")
+}
+func (UnimplementedBackendServiceServer) CreateOIDCConnection(context.Context, *CreateOIDCConnectionRequest) (*CreateOIDCConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateOIDCConnection not implemented")
+}
+func (UnimplementedBackendServiceServer) UpdateOIDCConnection(context.Context, *UpdateOIDCConnectionRequest) (*UpdateOIDCConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateOIDCConnection not implemented")
+}
+func (UnimplementedBackendServiceServer) DeleteOIDCConnection(context.Context, *DeleteOIDCConnectionRequest) (*DeleteOIDCConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteOIDCConnection not implemented")
 }
 func (UnimplementedBackendServiceServer) ListSCIMAPIKeys(context.Context, *ListSCIMAPIKeysRequest) (*ListSCIMAPIKeysResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListSCIMAPIKeys not implemented")
@@ -1886,6 +1976,96 @@ func _BackendService_DeleteSAMLConnection_Handler(srv interface{}, ctx context.C
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BackendServiceServer).DeleteSAMLConnection(ctx, req.(*DeleteSAMLConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_ListOIDCConnections_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListOIDCConnectionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).ListOIDCConnections(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_ListOIDCConnections_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).ListOIDCConnections(ctx, req.(*ListOIDCConnectionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_GetOIDCConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOIDCConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetOIDCConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetOIDCConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetOIDCConnection(ctx, req.(*GetOIDCConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_CreateOIDCConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateOIDCConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).CreateOIDCConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_CreateOIDCConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).CreateOIDCConnection(ctx, req.(*CreateOIDCConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_UpdateOIDCConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateOIDCConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).UpdateOIDCConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_UpdateOIDCConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).UpdateOIDCConnection(ctx, req.(*UpdateOIDCConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_DeleteOIDCConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteOIDCConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).DeleteOIDCConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_DeleteOIDCConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).DeleteOIDCConnection(ctx, req.(*DeleteOIDCConnectionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3242,6 +3422,26 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteSAMLConnection",
 			Handler:    _BackendService_DeleteSAMLConnection_Handler,
+		},
+		{
+			MethodName: "ListOIDCConnections",
+			Handler:    _BackendService_ListOIDCConnections_Handler,
+		},
+		{
+			MethodName: "GetOIDCConnection",
+			Handler:    _BackendService_GetOIDCConnection_Handler,
+		},
+		{
+			MethodName: "CreateOIDCConnection",
+			Handler:    _BackendService_CreateOIDCConnection_Handler,
+		},
+		{
+			MethodName: "UpdateOIDCConnection",
+			Handler:    _BackendService_UpdateOIDCConnection_Handler,
+		},
+		{
+			MethodName: "DeleteOIDCConnection",
+			Handler:    _BackendService_DeleteOIDCConnection_Handler,
 		},
 		{
 			MethodName: "ListSCIMAPIKeys",

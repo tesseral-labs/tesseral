@@ -82,6 +82,7 @@ func (s *Store) GetSettings(ctx context.Context, req *intermediatev1.GetSettings
 			LogInWithMicrosoft:         qProject.LogInWithMicrosoft,
 			LogInWithPassword:          qProject.LogInWithPassword,
 			LogInWithSaml:              qProject.LogInWithSaml,
+			LogInWithOidc:              qProject.LogInWithOidc,
 			RedirectUri:                qProject.RedirectUri,
 			AfterLoginRedirectUri:      qProject.AfterLoginRedirectUri,
 			AfterSignupRedirectUri:     qProject.AfterSignupRedirectUri,

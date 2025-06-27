@@ -113,6 +113,37 @@ service BackendService {
     option (google.api.http) = {delete: "/v1/saml-connections/{id}"};
   }
 
+  // List OIDC Connections.
+  rpc ListOIDCConnections(ListOIDCConnectionsRequest) returns (ListOIDCConnectionsResponse) {
+    option (google.api.http) = {get: "/v1/oidc-connections"};
+  }
+
+  // Get an OIDC Connection.
+  rpc GetOIDCConnection(GetOIDCConnectionRequest) returns (GetOIDCConnectionResponse) {
+    option (google.api.http) = {get: "/v1/oidc-connections/{id}"};
+  }
+
+  // Create an OIDC Connection.
+  rpc CreateOIDCConnection(CreateOIDCConnectionRequest) returns (CreateOIDCConnectionResponse) {
+    option (google.api.http) = {
+      post: "/v1/oidc-connections"
+      body: "oidc_connection"
+    };
+  }
+
+  // Update an OIDC Connection.
+  rpc UpdateOIDCConnection(UpdateOIDCConnectionRequest) returns (UpdateOIDCConnectionResponse) {
+    option (google.api.http) = {
+      patch: "/v1/oidc-connections/{id}"
+      body: "oidc_connection"
+    };
+  }
+
+  // Delete an OIDC Connection.
+  rpc DeleteOIDCConnection(DeleteOIDCConnectionRequest) returns (DeleteOIDCConnectionResponse) {
+    option (google.api.http) = {delete: "/v1/oidc-connections/{id}"};
+  }
+
   // List SCIM API Keys.
   rpc ListSCIMAPIKeys(ListSCIMAPIKeysRequest) returns (ListSCIMAPIKeysResponse) {
     option (google.api.http) = {get: "/v1/scim-api-keys"};
@@ -596,6 +627,63 @@ message DeleteSAMLConnectionRequest {
 }
 
 message DeleteSAMLConnectionResponse {}
+
+message ListOIDCConnectionsRequest {
+  // The Organization ID.
+  string organization_id = 1;
+
+  // A pagination token. Leave empty to get the first page of results.
+  string page_token = 2;
+}
+
+message ListOIDCConnectionsResponse {
+  // A list of OIDC Connections.
+  repeated OIDCConnection oidc_connections = 1;
+
+  // The pagination token for the next page of results. Empty if there is no
+  // next page.
+  string next_page_token = 2;
+}
+
+message GetOIDCConnectionRequest {
+  // The OIDC Connection ID.
+  string id = 1;
+}
+
+message GetOIDCConnectionResponse {
+  // The requested OIDC Connection.
+  OIDCConnection oidc_connection = 1;
+}
+
+message CreateOIDCConnectionRequest {
+  // The OIDC Connection to create.
+  OIDCConnection oidc_connection = 1;
+}
+
+message CreateOIDCConnectionResponse {
+  // The created OIDC Connection.
+  OIDCConnection oidc_connection = 1;
+}
+
+message UpdateOIDCConnectionRequest {
+  // The OIDC Connection ID.
+  string id = 1;
+
+  // The updated OIDC Connection.
+  OIDCConnection oidc_connection = 2;
+}
+
+message UpdateOIDCConnectionResponse {
+  // The updated OIDC Connection.
+  OIDCConnection oidc_connection = 1;
+}
+
+message DeleteOIDCConnectionRequest {
+  // The OIDC Connection ID.
+  string id = 1;
+}
+
+message DeleteOIDCConnectionResponse {}
 
 message ListSCIMAPIKeysRequest {
   // The ID of the Organization.

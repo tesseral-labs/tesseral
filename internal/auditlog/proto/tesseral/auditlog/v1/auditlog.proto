@@ -147,3 +147,16 @@ message UnassignUserRole {
 message CreateSession {
   Session session = 1;
 }
+
+message CreateOIDCConnection {
+  OIDCConnection oidc_connection = 1;
+}
+
+message UpdateOIDCConnection {
+  OIDCConnection oidc_connection = 1;
+  OIDCConnection previous_oidc_connection = 2;
+}
+
+message DeleteOIDCConnection {
+  OIDCConnection oidc_connection = 1;
+}

@@ -15,6 +15,7 @@ import (
 var skipRPCs = []string{
 	"/tesseral.intermediate.v1.IntermediateService/CreateIntermediateSession",
 	"/tesseral.intermediate.v1.IntermediateService/GetSettings",
+	"/tesseral.intermediate.v1.IntermediateService/ListOIDCOrganizations",
 	"/tesseral.intermediate.v1.IntermediateService/ListSAMLOrganizations",
 	"/tesseral.intermediate.v1.IntermediateService/RedeemUserImpersonationToken",
 	"/tesseral.intermediate.v1.IntermediateService/ExchangeSessionForIntermediateSession",

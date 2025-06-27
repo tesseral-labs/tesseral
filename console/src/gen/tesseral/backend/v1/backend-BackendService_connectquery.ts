@@ -124,6 +124,41 @@ export const updateSAMLConnection = BackendService.method.updateSAMLConnection;
 export const deleteSAMLConnection = BackendService.method.deleteSAMLConnection;
 
 /**
+ * List OIDC Connections.
+ *
+ * @generated from rpc tesseral.backend.v1.BackendService.ListOIDCConnections
+ */
+export const listOIDCConnections = BackendService.method.listOIDCConnections;
+
+/**
+ * Get an OIDC Connection.
+ *
+ * @generated from rpc tesseral.backend.v1.BackendService.GetOIDCConnection
+ */
+export const getOIDCConnection = BackendService.method.getOIDCConnection;
+
+/**
+ * Create an OIDC Connection.
+ *
+ * @generated from rpc tesseral.backend.v1.BackendService.CreateOIDCConnection
+ */
+export const createOIDCConnection = BackendService.method.createOIDCConnection;
+
+/**
+ * Update an OIDC Connection.
+ *
+ * @generated from rpc tesseral.backend.v1.BackendService.UpdateOIDCConnection
+ */
+export const updateOIDCConnection = BackendService.method.updateOIDCConnection;
+
+/**
+ * Delete an OIDC Connection.
+ *
+ * @generated from rpc tesseral.backend.v1.BackendService.DeleteOIDCConnection
+ */
+export const deleteOIDCConnection = BackendService.method.deleteOIDCConnection;
+
+/**
  * List SCIM API Keys.
  *
  * @generated from rpc tesseral.backend.v1.BackendService.ListSCIMAPIKeys

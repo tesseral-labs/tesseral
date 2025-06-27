@@ -35,6 +35,15 @@ func (s *Service) ListSAMLOrganizations(ctx context.Context, req *connect.Reques
 	return connect.NewResponse(res), nil
 }
 
+func (s *Service) ListOIDCOrganizations(ctx context.Context, req *connect.Request[intermediatev1.ListOIDCOrganizationsRequest]) (*connect.Response[intermediatev1.ListOIDCOrganizationsResponse], error) {
+	res, err := s.Store.ListOIDCOrganizations(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+
+	return connect.NewResponse(res), nil
+}
+
 func (s *Service) SetOrganization(ctx context.Context, req *connect.Request[intermediatev1.SetOrganizationRequest]) (*connect.Response[intermediatev1.SetOrganizationResponse], error) {
 	res, err := s.Store.SetOrganization(ctx, req.Msg)
 	if err != nil {

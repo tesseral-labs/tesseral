@@ -13,6 +13,13 @@ service IntermediateService {
     };
   }
 
+  rpc ListOIDCOrganizations(ListOIDCOrganizationsRequest) returns (ListOIDCOrganizationsResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/oidc-organizations"
+      body: "*"
+    };
+  }
+
   rpc GetSettings(GetSettingsRequest) returns (GetSettingsResponse);
 
   rpc RedeemUserImpersonationToken(RedeemUserImpersonationTokenRequest) returns (RedeemUserImpersonationTokenResponse) {
@@ -279,6 +286,7 @@ message Settings {
   bool log_in_with_microsoft = 14;
   bool log_in_with_password = 15;
   bool log_in_with_saml = 16;
+  bool log_in_with_oidc = 24;
   string redirect_uri = 17;
   optional string after_login_redirect_uri = 18;
   optional string after_signup_redirect_uri = 19;
@@ -413,10 +421,12 @@ message Organization {
   bool log_in_with_github = 16;
   bool log_in_with_password = 6;
   bool log_in_with_saml = 7;
+  bool log_in_with_oidc = 18;
   bool log_in_with_authenticator_app = 8;
   bool log_in_with_passkey = 9;
   bool require_mfa = 10;
   string primary_saml_connection_id = 11;
+  string primary_oidc_connection_id = 17;
   bool user_exists = 12;
   bool user_has_password = 13;
   bool user_has_authenticator_app = 14;
@@ -449,6 +459,14 @@ message ListSAMLOrganizationsRequest {
 }
 
 message ListSAMLOrganizationsResponse {
+  repeated Organization organizations = 1;
+}
+
+message ListOIDCOrganizationsRequest {
+  string email = 1;
+}
+
+message ListOIDCOrganizationsResponse {
   repeated Organization organizations = 1;
 }
 

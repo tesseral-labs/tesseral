@@ -39,6 +39,11 @@ const (
 	FrontendService_CreateSAMLConnection_FullMethodName                  = "/tesseral.frontend.v1.FrontendService/CreateSAMLConnection"
 	FrontendService_UpdateSAMLConnection_FullMethodName                  = "/tesseral.frontend.v1.FrontendService/UpdateSAMLConnection"
 	FrontendService_DeleteSAMLConnection_FullMethodName                  = "/tesseral.frontend.v1.FrontendService/DeleteSAMLConnection"
+	FrontendService_ListOIDCConnections_FullMethodName                   = "/tesseral.frontend.v1.FrontendService/ListOIDCConnections"
+	FrontendService_GetOIDCConnection_FullMethodName                     = "/tesseral.frontend.v1.FrontendService/GetOIDCConnection"
+	FrontendService_CreateOIDCConnection_FullMethodName                  = "/tesseral.frontend.v1.FrontendService/CreateOIDCConnection"
+	FrontendService_UpdateOIDCConnection_FullMethodName                  = "/tesseral.frontend.v1.FrontendService/UpdateOIDCConnection"
+	FrontendService_DeleteOIDCConnection_FullMethodName                  = "/tesseral.frontend.v1.FrontendService/DeleteOIDCConnection"
 	FrontendService_ListSCIMAPIKeys_FullMethodName                       = "/tesseral.frontend.v1.FrontendService/ListSCIMAPIKeys"
 	FrontendService_GetSCIMAPIKey_FullMethodName                         = "/tesseral.frontend.v1.FrontendService/GetSCIMAPIKey"
 	FrontendService_CreateSCIMAPIKey_FullMethodName                      = "/tesseral.frontend.v1.FrontendService/CreateSCIMAPIKey"
@@ -104,6 +109,11 @@ type FrontendServiceClient interface {
 	CreateSAMLConnection(ctx context.Context, in *CreateSAMLConnectionRequest, opts ...grpc.CallOption) (*CreateSAMLConnectionResponse, error)
 	UpdateSAMLConnection(ctx context.Context, in *UpdateSAMLConnectionRequest, opts ...grpc.CallOption) (*UpdateSAMLConnectionResponse, error)
 	DeleteSAMLConnection(ctx context.Context, in *DeleteSAMLConnectionRequest, opts ...grpc.CallOption) (*DeleteSAMLConnectionResponse, error)
+	ListOIDCConnections(ctx context.Context, in *ListOIDCConnectionsRequest, opts ...grpc.CallOption) (*ListOIDCConnectionsResponse, error)
+	GetOIDCConnection(ctx context.Context, in *GetOIDCConnectionRequest, opts ...grpc.CallOption) (*GetOIDCConnectionResponse, error)
+	CreateOIDCConnection(ctx context.Context, in *CreateOIDCConnectionRequest, opts ...grpc.CallOption) (*CreateOIDCConnectionResponse, error)
+	UpdateOIDCConnection(ctx context.Context, in *UpdateOIDCConnectionRequest, opts ...grpc.CallOption) (*UpdateOIDCConnectionResponse, error)
+	DeleteOIDCConnection(ctx context.Context, in *DeleteOIDCConnectionRequest, opts ...grpc.CallOption) (*DeleteOIDCConnectionResponse, error)
 	ListSCIMAPIKeys(ctx context.Context, in *ListSCIMAPIKeysRequest, opts ...grpc.CallOption) (*ListSCIMAPIKeysResponse, error)
 	GetSCIMAPIKey(ctx context.Context, in *GetSCIMAPIKeyRequest, opts ...grpc.CallOption) (*GetSCIMAPIKeyResponse, error)
 	CreateSCIMAPIKey(ctx context.Context, in *CreateSCIMAPIKeyRequest, opts ...grpc.CallOption) (*CreateSCIMAPIKeyResponse, error)
@@ -362,6 +372,56 @@ func (c *frontendServiceClient) DeleteSAMLConnection(ctx context.Context, in *De
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DeleteSAMLConnectionResponse)
 	err := c.cc.Invoke(ctx, FrontendService_DeleteSAMLConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) ListOIDCConnections(ctx context.Context, in *ListOIDCConnectionsRequest, opts ...grpc.CallOption) (*ListOIDCConnectionsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListOIDCConnectionsResponse)
+	err := c.cc.Invoke(ctx, FrontendService_ListOIDCConnections_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) GetOIDCConnection(ctx context.Context, in *GetOIDCConnectionRequest, opts ...grpc.CallOption) (*GetOIDCConnectionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetOIDCConnectionResponse)
+	err := c.cc.Invoke(ctx, FrontendService_GetOIDCConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) CreateOIDCConnection(ctx context.Context, in *CreateOIDCConnectionRequest, opts ...grpc.CallOption) (*CreateOIDCConnectionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateOIDCConnectionResponse)
+	err := c.cc.Invoke(ctx, FrontendService_CreateOIDCConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) UpdateOIDCConnection(ctx context.Context, in *UpdateOIDCConnectionRequest, opts ...grpc.CallOption) (*UpdateOIDCConnectionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateOIDCConnectionResponse)
+	err := c.cc.Invoke(ctx, FrontendService_UpdateOIDCConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) DeleteOIDCConnection(ctx context.Context, in *DeleteOIDCConnectionRequest, opts ...grpc.CallOption) (*DeleteOIDCConnectionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteOIDCConnectionResponse)
+	err := c.cc.Invoke(ctx, FrontendService_DeleteOIDCConnection_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -773,6 +833,11 @@ type FrontendServiceServer interface {
 	CreateSAMLConnection(context.Context, *CreateSAMLConnectionRequest) (*CreateSAMLConnectionResponse, error)
 	UpdateSAMLConnection(context.Context, *UpdateSAMLConnectionRequest) (*UpdateSAMLConnectionResponse, error)
 	DeleteSAMLConnection(context.Context, *DeleteSAMLConnectionRequest) (*DeleteSAMLConnectionResponse, error)
+	ListOIDCConnections(context.Context, *ListOIDCConnectionsRequest) (*ListOIDCConnectionsResponse, error)
+	GetOIDCConnection(context.Context, *GetOIDCConnectionRequest) (*GetOIDCConnectionResponse, error)
+	CreateOIDCConnection(context.Context, *CreateOIDCConnectionRequest) (*CreateOIDCConnectionResponse, error)
+	UpdateOIDCConnection(context.Context, *UpdateOIDCConnectionRequest) (*UpdateOIDCConnectionResponse, error)
+	DeleteOIDCConnection(context.Context, *DeleteOIDCConnectionRequest) (*DeleteOIDCConnectionResponse, error)
 	ListSCIMAPIKeys(context.Context, *ListSCIMAPIKeysRequest) (*ListSCIMAPIKeysResponse, error)
 	GetSCIMAPIKey(context.Context, *GetSCIMAPIKeyRequest) (*GetSCIMAPIKeyResponse, error)
 	CreateSCIMAPIKey(context.Context, *CreateSCIMAPIKeyRequest) (*CreateSCIMAPIKeyResponse, error)
@@ -896,6 +961,21 @@ func (UnimplementedFrontendServiceServer) UpdateSAMLConnection(context.Context, 
 }
 func (UnimplementedFrontendServiceServer) DeleteSAMLConnection(context.Context, *DeleteSAMLConnectionRequest) (*DeleteSAMLConnectionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteSAMLConnection not implemented")
+}
+func (UnimplementedFrontendServiceServer) ListOIDCConnections(context.Context, *ListOIDCConnectionsRequest) (*ListOIDCConnectionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListOIDCConnections not implemented")
+}
+func (UnimplementedFrontendServiceServer) GetOIDCConnection(context.Context, *GetOIDCConnectionRequest) (*GetOIDCConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOIDCConnection not implemented")
+}
+func (UnimplementedFrontendServiceServer) CreateOIDCConnection(context.Context, *CreateOIDCConnectionRequest) (*CreateOIDCConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateOIDCConnection not implemented")
+}
+func (UnimplementedFrontendServiceServer) UpdateOIDCConnection(context.Context, *UpdateOIDCConnectionRequest) (*UpdateOIDCConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateOIDCConnection not implemented")
+}
+func (UnimplementedFrontendServiceServer) DeleteOIDCConnection(context.Context, *DeleteOIDCConnectionRequest) (*DeleteOIDCConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteOIDCConnection not implemented")
 }
 func (UnimplementedFrontendServiceServer) ListSCIMAPIKeys(context.Context, *ListSCIMAPIKeysRequest) (*ListSCIMAPIKeysResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListSCIMAPIKeys not implemented")
@@ -1388,6 +1468,96 @@ func _FrontendService_DeleteSAMLConnection_Handler(srv interface{}, ctx context.
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FrontendServiceServer).DeleteSAMLConnection(ctx, req.(*DeleteSAMLConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_ListOIDCConnections_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListOIDCConnectionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).ListOIDCConnections(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_ListOIDCConnections_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).ListOIDCConnections(ctx, req.(*ListOIDCConnectionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_GetOIDCConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOIDCConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).GetOIDCConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_GetOIDCConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).GetOIDCConnection(ctx, req.(*GetOIDCConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_CreateOIDCConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateOIDCConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).CreateOIDCConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_CreateOIDCConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).CreateOIDCConnection(ctx, req.(*CreateOIDCConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_UpdateOIDCConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateOIDCConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).UpdateOIDCConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_UpdateOIDCConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).UpdateOIDCConnection(ctx, req.(*UpdateOIDCConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_DeleteOIDCConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteOIDCConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).DeleteOIDCConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_DeleteOIDCConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).DeleteOIDCConnection(ctx, req.(*DeleteOIDCConnectionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2162,6 +2332,26 @@ var FrontendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteSAMLConnection",
 			Handler:    _FrontendService_DeleteSAMLConnection_Handler,
+		},
+		{
+			MethodName: "ListOIDCConnections",
+			Handler:    _FrontendService_ListOIDCConnections_Handler,
+		},
+		{
+			MethodName: "GetOIDCConnection",
+			Handler:    _FrontendService_GetOIDCConnection_Handler,
+		},
+		{
+			MethodName: "CreateOIDCConnection",
+			Handler:    _FrontendService_CreateOIDCConnection_Handler,
+		},
+		{
+			MethodName: "UpdateOIDCConnection",
+			Handler:    _FrontendService_UpdateOIDCConnection_Handler,
+		},
+		{
+			MethodName: "DeleteOIDCConnection",
+			Handler:    _FrontendService_DeleteOIDCConnection_Handler,
 		},
 		{
 			MethodName: "ListSCIMAPIKeys",

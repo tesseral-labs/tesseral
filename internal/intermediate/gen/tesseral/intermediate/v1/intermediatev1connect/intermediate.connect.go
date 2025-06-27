@@ -36,6 +36,9 @@ const (
 	// IntermediateServiceListSAMLOrganizationsProcedure is the fully-qualified name of the
 	// IntermediateService's ListSAMLOrganizations RPC.
 	IntermediateServiceListSAMLOrganizationsProcedure = "/tesseral.intermediate.v1.IntermediateService/ListSAMLOrganizations"
+	// IntermediateServiceListOIDCOrganizationsProcedure is the fully-qualified name of the
+	// IntermediateService's ListOIDCOrganizations RPC.
+	IntermediateServiceListOIDCOrganizationsProcedure = "/tesseral.intermediate.v1.IntermediateService/ListOIDCOrganizations"
 	// IntermediateServiceGetSettingsProcedure is the fully-qualified name of the IntermediateService's
 	// GetSettings RPC.
 	IntermediateServiceGetSettingsProcedure = "/tesseral.intermediate.v1.IntermediateService/GetSettings"
@@ -141,6 +144,7 @@ const (
 // service.
 type IntermediateServiceClient interface {
 	ListSAMLOrganizations(context.Context, *connect.Request[v1.ListSAMLOrganizationsRequest]) (*connect.Response[v1.ListSAMLOrganizationsResponse], error)
+	ListOIDCOrganizations(context.Context, *connect.Request[v1.ListOIDCOrganizationsRequest]) (*connect.Response[v1.ListOIDCOrganizationsResponse], error)
 	GetSettings(context.Context, *connect.Request[v1.GetSettingsRequest]) (*connect.Response[v1.GetSettingsResponse], error)
 	RedeemUserImpersonationToken(context.Context, *connect.Request[v1.RedeemUserImpersonationTokenRequest]) (*connect.Response[v1.RedeemUserImpersonationTokenResponse], error)
 	CreateIntermediateSession(context.Context, *connect.Request[v1.CreateIntermediateSessionRequest]) (*connect.Response[v1.CreateIntermediateSessionResponse], error)
@@ -192,6 +196,12 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 			httpClient,
 			baseURL+IntermediateServiceListSAMLOrganizationsProcedure,
 			connect.WithSchema(intermediateServiceMethods.ByName("ListSAMLOrganizations")),
+			connect.WithClientOptions(opts...),
+		),
+		listOIDCOrganizations: connect.NewClient[v1.ListOIDCOrganizationsRequest, v1.ListOIDCOrganizationsResponse](
+			httpClient,
+			baseURL+IntermediateServiceListOIDCOrganizationsProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("ListOIDCOrganizations")),
 			connect.WithClientOptions(opts...),
 		),
 		getSettings: connect.NewClient[v1.GetSettingsRequest, v1.GetSettingsResponse](
@@ -398,6 +408,7 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 // intermediateServiceClient implements IntermediateServiceClient.
 type intermediateServiceClient struct {
 	listSAMLOrganizations                 *connect.Client[v1.ListSAMLOrganizationsRequest, v1.ListSAMLOrganizationsResponse]
+	listOIDCOrganizations                 *connect.Client[v1.ListOIDCOrganizationsRequest, v1.ListOIDCOrganizationsResponse]
 	getSettings                           *connect.Client[v1.GetSettingsRequest, v1.GetSettingsResponse]
 	redeemUserImpersonationToken          *connect.Client[v1.RedeemUserImpersonationTokenRequest, v1.RedeemUserImpersonationTokenResponse]
 	createIntermediateSession             *connect.Client[v1.CreateIntermediateSessionRequest, v1.CreateIntermediateSessionResponse]
@@ -436,6 +447,11 @@ type intermediateServiceClient struct {
 // ListSAMLOrganizations calls tesseral.intermediate.v1.IntermediateService.ListSAMLOrganizations.
 func (c *intermediateServiceClient) ListSAMLOrganizations(ctx context.Context, req *connect.Request[v1.ListSAMLOrganizationsRequest]) (*connect.Response[v1.ListSAMLOrganizationsResponse], error) {
 	return c.listSAMLOrganizations.CallUnary(ctx, req)
+}
+
+// ListOIDCOrganizations calls tesseral.intermediate.v1.IntermediateService.ListOIDCOrganizations.
+func (c *intermediateServiceClient) ListOIDCOrganizations(ctx context.Context, req *connect.Request[v1.ListOIDCOrganizationsRequest]) (*connect.Response[v1.ListOIDCOrganizationsResponse], error) {
+	return c.listOIDCOrganizations.CallUnary(ctx, req)
 }
 
 // GetSettings calls tesseral.intermediate.v1.IntermediateService.GetSettings.
@@ -623,6 +639,7 @@ func (c *intermediateServiceClient) OnboardingCreateProjects(ctx context.Context
 // tesseral.intermediate.v1.IntermediateService service.
 type IntermediateServiceHandler interface {
 	ListSAMLOrganizations(context.Context, *connect.Request[v1.ListSAMLOrganizationsRequest]) (*connect.Response[v1.ListSAMLOrganizationsResponse], error)
+	ListOIDCOrganizations(context.Context, *connect.Request[v1.ListOIDCOrganizationsRequest]) (*connect.Response[v1.ListOIDCOrganizationsResponse], error)
 	GetSettings(context.Context, *connect.Request[v1.GetSettingsRequest]) (*connect.Response[v1.GetSettingsResponse], error)
 	RedeemUserImpersonationToken(context.Context, *connect.Request[v1.RedeemUserImpersonationTokenRequest]) (*connect.Response[v1.RedeemUserImpersonationTokenResponse], error)
 	CreateIntermediateSession(context.Context, *connect.Request[v1.CreateIntermediateSessionRequest]) (*connect.Response[v1.CreateIntermediateSessionResponse], error)
@@ -669,6 +686,12 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 		IntermediateServiceListSAMLOrganizationsProcedure,
 		svc.ListSAMLOrganizations,
 		connect.WithSchema(intermediateServiceMethods.ByName("ListSAMLOrganizations")),
+		connect.WithHandlerOptions(opts...),
+	)
+	intermediateServiceListOIDCOrganizationsHandler := connect.NewUnaryHandler(
+		IntermediateServiceListOIDCOrganizationsProcedure,
+		svc.ListOIDCOrganizations,
+		connect.WithSchema(intermediateServiceMethods.ByName("ListOIDCOrganizations")),
 		connect.WithHandlerOptions(opts...),
 	)
 	intermediateServiceGetSettingsHandler := connect.NewUnaryHandler(
@@ -873,6 +896,8 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 		switch r.URL.Path {
 		case IntermediateServiceListSAMLOrganizationsProcedure:
 			intermediateServiceListSAMLOrganizationsHandler.ServeHTTP(w, r)
+		case IntermediateServiceListOIDCOrganizationsProcedure:
+			intermediateServiceListOIDCOrganizationsHandler.ServeHTTP(w, r)
 		case IntermediateServiceGetSettingsProcedure:
 			intermediateServiceGetSettingsHandler.ServeHTTP(w, r)
 		case IntermediateServiceRedeemUserImpersonationTokenProcedure:
@@ -950,6 +975,10 @@ type UnimplementedIntermediateServiceHandler struct{}
 
 func (UnimplementedIntermediateServiceHandler) ListSAMLOrganizations(context.Context, *connect.Request[v1.ListSAMLOrganizationsRequest]) (*connect.Response[v1.ListSAMLOrganizationsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.ListSAMLOrganizations is not implemented"))
+}
+
+func (UnimplementedIntermediateServiceHandler) ListOIDCOrganizations(context.Context, *connect.Request[v1.ListOIDCOrganizationsRequest]) (*connect.Response[v1.ListOIDCOrganizationsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.ListOIDCOrganizations is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) GetSettings(context.Context, *connect.Request[v1.GetSettingsRequest]) (*connect.Response[v1.GetSettingsResponse], error) {

@@ -288,6 +288,142 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /v1/oidc-connections:
+        get:
+            tags:
+                - BackendService
+            description: List OIDC Connections.
+            operationId: BackendService_ListOIDCConnections
+            parameters:
+                - name: organizationId
+                  in: query
+                  description: The Organization ID.
+                  schema:
+                    type: string
+                - name: pageToken
+                  in: query
+                  description: A pagination token. Leave empty to get the first page of results.
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListOIDCConnectionsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - BackendService
+            description: Create an OIDC Connection.
+            operationId: BackendService_CreateOIDCConnection
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/OIDCConnection'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateOIDCConnectionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/oidc-connections/{id}:
+        get:
+            tags:
+                - BackendService
+            description: Get an OIDC Connection.
+            operationId: BackendService_GetOIDCConnection
+            parameters:
+                - name: id
+                  in: path
+                  description: The OIDC Connection ID.
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetOIDCConnectionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - BackendService
+            description: Delete an OIDC Connection.
+            operationId: BackendService_DeleteOIDCConnection
+            parameters:
+                - name: id
+                  in: path
+                  description: The OIDC Connection ID.
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteOIDCConnectionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - BackendService
+            description: Update an OIDC Connection.
+            operationId: BackendService_UpdateOIDCConnection
+            parameters:
+                - name: id
+                  in: path
+                  description: The OIDC Connection ID.
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/OIDCConnection'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateOIDCConnectionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /v1/organizations:
         get:
             tags:
@@ -1687,6 +1823,13 @@ components:
             properties:
                 auditLogEvent:
                     $ref: '#/components/schemas/AuditLogEvent'
+        CreateOIDCConnectionResponse:
+            type: object
+            properties:
+                oidcConnection:
+                    allOf:
+                        - $ref: '#/components/schemas/OIDCConnection'
+                    description: The created OIDC Connection.
         CreateOrganizationResponse:
             type: object
             properties:
@@ -1738,6 +1881,9 @@ components:
         DeleteAPIKeyRoleAssignmentResponse:
             type: object
             properties: {}
+        DeleteOIDCConnectionResponse:
+            type: object
+            properties: {}
         DeleteOrganizationResponse:
             type: object
             properties: {}
@@ -1767,6 +1913,13 @@ components:
             properties:
                 apiKey:
                     $ref: '#/components/schemas/APIKey'
+        GetOIDCConnectionResponse:
+            type: object
+            properties:
+                oidcConnection:
+                    allOf:
+                        - $ref: '#/components/schemas/OIDCConnection'
+                    description: The requested OIDC Connection.
         GetOrganizationDomainsResponse:
             type: object
             properties:
@@ -1880,6 +2033,19 @@ components:
                         $ref: '#/components/schemas/APIKey'
                 nextPageToken:
                     type: string
+        ListOIDCConnectionsResponse:
+            type: object
+            properties:
+                oidcConnections:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/OIDCConnection'
+                    description: A list of OIDC Connections.
+                nextPageToken:
+                    type: string
+                    description: |-
+                        The pagination token for the next page of results. Empty if there is no
+                         next page.
         ListOrganizationsResponse:
             type: object
             properties:
@@ -1981,6 +2147,41 @@ components:
                 nextPageToken:
                     type: string
                     description: The pagination token for the next page of results. Empty if there is no next page.
+        OIDCConnection:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: The OIDC Connection ID. Starts with `oidc_connection_...`.
+                organizationId:
+                    type: string
+                    description: The Organization this OIDC Connection belongs to.
+                createTime:
+                    type: string
+                    description: When the OIDC Connection was created.
+                    format: date-time
+                updateTime:
+                    type: string
+                    description: When the OIDC Connection was last updated.
+                    format: date-time
+                primary:
+                    type: boolean
+                    description: Whether this is the primary OIDC Connection for the Organization.
+                configurationUrl:
+                    type: string
+                    description: The OIDC Provider's configuration URL.
+                clientId:
+                    type: string
+                    description: The OIDC Provider's Client ID.
+                clientSecret:
+                    type: string
+                    description: |-
+                        The OIDC Provider's Client Secret.
+                         This field is write-only.
+                redirectUri:
+                    type: string
+                    description: The OIDC Provider's redirect URI.
+            description: OIDCConnection represents an OpenID Connect configuration for an Organization.
         Organization:
             type: object
             properties:
@@ -2016,6 +2217,9 @@ components:
                 logInWithSaml:
                     type: boolean
                     description: Whether the Organization supports "Log in with SAML".
+                logInWithOidc:
+                    type: boolean
+                    description: Whether the Organization supports "Log in with OIDC".
                 logInWithAuthenticatorApp:
                     type: boolean
                     description: Whether the Organization supports authenticator apps as a secondary auth factor.
@@ -2161,6 +2365,9 @@ components:
                 logInWithSaml:
                     type: boolean
                     description: Whether the Project supports "Log in with SAML".
+                logInWithOidc:
+                    type: boolean
+                    description: Whether the Project supports "Log in with OIDC".
                 logInWithAuthenticatorApp:
                     type: boolean
                     description: Whether the Project supports authenticator apps as a secondary auth factor.
@@ -2399,6 +2606,13 @@ components:
             properties:
                 apiKey:
                     $ref: '#/components/schemas/APIKey'
+        UpdateOIDCConnectionResponse:
+            type: object
+            properties:
+                oidcConnection:
+                    allOf:
+                        - $ref: '#/components/schemas/OIDCConnection'
+                    description: The updated OIDC Connection.
         UpdateOrganizationDomainsResponse:
             type: object
             properties:

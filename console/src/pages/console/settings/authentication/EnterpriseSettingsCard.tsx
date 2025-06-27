@@ -51,7 +51,7 @@ export function EnterpriseSettingsCard() {
           Enterprise Auth
         </CardTitle>
         <CardDescription>
-          Configure whether users can log in with SAML SSO and use SCIM
+          Configure whether users can log in with SAML/OIDC SSO and use SCIM
           provisioning.
         </CardDescription>
       </CardHeader>
@@ -61,6 +61,16 @@ export function EnterpriseSettingsCard() {
             <div className="font-semibold text-sm">SAML SSO</div>
             <div>
               {getProjectResponse?.project?.logInWithSaml ? (
+                <Badge>Enabled</Badge>
+              ) : (
+                <Badge variant="secondary">Disabled</Badge>
+              )}
+            </div>
+          </div>
+          <div className="flex items-center justify-between gap-4">
+            <div className="font-semibold text-sm">OIDC SSO</div>
+            <div>
+              {getProjectResponse?.project?.logInWithOidc ? (
                 <Badge>Enabled</Badge>
               ) : (
                 <Badge variant="secondary">Disabled</Badge>
@@ -86,6 +96,7 @@ export function EnterpriseSettingsCard() {
 
 const schema = z.object({
   logInWithSaml: z.boolean(),
+  logInWithOidc: z.boolean(),
 });
 
 function ConfigureEnterpriseSettingsButton() {
@@ -98,6 +109,7 @@ function ConfigureEnterpriseSettingsButton() {
     resolver: zodResolver(schema),
     defaultValues: {
       logInWithSaml: getProjectResponse?.project?.logInWithSaml ?? false,
+      logInWithOidc: getProjectResponse?.project?.logInWithOidc ?? false,
     },
   });
 
@@ -105,6 +117,7 @@ function ConfigureEnterpriseSettingsButton() {
     await updateProjectMutation.mutateAsync({
       project: {
         logInWithSaml: data.logInWithSaml,
+        logInWithOidc: data.logInWithOidc,
       },
     });
     await refetch();
@@ -115,6 +128,7 @@ function ConfigureEnterpriseSettingsButton() {
     if (getProjectResponse) {
       form.reset({
         logInWithSaml: getProjectResponse.project?.logInWithSaml ?? false,
+        logInWithOidc: getProjectResponse.project?.logInWithOidc ?? false,
       });
     }
   }, [getProjectResponse, form]);
@@ -131,7 +145,7 @@ function ConfigureEnterpriseSettingsButton() {
         <DialogHeader>
           <DialogTitle>Configure Enterprise Settings</DialogTitle>
           <DialogDescription>
-            Configure whether users can log in with SAML SSO.
+            Configure whether users can log in with SAML/OIDC SSO.
           </DialogDescription>
         </DialogHeader>
 
@@ -148,6 +162,28 @@ function ConfigureEnterpriseSettingsButton() {
                       <FormDescription>
                         Enable SAML SSO for your organization. This allows users
                         to log in using their SAML identity provider.
+                      </FormDescription>
+                      <FormMessage />
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="logInWithOidc"
+                render={({ field }) => (
+                  <FormItem className="flex items-center justify-between gap-4">
+                    <div className="space-y-2">
+                      <FormLabel>Log in with OIDC</FormLabel>
+                      <FormDescription>
+                        Enable OIDC SSO for your organization. This allows users
+                        to log in using their OIDC identity provider.
                       </FormDescription>
                       <FormMessage />
                     </div>
