@@ -65,10 +65,14 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	wellknownservice "github.com/tesseral-labs/tesseral/internal/wellknown/service"
 	wellknownstore "github.com/tesseral-labs/tesseral/internal/wellknown/store"
+	"go.opentelemetry.io/contrib/bridges/otelslog"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
+	"go.opentelemetry.io/otel/log/global"
 	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/sdk/log"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
@@ -129,9 +133,7 @@ func main() {
 	}
 
 	conf.Load(&config)
-	slog.Info("config", "config", conf.Redact(config))
 
-	var tracerProvider *sdktrace.TracerProvider
 	if config.OTELExportTraces {
 		var exporterOpts []otlptracegrpc.Option
 		if config.OTLPTraceGRPCInsecure {
@@ -143,7 +145,7 @@ func main() {
 			panic(fmt.Errorf("create otel trace exporter: %w", err))
 		}
 
-		tracerProvider = sdktrace.NewTracerProvider(sdktrace.WithBatcher(exporter))
+		tracerProvider := sdktrace.NewTracerProvider(sdktrace.WithBatcher(exporter))
 
 		defer func() {
 			if err := tracerProvider.Shutdown(context.Background()); err != nil {
@@ -153,7 +155,30 @@ func main() {
 
 		otel.SetTracerProvider(tracerProvider)
 		otel.SetTextMapPropagator(propagation.TraceContext{})
+
+		logExporter, err := otlploghttp.New(context.Background())
+		if err != nil {
+			panic(fmt.Errorf("create otel log exporter: %w", err))
+		}
+
+		lp := log.NewLoggerProvider(
+			log.WithProcessor(
+				log.NewBatchProcessor(logExporter),
+			),
+		)
+		defer lp.Shutdown(context.Background())
+
+		global.SetLoggerProvider(lp)
+
+		slogHandler := ctxlog.NewHandler(
+			sentryintegration.NewSlogHandler(
+				otelslog.NewHandler("api"),
+			),
+		)
+		slog.SetDefault(slog.New(slogHandler))
 	}
+
+	slog.Info("config", "config", conf.Redact(config))
 
 	db, err := dbconn.Open(context.Background(), config.DB)
 	if err != nil {
