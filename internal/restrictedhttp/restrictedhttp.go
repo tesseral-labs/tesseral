@@ -1,50 +1,43 @@
 package restrictedhttp
 
+// Code modified from https://github.com/segmentio/netsec
+
 import (
 	"context"
 	"fmt"
 	"log/slog"
 	"net"
 	"net/http"
+	"time"
 )
 
-func NewClient(httpClient *http.Client) *http.Client {
-	if httpClient == nil {
-		httpClient = http.DefaultClient
-	}
-
-	transport, ok := httpClient.Transport.(*http.Transport)
-	if !ok {
-		transport = http.DefaultTransport.(*http.Transport)
-	}
-	transport.DialContext = restrictedDial(transport.DialContext)
-
-	return &http.Client{
-		Transport:     transport,
-		Jar:           httpClient.Jar,
-		Timeout:       httpClient.Timeout,
-		CheckRedirect: httpClient.CheckRedirect,
-	}
-}
-
-type dialFunc = func(ctx context.Context, network string, addr string) (net.Conn, error)
-
-func restrictedDial(dial dialFunc) dialFunc {
+func NewTransport() *http.Transport {
+	defaultTransport := http.DefaultTransport.(*http.Transport)
 	dialer := &restrictedDialer{
-		dial:     dial,
+		dial:     defaultTransport.DialContext,
 		denyList: privateIPNetworks,
 	}
-	return dialFunc(func(ctx context.Context, network, addr string) (net.Conn, error) {
-		conn, err := dialer.DialContext(ctx, network, addr)
-		if err != nil {
-			slog.ErrorContext(ctx, "restricted_dial_error", "network", network, "addr", addr, "error", err)
-		}
-		return conn, err
-	})
+
+	// Construct a new transport with the same parameters as http.DefaultTransport
+	return &http.Transport{
+		Proxy: http.ProxyFromEnvironment,
+		DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
+			conn, err := dialer.DialContext(ctx, network, addr)
+			if err != nil {
+				slog.ErrorContext(ctx, "restricted_dial_error", "network", network, "addr", addr, "error", err)
+			}
+			return conn, err
+		},
+		ForceAttemptHTTP2:     true,
+		MaxIdleConns:          100,
+		IdleConnTimeout:       90 * time.Second,
+		TLSHandshakeTimeout:   10 * time.Second,
+		ExpectContinueTimeout: 1 * time.Second,
+	}
 }
 
 type restrictedDialer struct {
-	dial     dialFunc
+	dial     func(ctx context.Context, network, addr string) (net.Conn, error)
 	denyList denyList
 }
 

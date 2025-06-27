@@ -191,7 +191,9 @@ func main() {
 
 	auditlogStore := auditlogstore.Store{}
 	oidcClient := &oidcclient.Client{
-		HTTPClient: restrictedhttp.NewClient(http.DefaultClient),
+		HTTPClient: &http.Client{
+			Transport: restrictedhttp.NewTransport(),
+		},
 	}
 
 	// Register the backend service
