@@ -11,7 +11,6 @@ import (
 	"github.com/stretchr/testify/require"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
-	"github.com/tesseral-labs/tesseral/internal/totp"
 )
 
 func TestGetAuthenticatorAppOptions_Success(t *testing.T) {
@@ -42,8 +41,7 @@ func TestRegisterAuthenticatorApp_Success(t *testing.T) {
 	secret, err := u.Store.getUserAuthenticatorAppChallengeSecret(ctx)
 	require.NoError(t, err)
 
-	key := totp.Key{Secret: secret}
-	code := genTOTPCode(key, time.Now())
+	code := genTOTPCode(secret, time.Now())
 
 	resp, err := u.Store.RegisterAuthenticatorApp(ctx, &frontendv1.RegisterAuthenticatorAppRequest{
 		TotpCode: code,
@@ -85,8 +83,7 @@ func TestRegisterAuthenticatorApp_ExpiredCode(t *testing.T) {
 	secret, err := u.Store.getUserAuthenticatorAppChallengeSecret(ctx)
 	require.NoError(t, err)
 
-	key := totp.Key{Secret: secret}
-	code := genTOTPCode(key, time.Now().Add(-time.Hour))
+	code := genTOTPCode(secret, time.Now().Add(-time.Hour))
 
 	resp, err := u.Store.RegisterAuthenticatorApp(ctx, &frontendv1.RegisterAuthenticatorAppRequest{
 		TotpCode: code,
@@ -109,8 +106,7 @@ func TestRegisterAuthenticatorApp_AlreadyRegistered(t *testing.T) {
 	secret, err := u.Store.getUserAuthenticatorAppChallengeSecret(ctx)
 	require.NoError(t, err)
 
-	key := totp.Key{Secret: secret}
-	code := genTOTPCode(key, time.Now())
+	code := genTOTPCode(secret, time.Now())
 
 	_, err = u.Store.RegisterAuthenticatorApp(ctx, &frontendv1.RegisterAuthenticatorAppRequest{
 		TotpCode: code,
@@ -123,8 +119,7 @@ func TestRegisterAuthenticatorApp_AlreadyRegistered(t *testing.T) {
 	secret, err = u.Store.getUserAuthenticatorAppChallengeSecret(ctx)
 	require.NoError(t, err)
 
-	key = totp.Key{Secret: secret}
-	code = genTOTPCode(key, time.Now())
+	code = genTOTPCode(secret, time.Now())
 
 	_, err = u.Store.RegisterAuthenticatorApp(ctx, &frontendv1.RegisterAuthenticatorAppRequest{
 		TotpCode: code,
@@ -132,10 +127,10 @@ func TestRegisterAuthenticatorApp_AlreadyRegistered(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func genTOTPCode(key totp.Key, now time.Time) string {
+func genTOTPCode(secret []byte, now time.Time) string {
 	counter := now.Unix() / 30
 
-	mac := hmac.New(sha1.New, key.Secret)
+	mac := hmac.New(sha1.New, secret)
 	_ = binary.Write(mac, binary.BigEndian, counter)
 	sum := mac.Sum(nil)
 
