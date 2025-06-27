@@ -85,7 +85,7 @@ func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *frontendv1.Re
 
 	var recoveryCodes []string
 	var recoveryCodeSHA256s [][]byte
-	for i := 0; i < recoveryCodeCount; i++ {
+	for range recoveryCodeCount {
 		recoveryCode := uuid.New()
 		recoveryCodeSHA := sha256.Sum256(recoveryCode[:])
 

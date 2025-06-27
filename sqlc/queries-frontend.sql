@@ -43,6 +43,7 @@ SET
     log_in_with_github = $10,
     log_in_with_email = $5,
     log_in_with_password = $6,
+    log_in_with_saml = $11,
     log_in_with_authenticator_app = $7,
     log_in_with_passkey = $8,
     require_mfa = $9
@@ -241,7 +242,7 @@ UPDATE
 SET
     update_time = now(),
     is_owner = $1,
-    display_name = $3
+    display_name = coalesce($3, display_name)
 WHERE
     id = $2
 RETURNING

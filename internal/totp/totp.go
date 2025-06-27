@@ -29,13 +29,13 @@ func (k *Key) OTPAuthURI(issuer, user string) string {
 }
 
 func (k *Key) Validate(now time.Time, code string) error {
-	if code != k.gen(now) {
+	if code != k.Gen(now) {
 		return fmt.Errorf("incorrect totp code")
 	}
 	return nil
 }
 
-func (k *Key) gen(now time.Time) string {
+func (k *Key) Gen(now time.Time) string {
 	counter := now.Unix() / 30
 
 	mac := hmac.New(sha1.New, k.Secret)
