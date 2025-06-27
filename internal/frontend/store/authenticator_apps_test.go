@@ -1,6 +1,10 @@
 package store
 
 import (
+	"crypto/hmac"
+	"crypto/sha1"
+	"encoding/binary"
+	"fmt"
 	"testing"
 	"time"
 
@@ -39,7 +43,7 @@ func TestRegisterAuthenticatorApp_Success(t *testing.T) {
 	require.NoError(t, err)
 
 	key := totp.Key{Secret: secret}
-	code := key.Gen(time.Now())
+	code := genTOTPCode(key, time.Now())
 
 	resp, err := u.Store.RegisterAuthenticatorApp(ctx, &frontendv1.RegisterAuthenticatorAppRequest{
 		TotpCode: code,
@@ -82,7 +86,7 @@ func TestRegisterAuthenticatorApp_ExpiredCode(t *testing.T) {
 	require.NoError(t, err)
 
 	key := totp.Key{Secret: secret}
-	code := key.Gen(time.Now().Add(-time.Hour))
+	code := genTOTPCode(key, time.Now().Add(-time.Hour))
 
 	resp, err := u.Store.RegisterAuthenticatorApp(ctx, &frontendv1.RegisterAuthenticatorAppRequest{
 		TotpCode: code,
@@ -106,7 +110,7 @@ func TestRegisterAuthenticatorApp_AlreadyRegistered(t *testing.T) {
 	require.NoError(t, err)
 
 	key := totp.Key{Secret: secret}
-	code := key.Gen(time.Now())
+	code := genTOTPCode(key, time.Now())
 
 	_, err = u.Store.RegisterAuthenticatorApp(ctx, &frontendv1.RegisterAuthenticatorAppRequest{
 		TotpCode: code,
@@ -120,10 +124,26 @@ func TestRegisterAuthenticatorApp_AlreadyRegistered(t *testing.T) {
 	require.NoError(t, err)
 
 	key = totp.Key{Secret: secret}
-	code = key.Gen(time.Now())
+	code = genTOTPCode(key, time.Now())
 
 	_, err = u.Store.RegisterAuthenticatorApp(ctx, &frontendv1.RegisterAuthenticatorAppRequest{
 		TotpCode: code,
 	})
 	require.NoError(t, err)
+}
+
+func genTOTPCode(key totp.Key, now time.Time) string {
+	counter := now.Unix() / 30
+
+	mac := hmac.New(sha1.New, key.Secret)
+	_ = binary.Write(mac, binary.BigEndian, counter)
+	sum := mac.Sum(nil)
+
+	offset := sum[len(sum)-1] & 0xf
+	value := int64(((int(sum[offset]) & 0x7f) << 24) |
+		((int(sum[offset+1] & 0xff)) << 16) |
+		((int(sum[offset+2] & 0xff)) << 8) |
+		(int(sum[offset+3]) & 0xff))
+
+	return fmt.Sprintf("%06d", value%1_000_000)
 }
