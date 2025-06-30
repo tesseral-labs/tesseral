@@ -12,6 +12,60 @@ import (
 	"github.com/google/uuid"
 )
 
+const createAuditLogEvent = `-- name: CreateAuditLogEvent :one
+INSERT INTO audit_log_events (id, project_id, organization_id, actor_user_id, actor_session_id, resource_type, resource_id, event_name, event_time, event_details)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, coalesce($10, '{}'::jsonb))
+RETURNING
+    id, project_id, organization_id, actor_user_id, actor_session_id, actor_api_key_id, actor_console_user_id, actor_console_session_id, actor_backend_api_key_id, actor_intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details
+`
+
+type CreateAuditLogEventParams struct {
+	ID             uuid.UUID
+	ProjectID      uuid.UUID
+	OrganizationID *uuid.UUID
+	ActorUserID    *uuid.UUID
+	ActorSessionID *uuid.UUID
+	ResourceType   *AuditLogEventResourceType
+	ResourceID     *uuid.UUID
+	EventName      string
+	EventTime      *time.Time
+	EventDetails   interface{}
+}
+
+func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEventParams) (AuditLogEvent, error) {
+	row := q.db.QueryRow(ctx, createAuditLogEvent,
+		arg.ID,
+		arg.ProjectID,
+		arg.OrganizationID,
+		arg.ActorUserID,
+		arg.ActorSessionID,
+		arg.ResourceType,
+		arg.ResourceID,
+		arg.EventName,
+		arg.EventTime,
+		arg.EventDetails,
+	)
+	var i AuditLogEvent
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.OrganizationID,
+		&i.ActorUserID,
+		&i.ActorSessionID,
+		&i.ActorApiKeyID,
+		&i.ActorConsoleUserID,
+		&i.ActorConsoleSessionID,
+		&i.ActorBackendApiKeyID,
+		&i.ActorIntermediateSessionID,
+		&i.ResourceType,
+		&i.ResourceID,
+		&i.EventName,
+		&i.EventTime,
+		&i.EventDetails,
+	)
+	return i, err
+}
+
 const createOIDCIntermediateSession = `-- name: CreateOIDCIntermediateSession :one
 INSERT INTO oidc_intermediate_sessions (id, oidc_connection_id, code_verifier)
     VALUES ($1, $2, $3)

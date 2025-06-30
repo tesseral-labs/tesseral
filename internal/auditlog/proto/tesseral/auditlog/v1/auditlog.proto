@@ -151,6 +151,7 @@ message UnassignUserRole {
 message CreateSession {
   Session session = 1;
   optional string saml_connection_id = 2;
+  optional string oidc_connection_id = 3;
 }
 
 message CreateOIDCConnection {
@@ -163,5 +164,9 @@ message UpdateOIDCConnection {
 }
 
 message DeleteOIDCConnection {
+  OIDCConnection oidc_connection = 1;
+}
+
+message InitiateOIDCConnection {
   OIDCConnection oidc_connection = 1;
 }

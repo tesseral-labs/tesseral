@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	auditlogstore "github.com/tesseral-labs/tesseral/internal/auditlog/store"
 	"github.com/tesseral-labs/tesseral/internal/oidc/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/oidcclient"
 )
@@ -17,6 +18,7 @@ type Store struct {
 	oidcClientSecretsKMSKeyID string
 	kms                       *kms.Client
 	oidc                      *oidcclient.Client
+	auditlogStore             *auditlogstore.Store
 }
 
 type NewStoreParams struct {
@@ -24,6 +26,7 @@ type NewStoreParams struct {
 	KMS                       *kms.Client
 	OIDCClientSecretsKMSKeyID string
 	OIDCClient                *oidcclient.Client
+	AuditlogStore             *auditlogstore.Store
 }
 
 func New(p NewStoreParams) *Store {
@@ -33,6 +36,7 @@ func New(p NewStoreParams) *Store {
 		oidcClientSecretsKMSKeyID: p.OIDCClientSecretsKMSKeyID,
 		kms:                       p.KMS,
 		oidc:                      p.OIDCClient,
+		auditlogStore:             p.AuditlogStore,
 	}
 
 	return store
@@ -47,4 +51,12 @@ func (s *Store) tx(ctx context.Context) (tx pgx.Tx, q *queries.Queries, commit f
 	commit = func() error { return tx.Commit(ctx) }
 	rollback = func() error { return tx.Rollback(ctx) }
 	return tx, queries.New(tx), commit, rollback, nil
+}
+
+func refOrNil[T comparable](t T) *T {
+	var z T
+	if t == z {
+		return nil
+	}
+	return &t
 }

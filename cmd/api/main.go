@@ -335,6 +335,7 @@ func main() {
 		KMS:                       kms_,
 		OIDCClientSecretsKMSKeyID: config.OIDCClientSecretsKMSKeyID,
 		OIDCClient:                oidcClient,
+		AuditlogStore:             &auditlogStore,
 	})
 	oidcService := oidcservice.Service{
 		Store:             oidcStore,

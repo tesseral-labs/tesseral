@@ -7,6 +7,7 @@ import (
 	"slices"
 
 	"github.com/google/uuid"
+	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/oidc/authn"
 	"github.com/tesseral-labs/tesseral/internal/oidc/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
@@ -18,7 +19,7 @@ type OIDCConnectionInitData struct {
 }
 
 func (s *Store) GetOIDCConnectionInitData(ctx context.Context, oidcConnectionID string) (*OIDCConnectionInitData, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -40,6 +41,11 @@ func (s *Store) GetOIDCConnectionInitData(ctx context.Context, oidcConnectionID 
 	})
 	if err != nil {
 		return nil, fmt.Errorf("get oidc connection: %w", err)
+	}
+
+	auditOidcConnection, err := s.auditlogStore.GetOIDCConnection(ctx, tx, oidcConnectionUUID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit oidc connection: %w", err)
 	}
 
 	config, err := s.oidc.GetConfiguration(ctx, qOIDCConnection.ConfigurationUrl)
@@ -87,6 +93,18 @@ func (s *Store) GetOIDCConnectionInitData(ctx context.Context, oidcConnectionID 
 		CodeVerifier:     codeVerifier,
 	}); err != nil {
 		return nil, fmt.Errorf("create OIDC session: %w", err)
+	}
+
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.oidc_connections.initiate",
+		EventDetails: &auditlogv1.InitiateOIDCConnection{
+			OidcConnection: auditOidcConnection,
+		},
+		ResourceType:   queries.AuditLogEventResourceTypeOidcConnection,
+		ResourceID:     (*uuid.UUID)(&oidcConnectionUUID),
+		OrganizationID: &qOIDCConnection.OrganizationID,
+	}); err != nil {
+		return nil, fmt.Errorf("log audit event: %w", err)
 	}
 
 	if err := commit(); err != nil {

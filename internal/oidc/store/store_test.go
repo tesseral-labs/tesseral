@@ -49,11 +49,3 @@ func newTestUtil(t *testing.T) (context.Context, *testUtil) {
 		ProjectID:   projectID,
 	}
 }
-
-func refOrNil[T comparable](t T) *T {
-	var z T
-	if t == z {
-		return nil
-	}
-	return &t
-}

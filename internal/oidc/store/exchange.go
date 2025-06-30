@@ -13,6 +13,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/oidc/authn"
 	"github.com/tesseral-labs/tesseral/internal/oidc/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/oidcclient"
@@ -137,7 +138,7 @@ type CreateSessionResponse struct {
 }
 
 func (s *Store) CreateSession(ctx context.Context, req CreateSessionRequest) (*CreateSessionResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -165,13 +166,32 @@ func (s *Store) CreateSession(ctx context.Context, req CreateSessionRequest) (*C
 
 	refreshToken := uuid.New()
 	refreshTokenSHA256 := sha256.Sum256(refreshToken[:])
-	if _, err := q.CreateSession(ctx, queries.CreateSessionParams{
+	qSession, err := q.CreateSession(ctx, queries.CreateSessionParams{
 		ID:                 uuid.Must(uuid.NewV7()),
 		ExpireTime:         &expireTime,
 		RefreshTokenSha256: refreshTokenSHA256[:],
 		UserID:             qUser.ID,
-	}); err != nil {
+	})
+	if err != nil {
 		return nil, fmt.Errorf("create session: %w", err)
+	}
+
+	auditSession, err := s.auditlogStore.GetSession(ctx, tx, qSession.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get audit session: %w", err)
+	}
+
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.sessions.create",
+		EventDetails: &auditlogv1.CreateSession{
+			Session:          auditSession,
+			OidcConnectionId: &req.OIDCConnectionID,
+		},
+		ResourceType:   queries.AuditLogEventResourceTypeSession,
+		ResourceID:     &qSession.ID,
+		OrganizationID: &qOIDCConnection.OrganizationID,
+	}); err != nil {
+		return nil, fmt.Errorf("log audit event: %w", err)
 	}
 
 	qProject, err := q.GetProject(ctx, authn.ProjectID(ctx))
