@@ -183,7 +183,8 @@ function SignupPageContents() {
   const hasBelowFoldMethod =
     settings.logInWithEmail ||
     settings.logInWithPassword ||
-    settings.logInWithSaml;
+    settings.logInWithSaml ||
+    settings.logInWithOidc;
 
   return (
     <LoginFlowCard>
