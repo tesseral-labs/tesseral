@@ -35,6 +35,7 @@ import {
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
   issueEmailVerificationChallenge,
+  listOIDCOrganizations,
   listSAMLOrganizations,
   setEmailAsPrimaryLoginFactor,
   setPasswordAsPrimaryLoginFactor,
@@ -216,6 +217,16 @@ function SignupPageContents() {
     },
   );
 
+  const { data: listOIDCOrganizationsResponse } = useQuery(
+    listOIDCOrganizations,
+    {
+      email: debouncedEmail,
+    },
+    {
+      enabled: settings.logInWithOidc && debouncedEmail.includes("@"),
+    },
+  );
+
   const hasAboveFoldMethod =
     settings.logInWithGoogle ||
     settings.logInWithMicrosoft ||
@@ -223,7 +234,8 @@ function SignupPageContents() {
   const hasBelowFoldMethod =
     settings.logInWithEmail ||
     settings.logInWithPassword ||
-    settings.logInWithSaml;
+    settings.logInWithSaml ||
+    settings.logInWithOidc;
 
   return (
     <LoginFlowCard>
@@ -312,6 +324,17 @@ function SignupPageContents() {
                 >
                   <Button type="button" className="mt-4 w-full">
                     Log in with SAML ({org.displayName})
+                  </Button>
+                </a>
+              ))}
+
+              {listOIDCOrganizationsResponse?.organizations?.map((org) => (
+                <a
+                  key={org.id}
+                  href={`/api/oidc/v1/${org.primaryOidcConnectionId}/init`}
+                >
+                  <Button type="button" className="mt-4 w-full">
+                    Log in with OIDC ({org.displayName})
                   </Button>
                 </a>
               ))}
