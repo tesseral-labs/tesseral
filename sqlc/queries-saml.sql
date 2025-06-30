@@ -46,3 +46,9 @@ INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, primary_au
 RETURNING
     *;
 
+-- name: CreateAuditLogEvent :one
+INSERT INTO audit_log_events (id, project_id, organization_id, actor_user_id, actor_session_id, resource_type, resource_id, event_name, event_time, event_details)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, coalesce(@event_details, '{}'::jsonb))
+RETURNING
+    *;
+
