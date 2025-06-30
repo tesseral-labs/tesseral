@@ -2491,6 +2491,7 @@ SET
     log_in_with_github = $10,
     log_in_with_email = $5,
     log_in_with_password = $6,
+    log_in_with_saml = $11,
     log_in_with_authenticator_app = $7,
     log_in_with_passkey = $8,
     require_mfa = $9
@@ -2511,6 +2512,7 @@ type UpdateOrganizationParams struct {
 	LogInWithPasskey          bool
 	RequireMfa                bool
 	LogInWithGithub           bool
+	LogInWithSaml             bool
 }
 
 func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganizationParams) (Organization, error) {
@@ -2525,6 +2527,7 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 		arg.LogInWithPasskey,
 		arg.RequireMfa,
 		arg.LogInWithGithub,
+		arg.LogInWithSaml,
 	)
 	var i Organization
 	err := row.Scan(
@@ -2705,7 +2708,7 @@ UPDATE
 SET
     update_time = now(),
     is_owner = $1,
-    display_name = $3
+    display_name = coalesce($3, display_name)
 WHERE
     id = $2
 RETURNING

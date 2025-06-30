@@ -26,22 +26,31 @@ import {
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
 import {
+  getProject,
   getProjectUISettings,
+  updateProject,
   updateProjectUISettings,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 
 const schema = z.object({
+  auditLogsEnabled: z.boolean().optional(),
   autoCreateOrganizations: z.boolean(),
 });
 
 export function VaultBehaviorSettingsCard() {
-  const { data: getProjectUiSettingsResponse, refetch } =
-    useQuery(getProjectUISettings);
+  const { data: getProjectResponse, refetch: refetchProject } =
+    useQuery(getProject);
+  const {
+    data: getProjectUiSettingsResponse,
+    refetch: refetchProjectUiSettings,
+  } = useQuery(getProjectUISettings);
+  const updateProjectMutation = useMutation(updateProject);
   const updateProjectUiSettingsMutation = useMutation(updateProjectUISettings);
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
+      auditLogsEnabled: getProjectResponse?.project?.auditLogsEnabled ?? false,
       autoCreateOrganizations:
         getProjectUiSettingsResponse?.projectUiSettings
           ?.autoCreateOrganizations ?? false,
@@ -52,20 +61,28 @@ export function VaultBehaviorSettingsCard() {
     await updateProjectUiSettingsMutation.mutateAsync({
       autoCreateOrganizations: data.autoCreateOrganizations,
     });
-    await refetch();
+    await updateProjectMutation.mutateAsync({
+      project: {
+        auditLogsEnabled: data.auditLogsEnabled,
+      },
+    });
+    await refetchProject();
+    await refetchProjectUiSettings();
     form.reset(data);
     toast.success("Vault behavior settings updated successfully");
   }
 
   useEffect(() => {
-    if (getProjectUiSettingsResponse && form) {
+    if (getProjectUiSettingsResponse && getProjectResponse && form) {
       form.reset({
+        auditLogsEnabled:
+          getProjectResponse?.project?.auditLogsEnabled ?? false,
         autoCreateOrganizations:
           getProjectUiSettingsResponse.projectUiSettings
             ?.autoCreateOrganizations ?? false,
       });
     }
-  }, [getProjectUiSettingsResponse, form]);
+  }, [getProjectUiSettingsResponse, getProjectResponse, form]);
 
   return (
     <Form {...form}>
@@ -90,6 +107,27 @@ export function VaultBehaviorSettingsCard() {
                       Automatically create Organizations when a new user signs
                       up. When disabled, new users will be prompted to name
                       their Organization upon first login.
+                    </FormDescription>
+                    <FormMessage />
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="auditLogsEnabled"
+              render={({ field }) => (
+                <FormItem className="flex justify-between items-center gap-4">
+                  <div className="space-y-2">
+                    <FormLabel>Audit Logs</FormLabel>
+                    <FormDescription>
+                      Whether to show audit logs to your users in the Vault UI.
                     </FormDescription>
                     <FormMessage />
                   </div>

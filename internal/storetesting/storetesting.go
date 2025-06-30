@@ -193,8 +193,8 @@ func (e *Environment) NewOrganization(t *testing.T, projectID string, organizati
 
 	// Create the organization
 	_, err = e.DB.Exec(t.Context(), `
-INSERT INTO organizations (id, display_name, project_id, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_oidc, log_in_with_authenticator_app, log_in_with_passkey, scim_enabled, api_keys_enabled)
-  VALUES ($1::uuid, $2, $3::uuid, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13);
+INSERT INTO organizations (id, display_name, project_id, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_oidc, log_in_with_authenticator_app, log_in_with_passkey, scim_enabled, api_keys_enabled, custom_roles_enabled)
+  VALUES ($1::uuid, $2, $3::uuid, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14);
 `,
 		organizationID.String(),
 		organization.DisplayName,
@@ -209,6 +209,7 @@ INSERT INTO organizations (id, display_name, project_id, log_in_with_google, log
 		organization.GetLogInWithPasskey(),
 		organization.GetScimEnabled(),
 		organization.GetApiKeysEnabled(),
+		organization.GetCustomRolesEnabled(),
 	)
 	if err != nil {
 		t.Fatalf("failed to create organization: %v", err)
@@ -232,13 +233,17 @@ func (e *Environment) NewUser(t *testing.T, organizationID string, user *backend
 
 	// Create the user
 	_, err = e.DB.Exec(t.Context(), `
-INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
-  VALUES ($1::uuid, $2, crypt('password', gen_salt('bf', 14)), $3::uuid, $4);
+INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner, display_name, google_user_id, microsoft_user_id, github_user_id)
+  VALUES ($1::uuid, $2, crypt('password', gen_salt('bf', 14)), $3::uuid, $4, $5, $6, $7, $8);
 `,
 		userID.String(),
 		user.Email,
 		uuid.UUID(organizationUUID).String(),
 		user.GetOwner(),
+		user.DisplayName,
+		user.GoogleUserId,
+		user.MicrosoftUserId,
+		user.GithubUserId,
 	)
 	if err != nil {
 		t.Fatalf("failed to create user: %v", err)

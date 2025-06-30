@@ -18,6 +18,7 @@ type testKms struct {
 	MicrosoftOAuthClientSecretsKMSKeyID string
 	GithubOAuthClientSecretsKMSKeyID    string
 	OIDCClientSecretsKMSKeyID           string
+	AuthenticatorAppSecretsKMSKeyID     string
 }
 
 func newKMS() (*testKms, func()) {
@@ -204,6 +205,39 @@ Keys:
           jeIcSvKQflZPrfVwQxo76a5Mn58Blz8NDVzjRYbDoZfLOkKy0Z13oSvC0NpYxgBm
           R28oFfrhJITRx5zqACZ0Cwkl
           -----END PRIVATE KEY-----
+      - Metadata:
+          Description: "Authenticator Apps Secrets Key"
+          KeyId: 186bf523-bc6a-479b-8ed1-e198298b98f2
+          KeyUsage: "ENCRYPT_DECRYPT"
+        PrivateKeyPem: |
+          -----BEGIN PRIVATE KEY-----
+          MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCnLBLsD2ORW/o2
+          8JhR4b6XQKCx1fif2OMOb0nxYZVT8fg2CD3oVP+XAltjszzDP9UgAXjPEsZYzZlO
+          jp/WXENciLthpLWoMSeFlqNz01somEa1nDlcQ/7jLhRxYs3eh/s1iYT8mbH2Ripu
+          oBs9KiNdF5actNpC++jHGG/qViVsKSQQ0HLbRUJ83xJ8XQPy4scBlYGI3BwAf7Z1
+          VT8thgZDtECKyqUnSLZYVYqA1Tj9YdyRHifhVEyCZ5HbHPyCUPVfpLGub8ffBTUN
+          /ax383Kud86sg43OHeUKgSCu8Oj0waDdUrAFCBdifZaz6IxyEubdZ1eS72683Ddw
+          z1lzwc87AgMBAAECggEAA67w68qbAwTnynYapRM4Q9TktYZlaAA7YIILOwpPY/4c
+          3fPoiUn2J7mhkdzNJfAuHfpqUwWy4RoGmriBxRNbWJqaplgeuIn8uPDMwSyTAZ35
+          UN8UVHgbEZ5eTPFEX/bXDiLtjzNDvI1nOfDFKN/Yz6BJbUJ+3KL4Sgq7zIoBYRSt
+          20mMkbwZSmoIlfV2bQ6u54S4ggocWHYqSrrK7SqYNSvMJFl4mLkxhYDl4UMltcsp
+          1Q1tgDZ1ZL9nESydNwzgvLBt/nV0QkYmGyXa+/VFiPz8ko65Ceo/yK+k4pOxlS66
+          Z/2l/rQihx32qFSaJOZa65Y3vno2I+6I0sTVNt+DoQKBgQDW5bNw3UR20zGqgBaV
+          eHi/tcOVmqIeCk/o8W9IXyrG40KhIvsg3Xbj2WCu/wtf6zCfieb9vS0plaHDFSUA
+          BaKm9/vJiKgydUMSSon4sYePrYQ9cCSTPjBaLWm63+lVJLkIu/icmdiUEt0dULRP
+          V9YzwbCSNkdEQZ/ygsbF4vndFwKBgQDHJYuoxHG4x5TDd010aehDLs/KHJDLKBc0
+          Lpvrd5JRJZWOXC2qMWQ3bMyLsz8J1cKtvk4dFfos/lwtsitUeuQ9G5MoKtdpfpsQ
+          zhiN3nykMtp4fye8wPwiGXhFgOvkf9hyEFKh5MfCjqdAP+DUl6ql/9sOR76/uvBB
+          3LhySbzdfQKBgQCdgSnt1R8zAEPstYjX8L5/tJcvdXDRF7nN//cSUj4mG7dgJyVs
+          xyU2hsKoQGJz4Qt4Qzi8TQVm7zbqpvrBc1/thOBUrAarROrt4xgQ4P18vy6nYSRN
+          j00dKx/NSgPY1duQnUTwcoocrV7G97nQVY63zITABWxiiL7UnilWLK/57QKBgQCF
+          mVyOBeu86LeWQi0GEh6tI3RmxK8me2jFqxcS6o6QPcSNUq2X5bazsBuxBLkfofYO
+          lQLWZG4HTUUNqt+Ct0by79LTOZp1vWfN6FV0p3O6vBrwh21jJZyAS9Hx3sFh85qD
+          OwwUa+TPUuBFLBVqyazD3FdaxyrieUjBBo/+rBU2CQKBgDuVZWr/gUcvBodse1us
+          85xADQ59vxgJQa9x9E8z9/2g7UC4eD0dttDSgRBaHCrp/RE1Ye5lssH5WGx276/8
+          jeIcSvKQflZPrfVwQxo76a5Mn58Blz8NDVzjRYbDoZfLOkKy0Z13oSvC0NpYxgBm
+          R28oFfrhJITRx5zqACZ0Cwkl
+          -----END PRIVATE KEY-----
 Aliases:
   - AliasName: alias/session-signing-keys-key
     TargetKeyId: bc436485-5092-42b8-92a3-0aa8b93536dc
@@ -215,6 +249,8 @@ Aliases:
     TargetKeyId: 48f79cf6-2bbd-4f65-a934-ad1df7122fbd
   - AliasName: alias/oidc-client-secrets-key
     TargetKeyId: 0c261e98-324b-447b-a960-f66b8213610f
+  - AliasName: alias/authenticator-apps-secrets-key
+    TargetKeyId: 186bf523-bc6a-479b-8ed1-e198298b98f2
 `),
 						ContainerFilePath: "/init/seed.yaml",
 					},
@@ -247,5 +283,6 @@ Aliases:
 		MicrosoftOAuthClientSecretsKMSKeyID: "e612b031-6241-4df0-8bd0-17b19995ef14",
 		GithubOAuthClientSecretsKMSKeyID:    "48f79cf6-2bbd-4f65-a934-ad1df7122fbd",
 		OIDCClientSecretsKMSKeyID:           "0c261e98-324b-447b-a960-f66b8213610f",
+		AuthenticatorAppSecretsKMSKeyID:     "186bf523-bc6a-479b-8ed1-e198298b98f2",
 	}, cleanup
 }

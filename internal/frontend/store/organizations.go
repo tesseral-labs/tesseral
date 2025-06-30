@@ -125,6 +125,14 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 		updates.LogInWithPassword = *req.Organization.LogInWithPassword
 	}
 
+	updates.LogInWithSaml = qOrg.LogInWithSaml
+	if req.Organization.LogInWithSaml != nil {
+		if *req.Organization.LogInWithSaml && !qProject.LogInWithSaml {
+			return nil, apierror.NewPermissionDeniedError("log in with saml is not enabled for this project", fmt.Errorf("log in with saml is not enabled for this project"))
+		}
+		updates.LogInWithSaml = *req.Organization.LogInWithSaml
+	}
+
 	updates.LogInWithAuthenticatorApp = qOrg.LogInWithAuthenticatorApp
 	if req.Organization.LogInWithAuthenticatorApp != nil {
 		if *req.Organization.LogInWithAuthenticatorApp && !qProject.LogInWithAuthenticatorApp {
