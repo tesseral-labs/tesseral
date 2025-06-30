@@ -2016,6 +2016,8 @@ components:
                     type: boolean
                 logInWithSaml:
                     type: boolean
+                logInWithOidc:
+                    type: boolean
                 logInWithAuthenticatorApp:
                     type: boolean
                 logInWithPasskey:
