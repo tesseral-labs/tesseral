@@ -4,7 +4,7 @@ import { LoaderCircleIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { Link, useSearchParams } from "react-router";
+import { Link } from "react-router";
 import { z } from "zod";
 
 import { Title } from "@/components/core/Title";
