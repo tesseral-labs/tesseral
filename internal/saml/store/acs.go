@@ -131,7 +131,7 @@ func (s *Store) CreateSession(ctx context.Context, req *CreateSessionRequest) (*
 		EventName: "tesseral.sessions.create",
 		EventDetails: &auditlogv1.CreateSession{
 			Session:          auditSession,
-			SamlConnectionId: refOrNil(idformat.SAMLConnection.Format(samlConnectionID)),
+			SamlConnectionId: &req.SAMLConnectionID,
 		},
 		ResourceType:   queries.AuditLogEventResourceTypeSession,
 		ResourceID:     &qSession.ID,
