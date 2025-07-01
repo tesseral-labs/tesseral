@@ -46,7 +46,7 @@ services:
       - ./.local/kms/data/:/data/
       - ./.local/kms/seed.yaml:/init/seed.yaml
   nginx:
-    image: nginx:1-alpine
+    image: nginx:1
     ports:
       - "80:80"
       - "443:443"
