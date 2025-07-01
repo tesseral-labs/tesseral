@@ -6,7 +6,6 @@ require (
 	connectrpc.com/connect v1.18.1
 	connectrpc.com/vanguard v0.3.0
 	github.com/alecthomas/participle/v2 v2.1.1
-	github.com/aws/aws-lambda-go v1.48.0
 	github.com/aws/aws-sdk-go-v2 v1.36.2
 	github.com/aws/aws-sdk-go-v2/config v1.28.3
 	github.com/aws/aws-sdk-go-v2/credentials v1.17.44
