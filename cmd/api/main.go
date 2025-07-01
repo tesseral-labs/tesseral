@@ -65,6 +65,15 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	wellknownservice "github.com/tesseral-labs/tesseral/internal/wellknown/service"
 	wellknownstore "github.com/tesseral-labs/tesseral/internal/wellknown/store"
+	"go.opentelemetry.io/contrib/bridges/otelslog"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
+	"go.opentelemetry.io/otel/log/global"
+	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/sdk/log"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
 func main() {
@@ -92,6 +101,8 @@ func main() {
 	loadenv.LoadEnv()
 
 	config := struct {
+		OTELExportTraces                    bool          `conf:"otel_export_traces,noredact"`
+		OTLPTraceGRPCInsecure               bool          `conf:"otlp_trace_grpc_insecure,noredact"`
 		RunAsLambda                         bool          `conf:"run_as_lambda,noredact"`
 		ConsoleDomain                       string        `conf:"console_domain,noredact"`
 		AuthAppsRootDomain                  string        `conf:"auth_apps_root_domain,noredact"`
@@ -122,9 +133,56 @@ func main() {
 	}
 
 	conf.Load(&config)
-	slog.Info("config", "config", conf.Redact(config))
 
-	// TODO: Set up Sentry apps and error handling
+	if config.OTELExportTraces {
+		var exporterOpts []otlptracegrpc.Option
+		if config.OTLPTraceGRPCInsecure {
+			exporterOpts = append(exporterOpts, otlptracegrpc.WithInsecure())
+		}
+
+		exporter, err := otlptracegrpc.New(context.Background(), exporterOpts...)
+		if err != nil {
+			panic(fmt.Errorf("create otel trace exporter: %w", err))
+		}
+
+		tracerProvider := sdktrace.NewTracerProvider(sdktrace.WithBatcher(exporter))
+
+		defer func() {
+			if err := tracerProvider.Shutdown(context.Background()); err != nil {
+				panic(fmt.Errorf("shutdown tracer provider: %w", err))
+			}
+		}()
+
+		otel.SetTracerProvider(tracerProvider)
+		otel.SetTextMapPropagator(propagation.TraceContext{})
+
+		logExporter, err := otlploghttp.New(context.Background())
+		if err != nil {
+			panic(fmt.Errorf("create otel log exporter: %w", err))
+		}
+
+		lp := log.NewLoggerProvider(
+			log.WithProcessor(
+				log.NewBatchProcessor(logExporter),
+			),
+		)
+		defer func() {
+			if err := lp.Shutdown(context.Background()); err != nil {
+				panic(fmt.Errorf("shutdown logger provider: %w", err))
+			}
+		}()
+
+		global.SetLoggerProvider(lp)
+
+		slogHandler := ctxlog.NewHandler(
+			sentryintegration.NewSlogHandler(
+				otelslog.NewHandler("api"),
+			),
+		)
+		slog.SetDefault(slog.New(slogHandler))
+	}
+
+	slog.Info("config", "config", conf.Redact(config))
 
 	db, err := dbconn.Open(context.Background(), config.DB)
 	if err != nil {
@@ -387,6 +445,9 @@ func main() {
 	serve = sentryhttp.New(sentryhttp.Options{
 		Repanic: true,
 	}).Handle(serve)
+
+	// add traces
+	serve = otelhttp.NewHandler(serve, "serve")
 
 	slog.Info("serve")
 	if config.RunAsLambda {

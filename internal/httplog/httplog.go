@@ -10,7 +10,7 @@ import (
 func NewInterceptor() connect.Interceptor {
 	return connect.UnaryInterceptorFunc(func(next connect.UnaryFunc) connect.UnaryFunc {
 		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
-			slog.InfoContext(ctx, "http_request", "x_tesseral_host", req.Header().Get("X-Tesseral-Host"), "rpc", req.Spec().Procedure, "user_agent", req.Header().Get("User-Agent"))
+			slog.InfoContext(ctx, "http_request", "x_tesseral_host", req.Header().Get("X-Tesseral-Host"), "rpc", req.Spec().Procedure, "user_agent", req.Header().Get("User-Agent"), "traceparent", req.Header().Get("traceparent"))
 			res, err := next(ctx, req)
 
 			var errorCode string

@@ -6,11 +6,16 @@ import (
 	"github.com/rs/cors"
 	"github.com/tesseral-labs/tesseral/internal/common/projectid"
 	"github.com/tesseral-labs/tesseral/internal/common/store"
+	"go.opentelemetry.io/otel"
 )
+
+var tracer = otel.Tracer("github.com/tesseral-labs/tesseral/internal/common/corstrusteddomains")
 
 func Handler(s *store.Store, p *projectid.Sniffer, h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
+		ctx, span := tracer.Start(ctx, "common/corstrusteddomains/handler")
+		defer span.End()
 
 		projectID, err := p.GetProjectID(r.Header.Get("X-Tesseral-Host"))
 		if err != nil {
