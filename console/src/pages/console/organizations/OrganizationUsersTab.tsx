@@ -406,7 +406,9 @@ const schema = z.object({
 
 function CreateUserButton() {
   const { organizationId } = useParams();
-  const { data: getOrganizationResponse } = useQuery(getOrganization);
+  const { data: getOrganizationResponse } = useQuery(getOrganization, {
+    id: organizationId,
+  });
   const { refetch } = useInfiniteQuery(
     listUsers,
     {
