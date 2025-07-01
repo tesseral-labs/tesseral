@@ -244,6 +244,14 @@ func (s *Store) ConsoleListCustomAuditLogEvents(ctx context.Context, req *backen
 		listParams.ActorBackendApiKeyID = (*uuid.UUID)(&backendApiKeyID)
 	}
 
+	if req.ActorScimApiKeyId != "" {
+		scimApiKeyID, err := idformat.SCIMAPIKey.Parse(req.ActorScimApiKeyId)
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid scim_api_key_id", fmt.Errorf("parse scim api key id: %w", err))
+		}
+		listParams.ActorScimApiKeyID = (*uuid.UUID)(&scimApiKeyID)
+	}
+
 	if req.FilterStartTime != nil {
 		filterStartTime := req.FilterStartTime.AsTime()
 		listParams.StartTime = &filterStartTime
@@ -293,7 +301,7 @@ func (s *Store) ConsoleListAuditLogEventNames(ctx context.Context, req *backendv
 	}
 
 	if err := enforceSingleEventNamesFilter(req); err != nil {
-		return nil, apierror.NewFailedPreconditionError("exactly one of actor_api_key_id, actor_backend_api_key_id, actor_session_id, actor_user_id, or resource_type must be provided", fmt.Errorf("enforce single event names filter: %w", err))
+		return nil, apierror.NewFailedPreconditionError("exactly one of actor_api_key_id, actor_backend_api_key_id, actor_session_id, actor_user_id, actor_scim_api_key_id, or resource_type must be provided", fmt.Errorf("enforce single event names filter: %w", err))
 	}
 
 	if req.OrganizationId != "" {
@@ -369,6 +377,13 @@ func (s *Store) ConsoleListAuditLogEventNames(ctx context.Context, req *backendv
 		}
 		listParams.ActorUserID = (*uuid.UUID)(&userID)
 	}
+	if req.ActorScimApiKeyId != "" {
+		scimAPIKeyID, err := idformat.SCIMAPIKey.Parse(req.ActorScimApiKeyId)
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid actor_scim_api_key_id", fmt.Errorf("parse scim api key id: %w", err))
+		}
+		listParams.ActorScimApiKeyID = (*uuid.UUID)(&scimAPIKeyID)
+	}
 
 	qEventNames, err := q.ConsoleListAuditLogEventNames(ctx, listParams)
 	if err != nil {
@@ -417,6 +432,11 @@ func parseAuditLogEvent(qAuditLogEvent queries.AuditLogEvent) *backendv1.AuditLo
 		intermediateSessionID = idformat.IntermediateSession.Format(*qAuditLogEvent.ActorIntermediateSessionID)
 	}
 
+	var scimApiKeyID string
+	if qAuditLogEvent.ActorScimApiKeyID != nil {
+		scimApiKeyID = idformat.SCIMAPIKey.Format(*qAuditLogEvent.ActorScimApiKeyID)
+	}
+
 	return &backendv1.AuditLogEvent{
 		Id:                         idformat.AuditLogEvent.Format(qAuditLogEvent.ID),
 		OrganizationId:             organizationID,
@@ -425,6 +445,7 @@ func parseAuditLogEvent(qAuditLogEvent queries.AuditLogEvent) *backendv1.AuditLo
 		ActorApiKeyId:              apiKeyID,
 		ActorBackendApiKeyId:       backendApiKeyID,
 		ActorIntermediateSessionId: intermediateSessionID,
+		ActorScimApiKeyId:          scimApiKeyID,
 		EventName:                  qAuditLogEvent.EventName,
 		EventTime:                  timestamppb.New(*qAuditLogEvent.EventTime),
 		EventDetails:               &eventDetails,
@@ -476,6 +497,11 @@ func parseConsoleAuditLogEvent(qAuditLogEvent queries.AuditLogEvent) *backendv1.
 		intermediateSessionID = idformat.IntermediateSession.Format(*qAuditLogEvent.ActorIntermediateSessionID)
 	}
 
+	var scimApiKeyID string
+	if qAuditLogEvent.ActorScimApiKeyID != nil {
+		scimApiKeyID = idformat.SCIMAPIKey.Format(*qAuditLogEvent.ActorScimApiKeyID)
+	}
+
 	return &backendv1.ConsoleAuditLogEvent{
 		Id:                         idformat.AuditLogEvent.Format(qAuditLogEvent.ID),
 		OrganizationId:             organizationID,
@@ -486,6 +512,7 @@ func parseConsoleAuditLogEvent(qAuditLogEvent queries.AuditLogEvent) *backendv1.
 		ActorApiKeyId:              apiKeyID,
 		ActorBackendApiKeyId:       backendApiKeyID,
 		ActorIntermediateSessionId: intermediateSessionID,
+		ActorScimApiKeyId:          scimApiKeyID,
 		EventName:                  qAuditLogEvent.EventName,
 		EventTime:                  timestamppb.New(*qAuditLogEvent.EventTime),
 		EventDetails:               &eventDetails,
@@ -570,6 +597,9 @@ func enforceSingleEventNamesFilter(req *backendv1.ConsoleListAuditLogEventNamesR
 		filterCount++
 	}
 	if req.ActorUserId != "" {
+		filterCount++
+	}
+	if req.ActorScimApiKeyId != "" {
 		filterCount++
 	}
 

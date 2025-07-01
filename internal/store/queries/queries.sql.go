@@ -250,7 +250,7 @@ const createUser = `-- name: CreateUser :one
 INSERT INTO users (id, organization_id, email, is_owner, password_bcrypt, google_user_id, microsoft_user_id)
     VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 `
 
 type CreateUserParams struct {
@@ -283,7 +283,6 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -454,7 +453,7 @@ func (q *Queries) GetSessionByID(ctx context.Context, id uuid.UUID) (Session, er
 
 const getUserByID = `-- name: GetUserByID :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 FROM
     users
 WHERE
@@ -485,7 +484,6 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -614,7 +612,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 `
 
 type UpdateUserParams struct {
@@ -645,7 +643,6 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
