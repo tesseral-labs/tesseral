@@ -9,9 +9,12 @@ import (
 
 	"github.com/google/uuid"
 	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
+	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
 	intermediatev1 "github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
+	"github.com/tesseral-labs/tesseral/internal/uuidv7"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 func (s *Store) RedeemUserImpersonationToken(ctx context.Context, req *intermediatev1.RedeemUserImpersonationTokenRequest) (*intermediatev1.RedeemUserImpersonationTokenResponse, error) {
@@ -68,7 +71,7 @@ func (s *Store) RedeemUserImpersonationToken(ctx context.Context, req *intermedi
 		return nil, fmt.Errorf("get audit session: %w", err)
 	}
 
-	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+	if err := logImpersonateAuditEvent(ctx, q, logAuditEventParams{
 		EventName:      "tesseral.sessions.create",
 		EventDetails:   &auditlogv1.CreateSession{Session: auditSession},
 		OrganizationID: &qImpersonatedUser.OrganizationID,
@@ -86,4 +89,29 @@ func (s *Store) RedeemUserImpersonationToken(ctx context.Context, req *intermedi
 		AccessToken:  "", // populated in service
 		RefreshToken: idformat.SessionRefreshToken.Format(refreshToken),
 	}, nil
+}
+
+func logImpersonateAuditEvent(ctx context.Context, q *queries.Queries, data logAuditEventParams) error {
+	// Generate the UUIDv7 based on the event time.
+	eventTime := time.Now()
+	eventID := uuidv7.NewWithTime(eventTime)
+
+	eventDetailsBytes, err := protojson.Marshal(data.EventDetails)
+	if err != nil {
+		return fmt.Errorf("failed to marshal event details: %w", err)
+	}
+
+	qEventParams := queries.CreateAuditLogEventParams{
+		ID:             eventID,
+		ProjectID:      authn.ProjectID(ctx),
+		OrganizationID: data.OrganizationID,
+		ResourceType:   &data.ResourceType,
+		ResourceID:     data.ResourceID,
+		EventName:      data.EventName,
+		EventTime:      &eventTime,
+		EventDetails:   eventDetailsBytes,
+	}
+
+	_, err = q.CreateAuditLogEvent(ctx, qEventParams)
+	return err
 }

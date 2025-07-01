@@ -4,7 +4,7 @@ import { LoaderCircleIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { Link, useSearchParams } from "react-router";
+import { Link } from "react-router";
 import { z } from "zod";
 
 import { Title } from "@/components/core/Title";
@@ -40,6 +40,7 @@ import {
   setEmailAsPrimaryLoginFactor,
   setPasswordAsPrimaryLoginFactor,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { useLoginPageQueryParams } from "@/hooks/use-login-page-query-params";
 import {
   ProjectSettingsProvider,
   useProjectSettings,
@@ -100,28 +101,17 @@ function SignupPageContents() {
   const createIntermediateSessionMutation = useMutation(
     createIntermediateSession,
   );
-  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [relayedSessionState, setRelayedSessionState] = useState<
-    string | undefined
-  >();
-  useEffect(() => {
-    if (relayedSessionState !== undefined) {
-      return;
-    }
-
-    setRelayedSessionState(
-      searchParams.get("relayed-session-state") ?? undefined,
-    );
-
-    const searchParamsCopy = new URLSearchParams(searchParams);
-    searchParamsCopy.delete("relayed-session-state");
-    setSearchParams(searchParamsCopy);
-  }, [relayedSessionState, searchParams, setSearchParams]);
+  const [
+    { relayedSessionState, redirectURI, returnRelayedSessionTokenAsQueryParam },
+    serializedQueryParamState,
+  ] = useLoginPageQueryParams();
 
   async function createIntermediateSessionWithRelayedSessionState() {
     await createIntermediateSessionMutation.mutateAsync({
       relayedSessionState,
+      redirectUri: redirectURI,
+      returnRelayedSessionTokenAsQueryParam,
     });
   }
 
@@ -345,7 +335,7 @@ function SignupPageContents() {
         <p className="mt-4 text-xs text-muted-foreground">
           Already have an account?{" "}
           <Link
-            to="/login"
+            to={`/login${serializedQueryParamState}`}
             className="cursor-pointer text-foreground underline underline-offset-2 decoration-muted-foreground"
           >
             Log in.

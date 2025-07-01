@@ -87,6 +87,10 @@ function AppWithinQueryClient() {
       <BrowserRouter>
         <Routes>
           <Route
+            path="/project-settings"
+            element={<Navigate to="/settings/vault/domains" replace />}
+          />
+          <Route
             path="/project-settings/publishable-keys"
             element={<Navigate to="/settings/api-keys" replace />}
           />
