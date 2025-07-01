@@ -63,22 +63,23 @@ RETURNING
 UPDATE
     users
 SET
-    email = $1,
-    deactivate_time = $2
-WHERE
-    id = $3
-    AND organization_id = $4
-RETURNING
-    *;
-
--- name: DeactivateUser :one
-UPDATE
-    users
-SET
-    deactivate_time = $1
+    email = $1
 WHERE
     id = $2
     AND organization_id = $3
+RETURNING
+    *;
+
+-- name: DeleteUser :one
+DELETE FROM users
+WHERE id = $1
+    AND organization_id = $2
+RETURNING
+    *;
+
+-- name: CreateAuditLogEvent :one
+INSERT INTO audit_log_events (id, project_id, organization_id, actor_scim_api_key_id, resource_type, resource_id, event_name, event_time, event_details)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, coalesce(@event_details, '{}'::jsonb))
 RETURNING
     *;
 
