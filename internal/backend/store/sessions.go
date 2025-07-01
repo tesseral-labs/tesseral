@@ -111,6 +111,8 @@ func parseSession(qSession queries.Session) *backendv1.Session {
 		primaryAuthFactor = backendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GITHUB
 	case "saml":
 		primaryAuthFactor = backendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_SAML
+	case "oidc":
+		primaryAuthFactor = backendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_OIDC
 	case "impersonation":
 		primaryAuthFactor = backendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_IMPERSONATION
 	}

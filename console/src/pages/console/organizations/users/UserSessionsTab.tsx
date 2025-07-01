@@ -30,7 +30,6 @@ import {
   listSessions,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { PrimaryAuthFactor } from "@/gen/tesseral/backend/v1/models_pb";
-import { toTitleCase } from "@/lib/utils";
 
 export function UserSessionsTab() {
   const { organizationId, userId } = useParams();
@@ -105,9 +104,7 @@ export function UserSessionsTab() {
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline">
-                          {toTitleCase(
-                            PrimaryAuthFactor[session.primaryAuthFactor],
-                          )}
+                          {primaryAuthFactorLabel(session.primaryAuthFactor)}
                         </Badge>
                       </TableCell>
                       <TableCell>
@@ -170,4 +167,26 @@ export function UserSessionsTab() {
       </CardContent>
     </Card>
   );
+}
+
+// Handles proper display of primary auth factor labels, e.g. `Oidc` -> `OIDC`.
+function primaryAuthFactorLabel(primaryAuthFactor: PrimaryAuthFactor) {
+  switch (primaryAuthFactor) {
+    case PrimaryAuthFactor.EMAIL:
+      return "Email";
+    case PrimaryAuthFactor.GOOGLE:
+      return "Google";
+    case PrimaryAuthFactor.GITHUB:
+      return "GitHub";
+    case PrimaryAuthFactor.MICROSOFT:
+      return "Microsoft";
+    case PrimaryAuthFactor.SAML:
+      return "SAML";
+    case PrimaryAuthFactor.OIDC:
+      return "OIDC";
+    case PrimaryAuthFactor.IMPERSONATION:
+      return "Impersonation";
+    default:
+      return "Unknown";
+  }
 }

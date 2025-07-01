@@ -25,6 +25,7 @@ func TestCreateSAMLConnection_SAMLEnabled(t *testing.T) {
 			IdpRedirectUrl: "https://idp.example.com/saml/redirect",
 			IdpEntityId:    "https://idp.example.com/saml/idp",
 			OrganizationId: organizationID,
+			Primary:        refOrNil(true),
 		},
 	})
 	require.NoError(t, err)
@@ -36,6 +37,7 @@ func TestCreateSAMLConnection_SAMLEnabled(t *testing.T) {
 	require.Equal(t, organizationID, res.SamlConnection.OrganizationId)
 	require.NotEmpty(t, res.SamlConnection.CreateTime)
 	require.NotEmpty(t, res.SamlConnection.UpdateTime)
+	require.True(t, res.SamlConnection.GetPrimary())
 }
 
 func TestCreateSAMLConnection_SAMLDisabled(t *testing.T) {
@@ -139,6 +141,43 @@ func TestUpdateSAMLConnection_UpdatesFields(t *testing.T) {
 	require.Equal(t, "https://idp.example.com/saml/redirect2", updated.IdpRedirectUrl)
 	require.Equal(t, "https://idp.example.com/saml/idp2", updated.IdpEntityId)
 	require.True(t, updated.GetPrimary())
+}
+
+func TestUpdateSAMLConnection_SetPrimary(t *testing.T) {
+	t.Parallel()
+
+	ctx, u := newTestUtil(t)
+	organizationID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
+		DisplayName:   "test",
+		LogInWithSaml: refOrNil(true),
+	})
+
+	original, err := u.Store.CreateSAMLConnection(ctx, &backendv1.CreateSAMLConnectionRequest{
+		SamlConnection: &backendv1.SAMLConnection{
+			OrganizationId: organizationID,
+			IdpRedirectUrl: "https://idp.example.com/saml/redirect2",
+			IdpEntityId:    "https://idp.example.com/saml/idp2",
+			Primary:        refOrNil(true),
+		},
+	})
+	require.NoError(t, err)
+	require.True(t, original.SamlConnection.GetPrimary())
+
+	new, err := u.Store.CreateSAMLConnection(ctx, &backendv1.CreateSAMLConnectionRequest{
+		SamlConnection: &backendv1.SAMLConnection{
+			OrganizationId: organizationID,
+			IdpRedirectUrl: "https://idp.example.com/saml/redirect2",
+			IdpEntityId:    "https://idp.example.com/saml/idp2",
+			Primary:        refOrNil(true),
+		},
+	})
+	require.NoError(t, err)
+	require.True(t, new.SamlConnection.GetPrimary())
+
+	getResp, err := u.Store.GetSAMLConnection(ctx, &backendv1.GetSAMLConnectionRequest{Id: original.SamlConnection.Id})
+	require.NoError(t, err)
+	require.NotNil(t, getResp.SamlConnection)
+	require.False(t, getResp.SamlConnection.GetPrimary(), "original connection should no longer be primary")
 }
 
 func TestDeleteSAMLConnection_RemovesConnection(t *testing.T) {

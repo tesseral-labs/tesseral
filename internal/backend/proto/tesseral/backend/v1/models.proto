@@ -39,6 +39,9 @@ message Project {
   // Whether the Project supports "Log in with SAML".
   optional bool log_in_with_saml = 16;
 
+  // Whether the Project supports "Log in with OIDC".
+  optional bool log_in_with_oidc = 30;
+
   // Whether the Project supports authenticator apps as a secondary auth factor.
   optional bool log_in_with_authenticator_app = 13;
 
@@ -168,6 +171,9 @@ message Organization {
 
   // Whether the Organization supports "Log in with SAML".
   optional bool log_in_with_saml = 9;
+
+  // Whether the Organization supports "Log in with OIDC".
+  optional bool log_in_with_oidc = 18;
 
   // Whether the Organization supports authenticator apps as a secondary auth factor.
   optional bool log_in_with_authenticator_app = 11;
@@ -330,6 +336,9 @@ enum PrimaryAuthFactor {
   // Log in with SAML.
   PRIMARY_AUTH_FACTOR_SAML = 4;
 
+  // Log in with OIDC.
+  PRIMARY_AUTH_FACTOR_OIDC = 7;
+
   // Impersonated sessions use this special primary authentication factor.
   PRIMARY_AUTH_FACTOR_IMPERSONATION = 5;
 }
@@ -399,6 +408,37 @@ message SAMLConnection {
 
   // The Identity Provider Entity ID.
   string idp_entity_id = 10;
+}
+
+// OIDCConnection represents an OpenID Connect configuration for an Organization.
+message OIDCConnection {
+  // The OIDC Connection ID. Starts with `oidc_connection_...`.
+  string id = 1;
+
+  // The Organization this OIDC Connection belongs to.
+  string organization_id = 2;
+
+  // When the OIDC Connection was created.
+  google.protobuf.Timestamp create_time = 3;
+
+  // When the OIDC Connection was last updated.
+  google.protobuf.Timestamp update_time = 4;
+
+  // Whether this is the primary OIDC Connection for the Organization.
+  optional bool primary = 5;
+
+  // The OIDC Provider's configuration URL.
+  string configuration_url = 6;
+
+  // The OIDC Provider's Client ID.
+  string client_id = 7;
+
+  // The OIDC Provider's Client Secret.
+  // This field is write-only.
+  string client_secret = 8;
+
+  // The OIDC Provider's redirect URI.
+  string redirect_uri = 9;
 }
 
 // SCIMAPIKey represents an API key for SCIM operations.
@@ -583,6 +623,7 @@ enum AuditLogEventResourceType {
   AUDIT_LOG_EVENT_RESOURCE_TYPE_PASSKEY = 3;
   AUDIT_LOG_EVENT_RESOURCE_TYPE_ROLE = 4;
   AUDIT_LOG_EVENT_RESOURCE_TYPE_SAML_CONNECTION = 5;
+  AUDIT_LOG_EVENT_RESOURCE_TYPE_OIDC_CONNECTION = 10;
   AUDIT_LOG_EVENT_RESOURCE_TYPE_SCIM_API_KEY = 6;
   AUDIT_LOG_EVENT_RESOURCE_TYPE_SESSION = 7;
   AUDIT_LOG_EVENT_RESOURCE_TYPE_USER_INVITE = 8;

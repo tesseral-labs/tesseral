@@ -237,6 +237,7 @@ func parseOrganization(qProject queries.Project, qOrg queries.Organization) *fro
 		LogInWithEmail:            &qOrg.LogInWithEmail,
 		LogInWithPassword:         &qOrg.LogInWithPassword,
 		LogInWithSaml:             &qOrg.LogInWithSaml,
+		LogInWithOidc:             &qOrg.LogInWithOidc,
 		LogInWithAuthenticatorApp: &qOrg.LogInWithAuthenticatorApp,
 		LogInWithPasskey:          &qOrg.LogInWithPasskey,
 		RequireMfa:                &qOrg.RequireMfa,

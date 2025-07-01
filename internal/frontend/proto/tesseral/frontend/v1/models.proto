@@ -16,6 +16,7 @@ message Project {
   bool log_in_with_email = 11;
   bool log_in_with_password = 5;
   bool log_in_with_saml = 12;
+  bool log_in_with_oidc = 17;
   bool log_in_with_authenticator_app = 9;
   bool log_in_with_passkey = 10;
   string vault_domain = 8;
@@ -35,6 +36,7 @@ message Organization {
   optional bool log_in_with_email = 16;
   optional bool log_in_with_password = 6;
   optional bool log_in_with_saml = 12;
+  optional bool log_in_with_oidc = 21;
   optional bool log_in_with_authenticator_app = 13;
   optional bool log_in_with_passkey = 14;
   optional bool require_mfa = 15;
@@ -92,6 +94,7 @@ enum PrimaryAuthFactor {
   PRIMARY_AUTH_FACTOR_GOOGLE = 2;
   PRIMARY_AUTH_FACTOR_MICROSOFT = 3;
   PRIMARY_AUTH_FACTOR_SAML = 4;
+  PRIMARY_AUTH_FACTOR_OIDC = 7;
   PRIMARY_AUTH_FACTOR_IMPERSONATION = 5;
   PRIMARY_AUTH_FACTOR_GITHUB = 6;
 }
@@ -106,6 +109,17 @@ message SAMLConnection {
   string idp_redirect_url = 7;
   string idp_x509_certificate = 8;
   string idp_entity_id = 9;
+}
+
+message OIDCConnection {
+  string id = 1;
+  google.protobuf.Timestamp create_time = 2;
+  google.protobuf.Timestamp update_time = 3;
+  optional bool primary = 4;
+  string configuration_url = 5;
+  string client_id = 6;
+  string client_secret = 7;
+  string redirect_uri = 8;
 }
 
 message SCIMAPIKey {

@@ -110,7 +110,6 @@ export function ListOrganizationSamlConnectionsCard() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Connection</TableHead>
-                    <TableHead>Primary</TableHead>
                     <TableHead>IDP Entity ID</TableHead>
                     <TableHead>Created</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
@@ -125,13 +124,6 @@ export function ListOrganizationSamlConnectionsCard() {
                         </span>
                         {samlConnection.primary && (
                           <Badge variant="outline">Primary</Badge>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {samlConnection.primary ? (
-                          <Badge>Yes</Badge>
-                        ) : (
-                          <Badge variant="secondary">No</Badge>
                         )}
                       </TableCell>
                       <TableCell>{samlConnection.idpEntityId || "—"}</TableCell>

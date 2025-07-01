@@ -38,9 +38,10 @@ import { updateOrganization } from "@/gen/tesseral/backend/v1/backend-BackendSer
 const schema = z.object({
   domains: z.array(z.string()).optional(),
   logInWithSaml: z.boolean().default(false),
+  logInWithOidc: z.boolean().default(false),
 });
 
-export function OrganizationSamlCard() {
+export function OrganizationSsoCard() {
   const { organizationId } = useParams();
   const { data: getOrganizationResponse, refetch } = useQuery(getOrganization, {
     id: organizationId,
@@ -62,6 +63,8 @@ export function OrganizationSamlCard() {
         getOrganizationDomainsResponse?.organizationDomains?.domains || [],
       logInWithSaml:
         getOrganizationResponse?.organization?.logInWithSaml || false,
+      logInWithOidc:
+        getOrganizationResponse?.organization?.logInWithOidc || false,
     },
   });
 
@@ -70,6 +73,7 @@ export function OrganizationSamlCard() {
       id: organizationId,
       organization: {
         logInWithSaml: data.logInWithSaml,
+        logInWithOidc: data.logInWithOidc,
       },
     });
     await updateOrganizationDomainsMutation.mutateAsync({
@@ -89,6 +93,8 @@ export function OrganizationSamlCard() {
       form.reset({
         logInWithSaml:
           getOrganizationResponse.organization?.logInWithSaml || false,
+        logInWithOidc:
+          getOrganizationResponse.organization?.logInWithOidc || false,
         domains:
           getOrganizationDomainsResponse.organizationDomains?.domains || [],
       });
@@ -102,10 +108,10 @@ export function OrganizationSamlCard() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Shield />
-              SAML SSO
+              SSO
             </CardTitle>
             <CardDescription>
-              Configure SAML authentication for{" "}
+              Configure SAML/OIDC authentication for{" "}
               <span className="font-semibold">
                 {getOrganizationResponse?.organization?.displayName}
               </span>
@@ -148,15 +154,49 @@ export function OrganizationSamlCard() {
                 </>
               )}
 
+              {getProjectResponse?.project?.logInWithOidc ? (
+                <FormField
+                  control={form.control}
+                  name="logInWithOidc"
+                  render={({ field }) => (
+                    <FormItem className="flex items-center justify-between gap-4">
+                      <div>
+                        <FormLabel>Log in with OIDC</FormLabel>
+                        <FormDescription>
+                          Allows users to log into this organization with
+                          OIDC-based identity providers.
+                        </FormDescription>
+                        <FormMessage />
+                      </div>
+                      <FormControl>
+                        <Switch
+                          id="logInWithOidc"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              ) : (
+                <>
+                  <div className="text-sm text-muted-foreground flex-grow">
+                    OIDC authentication is not enabled for this project. Please
+                    enable OIDC at the project level to configure it for this
+                    organization.
+                  </div>
+                </>
+              )}
+
               <FormField
                 control={form.control}
                 name="domains"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>SAML / SCIM Domains</FormLabel>
+                    <FormLabel>Allowed Domains</FormLabel>
                     <FormDescription>
-                      SAML and SCIM users must have emails from this list of
-                      domains.
+                      SAML, OIDC, and SCIM users must have emails from this list
+                      of domains.
                     </FormDescription>
                     <FormControl>
                       <InputTags
@@ -174,7 +214,8 @@ export function OrganizationSamlCard() {
             </div>
           </CardContent>
           <CardFooter className="mt-4">
-            {getProjectResponse?.project?.logInWithSaml ? (
+            {getProjectResponse?.project?.logInWithSaml ||
+            getProjectResponse?.project?.logInWithOidc ? (
               <Button
                 className="w-full"
                 type="submit"

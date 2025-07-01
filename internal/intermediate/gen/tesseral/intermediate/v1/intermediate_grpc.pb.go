@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	IntermediateService_ListSAMLOrganizations_FullMethodName                 = "/tesseral.intermediate.v1.IntermediateService/ListSAMLOrganizations"
+	IntermediateService_ListOIDCOrganizations_FullMethodName                 = "/tesseral.intermediate.v1.IntermediateService/ListOIDCOrganizations"
 	IntermediateService_GetSettings_FullMethodName                           = "/tesseral.intermediate.v1.IntermediateService/GetSettings"
 	IntermediateService_RedeemUserImpersonationToken_FullMethodName          = "/tesseral.intermediate.v1.IntermediateService/RedeemUserImpersonationToken"
 	IntermediateService_CreateIntermediateSession_FullMethodName             = "/tesseral.intermediate.v1.IntermediateService/CreateIntermediateSession"
@@ -60,6 +61,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type IntermediateServiceClient interface {
 	ListSAMLOrganizations(ctx context.Context, in *ListSAMLOrganizationsRequest, opts ...grpc.CallOption) (*ListSAMLOrganizationsResponse, error)
+	ListOIDCOrganizations(ctx context.Context, in *ListOIDCOrganizationsRequest, opts ...grpc.CallOption) (*ListOIDCOrganizationsResponse, error)
 	GetSettings(ctx context.Context, in *GetSettingsRequest, opts ...grpc.CallOption) (*GetSettingsResponse, error)
 	RedeemUserImpersonationToken(ctx context.Context, in *RedeemUserImpersonationTokenRequest, opts ...grpc.CallOption) (*RedeemUserImpersonationTokenResponse, error)
 	CreateIntermediateSession(ctx context.Context, in *CreateIntermediateSessionRequest, opts ...grpc.CallOption) (*CreateIntermediateSessionResponse, error)
@@ -107,6 +109,16 @@ func (c *intermediateServiceClient) ListSAMLOrganizations(ctx context.Context, i
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListSAMLOrganizationsResponse)
 	err := c.cc.Invoke(ctx, IntermediateService_ListSAMLOrganizations_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *intermediateServiceClient) ListOIDCOrganizations(ctx context.Context, in *ListOIDCOrganizationsRequest, opts ...grpc.CallOption) (*ListOIDCOrganizationsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListOIDCOrganizationsResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_ListOIDCOrganizations_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -448,6 +460,7 @@ func (c *intermediateServiceClient) OnboardingCreateProjects(ctx context.Context
 // for forward compatibility.
 type IntermediateServiceServer interface {
 	ListSAMLOrganizations(context.Context, *ListSAMLOrganizationsRequest) (*ListSAMLOrganizationsResponse, error)
+	ListOIDCOrganizations(context.Context, *ListOIDCOrganizationsRequest) (*ListOIDCOrganizationsResponse, error)
 	GetSettings(context.Context, *GetSettingsRequest) (*GetSettingsResponse, error)
 	RedeemUserImpersonationToken(context.Context, *RedeemUserImpersonationTokenRequest) (*RedeemUserImpersonationTokenResponse, error)
 	CreateIntermediateSession(context.Context, *CreateIntermediateSessionRequest) (*CreateIntermediateSessionResponse, error)
@@ -493,6 +506,9 @@ type UnimplementedIntermediateServiceServer struct{}
 
 func (UnimplementedIntermediateServiceServer) ListSAMLOrganizations(context.Context, *ListSAMLOrganizationsRequest) (*ListSAMLOrganizationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListSAMLOrganizations not implemented")
+}
+func (UnimplementedIntermediateServiceServer) ListOIDCOrganizations(context.Context, *ListOIDCOrganizationsRequest) (*ListOIDCOrganizationsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListOIDCOrganizations not implemented")
 }
 func (UnimplementedIntermediateServiceServer) GetSettings(context.Context, *GetSettingsRequest) (*GetSettingsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSettings not implemented")
@@ -628,6 +644,24 @@ func _IntermediateService_ListSAMLOrganizations_Handler(srv interface{}, ctx con
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(IntermediateServiceServer).ListSAMLOrganizations(ctx, req.(*ListSAMLOrganizationsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IntermediateService_ListOIDCOrganizations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListOIDCOrganizationsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).ListOIDCOrganizations(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_ListOIDCOrganizations_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).ListOIDCOrganizations(ctx, req.(*ListOIDCOrganizationsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1236,6 +1270,10 @@ var IntermediateService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListSAMLOrganizations",
 			Handler:    _IntermediateService_ListSAMLOrganizations_Handler,
+		},
+		{
+			MethodName: "ListOIDCOrganizations",
+			Handler:    _IntermediateService_ListOIDCOrganizations_Handler,
 		},
 		{
 			MethodName: "GetSettings",

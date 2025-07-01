@@ -15,6 +15,7 @@ import (
 	auditlogstore "github.com/tesseral-labs/tesseral/internal/auditlog/store"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/hibp"
+	"github.com/tesseral-labs/tesseral/internal/oidcclient"
 	"github.com/tesseral-labs/tesseral/internal/pagetoken"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -25,6 +26,7 @@ type Store struct {
 	consoleDomain                         string
 	hibp                                  *hibp.Client
 	intermediateSessionSigningKeyKMSKeyID string
+	oidcClientSecretsKMSKeyID             string
 	kms                                   *kms.Client
 	ses                                   *sesv2.Client
 	pageEncoder                           pagetoken.Encoder
@@ -33,6 +35,7 @@ type Store struct {
 	authenticatorAppSecretsKMSKeyID       string
 	svixClient                            *svix.Svix
 	auditlogStore                         *auditlogstore.Store
+	oidc                                  *oidcclient.Client
 }
 
 type NewStoreParams struct {
@@ -40,6 +43,7 @@ type NewStoreParams struct {
 	DogfoodProjectID                      *uuid.UUID
 	ConsoleDomain                         string
 	IntermediateSessionSigningKeyKMSKeyID string
+	OIDCClientSecretsKMSKeyID             string
 	KMS                                   *kms.Client
 	SES                                   *sesv2.Client
 	PageEncoder                           pagetoken.Encoder
@@ -47,6 +51,7 @@ type NewStoreParams struct {
 	AuthenticatorAppSecretsKMSKeyID       string
 	SvixClient                            *svix.Svix
 	AuditlogStore                         *auditlogstore.Store
+	OIDCClient                            *oidcclient.Client
 }
 
 func New(p NewStoreParams) *Store {
@@ -58,6 +63,7 @@ func New(p NewStoreParams) *Store {
 			HTTPClient: http.DefaultClient,
 		},
 		intermediateSessionSigningKeyKMSKeyID: p.IntermediateSessionSigningKeyKMSKeyID,
+		oidcClientSecretsKMSKeyID:             p.OIDCClientSecretsKMSKeyID,
 		kms:                                   p.KMS,
 		ses:                                   p.SES,
 		pageEncoder:                           p.PageEncoder,
@@ -66,6 +72,7 @@ func New(p NewStoreParams) *Store {
 		authenticatorAppSecretsKMSKeyID:       p.AuthenticatorAppSecretsKMSKeyID,
 		svixClient:                            p.SvixClient,
 		auditlogStore:                         p.AuditlogStore,
+		oidc:                                  p.OIDCClient,
 	}
 
 	return store

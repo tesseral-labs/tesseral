@@ -29,6 +29,8 @@ func (s *Store) GetSession(ctx context.Context, db queries.DBTX, id uuid.UUID) (
 		primaryAuthFactor = auditlogv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GITHUB
 	case queries.PrimaryAuthFactorSaml:
 		primaryAuthFactor = auditlogv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_SAML
+	case queries.PrimaryAuthFactorOidc:
+		primaryAuthFactor = auditlogv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_OIDC
 	default:
 		primaryAuthFactor = auditlogv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_UNSPECIFIED
 	}

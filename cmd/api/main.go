@@ -51,8 +51,13 @@ import (
 	intermediatestore "github.com/tesseral-labs/tesseral/internal/intermediate/store"
 	"github.com/tesseral-labs/tesseral/internal/loadenv"
 	"github.com/tesseral-labs/tesseral/internal/microsoftoauth"
+	oidcinterceptor "github.com/tesseral-labs/tesseral/internal/oidc/authn/interceptor"
+	oidcservice "github.com/tesseral-labs/tesseral/internal/oidc/service"
+	oidcstore "github.com/tesseral-labs/tesseral/internal/oidc/store"
+	"github.com/tesseral-labs/tesseral/internal/oidcclient"
 	"github.com/tesseral-labs/tesseral/internal/opaqueinternalerror"
 	"github.com/tesseral-labs/tesseral/internal/pagetoken"
+	"github.com/tesseral-labs/tesseral/internal/restrictedhttp"
 	samlinterceptor "github.com/tesseral-labs/tesseral/internal/saml/authn/interceptor"
 	samlservice "github.com/tesseral-labs/tesseral/internal/saml/service"
 	samlstore "github.com/tesseral-labs/tesseral/internal/saml/store"
@@ -119,6 +124,7 @@ func main() {
 		GithubOAuthClientSecretsKMSKeyID    string        `conf:"github_oauth_client_secrets_kms_key_id,noredact"`
 		GoogleOAuthClientSecretsKMSKeyID    string        `conf:"google_oauth_client_secrets_kms_key_id,noredact"`
 		MicrosoftOAuthClientSecretsKMSKeyID string        `conf:"microsoft_oauth_client_secrets_kms_key_id,noredact"`
+		OIDCClientSecretsKMSKeyID           string        `conf:"oidc_client_secrets_kms_key_id,noredact"`
 		AuthenticatorAppSecretsKMSKeyID     string        `conf:"authenticator_app_secrets_kms_key_id,noredact"`
 		UserContentBaseUrl                  string        `conf:"user_content_base_url,redact"`
 		TesseralDNSCloudflareZoneID         string        `conf:"tesseral_dns_cloudflare_zone_id,noredact"`
@@ -239,6 +245,11 @@ func main() {
 	cookier := cookies.Cookier{Store: commonStore}
 
 	auditlogStore := auditlogstore.Store{}
+	oidcClient := &oidcclient.Client{
+		HTTPClient: &http.Client{
+			Transport: restrictedhttp.NewTransport(),
+		},
+	}
 
 	// Register the backend service
 	backendStore := backendstore.New(backendstore.NewStoreParams{
@@ -255,6 +266,7 @@ func main() {
 		GoogleOAuthClientSecretsKMSKeyID:      config.GoogleOAuthClientSecretsKMSKeyID,
 		MicrosoftOAuthClientSecretsKMSKeyID:   config.MicrosoftOAuthClientSecretsKMSKeyID,
 		GithubOAuthClientSecretsKMSKeyID:      config.GithubOAuthClientSecretsKMSKeyID,
+		OIDCClientSecretsKMSKeyID:             config.OIDCClientSecretsKMSKeyID,
 		UserContentBaseUrl:                    config.UserContentBaseUrl,
 		AuthAppsRootDomain:                    config.AuthAppsRootDomain,
 		TesseralDNSVaultCNAMEValue:            config.TesseralDNSVaultCNAMEValue,
@@ -266,6 +278,7 @@ func main() {
 		StripePriceIDGrowthTier:               config.StripePriceIDGrowthTier,
 		SvixClient:                            svixClient,
 		AuditlogStore:                         &auditlogStore,
+		OIDCClient:                            oidcClient,
 	})
 	backendConnectPath, backendConnectHandler := backendv1connect.NewBackendServiceHandler(
 		&backendservice.Service{
@@ -289,6 +302,7 @@ func main() {
 		DogfoodProjectID:                      &uuidDogfoodProjectID,
 		ConsoleDomain:                         config.ConsoleDomain,
 		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
+		OIDCClientSecretsKMSKeyID:             config.OIDCClientSecretsKMSKeyID,
 		KMS:                                   kms_,
 		SES:                                   ses_,
 		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
@@ -296,6 +310,7 @@ func main() {
 		AuthenticatorAppSecretsKMSKeyID:       config.AuthenticatorAppSecretsKMSKeyID,
 		SvixClient:                            svixClient,
 		AuditlogStore:                         &auditlogStore,
+		OIDCClient:                            oidcClient,
 	})
 	frontendConnectPath, frontendConnectHandler := frontendv1connect.NewFrontendServiceHandler(
 		&frontendservice.Service{
@@ -370,6 +385,21 @@ func main() {
 	samlServiceHandler := samlService.Handler()
 	samlServiceHandler = samlinterceptor.New(projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), samlServiceHandler)
 
+	oidcStore := oidcstore.New(oidcstore.NewStoreParams{
+		DB:                        db,
+		KMS:                       kms_,
+		OIDCClientSecretsKMSKeyID: config.OIDCClientSecretsKMSKeyID,
+		OIDCClient:                oidcClient,
+		AuditlogStore:             &auditlogStore,
+	})
+	oidcService := oidcservice.Service{
+		Store:             oidcStore,
+		AccessTokenIssuer: accesstoken.NewIssuer(commonStore),
+		Cookier:           &cookier,
+	}
+	oidcServiceHandler := oidcService.Handler()
+	oidcServiceHandler = oidcinterceptor.New(projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), oidcServiceHandler)
+
 	scimStore := scimstore.New(scimstore.NewStoreParams{
 		DB: db,
 	})
@@ -422,6 +452,9 @@ func main() {
 
 	// Register samlservice
 	mux.Handle("/api/saml/", samlServiceHandler)
+
+	// Register oidcservice
+	mux.Handle("/api/oidc/", oidcServiceHandler)
 
 	// Register scimservice
 	mux.Handle("/api/scim/", scimServiceHandler)

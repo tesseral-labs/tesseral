@@ -23,6 +23,7 @@ import { OrganizationApiKeyRolesTab } from "./pages/console/organizations/api-ke
 import { OrganizationApiKeyDetailsTab } from "./pages/console/organizations/api-keys/OrganizationApiKeyDetailsTab";
 import { OrganizationApiKeyLogsTab } from "./pages/console/organizations/api-keys/OrganizationApiKeyLogsTab";
 import { OrganizationApiKeyPage } from "./pages/console/organizations/api-keys/OrganizationApiKeyPage";
+import { OrganizationOidcConnectionPage } from "./pages/console/organizations/oidc-connections/OrganizationOidcConnectionPage";
 import { OrganizationSamlConnectionPage } from "./pages/console/organizations/saml-connections/OrganizationSamlConnectionPage";
 import { OrganizationScimApiKeyPage } from "./pages/console/organizations/scim-api-keys/OrganizationScimApiKeyPage";
 import { UserActivityTab } from "./pages/console/organizations/users/UserActivityTab";
@@ -147,6 +148,11 @@ function AppWithinQueryClient() {
             <Route
               path="organizations/:organizationId/saml-connections/:samlConnectionId"
               element={<OrganizationSamlConnectionPage />}
+            />
+
+            <Route
+              path="organizations/:organizationId/oidc-connections/:oidcConnectionId"
+              element={<OrganizationOidcConnectionPage />}
             />
 
             <Route

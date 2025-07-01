@@ -25,6 +25,7 @@ const (
 	AuditLogEventResourceTypeSession        AuditLogEventResourceType = "session"
 	AuditLogEventResourceTypeUser           AuditLogEventResourceType = "user"
 	AuditLogEventResourceTypeUserInvite     AuditLogEventResourceType = "user_invite"
+	AuditLogEventResourceTypeOidcConnection AuditLogEventResourceType = "oidc_connection"
 )
 
 func (e *AuditLogEventResourceType) Scan(src interface{}) error {
@@ -157,6 +158,7 @@ const (
 	PrimaryAuthFactorImpersonation PrimaryAuthFactor = "impersonation"
 	PrimaryAuthFactorGithub        PrimaryAuthFactor = "github"
 	PrimaryAuthFactorPassword      PrimaryAuthFactor = "password"
+	PrimaryAuthFactorOidc          PrimaryAuthFactor = "oidc"
 )
 
 func (e *PrimaryAuthFactor) Scan(src interface{}) error {
@@ -296,6 +298,23 @@ type OauthVerifiedEmail struct {
 	GithubUserID    *string
 }
 
+type OidcConnection struct {
+	ID                     uuid.UUID
+	OrganizationID         uuid.UUID
+	CreateTime             *time.Time
+	UpdateTime             *time.Time
+	IsPrimary              bool
+	ConfigurationUrl       string
+	ClientID               string
+	ClientSecretCiphertext []byte
+}
+
+type OidcIntermediateSession struct {
+	ID               uuid.UUID
+	OidcConnectionID uuid.UUID
+	CodeVerifier     *string
+}
+
 type Organization struct {
 	ID                        uuid.UUID
 	ProjectID                 uuid.UUID
@@ -315,6 +334,7 @@ type Organization struct {
 	CustomRolesEnabled        bool
 	LogInWithGithub           bool
 	ApiKeysEnabled            bool
+	LogInWithOidc             bool
 }
 
 type OrganizationDomain struct {
@@ -381,6 +401,7 @@ type Project struct {
 	ApiKeysEnabled                       bool
 	ApiKeySecretTokenPrefix              *string
 	AuditLogsEnabled                     bool
+	LogInWithOidc                        bool
 }
 
 type ProjectEmailQuotaDailyUsage struct {

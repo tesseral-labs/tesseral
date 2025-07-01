@@ -131,14 +131,6 @@ func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListO
 		return nil, apierror.NewPermissionDeniedError("email not verified", fmt.Errorf("intermediate session has unverified email"))
 	}
 
-	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
-		}
-		return nil, fmt.Errorf("get project by id: %w", err)
-	}
-
 	qVisibleOrganizations, err := s.getVisibleOrganizations(ctx, q, qIntermediateSession)
 	if err != nil {
 		return nil, fmt.Errorf("get visible organizations: %w", err)
@@ -159,8 +151,21 @@ func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListO
 			qSAMLConnection = &qPrimarySAMLConnection
 		}
 
+		var qOidcConnection *queries.OidcConnection
+		qPrimaryOIDCConnection, err := q.GetOrganizationPrimaryOIDCConnection(ctx, qOrg.ID)
+		if err != nil {
+			// it's ok if org has no primary oidc connection
+			if !errors.Is(err, pgx.ErrNoRows) {
+				return nil, fmt.Errorf("get organization primary oidc connection: %w", err)
+			}
+		}
+
+		if qPrimaryOIDCConnection.ID != uuid.Nil {
+			qOidcConnection = &qPrimaryOIDCConnection
+		}
+
 		// Parse the organization before performing additional checks
-		org := parseOrganization(qOrg, qProject, qSAMLConnection)
+		org := parseOrganization(qOrg, qSAMLConnection, qOidcConnection)
 
 		// Check if the user exists on the organization.
 		existingUser, err := s.matchEmailUser(ctx, q, qOrg, qIntermediateSession)
@@ -238,14 +243,69 @@ func (s *Store) ListSAMLOrganizations(ctx context.Context, req *intermediatev1.L
 	for _, qOrg := range qOrganizations {
 		qSamlConnection, err := q.GetOrganizationPrimarySAMLConnection(ctx, qOrg.ID)
 		if err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				continue // No primary SAML connection for this organization
+			}
 			return nil, fmt.Errorf("get organization primary saml connection: %w", err)
 		}
 
 		// Append the parsed organization to the list of organizations.
-		organizations = append(organizations, parseOrganization(qOrg, qProject, &qSamlConnection))
+		organizations = append(organizations, parseOrganization(qOrg, &qSamlConnection, nil))
 	}
 
 	return &intermediatev1.ListSAMLOrganizationsResponse{
+		Organizations: organizations,
+	}, nil
+}
+
+func (s *Store) ListOIDCOrganizations(ctx context.Context, req *intermediatev1.ListOIDCOrganizationsRequest) (*intermediatev1.ListOIDCOrganizationsResponse, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	domain, err := emailaddr.Parse(req.Email)
+	if err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid email address", fmt.Errorf("parse email: %w", err))
+	}
+
+	qOrganizations, err := q.ListOIDCOrganizations(ctx, queries.ListOIDCOrganizationsParams{
+		ProjectID: authn.ProjectID(ctx),
+		Domain:    domain,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("list oidc organizations: %w", err)
+	}
+
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
+		}
+
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
+	if !qProject.LogInWithOidc {
+		return nil, apierror.NewFailedPreconditionError("OIDC login not enabled", fmt.Errorf("project does not have OIDC login enabled"))
+	}
+
+	var organizations []*intermediatev1.Organization
+	for _, qOrg := range qOrganizations {
+		qOIDCConnection, err := q.GetOrganizationPrimaryOIDCConnection(ctx, qOrg.ID)
+		if err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				continue // No primary OIDC connection for this organization
+			}
+			return nil, fmt.Errorf("get organization primary oidc connection: %w", err)
+		}
+
+		// Append the parsed organization to the list of organizations.
+		organizations = append(organizations, parseOrganization(qOrg, nil, &qOIDCConnection))
+	}
+
+	return &intermediatev1.ListOIDCOrganizationsResponse{
 		Organizations: organizations,
 	}, nil
 }
@@ -414,10 +474,15 @@ func (s *Store) sendSyncOrganizationEvent(ctx context.Context, qOrg queries.Orga
 	return nil
 }
 
-func parseOrganization(qOrg queries.Organization, qProject queries.Project, qSAMLConnection *queries.SamlConnection) *intermediatev1.Organization {
+func parseOrganization(qOrg queries.Organization, qSAMLConnection *queries.SamlConnection, qOIDCConnection *queries.OidcConnection) *intermediatev1.Organization {
 	var primarySamlConnectionID string
 	if qSAMLConnection != nil {
 		primarySamlConnectionID = idformat.SAMLConnection.Format(qSAMLConnection.ID)
+	}
+
+	var primaryOIDCConnectionID string
+	if qOIDCConnection != nil {
+		primaryOIDCConnectionID = idformat.OIDCConnection.Format(qOIDCConnection.ID)
 	}
 
 	return &intermediatev1.Organization{
@@ -431,7 +496,9 @@ func parseOrganization(qOrg queries.Organization, qProject queries.Project, qSAM
 		LogInWithAuthenticatorApp: qOrg.LogInWithAuthenticatorApp,
 		LogInWithPasskey:          qOrg.LogInWithPasskey,
 		LogInWithSaml:             qOrg.LogInWithSaml,
+		LogInWithOidc:             qOrg.LogInWithOidc,
 		RequireMfa:                qOrg.RequireMfa,
 		PrimarySamlConnectionId:   primarySamlConnectionID,
+		PrimaryOidcConnectionId:   primaryOIDCConnectionID,
 	}
 }

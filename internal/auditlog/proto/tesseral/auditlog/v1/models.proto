@@ -53,6 +53,16 @@ message SAMLConnection {
   string idp_entity_id = 9;
 }
 
+message OIDCConnection {
+  string id = 1;
+  google.protobuf.Timestamp create_time = 2;
+  google.protobuf.Timestamp update_time = 3;
+  optional bool primary = 4;
+  string configuration_url = 5;
+  string client_id = 6;
+  string redirect_uri = 7;
+}
+
 message SCIMAPIKey {
   string id = 1;
   google.protobuf.Timestamp create_time = 2;
@@ -126,5 +136,6 @@ enum PrimaryAuthFactor {
   PRIMARY_AUTH_FACTOR_MICROSOFT = 3;
   PRIMARY_AUTH_FACTOR_GITHUB = 6;
   PRIMARY_AUTH_FACTOR_SAML = 4;
+  PRIMARY_AUTH_FACTOR_OIDC = 7;
   PRIMARY_AUTH_FACTOR_IMPERSONATION = 5;
 }

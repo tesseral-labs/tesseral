@@ -120,6 +120,16 @@ WHERE
     AND is_primary = TRUE
 LIMIT 1;
 
+-- name: GetOrganizationPrimaryOIDCConnection :one
+SELECT
+    *
+FROM
+    oidc_connections
+WHERE
+    organization_id = $1
+    AND is_primary = TRUE
+LIMIT 1;
+
 -- name: GetProjectOrganizationByID :one
 SELECT
     *
@@ -219,6 +229,17 @@ FROM
 WHERE
     organizations.project_id = $1
     AND organizations.log_in_with_saml = TRUE
+    AND organization_domains.domain = $2;
+
+-- name: ListOIDCOrganizations :many
+SELECT
+    organizations.*
+FROM
+    organizations
+    JOIN organization_domains ON organizations.id = organization_domains.organization_id
+WHERE
+    organizations.project_id = $1
+    AND organizations.log_in_with_oidc = TRUE
     AND organization_domains.domain = $2;
 
 -- name: RevokeIntermediateSession :one

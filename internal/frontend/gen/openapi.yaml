@@ -579,6 +579,128 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /frontend/v1/oidc-connections:
+        get:
+            tags:
+                - FrontendService
+            operationId: FrontendService_ListOIDCConnections
+            parameters:
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListOIDCConnectionsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - FrontendService
+            operationId: FrontendService_CreateOIDCConnection
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/OIDCConnection'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateOIDCConnectionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /frontend/v1/oidc-connections/{id}:
+        get:
+            tags:
+                - FrontendService
+            operationId: FrontendService_GetOIDCConnection
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetOIDCConnectionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - FrontendService
+            operationId: FrontendService_DeleteOIDCConnection
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteOIDCConnectionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - FrontendService
+            operationId: FrontendService_UpdateOIDCConnection
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/OIDCConnection'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateOIDCConnectionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/organization:
         get:
             tags:
@@ -1505,6 +1627,11 @@ components:
             properties:
                 apiKeyRoleAssignment:
                     $ref: '#/components/schemas/APIKeyRoleAssignment'
+        CreateOIDCConnectionResponse:
+            type: object
+            properties:
+                oidcConnection:
+                    $ref: '#/components/schemas/OIDCConnection'
         CreateRoleResponse:
             type: object
             properties:
@@ -1539,6 +1666,9 @@ components:
         DeleteMyPasskeyResponse:
             type: object
             properties: {}
+        DeleteOIDCConnectionResponse:
+            type: object
+            properties: {}
         DeleteRoleResponse:
             type: object
             properties: {}
@@ -1567,6 +1697,11 @@ components:
             properties:
                 otpauthUri:
                     type: string
+        GetOIDCConnectionResponse:
+            type: object
+            properties:
+                oidcConnection:
+                    $ref: '#/components/schemas/OIDCConnection'
         GetOrganizationGoogleHostedDomainsResponse:
             type: object
             properties:
@@ -1672,6 +1807,15 @@ components:
                         $ref: '#/components/schemas/Passkey'
                 nextPageToken:
                     type: string
+        ListOIDCConnectionsResponse:
+            type: object
+            properties:
+                oidcConnections:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/OIDCConnection'
+                nextPageToken:
+                    type: string
         ListRolesResponse:
             type: object
             properties:
@@ -1739,6 +1883,27 @@ components:
         LogoutResponse:
             type: object
             properties: {}
+        OIDCConnection:
+            type: object
+            properties:
+                id:
+                    type: string
+                createTime:
+                    type: string
+                    format: date-time
+                updateTime:
+                    type: string
+                    format: date-time
+                primary:
+                    type: boolean
+                configurationUrl:
+                    type: string
+                clientId:
+                    type: string
+                clientSecret:
+                    type: string
+                redirectUri:
+                    type: string
         Organization:
             type: object
             properties:
@@ -1763,6 +1928,8 @@ components:
                 logInWithPassword:
                     type: boolean
                 logInWithSaml:
+                    type: boolean
+                logInWithOidc:
                     type: boolean
                 logInWithAuthenticatorApp:
                     type: boolean
@@ -1848,6 +2015,8 @@ components:
                 logInWithPassword:
                     type: boolean
                 logInWithSaml:
+                    type: boolean
+                logInWithOidc:
                     type: boolean
                 logInWithAuthenticatorApp:
                     type: boolean
@@ -2023,6 +2192,11 @@ components:
             properties:
                 user:
                     $ref: '#/components/schemas/User'
+        UpdateOIDCConnectionResponse:
+            type: object
+            properties:
+                oidcConnection:
+                    $ref: '#/components/schemas/OIDCConnection'
         UpdateOrganizationGoogleHostedDomainsResponse:
             type: object
             properties:

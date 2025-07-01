@@ -2,12 +2,14 @@ package store
 
 import (
 	"context"
+	"net/http"
 	"testing"
 
 	"github.com/google/uuid"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	commonstore "github.com/tesseral-labs/tesseral/internal/common/store"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
+	"github.com/tesseral-labs/tesseral/internal/oidcclient"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/storetesting"
 )
@@ -39,6 +41,8 @@ func newTestUtil(t *testing.T) *testUtil {
 		DogfoodProjectID:                environment.DogfoodProjectID,
 		ConsoleDomain:                   environment.ConsoleDomain,
 		AuthenticatorAppSecretsKMSKeyID: environment.KMS.AuthenticatorAppSecretsKMSKeyID,
+		OIDCClientSecretsKMSKeyID:       environment.KMS.OIDCClientSecretsKMSKeyID,
+		OIDCClient:                      &oidcclient.Client{HTTPClient: http.DefaultClient},
 	})
 	commonStore := commonstore.New(commonstore.NewStoreParams{
 		AppAuthRootDomain:         environment.ConsoleDomain,

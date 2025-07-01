@@ -159,6 +159,45 @@ func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEve
 	return i, err
 }
 
+const createOIDCConnection = `-- name: CreateOIDCConnection :one
+INSERT INTO oidc_connections (id, organization_id, is_primary, configuration_url, client_id, client_secret_ciphertext)
+    VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING
+    id, organization_id, create_time, update_time, is_primary, configuration_url, client_id, client_secret_ciphertext
+`
+
+type CreateOIDCConnectionParams struct {
+	ID                     uuid.UUID
+	OrganizationID         uuid.UUID
+	IsPrimary              bool
+	ConfigurationUrl       string
+	ClientID               string
+	ClientSecretCiphertext []byte
+}
+
+func (q *Queries) CreateOIDCConnection(ctx context.Context, arg CreateOIDCConnectionParams) (OidcConnection, error) {
+	row := q.db.QueryRow(ctx, createOIDCConnection,
+		arg.ID,
+		arg.OrganizationID,
+		arg.IsPrimary,
+		arg.ConfigurationUrl,
+		arg.ClientID,
+		arg.ClientSecretCiphertext,
+	)
+	var i OidcConnection
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.IsPrimary,
+		&i.ConfigurationUrl,
+		&i.ClientID,
+		&i.ClientSecretCiphertext,
+	)
+	return i, err
+}
+
 const createOrganizationGoogleHostedDomain = `-- name: CreateOrganizationGoogleHostedDomain :one
 INSERT INTO organization_google_hosted_domains (id, organization_id, google_hosted_domain)
     VALUES ($1, $2, $3)
@@ -493,6 +532,16 @@ func (q *Queries) DeleteAPIKeyRoleAssignment(ctx context.Context, arg DeleteAPIK
 	return err
 }
 
+const deleteOIDCConnection = `-- name: DeleteOIDCConnection :exec
+DELETE FROM oidc_connections
+WHERE id = $1
+`
+
+func (q *Queries) DeleteOIDCConnection(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteOIDCConnection, id)
+	return err
+}
+
 const deleteOrganizationGoogleHostedDomains = `-- name: DeleteOrganizationGoogleHostedDomains :exec
 DELETE FROM organization_google_hosted_domains
 WHERE organization_id = $1
@@ -785,9 +834,40 @@ func (q *Queries) GetCurrentSessionKeyByProjectID(ctx context.Context, projectID
 	return i, err
 }
 
+const getOIDCConnection = `-- name: GetOIDCConnection :one
+SELECT
+    id, organization_id, create_time, update_time, is_primary, configuration_url, client_id, client_secret_ciphertext
+FROM
+    oidc_connections
+WHERE
+    id = $1
+    AND organization_id = $2
+`
+
+type GetOIDCConnectionParams struct {
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
+}
+
+func (q *Queries) GetOIDCConnection(ctx context.Context, arg GetOIDCConnectionParams) (OidcConnection, error) {
+	row := q.db.QueryRow(ctx, getOIDCConnection, arg.ID, arg.OrganizationID)
+	var i OidcConnection
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.IsPrimary,
+		&i.ConfigurationUrl,
+		&i.ClientID,
+		&i.ClientSecretCiphertext,
+	)
+	return i, err
+}
+
 const getOrganizationByID = `-- name: GetOrganizationByID :one
 SELECT
-    id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml, custom_roles_enabled, log_in_with_github, api_keys_enabled
+    id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml, custom_roles_enabled, log_in_with_github, api_keys_enabled, log_in_with_oidc
 FROM
     organizations
 WHERE
@@ -816,6 +896,7 @@ func (q *Queries) GetOrganizationByID(ctx context.Context, id uuid.UUID) (Organi
 		&i.CustomRolesEnabled,
 		&i.LogInWithGithub,
 		&i.ApiKeysEnabled,
+		&i.LogInWithOidc,
 	)
 	return i, err
 }
@@ -880,7 +961,7 @@ func (q *Queries) GetOrganizationMicrosoftTenantIDs(ctx context.Context, organiz
 
 const getProjectByBackingOrganizationID = `-- name: GetProjectByBackingOrganizationID :one
 SELECT
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix, audit_logs_enabled
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix, audit_logs_enabled, log_in_with_oidc
 FROM
     projects
 WHERE
@@ -924,13 +1005,14 @@ func (q *Queries) GetProjectByBackingOrganizationID(ctx context.Context, organiz
 		&i.ApiKeysEnabled,
 		&i.ApiKeySecretTokenPrefix,
 		&i.AuditLogsEnabled,
+		&i.LogInWithOidc,
 	)
 	return i, err
 }
 
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix, audit_logs_enabled
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix, audit_logs_enabled, log_in_with_oidc
 FROM
     projects
 WHERE
@@ -974,6 +1056,7 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.ApiKeysEnabled,
 		&i.ApiKeySecretTokenPrefix,
 		&i.AuditLogsEnabled,
+		&i.LogInWithOidc,
 	)
 	return i, err
 }
@@ -1690,6 +1773,54 @@ func (q *Queries) ListAuditLogEvents(ctx context.Context, arg ListAuditLogEvents
 	return items, nil
 }
 
+const listOIDCConnections = `-- name: ListOIDCConnections :many
+SELECT
+    id, organization_id, create_time, update_time, is_primary, configuration_url, client_id, client_secret_ciphertext
+FROM
+    oidc_connections
+WHERE
+    organization_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3
+`
+
+type ListOIDCConnectionsParams struct {
+	OrganizationID uuid.UUID
+	ID             uuid.UUID
+	Limit          int32
+}
+
+func (q *Queries) ListOIDCConnections(ctx context.Context, arg ListOIDCConnectionsParams) ([]OidcConnection, error) {
+	rows, err := q.db.Query(ctx, listOIDCConnections, arg.OrganizationID, arg.ID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []OidcConnection
+	for rows.Next() {
+		var i OidcConnection
+		if err := rows.Scan(
+			&i.ID,
+			&i.OrganizationID,
+			&i.CreateTime,
+			&i.UpdateTime,
+			&i.IsPrimary,
+			&i.ConfigurationUrl,
+			&i.ClientID,
+			&i.ClientSecretCiphertext,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listPasskeys = `-- name: ListPasskeys :many
 SELECT
     id, user_id, create_time, update_time, credential_id, public_key, aaguid, disabled, rp_id
@@ -2304,6 +2435,51 @@ func (q *Queries) UpdateMe(ctx context.Context, arg UpdateMeParams) (User, error
 	return i, err
 }
 
+const updateOIDCConnection = `-- name: UpdateOIDCConnection :one
+UPDATE
+    oidc_connections
+SET
+    update_time = now(),
+    is_primary = $1,
+    configuration_url = $2,
+    client_id = $3,
+    client_secret_ciphertext = $4
+WHERE
+    id = $5
+RETURNING
+    id, organization_id, create_time, update_time, is_primary, configuration_url, client_id, client_secret_ciphertext
+`
+
+type UpdateOIDCConnectionParams struct {
+	IsPrimary              bool
+	ConfigurationUrl       string
+	ClientID               string
+	ClientSecretCiphertext []byte
+	ID                     uuid.UUID
+}
+
+func (q *Queries) UpdateOIDCConnection(ctx context.Context, arg UpdateOIDCConnectionParams) (OidcConnection, error) {
+	row := q.db.QueryRow(ctx, updateOIDCConnection,
+		arg.IsPrimary,
+		arg.ConfigurationUrl,
+		arg.ClientID,
+		arg.ClientSecretCiphertext,
+		arg.ID,
+	)
+	var i OidcConnection
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.IsPrimary,
+		&i.ConfigurationUrl,
+		&i.ClientID,
+		&i.ClientSecretCiphertext,
+	)
+	return i, err
+}
+
 const updateOrganization = `-- name: UpdateOrganization :one
 UPDATE
     organizations
@@ -2322,7 +2498,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml, custom_roles_enabled, log_in_with_github, api_keys_enabled
+    id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml, custom_roles_enabled, log_in_with_github, api_keys_enabled, log_in_with_oidc
 `
 
 type UpdateOrganizationParams struct {
@@ -2373,8 +2549,28 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 		&i.CustomRolesEnabled,
 		&i.LogInWithGithub,
 		&i.ApiKeysEnabled,
+		&i.LogInWithOidc,
 	)
 	return i, err
+}
+
+const updatePrimaryOIDCConnection = `-- name: UpdatePrimaryOIDCConnection :exec
+UPDATE
+    oidc_connections
+SET
+    is_primary = (id = $1)
+WHERE
+    organization_id = $2
+`
+
+type UpdatePrimaryOIDCConnectionParams struct {
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
+}
+
+func (q *Queries) UpdatePrimaryOIDCConnection(ctx context.Context, arg UpdatePrimaryOIDCConnectionParams) error {
+	_, err := q.db.Exec(ctx, updatePrimaryOIDCConnection, arg.ID, arg.OrganizationID)
+	return err
 }
 
 const updatePrimarySAMLConnection = `-- name: UpdatePrimarySAMLConnection :exec

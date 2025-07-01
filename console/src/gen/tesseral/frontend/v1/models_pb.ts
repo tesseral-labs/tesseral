@@ -12,7 +12,7 @@ import type { JsonObject, Message } from "@bufbuild/protobuf";
  * Describes the file tesseral/frontend/v1/models.proto.
  */
 export const file_tesseral_frontend_v1_models: GenFile = /*@__PURE__*/
-  fileDesc("CiF0ZXNzZXJhbC9mcm9udGVuZC92MS9tb2RlbHMucHJvdG8SFHRlc3NlcmFsLmZyb250ZW5kLnYxIuwDCgdQcm9qZWN0EgoKAmlkGAEgASgJEhQKDGRpc3BsYXlfbmFtZRgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhoKEmxvZ19pbl93aXRoX2dvb2dsZRgGIAEoCBIdChVsb2dfaW5fd2l0aF9taWNyb3NvZnQYByABKAgSGgoSbG9nX2luX3dpdGhfZ2l0aHViGA0gASgIEhkKEWxvZ19pbl93aXRoX2VtYWlsGAsgASgIEhwKFGxvZ19pbl93aXRoX3Bhc3N3b3JkGAUgASgIEhgKEGxvZ19pbl93aXRoX3NhbWwYDCABKAgSJQodbG9nX2luX3dpdGhfYXV0aGVudGljYXRvcl9hcHAYCSABKAgSGwoTbG9nX2luX3dpdGhfcGFzc2tleRgKIAEoCBIUCgx2YXVsdF9kb21haW4YCCABKAkSGAoQYXBpX2tleXNfZW5hYmxlZBgOIAEoCBIjChthcGlfa2V5X3NlY3JldF90b2tlbl9wcmVmaXgYDyABKAkSGgoSYXVkaXRfbG9nc19lbmFibGVkGBAgASgIIrkGCgxPcmdhbml6YXRpb24SCgoCaWQYASABKAkSFAoMZGlzcGxheV9uYW1lGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASHwoSbG9nX2luX3dpdGhfZ29vZ2xlGAcgASgISACIAQESIgoVbG9nX2luX3dpdGhfbWljcm9zb2Z0GAggASgISAGIAQESHwoSbG9nX2luX3dpdGhfZ2l0aHViGBIgASgISAKIAQESHgoRbG9nX2luX3dpdGhfZW1haWwYECABKAhIA4gBARIhChRsb2dfaW5fd2l0aF9wYXNzd29yZBgGIAEoCEgEiAEBEh0KEGxvZ19pbl93aXRoX3NhbWwYDCABKAhIBYgBARIqCh1sb2dfaW5fd2l0aF9hdXRoZW50aWNhdG9yX2FwcBgNIAEoCEgGiAEBEiAKE2xvZ19pbl93aXRoX3Bhc3NrZXkYDiABKAhIB4gBARIYCgtyZXF1aXJlX21mYRgPIAEoCEgIiAEBEh0KFWdvb2dsZV9ob3N0ZWRfZG9tYWlucxgJIAMoCRIcChRtaWNyb3NvZnRfdGVuYW50X2lkcxgKIAMoCRIUCgxzYW1sX2VuYWJsZWQYCyABKAgSFAoMc2NpbV9lbmFibGVkGBQgASgIEhwKFGN1c3RvbV9yb2xlc19lbmFibGVkGBEgASgIEhgKEGFwaV9rZXlzX2VuYWJsZWQYEyABKAhCFQoTX2xvZ19pbl93aXRoX2dvb2dsZUIYChZfbG9nX2luX3dpdGhfbWljcm9zb2Z0QhUKE19sb2dfaW5fd2l0aF9naXRodWJCFAoSX2xvZ19pbl93aXRoX2VtYWlsQhcKFV9sb2dfaW5fd2l0aF9wYXNzd29yZEITChFfbG9nX2luX3dpdGhfc2FtbEIgCh5fbG9nX2luX3dpdGhfYXV0aGVudGljYXRvcl9hcHBCFgoUX2xvZ19pbl93aXRoX3Bhc3NrZXlCDgoMX3JlcXVpcmVfbWZhIkAKH09yZ2FuaXphdGlvbkdvb2dsZUhvc3RlZERvbWFpbnMSHQoVZ29vZ2xlX2hvc3RlZF9kb21haW5zGAIgAygJIj4KHk9yZ2FuaXphdGlvbk1pY3Jvc29mdFRlbmFudElEcxIcChRtaWNyb3NvZnRfdGVuYW50X2lkcxgCIAMoCSJQChFTZXNzaW9uU2lnbmluZ0tleRIKCgJpZBgBIAEoCRIvCg5wdWJsaWNfa2V5X2p3axgCIAEoCzIXLmdvb2dsZS5wcm90b2J1Zi5TdHJ1Y3Qi8QIKBFVzZXISCgoCaWQYASABKAkSDQoFZW1haWwYAiABKAkSLwoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC3VwZGF0ZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBISCgVvd25lchgFIAEoCEgAiAEBEhYKDmdvb2dsZV91c2VyX2lkGAYgASgJEhkKEW1pY3Jvc29mdF91c2VyX2lkGAcgASgJEhYKDmdpdGh1Yl91c2VyX2lkGAsgASgJEh0KFWhhc19hdXRoZW50aWNhdG9yX2FwcBgIIAEoCBIZCgxkaXNwbGF5X25hbWUYCSABKAlIAYgBARIgChNwcm9maWxlX3BpY3R1cmVfdXJsGAogASgJSAKIAQFCCAoGX293bmVyQg8KDV9kaXNwbGF5X25hbWVCFgoUX3Byb2ZpbGVfcGljdHVyZV91cmwi3gIKB1Nlc3Npb24SCgoCaWQYASABKAkSDwoHdXNlcl9pZBgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLZXhwaXJlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEg8KB3Jldm9rZWQYBSABKAgSRAoTcHJpbWFyeV9hdXRoX2ZhY3RvchgGIAEoDjInLnRlc3NlcmFsLmZyb250ZW5kLnYxLlByaW1hcnlBdXRoRmFjdG9yEjQKEGxhc3RfYWN0aXZlX3RpbWUYByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhIKCnByb2plY3RfaWQYCCABKAkSFwoPb3JnYW5pemF0aW9uX2lkGAkgASgJEhoKEmltcGVyc29uYXRvcl9lbWFpbBgKIAEoCSKZAgoOU0FNTENvbm5lY3Rpb24SCgoCaWQYASABKAkSLwoLY3JlYXRlX3RpbWUYAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC3VwZGF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIUCgdwcmltYXJ5GAQgASgISACIAQESEgoKc3BfYWNzX3VybBgFIAEoCRIUCgxzcF9lbnRpdHlfaWQYBiABKAkSGAoQaWRwX3JlZGlyZWN0X3VybBgHIAEoCRIcChRpZHBfeDUwOV9jZXJ0aWZpY2F0ZRgIIAEoCRIVCg1pZHBfZW50aXR5X2lkGAkgASgJQgoKCF9wcmltYXJ5IrcBCgpTQ0lNQVBJS2V5EgoKAmlkGAEgASgJEhQKDGRpc3BsYXlfbmFtZRgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhQKDHNlY3JldF90b2tlbhgFIAEoCRIPCgdyZXZva2VkGAYgASgIIukBCgdQYXNza2V5EgoKAmlkGAEgASgJEg8KB3VzZXJfaWQYAiABKAkSLwoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC3VwZGF0ZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIQCghkaXNhYmxlZBgIIAEoCBIVCg1jcmVkZW50aWFsX2lkGAUgASgMEhcKD3B1YmxpY19rZXlfcGtpeBgGIAEoCRIOCgZhYWd1aWQYByABKAkSDQoFcnBfaWQYCSABKAkimAEKClVzZXJJbnZpdGUSCgoCaWQYASABKAkSLwoLY3JlYXRlX3RpbWUYAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC3VwZGF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBINCgVlbWFpbBgEIAEoCRINCgVvd25lchgFIAEoCCI6ChZTd2l0Y2hhYmxlT3JnYW5pemF0aW9uEgoKAmlkGAEgASgJEhQKDGRpc3BsYXlfbmFtZRgCIAEoCSI7CgpSQkFDUG9saWN5Ei0KB2FjdGlvbnMYASADKAsyHC50ZXNzZXJhbC5mcm9udGVuZC52MS5BY3Rpb24iKwoGQWN0aW9uEgwKBG5hbWUYASABKAkSEwoLZGVzY3JpcHRpb24YAiABKAkiyQEKBFJvbGUSCgoCaWQYASABKAkSFwoPb3JnYW5pemF0aW9uX2lkGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASFAoMZGlzcGxheV9uYW1lGAUgASgJEhMKC2Rlc2NyaXB0aW9uGAYgASgJEg8KB2FjdGlvbnMYByADKAkiQgoSVXNlclJvbGVBc3NpZ25tZW50EgoKAmlkGAEgASgJEg8KB3VzZXJfaWQYAiABKAkSDwoHcm9sZV9pZBgDIAEoCSKvAgoGQVBJS2V5EgoKAmlkGAEgASgJEhcKD29yZ2FuaXphdGlvbl9pZBgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEjQKC2V4cGlyZV90aW1lGAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEgAiAEBEhQKDGRpc3BsYXlfbmFtZRgGIAEoCRIUCgxzZWNyZXRfdG9rZW4YByABKAkSGwoTc2VjcmV0X3Rva2VuX3N1ZmZpeBgIIAEoCRIPCgdyZXZva2VkGAkgASgIQg4KDF9leHBpcmVfdGltZSJHChRBUElLZXlSb2xlQXNzaWdubWVudBIKCgJpZBgBIAEoCRISCgphcGlfa2V5X2lkGAIgASgJEg8KB3JvbGVfaWQYAyABKAkigQIKDUF1ZGl0TG9nRXZlbnQSCgoCaWQYASABKAkSFQoNYWN0b3JfdXNlcl9pZBgCIAEoCRIYChBhY3Rvcl9zZXNzaW9uX2lkGAMgASgJEhgKEGFjdG9yX2FwaV9rZXlfaWQYBCABKAkSJQodYWN0b3JfaW50ZXJtZWRpYXRlX3Nlc3Npb25faWQYBSABKAkSLgoKZXZlbnRfdGltZRgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASEgoKZXZlbnRfbmFtZRgHIAEoCRIuCg1ldmVudF9kZXRhaWxzGAggASgLMhcuZ29vZ2xlLnByb3RvYnVmLlN0cnVjdCr/AQoRUHJpbWFyeUF1dGhGYWN0b3ISIwofUFJJTUFSWV9BVVRIX0ZBQ1RPUl9VTlNQRUNJRklFRBAAEh0KGVBSSU1BUllfQVVUSF9GQUNUT1JfRU1BSUwQARIeChpQUklNQVJZX0FVVEhfRkFDVE9SX0dPT0dMRRACEiEKHVBSSU1BUllfQVVUSF9GQUNUT1JfTUlDUk9TT0ZUEAMSHAoYUFJJTUFSWV9BVVRIX0ZBQ1RPUl9TQU1MEAQSJQohUFJJTUFSWV9BVVRIX0ZBQ1RPUl9JTVBFUlNPTkFUSU9OEAUSHgoaUFJJTUFSWV9BVVRIX0ZBQ1RPUl9HSVRIVUIQBkLyAQoYY29tLnRlc3NlcmFsLmZyb250ZW5kLnYxQgtNb2RlbHNQcm90b1ABWldnaXRodWIuY29tL3Rlc3NlcmFsLWxhYnMvdGVzc2VyYWwvaW50ZXJuYWwvZnJvbnRlbmQvZ2VuL3Rlc3NlcmFsL2Zyb250ZW5kL3YxO2Zyb250ZW5kdjGiAgNURliqAhRUZXNzZXJhbC5Gcm9udGVuZC5WMcoCFFRlc3NlcmFsXEZyb250ZW5kXFYx4gIgVGVzc2VyYWxcRnJvbnRlbmRcVjFcR1BCTWV0YWRhdGHqAhZUZXNzZXJhbDo6RnJvbnRlbmQ6OlYxYgZwcm90bzM", [file_google_protobuf_struct, file_google_protobuf_timestamp]);
+  fileDesc("CiF0ZXNzZXJhbC9mcm9udGVuZC92MS9tb2RlbHMucHJvdG8SFHRlc3NlcmFsLmZyb250ZW5kLnYxIoYECgdQcm9qZWN0EgoKAmlkGAEgASgJEhQKDGRpc3BsYXlfbmFtZRgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhoKEmxvZ19pbl93aXRoX2dvb2dsZRgGIAEoCBIdChVsb2dfaW5fd2l0aF9taWNyb3NvZnQYByABKAgSGgoSbG9nX2luX3dpdGhfZ2l0aHViGA0gASgIEhkKEWxvZ19pbl93aXRoX2VtYWlsGAsgASgIEhwKFGxvZ19pbl93aXRoX3Bhc3N3b3JkGAUgASgIEhgKEGxvZ19pbl93aXRoX3NhbWwYDCABKAgSGAoQbG9nX2luX3dpdGhfb2lkYxgRIAEoCBIlCh1sb2dfaW5fd2l0aF9hdXRoZW50aWNhdG9yX2FwcBgJIAEoCBIbChNsb2dfaW5fd2l0aF9wYXNza2V5GAogASgIEhQKDHZhdWx0X2RvbWFpbhgIIAEoCRIYChBhcGlfa2V5c19lbmFibGVkGA4gASgIEiMKG2FwaV9rZXlfc2VjcmV0X3Rva2VuX3ByZWZpeBgPIAEoCRIaChJhdWRpdF9sb2dzX2VuYWJsZWQYECABKAgi7QYKDE9yZ2FuaXphdGlvbhIKCgJpZBgBIAEoCRIUCgxkaXNwbGF5X25hbWUYAiABKAkSLwoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC3VwZGF0ZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIfChJsb2dfaW5fd2l0aF9nb29nbGUYByABKAhIAIgBARIiChVsb2dfaW5fd2l0aF9taWNyb3NvZnQYCCABKAhIAYgBARIfChJsb2dfaW5fd2l0aF9naXRodWIYEiABKAhIAogBARIeChFsb2dfaW5fd2l0aF9lbWFpbBgQIAEoCEgDiAEBEiEKFGxvZ19pbl93aXRoX3Bhc3N3b3JkGAYgASgISASIAQESHQoQbG9nX2luX3dpdGhfc2FtbBgMIAEoCEgFiAEBEh0KEGxvZ19pbl93aXRoX29pZGMYFSABKAhIBogBARIqCh1sb2dfaW5fd2l0aF9hdXRoZW50aWNhdG9yX2FwcBgNIAEoCEgHiAEBEiAKE2xvZ19pbl93aXRoX3Bhc3NrZXkYDiABKAhICIgBARIYCgtyZXF1aXJlX21mYRgPIAEoCEgJiAEBEh0KFWdvb2dsZV9ob3N0ZWRfZG9tYWlucxgJIAMoCRIcChRtaWNyb3NvZnRfdGVuYW50X2lkcxgKIAMoCRIUCgxzYW1sX2VuYWJsZWQYCyABKAgSFAoMc2NpbV9lbmFibGVkGBQgASgIEhwKFGN1c3RvbV9yb2xlc19lbmFibGVkGBEgASgIEhgKEGFwaV9rZXlzX2VuYWJsZWQYEyABKAhCFQoTX2xvZ19pbl93aXRoX2dvb2dsZUIYChZfbG9nX2luX3dpdGhfbWljcm9zb2Z0QhUKE19sb2dfaW5fd2l0aF9naXRodWJCFAoSX2xvZ19pbl93aXRoX2VtYWlsQhcKFV9sb2dfaW5fd2l0aF9wYXNzd29yZEITChFfbG9nX2luX3dpdGhfc2FtbEITChFfbG9nX2luX3dpdGhfb2lkY0IgCh5fbG9nX2luX3dpdGhfYXV0aGVudGljYXRvcl9hcHBCFgoUX2xvZ19pbl93aXRoX3Bhc3NrZXlCDgoMX3JlcXVpcmVfbWZhIkAKH09yZ2FuaXphdGlvbkdvb2dsZUhvc3RlZERvbWFpbnMSHQoVZ29vZ2xlX2hvc3RlZF9kb21haW5zGAIgAygJIj4KHk9yZ2FuaXphdGlvbk1pY3Jvc29mdFRlbmFudElEcxIcChRtaWNyb3NvZnRfdGVuYW50X2lkcxgCIAMoCSJQChFTZXNzaW9uU2lnbmluZ0tleRIKCgJpZBgBIAEoCRIvCg5wdWJsaWNfa2V5X2p3axgCIAEoCzIXLmdvb2dsZS5wcm90b2J1Zi5TdHJ1Y3Qi8QIKBFVzZXISCgoCaWQYASABKAkSDQoFZW1haWwYAiABKAkSLwoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC3VwZGF0ZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBISCgVvd25lchgFIAEoCEgAiAEBEhYKDmdvb2dsZV91c2VyX2lkGAYgASgJEhkKEW1pY3Jvc29mdF91c2VyX2lkGAcgASgJEhYKDmdpdGh1Yl91c2VyX2lkGAsgASgJEh0KFWhhc19hdXRoZW50aWNhdG9yX2FwcBgIIAEoCBIZCgxkaXNwbGF5X25hbWUYCSABKAlIAYgBARIgChNwcm9maWxlX3BpY3R1cmVfdXJsGAogASgJSAKIAQFCCAoGX293bmVyQg8KDV9kaXNwbGF5X25hbWVCFgoUX3Byb2ZpbGVfcGljdHVyZV91cmwi3gIKB1Nlc3Npb24SCgoCaWQYASABKAkSDwoHdXNlcl9pZBgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLZXhwaXJlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEg8KB3Jldm9rZWQYBSABKAgSRAoTcHJpbWFyeV9hdXRoX2ZhY3RvchgGIAEoDjInLnRlc3NlcmFsLmZyb250ZW5kLnYxLlByaW1hcnlBdXRoRmFjdG9yEjQKEGxhc3RfYWN0aXZlX3RpbWUYByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhIKCnByb2plY3RfaWQYCCABKAkSFwoPb3JnYW5pemF0aW9uX2lkGAkgASgJEhoKEmltcGVyc29uYXRvcl9lbWFpbBgKIAEoCSKZAgoOU0FNTENvbm5lY3Rpb24SCgoCaWQYASABKAkSLwoLY3JlYXRlX3RpbWUYAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC3VwZGF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIUCgdwcmltYXJ5GAQgASgISACIAQESEgoKc3BfYWNzX3VybBgFIAEoCRIUCgxzcF9lbnRpdHlfaWQYBiABKAkSGAoQaWRwX3JlZGlyZWN0X3VybBgHIAEoCRIcChRpZHBfeDUwOV9jZXJ0aWZpY2F0ZRgIIAEoCRIVCg1pZHBfZW50aXR5X2lkGAkgASgJQgoKCF9wcmltYXJ5IvsBCg5PSURDQ29ubmVjdGlvbhIKCgJpZBgBIAEoCRIvCgtjcmVhdGVfdGltZRgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhQKB3ByaW1hcnkYBCABKAhIAIgBARIZChFjb25maWd1cmF0aW9uX3VybBgFIAEoCRIRCgljbGllbnRfaWQYBiABKAkSFQoNY2xpZW50X3NlY3JldBgHIAEoCRIUCgxyZWRpcmVjdF91cmkYCCABKAlCCgoIX3ByaW1hcnkitwEKClNDSU1BUElLZXkSCgoCaWQYASABKAkSFAoMZGlzcGxheV9uYW1lGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASFAoMc2VjcmV0X3Rva2VuGAUgASgJEg8KB3Jldm9rZWQYBiABKAgi6QEKB1Bhc3NrZXkSCgoCaWQYASABKAkSDwoHdXNlcl9pZBgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhAKCGRpc2FibGVkGAggASgIEhUKDWNyZWRlbnRpYWxfaWQYBSABKAwSFwoPcHVibGljX2tleV9wa2l4GAYgASgJEg4KBmFhZ3VpZBgHIAEoCRINCgVycF9pZBgJIAEoCSKYAQoKVXNlckludml0ZRIKCgJpZBgBIAEoCRIvCgtjcmVhdGVfdGltZRgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEg0KBWVtYWlsGAQgASgJEg0KBW93bmVyGAUgASgIIjoKFlN3aXRjaGFibGVPcmdhbml6YXRpb24SCgoCaWQYASABKAkSFAoMZGlzcGxheV9uYW1lGAIgASgJIjsKClJCQUNQb2xpY3kSLQoHYWN0aW9ucxgBIAMoCzIcLnRlc3NlcmFsLmZyb250ZW5kLnYxLkFjdGlvbiIrCgZBY3Rpb24SDAoEbmFtZRgBIAEoCRITCgtkZXNjcmlwdGlvbhgCIAEoCSLJAQoEUm9sZRIKCgJpZBgBIAEoCRIXCg9vcmdhbml6YXRpb25faWQYAiABKAkSLwoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC3VwZGF0ZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIUCgxkaXNwbGF5X25hbWUYBSABKAkSEwoLZGVzY3JpcHRpb24YBiABKAkSDwoHYWN0aW9ucxgHIAMoCSJCChJVc2VyUm9sZUFzc2lnbm1lbnQSCgoCaWQYASABKAkSDwoHdXNlcl9pZBgCIAEoCRIPCgdyb2xlX2lkGAMgASgJIq8CCgZBUElLZXkSCgoCaWQYASABKAkSFwoPb3JnYW5pemF0aW9uX2lkGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASNAoLZXhwaXJlX3RpbWUYBSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wSACIAQESFAoMZGlzcGxheV9uYW1lGAYgASgJEhQKDHNlY3JldF90b2tlbhgHIAEoCRIbChNzZWNyZXRfdG9rZW5fc3VmZml4GAggASgJEg8KB3Jldm9rZWQYCSABKAhCDgoMX2V4cGlyZV90aW1lIkcKFEFQSUtleVJvbGVBc3NpZ25tZW50EgoKAmlkGAEgASgJEhIKCmFwaV9rZXlfaWQYAiABKAkSDwoHcm9sZV9pZBgDIAEoCSKBAgoNQXVkaXRMb2dFdmVudBIKCgJpZBgBIAEoCRIVCg1hY3Rvcl91c2VyX2lkGAIgASgJEhgKEGFjdG9yX3Nlc3Npb25faWQYAyABKAkSGAoQYWN0b3JfYXBpX2tleV9pZBgEIAEoCRIlCh1hY3Rvcl9pbnRlcm1lZGlhdGVfc2Vzc2lvbl9pZBgFIAEoCRIuCgpldmVudF90aW1lGAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBISCgpldmVudF9uYW1lGAcgASgJEi4KDWV2ZW50X2RldGFpbHMYCCABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0Kp0CChFQcmltYXJ5QXV0aEZhY3RvchIjCh9QUklNQVJZX0FVVEhfRkFDVE9SX1VOU1BFQ0lGSUVEEAASHQoZUFJJTUFSWV9BVVRIX0ZBQ1RPUl9FTUFJTBABEh4KGlBSSU1BUllfQVVUSF9GQUNUT1JfR09PR0xFEAISIQodUFJJTUFSWV9BVVRIX0ZBQ1RPUl9NSUNST1NPRlQQAxIcChhQUklNQVJZX0FVVEhfRkFDVE9SX1NBTUwQBBIcChhQUklNQVJZX0FVVEhfRkFDVE9SX09JREMQBxIlCiFQUklNQVJZX0FVVEhfRkFDVE9SX0lNUEVSU09OQVRJT04QBRIeChpQUklNQVJZX0FVVEhfRkFDVE9SX0dJVEhVQhAGQvIBChhjb20udGVzc2VyYWwuZnJvbnRlbmQudjFCC01vZGVsc1Byb3RvUAFaV2dpdGh1Yi5jb20vdGVzc2VyYWwtbGFicy90ZXNzZXJhbC9pbnRlcm5hbC9mcm9udGVuZC9nZW4vdGVzc2VyYWwvZnJvbnRlbmQvdjE7ZnJvbnRlbmR2MaICA1RGWKoCFFRlc3NlcmFsLkZyb250ZW5kLlYxygIUVGVzc2VyYWxcRnJvbnRlbmRcVjHiAiBUZXNzZXJhbFxGcm9udGVuZFxWMVxHUEJNZXRhZGF0YeoCFlRlc3NlcmFsOjpGcm9udGVuZDo6VjFiBnByb3RvMw", [file_google_protobuf_struct, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message tesseral.frontend.v1.Project
@@ -67,6 +67,11 @@ export type Project = Message<"tesseral.frontend.v1.Project"> & {
    * @generated from field: bool log_in_with_saml = 12;
    */
   logInWithSaml: boolean;
+
+  /**
+   * @generated from field: bool log_in_with_oidc = 17;
+   */
+  logInWithOidc: boolean;
 
   /**
    * @generated from field: bool log_in_with_authenticator_app = 9;
@@ -159,6 +164,11 @@ export type Organization = Message<"tesseral.frontend.v1.Organization"> & {
    * @generated from field: optional bool log_in_with_saml = 12;
    */
   logInWithSaml?: boolean;
+
+  /**
+   * @generated from field: optional bool log_in_with_oidc = 21;
+   */
+  logInWithOidc?: boolean;
 
   /**
    * @generated from field: optional bool log_in_with_authenticator_app = 13;
@@ -456,6 +466,58 @@ export const SAMLConnectionSchema: GenMessage<SAMLConnection> = /*@__PURE__*/
   messageDesc(file_tesseral_frontend_v1_models, 7);
 
 /**
+ * @generated from message tesseral.frontend.v1.OIDCConnection
+ */
+export type OIDCConnection = Message<"tesseral.frontend.v1.OIDCConnection"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp create_time = 2;
+   */
+  createTime?: Timestamp;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp update_time = 3;
+   */
+  updateTime?: Timestamp;
+
+  /**
+   * @generated from field: optional bool primary = 4;
+   */
+  primary?: boolean;
+
+  /**
+   * @generated from field: string configuration_url = 5;
+   */
+  configurationUrl: string;
+
+  /**
+   * @generated from field: string client_id = 6;
+   */
+  clientId: string;
+
+  /**
+   * @generated from field: string client_secret = 7;
+   */
+  clientSecret: string;
+
+  /**
+   * @generated from field: string redirect_uri = 8;
+   */
+  redirectUri: string;
+};
+
+/**
+ * Describes the message tesseral.frontend.v1.OIDCConnection.
+ * Use `create(OIDCConnectionSchema)` to create a new message.
+ */
+export const OIDCConnectionSchema: GenMessage<OIDCConnection> = /*@__PURE__*/
+  messageDesc(file_tesseral_frontend_v1_models, 8);
+
+/**
  * @generated from message tesseral.frontend.v1.SCIMAPIKey
  */
 export type SCIMAPIKey = Message<"tesseral.frontend.v1.SCIMAPIKey"> & {
@@ -495,7 +557,7 @@ export type SCIMAPIKey = Message<"tesseral.frontend.v1.SCIMAPIKey"> & {
  * Use `create(SCIMAPIKeySchema)` to create a new message.
  */
 export const SCIMAPIKeySchema: GenMessage<SCIMAPIKey> = /*@__PURE__*/
-  messageDesc(file_tesseral_frontend_v1_models, 8);
+  messageDesc(file_tesseral_frontend_v1_models, 9);
 
 /**
  * @generated from message tesseral.frontend.v1.Passkey
@@ -552,7 +614,7 @@ export type Passkey = Message<"tesseral.frontend.v1.Passkey"> & {
  * Use `create(PasskeySchema)` to create a new message.
  */
 export const PasskeySchema: GenMessage<Passkey> = /*@__PURE__*/
-  messageDesc(file_tesseral_frontend_v1_models, 9);
+  messageDesc(file_tesseral_frontend_v1_models, 10);
 
 /**
  * @generated from message tesseral.frontend.v1.UserInvite
@@ -589,7 +651,7 @@ export type UserInvite = Message<"tesseral.frontend.v1.UserInvite"> & {
  * Use `create(UserInviteSchema)` to create a new message.
  */
 export const UserInviteSchema: GenMessage<UserInvite> = /*@__PURE__*/
-  messageDesc(file_tesseral_frontend_v1_models, 10);
+  messageDesc(file_tesseral_frontend_v1_models, 11);
 
 /**
  * @generated from message tesseral.frontend.v1.SwitchableOrganization
@@ -611,7 +673,7 @@ export type SwitchableOrganization = Message<"tesseral.frontend.v1.SwitchableOrg
  * Use `create(SwitchableOrganizationSchema)` to create a new message.
  */
 export const SwitchableOrganizationSchema: GenMessage<SwitchableOrganization> = /*@__PURE__*/
-  messageDesc(file_tesseral_frontend_v1_models, 11);
+  messageDesc(file_tesseral_frontend_v1_models, 12);
 
 /**
  * RBACPolicy represents a Project's configuration for Role-Based Access Control
@@ -633,7 +695,7 @@ export type RBACPolicy = Message<"tesseral.frontend.v1.RBACPolicy"> & {
  * Use `create(RBACPolicySchema)` to create a new message.
  */
 export const RBACPolicySchema: GenMessage<RBACPolicy> = /*@__PURE__*/
-  messageDesc(file_tesseral_frontend_v1_models, 12);
+  messageDesc(file_tesseral_frontend_v1_models, 13);
 
 /**
  * Action represents a permission within a Project.
@@ -661,7 +723,7 @@ export type Action = Message<"tesseral.frontend.v1.Action"> & {
  * Use `create(ActionSchema)` to create a new message.
  */
 export const ActionSchema: GenMessage<Action> = /*@__PURE__*/
-  messageDesc(file_tesseral_frontend_v1_models, 13);
+  messageDesc(file_tesseral_frontend_v1_models, 14);
 
 /**
  * Role represents a logical grouping of permissions that Users may have.
@@ -724,7 +786,7 @@ export type Role = Message<"tesseral.frontend.v1.Role"> & {
  * Use `create(RoleSchema)` to create a new message.
  */
 export const RoleSchema: GenMessage<Role> = /*@__PURE__*/
-  messageDesc(file_tesseral_frontend_v1_models, 14);
+  messageDesc(file_tesseral_frontend_v1_models, 15);
 
 /**
  * UserRoleAssignment represents a User being assigned to a Role.
@@ -759,7 +821,7 @@ export type UserRoleAssignment = Message<"tesseral.frontend.v1.UserRoleAssignmen
  * Use `create(UserRoleAssignmentSchema)` to create a new message.
  */
 export const UserRoleAssignmentSchema: GenMessage<UserRoleAssignment> = /*@__PURE__*/
-  messageDesc(file_tesseral_frontend_v1_models, 15);
+  messageDesc(file_tesseral_frontend_v1_models, 16);
 
 /**
  * @generated from message tesseral.frontend.v1.APIKey
@@ -834,7 +896,7 @@ export type APIKey = Message<"tesseral.frontend.v1.APIKey"> & {
  * Use `create(APIKeySchema)` to create a new message.
  */
 export const APIKeySchema: GenMessage<APIKey> = /*@__PURE__*/
-  messageDesc(file_tesseral_frontend_v1_models, 16);
+  messageDesc(file_tesseral_frontend_v1_models, 17);
 
 /**
  * @generated from message tesseral.frontend.v1.APIKeyRoleAssignment
@@ -867,7 +929,7 @@ export type APIKeyRoleAssignment = Message<"tesseral.frontend.v1.APIKeyRoleAssig
  * Use `create(APIKeyRoleAssignmentSchema)` to create a new message.
  */
 export const APIKeyRoleAssignmentSchema: GenMessage<APIKeyRoleAssignment> = /*@__PURE__*/
-  messageDesc(file_tesseral_frontend_v1_models, 17);
+  messageDesc(file_tesseral_frontend_v1_models, 18);
 
 /**
  * @generated from message tesseral.frontend.v1.AuditLogEvent
@@ -935,7 +997,7 @@ export type AuditLogEvent = Message<"tesseral.frontend.v1.AuditLogEvent"> & {
  * Use `create(AuditLogEventSchema)` to create a new message.
  */
 export const AuditLogEventSchema: GenMessage<AuditLogEvent> = /*@__PURE__*/
-  messageDesc(file_tesseral_frontend_v1_models, 18);
+  messageDesc(file_tesseral_frontend_v1_models, 19);
 
 /**
  * @generated from enum tesseral.frontend.v1.PrimaryAuthFactor
@@ -965,6 +1027,11 @@ export enum PrimaryAuthFactor {
    * @generated from enum value: PRIMARY_AUTH_FACTOR_SAML = 4;
    */
   SAML = 4,
+
+  /**
+   * @generated from enum value: PRIMARY_AUTH_FACTOR_OIDC = 7;
+   */
+  OIDC = 7,
 
   /**
    * @generated from enum value: PRIMARY_AUTH_FACTOR_IMPERSONATION = 5;

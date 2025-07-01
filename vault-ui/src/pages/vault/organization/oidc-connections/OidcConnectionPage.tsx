@@ -1,0 +1,425 @@
+import { timestampDate } from "@bufbuild/protobuf/wkt";
+import { useMutation, useQuery } from "@connectrpc/connect-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowLeft, LoaderCircle, Trash, TriangleAlert } from "lucide-react";
+import { DateTime } from "luxon";
+import React, { useCallback, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate, useParams } from "react-router";
+import { toast } from "sonner";
+import { z } from "zod";
+
+import { Title } from "@/components/core/Title";
+import { ValueCopier } from "@/components/core/ValueCopier";
+import { PageContent } from "@/components/page";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import {
+  deleteOIDCConnection,
+  getOIDCConnection,
+  updateOIDCConnection,
+} from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
+
+const schema = z.object({
+  configurationUrl: z.string().url("Must be a valid URL"),
+  clientId: z.string().nonempty("Client ID is required"),
+  clientSecret: z.string().optional(),
+  primary: z.boolean(),
+});
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function useDebounce<T extends any[]>(
+  callback: (...args: T) => void,
+  delay: number,
+) {
+  const debouncedCallback = useCallback(
+    (...args: T) => {
+      const handler: ReturnType<typeof setTimeout> = setTimeout(() => {
+        callback(...args);
+      }, delay);
+
+      return () => {
+        clearTimeout(handler);
+      };
+    },
+    [callback, delay],
+  );
+
+  return debouncedCallback;
+}
+
+export function OidcConnectionPage() {
+  const { oidcConnectionId } = useParams();
+
+  const { data: getOidcConnectionResponse, refetch } = useQuery(
+    getOIDCConnection,
+    {
+      id: oidcConnectionId,
+    },
+  );
+  const updateOidcConnectionMutation = useMutation(updateOIDCConnection);
+
+  const oidcConnection = getOidcConnectionResponse?.oidcConnection;
+
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      configurationUrl:
+        getOidcConnectionResponse?.oidcConnection?.configurationUrl || "",
+      clientId: getOidcConnectionResponse?.oidcConnection?.clientId || "",
+      clientSecret:
+        getOidcConnectionResponse?.oidcConnection?.clientSecret || "",
+      primary: getOidcConnectionResponse?.oidcConnection?.primary || false,
+    },
+  });
+
+  async function handleSubmit(data: z.infer<typeof schema>) {
+    try {
+      await updateOidcConnectionMutation.mutateAsync({
+        id: oidcConnectionId,
+        oidcConnection: {
+          configurationUrl: data.configurationUrl,
+          clientId: data.clientId,
+          clientSecret: data.clientSecret,
+          primary: data.primary,
+        },
+      });
+      form.reset(data);
+      await refetch();
+      toast.success("OIDC Connection updated successfully");
+    } catch {
+      toast.error("Failed to update OIDC Connection. Please try again later.");
+    }
+  }
+
+  useEffect(() => {
+    if (oidcConnection) {
+      form.reset({
+        configurationUrl: oidcConnection.configurationUrl || "",
+        clientId: oidcConnection.clientId || "",
+        clientSecret: oidcConnection.clientSecret || "",
+        primary: oidcConnection.primary || false,
+      });
+    }
+  }, [oidcConnection, form]);
+
+  const configurationUrl = form.watch("configurationUrl");
+  const fetchConfiguration = useCallback(
+    async (url: string) => {
+      const urlData = URL.parse(url);
+      if (!urlData) {
+        return;
+      }
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        await response.json();
+        form.clearErrors("configurationUrl");
+      } catch (error) {
+        form.setError("configurationUrl", {
+          type: "manual",
+          message: "Failed to fetch OIDC configuration. Please check the URL.",
+        });
+        console.error("Failed to fetch configuration:", error);
+      }
+    },
+    [form],
+  );
+
+  const debouncedFetch = useDebounce(fetchConfiguration, 500);
+
+  useEffect(() => {
+    debouncedFetch(configurationUrl);
+  }, [configurationUrl, debouncedFetch]);
+
+  return (
+    <PageContent>
+      <Title title="OIDC Connection Details" />
+
+      <div>
+        <Link to="/organization/authentication">
+          <Button variant="ghost" size="sm">
+            <ArrowLeft />
+            Back to Authentication
+          </Button>
+        </Link>
+      </div>
+
+      <div>
+        <div>
+          <h1 className="text-2xl font-semibold">OIDC Connection</h1>
+          <ValueCopier
+            value={getOidcConnectionResponse?.oidcConnection?.id || ""}
+            label="OIDC Connection ID"
+          />
+          <div className="flex flex-wrap mt-2 gap-2 text-muted-foreground/50">
+            <Badge className="border-0" variant="outline">
+              Created{" "}
+              {getOidcConnectionResponse?.oidcConnection?.createTime &&
+                DateTime.fromJSDate(
+                  timestampDate(
+                    getOidcConnectionResponse.oidcConnection.createTime,
+                  ),
+                ).toRelative()}
+            </Badge>
+            <div>•</div>
+            <Badge className="border-0" variant="outline">
+              Updated{" "}
+              {getOidcConnectionResponse?.oidcConnection?.updateTime &&
+                DateTime.fromJSDate(
+                  timestampDate(
+                    getOidcConnectionResponse.oidcConnection.updateTime,
+                  ),
+                ).toRelative()}
+            </Badge>
+          </div>
+        </div>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Service Provider Details</CardTitle>
+          <CardDescription>
+            The configuration here is assigned automatically by Tesseral, and
+            needs to be inputted into your customer's Identity Provider by their
+            IT admin.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <div className="font-semibold">Redirect URL</div>
+            <ValueCopier
+              value={
+                getOidcConnectionResponse?.oidcConnection?.redirectUri || ""
+              }
+              label="Redirect URL"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
+          <Card>
+            <CardHeader>
+              <CardTitle>Identity Provider settings</CardTitle>
+              <CardDescription>
+                The configuration here needs to be copied over from the
+                customer's Identity Provider ("IDP").
+              </CardDescription>
+              <CardAction>
+                <Button
+                  type="submit"
+                  disabled={
+                    !form.formState.isDirty ||
+                    updateOidcConnectionMutation.isPending
+                  }
+                >
+                  {updateOidcConnectionMutation.isPending && (
+                    <LoaderCircle className="animate-spin" />
+                  )}
+                  {updateOidcConnectionMutation.isPending
+                    ? "Saving changes"
+                    : "Save changes"}
+                </Button>
+              </CardAction>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <FormField
+                control={form.control}
+                name="primary"
+                render={({ field }) => (
+                  <FormItem className="flex items-center justify-between space-x-4">
+                    <div className="space-y-2">
+                      <FormLabel>Primary Connection</FormLabel>
+                      <FormDescription>
+                        A primary OIDC connection gets used by default within
+                        its organization.
+                      </FormDescription>
+                      <FormMessage />
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="configurationUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>OIDC Configuration URL</FormLabel>
+                    <FormDescription>
+                      The OIDC Configuration URL, as configured in the
+                      customer's Identity Provider.
+                    </FormDescription>
+                    <FormMessage />
+                    <FormControl>
+                      <Input className="max-w-xl" {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="clientId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>OIDC Client ID</FormLabel>
+                    <FormDescription>
+                      The OIDC Client ID, as configured in the customer's
+                      Identity Provider.
+                    </FormDescription>
+                    <FormMessage />
+                    <FormControl>
+                      <Input className="max-w-xl" {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="clientSecret"
+                render={({
+                  field: { onChange },
+                }: {
+                  field: { onChange: (value: string) => void };
+                }) => (
+                  <FormItem>
+                    <FormLabel>OIDC Client Secret</FormLabel>
+                    <FormDescription>
+                      The OIDC Client Secret, as configured in the customer's
+                      Identity Provider.
+                    </FormDescription>
+                    <FormMessage />
+                    <FormControl>
+                      <Input
+                        type="password"
+                        className="max-w-xl"
+                        onChange={(e) => onChange(e.target.value)}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+        </form>
+      </Form>
+
+      <DangerZoneCard />
+    </PageContent>
+  );
+}
+
+function DangerZoneCard() {
+  const { organizationId, oidcConnectionId } = useParams();
+  const navigate = useNavigate();
+
+  const deleteOidcConnectionMutation = useMutation(deleteOIDCConnection);
+
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
+  async function handleDelete() {
+    await deleteOidcConnectionMutation.mutateAsync({
+      id: oidcConnectionId,
+    });
+    toast.success("OIDC Connection deleted successfully");
+    navigate(`/organizations/${organizationId}/authentication`);
+  }
+
+  return (
+    <>
+      <Card className="bg-red-50/50 border-red-200">
+        <CardHeader>
+          <CardTitle className="text-destructive flex items-center gap-2">
+            <TriangleAlert className="w-4 h-4" />
+            <span>Danger Zone</span>
+          </CardTitle>
+          <CardDescription>
+            This section contains actions that can have significant
+            consequences. Proceed with caution.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="flex items-center justify-between gap-8 w-full lg:w-auto flex-wrap lg:flex-nowrap">
+            <div className="space-y-1">
+              <div className="text-sm font-semibold flex items-center gap-2">
+                <Trash className="w-4 h-4" />
+                <span>Delete OIDC Connection</span>
+              </div>
+              <div className="text-sm text-muted-foreground">
+                Completely delete the OIDC Connection. This cannot be undone.
+              </div>
+            </div>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => setDeleteOpen(true)}
+            >
+              Delete OIDC Connection
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <TriangleAlert />
+              <span>Are you sure?</span>
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This action will permanently delete the OIDC Connection. This
+              cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <Button variant="outline" onClick={() => setDeleteOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleDelete}>
+              Delete OIDC Connection
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+}

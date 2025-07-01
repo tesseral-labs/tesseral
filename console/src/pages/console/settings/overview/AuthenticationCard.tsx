@@ -61,6 +61,9 @@ export function AuthenticationCard() {
               {getProjectResponse?.project?.logInWithSaml && (
                 <Badge variant="outline">SAML SSO</Badge>
               )}
+              {getProjectResponse?.project?.logInWithOidc && (
+                <Badge variant="outline">OIDC SSO</Badge>
+              )}
             </div>
           </div>
           <div className="space-y-2">

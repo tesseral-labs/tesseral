@@ -19,6 +19,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/cloudflaredoh"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/oidcclient"
 	"github.com/tesseral-labs/tesseral/internal/pagetoken"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -41,6 +42,7 @@ type Store struct {
 	googleOAuthClientSecretsKMSKeyID      string
 	microsoftOAuthClientSecretsKMSKeyID   string
 	githubOAuthClientSecretsKMSKeyID      string
+	oidcClientSecretsKMSKeyID             string
 	userContentBaseUrl                    string
 	authAppsRootDomain                    string
 	tesseralDNSCloudflareZoneID           string
@@ -50,6 +52,7 @@ type Store struct {
 	stripePriceIDGrowthTier               string
 	svixClient                            *svix.Svix
 	auditlogStore                         *auditlogstore.Store
+	oidc                                  *oidcclient.Client
 }
 
 type NewStoreParams struct {
@@ -68,6 +71,7 @@ type NewStoreParams struct {
 	GoogleOAuthClientSecretsKMSKeyID      string
 	MicrosoftOAuthClientSecretsKMSKeyID   string
 	GithubOAuthClientSecretsKMSKeyID      string
+	OIDCClientSecretsKMSKeyID             string
 	UserContentBaseUrl                    string
 	AuthAppsRootDomain                    string
 	TesseralDNSCloudflareZoneID           string
@@ -77,6 +81,7 @@ type NewStoreParams struct {
 	StripePriceIDGrowthTier               string
 	SvixClient                            *svix.Svix
 	AuditlogStore                         *auditlogstore.Store
+	OIDCClient                            *oidcclient.Client
 }
 
 func New(p NewStoreParams) *Store {
@@ -98,6 +103,7 @@ func New(p NewStoreParams) *Store {
 		googleOAuthClientSecretsKMSKeyID:      p.GoogleOAuthClientSecretsKMSKeyID,
 		microsoftOAuthClientSecretsKMSKeyID:   p.MicrosoftOAuthClientSecretsKMSKeyID,
 		githubOAuthClientSecretsKMSKeyID:      p.GithubOAuthClientSecretsKMSKeyID,
+		oidcClientSecretsKMSKeyID:             p.OIDCClientSecretsKMSKeyID,
 		userContentBaseUrl:                    p.UserContentBaseUrl,
 		authAppsRootDomain:                    p.AuthAppsRootDomain,
 		tesseralDNSCloudflareZoneID:           p.TesseralDNSCloudflareZoneID,
@@ -107,6 +113,7 @@ func New(p NewStoreParams) *Store {
 		stripePriceIDGrowthTier:               p.StripePriceIDGrowthTier,
 		svixClient:                            p.SvixClient,
 		auditlogStore:                         p.AuditlogStore,
+		oidc:                                  p.OIDCClient,
 	}
 
 	return store

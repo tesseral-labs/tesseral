@@ -182,6 +182,9 @@ export function ListOrganizationsPage() {
                               {org.logInWithSaml && (
                                 <Badge variant="outline">SAML</Badge>
                               )}
+                              {org.logInWithOidc && (
+                                <Badge variant="outline">OIDC</Badge>
+                              )}
                             </div>
                             {/* {org.authenticationMethods.join(", ")} */}
                           </TableCell>
