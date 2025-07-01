@@ -59,6 +59,9 @@ func (s *Store) ConsoleSearch(ctx context.Context, req *backendv1.ConsoleSearchR
 	}
 
 	limit := 5
+	if req.Limit > 0 {
+		limit = int(req.Limit)
+	}
 
 	qAPIKeys, err := q.ConsoleSearchAPIKeys(ctx, queries.ConsoleSearchAPIKeysParams{
 		ID:        apiKeyID,

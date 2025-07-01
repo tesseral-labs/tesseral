@@ -1238,7 +1238,8 @@ message ConsoleListAuditLogEventNamesResponse {
 
 message ConsoleSearchRequest {
   string query = 1;
-  string page_token = 2;
+  int32 limit = 2;
+  string page_token = 3;
 }
 
 message ConsoleSearchResponse {
