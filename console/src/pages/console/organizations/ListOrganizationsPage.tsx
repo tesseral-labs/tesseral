@@ -34,7 +34,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -258,103 +257,106 @@ function ManageOrganizationButton({
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm">
-          <Settings />
-          Manage
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuItem>
-          <Link className="w-full" to={`/organizations/${organization.id}`}>
-            <div className="w-full flex items-center">
-              <AlignLeft className="inline mr-2" />
-              Details
-            </div>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link
-            className="w-full"
-            to={`/organizations/${organization.id}/authentication`}
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="sm">
+            <Settings />
+            Manage
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem>
+            <Link className="w-full" to={`/organizations/${organization.id}`}>
+              <div className="w-full flex items-center">
+                <AlignLeft className="inline mr-2" />
+                Details
+              </div>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link
+              className="w-full"
+              to={`/organizations/${organization.id}/authentication`}
+            >
+              <div className="w-full flex items-center">
+                <Shield className="inline mr-2" />
+                Authentication Settings
+              </div>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link
+              className="w-full"
+              to={`/organizations/${organization.id}/api-keys`}
+            >
+              <div className="w-full flex items-center">
+                <Key className="inline mr-2" />
+                Managed API Keys
+              </div>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link
+              className="w-full"
+              to={`/organizations/${organization.id}/users`}
+            >
+              <div className="w-full flex items-center">
+                <Users className="inline mr-2" />
+                Users
+              </div>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link
+              className="w-full"
+              to={`/organizations/${organization.id}/logs`}
+            >
+              <div className="w-full flex items-center">
+                <Logs className="inline mr-2" />
+                Audit Logs
+              </div>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            className="group"
+            onClick={() => setDeleteOpen(true)}
           >
-            <div className="w-full flex items-center">
-              <Shield className="inline mr-2" />
-              Authentication Settings
-            </div>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link
-            className="w-full"
-            to={`/organizations/${organization.id}/api-keys`}
-          >
-            <div className="w-full flex items-center">
-              <Key className="inline mr-2" />
-              Managed API Keys
-            </div>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link
-            className="w-full"
-            to={`/organizations/${organization.id}/users`}
-          >
-            <div className="w-full flex items-center">
-              <Users className="inline mr-2" />
-              Users
-            </div>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link
-            className="w-full"
-            to={`/organizations/${organization.id}/logs`}
-          >
-            <div className="w-full flex items-center">
-              <Logs className="inline mr-2" />
-              Audit Logs
-            </div>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-            <AlertDialogTrigger className="group text-destructive hover:text-destructive flex items-center gap-2">
-              <Trash className="text-destructive group-hover:text:destructive" />
-              <span>Delete Organization</span>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  <p>
-                    You are about to delete the{" "}
-                    <span className="font-semibold">
-                      {getOrganizationResponse?.organization?.displayName}
-                    </span>{" "}
-                    Organization.
-                  </p>
-                  <p className="font-semibold">This action cannot be undone.</p>
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter className="space-x-2 justify-end">
-                <Button
-                  onClick={() => setDeleteOpen(false)}
-                  variant="secondary"
-                >
-                  Cancel
-                </Button>
-                <Button variant="destructive" onClick={handleDelete}>
-                  Delete Organization
-                </Button>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+            <Trash className="text-destructive group-hover:text:destructive" />
+            <span className="text-destructive group-hover:text-destructive">
+              Delete Organization
+            </span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              <p>
+                You are about to delete the{" "}
+                <span className="font-semibold">
+                  {getOrganizationResponse?.organization?.displayName}
+                </span>{" "}
+                Organization.
+              </p>
+              <p className="font-semibold">This action cannot be undone.</p>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="space-x-2 justify-end">
+            <Button onClick={() => setDeleteOpen(false)} variant="secondary">
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleDelete}>
+              Delete Organization
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
 
