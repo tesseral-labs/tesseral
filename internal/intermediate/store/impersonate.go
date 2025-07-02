@@ -30,7 +30,10 @@ func (s *Store) RedeemUserImpersonationToken(ctx context.Context, req *intermedi
 	}
 
 	secretTokenSHA256 := sha256.Sum256(secretTokenUUID[:])
-	qUserImpersonationToken, err := q.GetUserImpersonationTokenBySecretTokenSHA256(ctx, secretTokenSHA256[:])
+	qUserImpersonationToken, err := q.GetUserImpersonationTokenBySecretTokenSHA256(ctx, queries.GetUserImpersonationTokenBySecretTokenSHA256Params{
+		ProjectID:         authn.ProjectID(ctx),
+		SecretTokenSha256: secretTokenSHA256[:],
+	})
 	if err != nil {
 		return nil, fmt.Errorf("get user impersonation token by secret token sha256: %w", err)
 	}

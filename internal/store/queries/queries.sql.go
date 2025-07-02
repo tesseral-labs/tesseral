@@ -450,40 +450,6 @@ func (q *Queries) GetSessionByID(ctx context.Context, id uuid.UUID) (Session, er
 	return i, err
 }
 
-const getSessionDetailsByRefreshTokenSHA256 = `-- name: GetSessionDetailsByRefreshTokenSHA256 :one
-SELECT
-    sessions.id AS session_id,
-    users.id AS user_id,
-    organizations.id AS organization_id,
-    projects.id AS project_id
-FROM
-    sessions
-    JOIN users ON sessions.user_id = users.id
-    JOIN organizations ON users.organization_id = organizations.id
-    JOIN projects ON organizations.id = projects.organization_id
-WHERE
-    refresh_token_sha256 = $1
-`
-
-type GetSessionDetailsByRefreshTokenSHA256Row struct {
-	SessionID      uuid.UUID
-	UserID         uuid.UUID
-	OrganizationID uuid.UUID
-	ProjectID      uuid.UUID
-}
-
-func (q *Queries) GetSessionDetailsByRefreshTokenSHA256(ctx context.Context, refreshTokenSha256 []byte) (GetSessionDetailsByRefreshTokenSHA256Row, error) {
-	row := q.db.QueryRow(ctx, getSessionDetailsByRefreshTokenSHA256, refreshTokenSha256)
-	var i GetSessionDetailsByRefreshTokenSHA256Row
-	err := row.Scan(
-		&i.SessionID,
-		&i.UserID,
-		&i.OrganizationID,
-		&i.ProjectID,
-	)
-	return i, err
-}
-
 const getUserByID = `-- name: GetUserByID :one
 SELECT
     id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/tesseral-labs/tesseral/internal/common/store"
 )
 
@@ -17,8 +18,8 @@ func NewIssuer(store *store.Store) *Issuer {
 	}
 }
 
-func (i *Issuer) NewAccessToken(ctx context.Context, refreshToken string) (string, error) {
-	res, err := i.store.IssueAccessToken(ctx, refreshToken)
+func (i *Issuer) NewAccessToken(ctx context.Context, projectID uuid.UUID, refreshToken string) (string, error) {
+	res, err := i.store.IssueAccessToken(ctx, projectID, refreshToken)
 	if err != nil {
 		return "", fmt.Errorf("issue access token: %w", err)
 	}

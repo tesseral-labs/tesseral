@@ -24,7 +24,6 @@ SELECT
     users.profile_picture_url AS user_profile_picture_url,
     organizations.id AS organization_id,
     organizations.display_name AS organization_display_name,
-    organizations.project_id AS project_id,
     sessions.impersonator_user_id
 FROM
     relayed_sessions
@@ -32,7 +31,8 @@ FROM
     JOIN users ON sessions.user_id = users.id
     JOIN organizations ON users.organization_id = organizations.id
 WHERE
-    relayed_sessions.relayed_refresh_token_sha256 = $1;
+    relayed_sessions.relayed_refresh_token_sha256 = $1
+    AND organizations.project_id = $2;
 
 -- name: GetSessionDetailsByRefreshTokenSHA256 :one
 SELECT
@@ -44,14 +44,14 @@ SELECT
     users.profile_picture_url AS user_profile_picture_url,
     organizations.id AS organization_id,
     organizations.display_name AS organization_display_name,
-    organizations.project_id AS project_id,
     sessions.impersonator_user_id
 FROM
     sessions
     JOIN users ON sessions.user_id = users.id
     JOIN organizations ON users.organization_id = organizations.id
 WHERE
-    sessions.refresh_token_sha256 = $1;
+    sessions.refresh_token_sha256 = $1
+    AND organizations.project_id = $2;
 
 -- name: GetImpersonatorUserByID :one
 SELECT

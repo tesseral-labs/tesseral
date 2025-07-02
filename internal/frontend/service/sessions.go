@@ -20,7 +20,7 @@ func (s *Service) Refresh(ctx context.Context, req *connect.Request[frontendv1.R
 		return nil, apierror.NewUnauthenticatedError("no refresh token provided", nil)
 	}
 
-	accessToken, err := s.AccessTokenIssuer.NewAccessToken(ctx, req.Msg.RefreshToken)
+	accessToken, err := s.AccessTokenIssuer.NewAccessToken(ctx, authn.ProjectID(ctx), req.Msg.RefreshToken)
 	if err != nil {
 		return nil, fmt.Errorf("store: %w", err)
 	}

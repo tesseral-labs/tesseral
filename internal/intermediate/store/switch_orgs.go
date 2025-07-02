@@ -42,7 +42,10 @@ func (s *Store) ExchangeSessionForIntermediateSession(ctx context.Context, req *
 	}
 
 	refreshTokenSHA := sha256.Sum256(refreshTokenUUID[:])
-	qDetails, err := s.q.GetSessionDetailsByRefreshTokenSHA256(ctx, refreshTokenSHA[:])
+	qDetails, err := s.q.GetSessionDetailsByRefreshTokenSHA256(ctx, queries.GetSessionDetailsByRefreshTokenSHA256Params{
+		ProjectID:          authn.ProjectID(ctx),
+		RefreshTokenSha256: refreshTokenSHA[:],
+	})
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewUnauthenticatedError("invalid refresh token", fmt.Errorf("invalid refresh token"))

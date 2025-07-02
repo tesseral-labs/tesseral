@@ -20,7 +20,7 @@ func TestCreateRefreshAuditLogEvent_Success(t *testing.T) {
 	userID := authn.UserID(ctx)
 	_, refreshToken := u.Environment.NewSession(t, idformat.User.Format(userID))
 
-	accessToken, err := u.Common.IssueAccessToken(ctx, refreshToken)
+	accessToken, err := u.Common.IssueAccessToken(ctx, authn.ProjectID(ctx), refreshToken)
 	require.NoError(t, err)
 
 	err = u.Store.CreateRefreshAuditLogEvent(ctx, accessToken)

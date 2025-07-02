@@ -15,7 +15,7 @@ func (s *Service) RedeemUserImpersonationToken(ctx context.Context, req *connect
 		return nil, fmt.Errorf("store: %w", err)
 	}
 
-	accessToken, err := s.AccessTokenIssuer.NewAccessToken(ctx, res.RefreshToken)
+	accessToken, err := s.AccessTokenIssuer.NewAccessToken(ctx, authn.ProjectID(ctx), res.RefreshToken)
 	if err != nil {
 		return nil, fmt.Errorf("issue access token: %w", err)
 	}

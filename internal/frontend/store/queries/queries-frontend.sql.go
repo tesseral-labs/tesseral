@@ -1266,33 +1266,31 @@ const getSessionDetailsByRefreshTokenSHA256 = `-- name: GetSessionDetailsByRefre
 SELECT
     sessions.id AS session_id,
     users.id AS user_id,
-    organizations.id AS organization_id,
-    projects.id AS project_id
+    organizations.id AS organization_id
 FROM
     sessions
     JOIN users ON sessions.user_id = users.id
     JOIN organizations ON users.organization_id = organizations.id
-    JOIN projects ON projects.id = organizations.project_id
 WHERE
     refresh_token_sha256 = $1
+    AND organizations.project_id = $2
 `
+
+type GetSessionDetailsByRefreshTokenSHA256Params struct {
+	RefreshTokenSha256 []byte
+	ProjectID          uuid.UUID
+}
 
 type GetSessionDetailsByRefreshTokenSHA256Row struct {
 	SessionID      uuid.UUID
 	UserID         uuid.UUID
 	OrganizationID uuid.UUID
-	ProjectID      uuid.UUID
 }
 
-func (q *Queries) GetSessionDetailsByRefreshTokenSHA256(ctx context.Context, refreshTokenSha256 []byte) (GetSessionDetailsByRefreshTokenSHA256Row, error) {
-	row := q.db.QueryRow(ctx, getSessionDetailsByRefreshTokenSHA256, refreshTokenSha256)
+func (q *Queries) GetSessionDetailsByRefreshTokenSHA256(ctx context.Context, arg GetSessionDetailsByRefreshTokenSHA256Params) (GetSessionDetailsByRefreshTokenSHA256Row, error) {
+	row := q.db.QueryRow(ctx, getSessionDetailsByRefreshTokenSHA256, arg.RefreshTokenSha256, arg.ProjectID)
 	var i GetSessionDetailsByRefreshTokenSHA256Row
-	err := row.Scan(
-		&i.SessionID,
-		&i.UserID,
-		&i.OrganizationID,
-		&i.ProjectID,
-	)
+	err := row.Scan(&i.SessionID, &i.UserID, &i.OrganizationID)
 	return i, err
 }
 

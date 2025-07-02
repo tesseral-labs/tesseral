@@ -8,6 +8,7 @@ import (
 	"connectrpc.com/connect"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
+	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/structpb"
@@ -77,7 +78,7 @@ func TestCreateCustomAuditLogEvent_Actor(t *testing.T) {
 	})
 	sessionID, refreshToken := u.Environment.NewSession(t, userID)
 
-	accessToken, err := u.Common.IssueAccessToken(ctx, refreshToken)
+	accessToken, err := u.Common.IssueAccessToken(ctx, authn.ProjectID(ctx), refreshToken)
 	require.NoError(t, err)
 
 	apiKey, err := u.Store.CreateAPIKey(ctx, &backendv1.CreateAPIKeyRequest{
@@ -239,7 +240,7 @@ func TestConsoleListCustomAuditLogEvents_PaginateByActor(t *testing.T) {
 	})
 	sessionID, refreshToken := u.Environment.NewSession(t, userID)
 
-	accessToken, err := u.Common.IssueAccessToken(ctx, refreshToken)
+	accessToken, err := u.Common.IssueAccessToken(ctx, authn.ProjectID(ctx), refreshToken)
 	require.NoError(t, err)
 
 	apiKey, err := u.Store.CreateAPIKey(ctx, &backendv1.CreateAPIKeyRequest{

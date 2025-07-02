@@ -80,15 +80,14 @@ WHERE
 SELECT
     sessions.id AS session_id,
     users.id AS user_id,
-    organizations.id AS organization_id,
-    projects.id AS project_id
+    organizations.id AS organization_id
 FROM
     sessions
     JOIN users ON sessions.user_id = users.id
     JOIN organizations ON users.organization_id = organizations.id
-    JOIN projects ON projects.id = organizations.project_id
 WHERE
-    refresh_token_sha256 = $1;
+    refresh_token_sha256 = $1
+    AND organizations.project_id = $2;
 
 -- name: GetUserByID :one
 SELECT
