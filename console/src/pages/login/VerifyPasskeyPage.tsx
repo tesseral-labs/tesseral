@@ -42,6 +42,7 @@ export function VerifyPasskeyPage() {
       userVerification: "preferred",
       timeout: 60000,
     };
+
     const credential = (await navigator.credentials.get({
       publicKey: requestOptions,
     })) as PublicKeyCredential;
