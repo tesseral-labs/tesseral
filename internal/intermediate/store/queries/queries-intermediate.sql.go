@@ -1438,9 +1438,16 @@ SELECT
 FROM
     sessions
     JOIN users ON sessions.user_id = users.id
+    JOIN organizations ON users.organization_id = organizations.id
 WHERE
     refresh_token_sha256 = $1
+    AND organizations.project_id = $2
 `
+
+type GetSessionDetailsByRefreshTokenSHA256Params struct {
+	RefreshTokenSha256 []byte
+	ProjectID          uuid.UUID
+}
 
 type GetSessionDetailsByRefreshTokenSHA256Row struct {
 	SessionID         uuid.UUID
@@ -1450,8 +1457,8 @@ type GetSessionDetailsByRefreshTokenSHA256Row struct {
 	MicrosoftUserID   *string
 }
 
-func (q *Queries) GetSessionDetailsByRefreshTokenSHA256(ctx context.Context, refreshTokenSha256 []byte) (GetSessionDetailsByRefreshTokenSHA256Row, error) {
-	row := q.db.QueryRow(ctx, getSessionDetailsByRefreshTokenSHA256, refreshTokenSha256)
+func (q *Queries) GetSessionDetailsByRefreshTokenSHA256(ctx context.Context, arg GetSessionDetailsByRefreshTokenSHA256Params) (GetSessionDetailsByRefreshTokenSHA256Row, error) {
+	row := q.db.QueryRow(ctx, getSessionDetailsByRefreshTokenSHA256, arg.RefreshTokenSha256, arg.ProjectID)
 	var i GetSessionDetailsByRefreshTokenSHA256Row
 	err := row.Scan(
 		&i.SessionID,
@@ -1520,16 +1527,24 @@ func (q *Queries) GetUserHasActivePasskey(ctx context.Context, userID uuid.UUID)
 
 const getUserImpersonationTokenBySecretTokenSHA256 = `-- name: GetUserImpersonationTokenBySecretTokenSHA256 :one
 SELECT
-    id, impersonator_id, create_time, expire_time, impersonated_id, secret_token_sha256
+    user_impersonation_tokens.id, user_impersonation_tokens.impersonator_id, user_impersonation_tokens.create_time, user_impersonation_tokens.expire_time, user_impersonation_tokens.impersonated_id, user_impersonation_tokens.secret_token_sha256
 FROM
     user_impersonation_tokens
+    JOIN users ON user_impersonation_tokens.impersonated_id = users.id
+    JOIN organizations ON users.organization_id = organizations.id
 WHERE
     secret_token_sha256 = $1
     AND expire_time > now()
+    AND organizations.project_id = $2
 `
 
-func (q *Queries) GetUserImpersonationTokenBySecretTokenSHA256(ctx context.Context, secretTokenSha256 []byte) (UserImpersonationToken, error) {
-	row := q.db.QueryRow(ctx, getUserImpersonationTokenBySecretTokenSHA256, secretTokenSha256)
+type GetUserImpersonationTokenBySecretTokenSHA256Params struct {
+	SecretTokenSha256 []byte
+	ProjectID         uuid.UUID
+}
+
+func (q *Queries) GetUserImpersonationTokenBySecretTokenSHA256(ctx context.Context, arg GetUserImpersonationTokenBySecretTokenSHA256Params) (UserImpersonationToken, error) {
+	row := q.db.QueryRow(ctx, getUserImpersonationTokenBySecretTokenSHA256, arg.SecretTokenSha256, arg.ProjectID)
 	var i UserImpersonationToken
 	err := row.Scan(
 		&i.ID,

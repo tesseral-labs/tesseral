@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"time"
-
 	"slices"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/tesseral-labs/tesseral/internal/common/accesstoken"
@@ -123,7 +122,7 @@ func (s *Service) acs(w http.ResponseWriter, r *http.Request) error {
 		return fmt.Errorf("create session: %w", err)
 	}
 
-	accessToken, err := s.AccessTokenIssuer.NewAccessToken(ctx, createSessionRes.RefreshToken)
+	accessToken, err := s.AccessTokenIssuer.NewAccessToken(ctx, authn.ProjectID(ctx), createSessionRes.RefreshToken)
 	if err != nil {
 		return fmt.Errorf("issue access token: %w", err)
 	}

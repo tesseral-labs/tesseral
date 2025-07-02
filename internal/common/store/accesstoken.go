@@ -18,6 +18,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	commonv1 "github.com/tesseral-labs/tesseral/internal/common/gen/tesseral/common/v1"
+	"github.com/tesseral-labs/tesseral/internal/common/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/ujwt"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -25,7 +26,7 @@ import (
 
 const accessTokenDuration = time.Minute * 5
 
-func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (string, error) {
+func (s *Store) IssueAccessToken(ctx context.Context, projectID uuid.UUID, refreshToken string) (string, error) {
 	// this type exists to unify the datatypes we get from refresh tokens that
 	// belong to sessions vs relayed sessions
 	var qDetails struct {
@@ -38,7 +39,6 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 		UserProfilePictureUrl   *string
 		OrganizationDisplayName string
 		ImpersonatorUserID      *uuid.UUID
-		ProjectID               uuid.UUID
 	}
 
 	switch {
@@ -51,7 +51,10 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 		}
 
 		refreshTokenSHA := sha256.Sum256(refreshTokenUUID[:])
-		qSessionDetails, err := s.q.GetSessionDetailsByRefreshTokenSHA256(ctx, refreshTokenSHA[:])
+		qSessionDetails, err := s.q.GetSessionDetailsByRefreshTokenSHA256(ctx, queries.GetSessionDetailsByRefreshTokenSHA256Params{
+			ProjectID:          projectID,
+			RefreshTokenSha256: refreshTokenSHA[:],
+		})
 		if err != nil {
 			if errors.Is(err, pgx.ErrNoRows) {
 				return "", apierror.NewUnauthenticatedError("invalid refresh token", fmt.Errorf("invalid refresh token"))
@@ -69,7 +72,6 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 		qDetails.UserProfilePictureUrl = qSessionDetails.UserProfilePictureUrl
 		qDetails.OrganizationDisplayName = qSessionDetails.OrganizationDisplayName
 		qDetails.ImpersonatorUserID = qSessionDetails.ImpersonatorUserID
-		qDetails.ProjectID = qSessionDetails.ProjectID
 	case strings.HasPrefix(refreshToken, "tesseral_secret_relayed_session_refresh_token_"):
 		slog.InfoContext(ctx, "refresh_relayed_session_token")
 
@@ -79,7 +81,10 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 		}
 
 		relayedRefreshTokenSHA := sha256.Sum256(relayedRefreshTokenUUID[:])
-		qSessionDetails, err := s.q.GetSessionDetailsByRelayedSessionRefreshTokenSHA256(ctx, relayedRefreshTokenSHA[:])
+		qSessionDetails, err := s.q.GetSessionDetailsByRelayedSessionRefreshTokenSHA256(ctx, queries.GetSessionDetailsByRelayedSessionRefreshTokenSHA256Params{
+			ProjectID:                 projectID,
+			RelayedRefreshTokenSha256: relayedRefreshTokenSHA[:],
+		})
 		if err != nil {
 			if errors.Is(err, pgx.ErrNoRows) {
 				return "", apierror.NewUnauthenticatedError("invalid refresh token", fmt.Errorf("invalid refresh token"))
@@ -97,10 +102,9 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 		qDetails.UserProfilePictureUrl = qSessionDetails.UserProfilePictureUrl
 		qDetails.OrganizationDisplayName = qSessionDetails.OrganizationDisplayName
 		qDetails.ImpersonatorUserID = qSessionDetails.ImpersonatorUserID
-		qDetails.ProjectID = qSessionDetails.ProjectID
 	}
 
-	issAndAud := fmt.Sprintf("https://%s.tesseral.app", strings.ReplaceAll(idformat.Project.Format(qDetails.ProjectID), "_", "-"))
+	issAndAud := fmt.Sprintf("https://%s.tesseral.app", strings.ReplaceAll(idformat.Project.Format(projectID), "_", "-"))
 	now := time.Now()
 
 	// Add details about the creator of the impersonation token to the session.
@@ -126,7 +130,7 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 
 	var actions []string
 	if qDetails.UserIsOwner {
-		projectActions, err := s.q.GetProjectActions(ctx, qDetails.ProjectID)
+		projectActions, err := s.q.GetProjectActions(ctx, projectID)
 		if err != nil {
 			return "", fmt.Errorf("get project actions: %w", err)
 		}
@@ -168,7 +172,7 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 	}
 
 	slog.InfoContext(ctx, "issue_access_token",
-		"project_id", idformat.Project.Format(qDetails.ProjectID),
+		"project_id", idformat.Project.Format(projectID),
 		"claims", claims)
 
 	// claims is a proto message, so we have to use protojson to encode it first
@@ -177,7 +181,7 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 		panic(fmt.Errorf("marshal claims: %w", err))
 	}
 
-	qSessionSigningKey, err := s.q.GetCurrentSessionSigningKeyByProjectID(ctx, qDetails.ProjectID)
+	qSessionSigningKey, err := s.q.GetCurrentSessionSigningKeyByProjectID(ctx, projectID)
 	if err != nil {
 		return "", fmt.Errorf("get current session signing key by project id: %w", err)
 	}

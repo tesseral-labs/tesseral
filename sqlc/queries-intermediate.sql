@@ -469,12 +469,15 @@ RETURNING
 
 -- name: GetUserImpersonationTokenBySecretTokenSHA256 :one
 SELECT
-    *
+    user_impersonation_tokens.*
 FROM
     user_impersonation_tokens
+    JOIN users ON user_impersonation_tokens.impersonated_id = users.id
+    JOIN organizations ON users.organization_id = organizations.id
 WHERE
     secret_token_sha256 = $1
-    AND expire_time > now();
+    AND expire_time > now()
+    AND organizations.project_id = $2;
 
 -- name: CreateImpersonatedSession :one
 INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, impersonator_user_id, primary_auth_factor)
@@ -688,8 +691,10 @@ SELECT
 FROM
     sessions
     JOIN users ON sessions.user_id = users.id
+    JOIN organizations ON users.organization_id = organizations.id
 WHERE
-    refresh_token_sha256 = $1;
+    refresh_token_sha256 = $1
+    AND organizations.project_id = $2;
 
 -- name: InvalidateSession :exec
 UPDATE

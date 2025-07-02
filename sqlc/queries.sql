@@ -141,17 +141,3 @@ SELECT
 FROM
     projects;
 
--- name: GetSessionDetailsByRefreshTokenSHA256 :one
-SELECT
-    sessions.id AS session_id,
-    users.id AS user_id,
-    organizations.id AS organization_id,
-    projects.id AS project_id
-FROM
-    sessions
-    JOIN users ON sessions.user_id = users.id
-    JOIN organizations ON users.organization_id = organizations.id
-    JOIN projects ON organizations.id = projects.organization_id
-WHERE
-    refresh_token_sha256 = $1;
-

@@ -92,7 +92,7 @@ func (s *Service) exchange(w http.ResponseWriter, r *http.Request) error {
 		return fmt.Errorf("create session: %w", err)
 	}
 
-	accessToken, err := s.AccessTokenIssuer.NewAccessToken(ctx, createSessionRes.RefreshToken)
+	accessToken, err := s.AccessTokenIssuer.NewAccessToken(ctx, authn.ProjectID(ctx), createSessionRes.RefreshToken)
 	if err != nil {
 		return fmt.Errorf("issue access token: %w", err)
 	}
