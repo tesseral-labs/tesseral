@@ -36,6 +36,31 @@ import { VerifySecondaryFactorPage } from "@/pages/login/VerifySecondaryFactorPa
 import { Page } from "./components/page";
 import { LoggedInGate } from "./components/page/LoggedInGate";
 import { OwnerGate } from "./components/page/OwnerGate";
+import { SetUpSamlConnectionDialog } from "./components/saml-connections/SetUpSamlConnectionDialog";
+import { TestSamlConnectionDialog } from "./components/saml-connections/TestSamlConnectionDialog";
+import { AssignEntraSamlUsers } from "./components/saml-connections/entra/AssignEntraSamlUsers";
+import { ConfigureEntraSamlIdentifier } from "./components/saml-connections/entra/ConfigureEntraSamlIdentifier";
+import { ConfigureEntraSamlReplyUrl } from "./components/saml-connections/entra/ConfigureEntraSamlReplyUrl";
+import { CreateEntraSamlApplication } from "./components/saml-connections/entra/CreateEntraSamlApplication";
+import { DownloadEntraSamlMetadata } from "./components/saml-connections/entra/DownloadEntraSamlMetadata";
+import { EntraSamlConnectionFlow } from "./components/saml-connections/entra/EntraSamlConnectionFlow";
+import { AssignGoogleSamlUsers } from "./components/saml-connections/google/AssignGoogleSamlUsers";
+import { ConfigureGoogleSamlApplication } from "./components/saml-connections/google/ConfigureGoogleSamlApplication";
+import { CreateGoogleSamlApplication } from "./components/saml-connections/google/CreateGoogleSamlApplication";
+import { DownloadGoogleSamlMetadata } from "./components/saml-connections/google/DownloadGoogleSamlMetadata";
+import { GoogleSamlConnectionFlow } from "./components/saml-connections/google/GoogleSamlConnectionFlow";
+import { NameGoogleSamlApplication } from "./components/saml-connections/google/NameGoogleSamlApplication";
+import { AssignOktaSamlUsers } from "./components/saml-connections/okta/AssignOktaSamlUsers";
+import { ConfigureOktaSamlApplication } from "./components/saml-connections/okta/ConfigureOktaSamlApplication";
+import { CreateOktaSamlApplication } from "./components/saml-connections/okta/CreateOktaSamlApplication";
+import { NameOktaSamlApplication } from "./components/saml-connections/okta/NameOktaSamlApplication";
+import { OktaSamlConnectionFlow } from "./components/saml-connections/okta/OktaSamlConnectionFlow";
+import { SyncOktaSamlMetadata } from "./components/saml-connections/okta/SyncOktaSamlMetadata";
+import { AssignOtherSamlUsers } from "./components/saml-connections/other/AssignOtherSamlUsers";
+import { ConfigureOtherSamlApplication } from "./components/saml-connections/other/ConfigureOtherSamlApplication";
+import { CreateOtherSamlApplication } from "./components/saml-connections/other/CreateOtherSamlApplication";
+import { DownloadOtherSamlMetadata } from "./components/saml-connections/other/DownloadOtherSamlMetadata";
+import { OtherSamlConnectionFlow } from "./components/saml-connections/other/OtherSamlConnectionFlow";
 import { GithubOAuthCallbackPage } from "./pages/login/GithubOAuthCallbackPage";
 import { AuditLogsPage } from "./pages/vault/AuditLogsPage";
 import { OrganizationPage } from "./pages/vault/OrganizationPage";
@@ -123,7 +148,85 @@ function AppWithRoutes() {
                   <Route
                     path="saml-connections/:samlConnectionId"
                     element={<SamlConnectionPage />}
-                  />
+                  >
+                    <Route
+                      path="setup"
+                      element={<SetUpSamlConnectionDialog />}
+                    />
+                    <Route
+                      path="setup/google"
+                      element={<GoogleSamlConnectionFlow />}
+                    >
+                      <Route index element={<CreateGoogleSamlApplication />} />
+                      <Route
+                        path="name"
+                        element={<NameGoogleSamlApplication />}
+                      />
+                      <Route
+                        path="metadata"
+                        element={<DownloadGoogleSamlMetadata />}
+                      />
+                      <Route
+                        path="configure"
+                        element={<ConfigureGoogleSamlApplication />}
+                      />
+                      <Route path="users" element={<AssignGoogleSamlUsers />} />
+                    </Route>
+                    <Route
+                      path="setup/entra"
+                      element={<EntraSamlConnectionFlow />}
+                    >
+                      <Route index element={<CreateEntraSamlApplication />} />
+                      <Route
+                        path="identifier"
+                        element={<ConfigureEntraSamlIdentifier />}
+                      />
+                      <Route
+                        path="reply-url"
+                        element={<ConfigureEntraSamlReplyUrl />}
+                      />
+                      <Route
+                        path="metadata"
+                        element={<DownloadEntraSamlMetadata />}
+                      />
+                      <Route path="users" element={<AssignEntraSamlUsers />} />
+                    </Route>
+                    <Route
+                      path="setup/okta"
+                      element={<OktaSamlConnectionFlow />}
+                    >
+                      <Route index element={<CreateOktaSamlApplication />} />
+                      <Route
+                        path="name"
+                        element={<NameOktaSamlApplication />}
+                      />
+                      <Route
+                        path="configure"
+                        element={<ConfigureOktaSamlApplication />}
+                      />
+                      <Route
+                        path="metadata"
+                        element={<SyncOktaSamlMetadata />}
+                      />
+                      <Route path="users" element={<AssignOktaSamlUsers />} />
+                    </Route>
+                    <Route
+                      path="setup/other"
+                      element={<OtherSamlConnectionFlow />}
+                    >
+                      <Route index element={<CreateOtherSamlApplication />} />
+                      <Route
+                        path="configure"
+                        element={<ConfigureOtherSamlApplication />}
+                      />
+                      <Route
+                        path="metadata"
+                        element={<DownloadOtherSamlMetadata />}
+                      />
+                      <Route path="users" element={<AssignOtherSamlUsers />} />
+                    </Route>
+                    <Route path="test" element={<TestSamlConnectionDialog />} />
+                  </Route>
                   <Route
                     path="oidc-connections"
                     element={<OidcConnectionsPage />}
