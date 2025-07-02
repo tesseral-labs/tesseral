@@ -1,0 +1,2 @@
+ALTER TABLE project_email_quota_daily_usage
+REPLICA IDENTITY FULL;
