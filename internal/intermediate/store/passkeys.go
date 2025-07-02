@@ -37,7 +37,7 @@ func (s *Store) GetPasskeyOptions(ctx context.Context, req *intermediatev1.GetPa
 	}
 
 	return &intermediatev1.GetPasskeyOptionsResponse{
-		RpId:            qProject.VaultDomain,
+		RpId:            qProject.CookieDomain,
 		RpName:          qProject.DisplayName,
 		UserId:          fmt.Sprintf("%s|%s", *qIntermediateSession.Email, idformat.Organization.Format(*qIntermediateSession.OrganizationID)),
 		UserDisplayName: *qIntermediateSession.Email,
@@ -61,7 +61,7 @@ func (s *Store) RegisterPasskey(ctx context.Context, req *intermediatev1.Registe
 	}
 
 	cred, err := webauthn.Parse(&webauthn.ParseRequest{
-		RPID:              qProject.VaultDomain,
+		RPID:              qProject.CookieDomain,
 		AttestationObject: req.AttestationObject,
 	})
 	if err != nil {
@@ -143,7 +143,7 @@ func (s *Store) IssuePasskeyChallenge(ctx context.Context, req *intermediatev1.I
 	}
 
 	return &intermediatev1.IssuePasskeyChallengeResponse{
-		RpId:          qProject.VaultDomain,
+		RpId:          qProject.CookieDomain,
 		CredentialIds: credentialIDs,
 		Challenge:     challenge[:],
 	}, nil
