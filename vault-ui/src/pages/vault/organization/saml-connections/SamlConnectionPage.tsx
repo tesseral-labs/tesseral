@@ -1,11 +1,17 @@
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, LoaderCircle, Trash, TriangleAlert } from "lucide-react";
+import {
+  ArrowLeft,
+  LoaderCircle,
+  Trash,
+  TriangleAlert,
+  WandSparkles,
+} from "lucide-react";
 import { DateTime } from "luxon";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate, useParams } from "react-router";
+import { Link, Outlet, useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -122,7 +128,7 @@ export function SamlConnectionPage() {
         </Link>
       </div>
 
-      <div>
+      <div className="flex justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold">SAML Connection</h1>
           <ValueCopier
@@ -151,6 +157,12 @@ export function SamlConnectionPage() {
             </Badge>
           </div>
         </div>
+        <Link to={`/organization/saml-connections/${samlConnectionId}/setup`}>
+          <Button variant="outline" size="sm">
+            <WandSparkles />
+            Setup Wizard
+          </Button>
+        </Link>
       </div>
 
       <Card>
@@ -317,6 +329,8 @@ export function SamlConnectionPage() {
       </Form>
 
       <DangerZoneCard />
+
+      <Outlet />
     </PageContent>
   );
 }

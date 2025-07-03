@@ -1,6 +1,13 @@
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { useInfiniteQuery, useMutation } from "@connectrpc/connect-query";
-import { AlignLeft, Plus, Settings, Trash, TriangleAlert } from "lucide-react";
+import {
+  AlignLeft,
+  Plus,
+  Settings,
+  Trash,
+  TriangleAlert,
+  WandSparkles,
+} from "lucide-react";
 import { DateTime } from "luxon";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
@@ -94,7 +101,7 @@ export function SamlConnectionsCard() {
       }
 
       await refetch();
-      navigate(`/organization/saml-connections/${samlConnection.id}`);
+      navigate(`/organization/saml-connections/${samlConnection.id}/setup`);
       toast.success("SAML connection created successfully.");
     } catch {
       toast.error("Failed to create SAML connection. Please try again later.");
@@ -250,6 +257,14 @@ function ManageSamlConnectionButton({
             <Link to={`/organization/saml-connections/${samlConnection.id}`}>
               <AlignLeft />
               Details
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link
+              to={`/organization/saml-connections/${samlConnection.id}/setup`}
+            >
+              <WandSparkles />
+              Setup Wizard
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
