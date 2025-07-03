@@ -336,7 +336,7 @@ export function SamlConnectionPage() {
 }
 
 function DangerZoneCard() {
-  const { organizationId, samlConnectionId } = useParams();
+  const { samlConnectionId } = useParams();
   const navigate = useNavigate();
 
   const deleteSamlConnectionMutation = useMutation(deleteSAMLConnection);
@@ -348,7 +348,7 @@ function DangerZoneCard() {
       id: samlConnectionId,
     });
     toast.success("SAML Connection deleted successfully");
-    navigate(`/organizations/${organizationId}/authentication`);
+    navigate(`/organization/authentication`);
   }
 
   return (
