@@ -1,7 +1,13 @@
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, LoaderCircle, Trash, TriangleAlert } from "lucide-react";
+import {
+  ArrowLeft,
+  Ban,
+  LoaderCircle,
+  Trash,
+  TriangleAlert,
+} from "lucide-react";
 import { DateTime } from "luxon";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -43,6 +49,7 @@ import { Input } from "@/components/ui/input";
 import {
   deleteSCIMAPIKey,
   getSCIMAPIKey,
+  revokeSCIMAPIKey,
   updateSCIMAPIKey,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 
@@ -195,22 +202,33 @@ export function ScimApiKeyPage() {
 }
 
 function DangerZoneCard() {
-  const { organizationId, scimApiKeyId } = useParams();
+  const { scimApiKeyId } = useParams();
   const navigate = useNavigate();
 
-  const { data: getScimApiKeyResponse } = useQuery(getSCIMAPIKey, {
+  const { data: getScimApiKeyResponse, refetch } = useQuery(getSCIMAPIKey, {
     id: scimApiKeyId,
   });
+  const revokeScimApiKeyMutation = useMutation(revokeSCIMAPIKey);
   const deleteScimApiKeyMutation = useMutation(deleteSCIMAPIKey);
 
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [revokeOpen, setRevokeOpen] = useState(false);
+
+  async function handleRevoke() {
+    await revokeScimApiKeyMutation.mutateAsync({
+      id: scimApiKeyId,
+    });
+    toast.success("SCIM API Key revoked successfully");
+    setRevokeOpen(false);
+    await refetch();
+  }
 
   async function handleDelete() {
     await deleteScimApiKeyMutation.mutateAsync({
       id: scimApiKeyId,
     });
     toast.success("SCIM API Key deleted successfully");
-    navigate(`/organizations/${organizationId}/authentication`);
+    navigate(`/organization/authentication`);
   }
 
   return (
@@ -230,6 +248,25 @@ function DangerZoneCard() {
           <div className="flex items-center justify-between gap-8 w-full lg:w-auto flex-wrap lg:flex-nowrap">
             <div className="space-y-1">
               <div className="text-sm font-semibold flex items-center gap-2">
+                <Ban className="w-4 h-4" />
+                <span>Revoke SCIM API Key</span>
+              </div>
+              <div className="text-sm text-muted-foreground">
+                Revoke the SCIM API Key. This cannot be undone.
+              </div>
+            </div>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => setRevokeOpen(true)}
+              disabled={getScimApiKeyResponse?.scimApiKey?.revoked}
+            >
+              Revoke SCIM API Key
+            </Button>
+          </div>
+          <div className="flex items-center justify-between gap-8 w-full lg:w-auto flex-wrap lg:flex-nowrap">
+            <div className="space-y-1">
+              <div className="text-sm font-semibold flex items-center gap-2">
                 <Trash className="w-4 h-4" />
                 <span>Delete SCIM API Key</span>
               </div>
@@ -241,12 +278,41 @@ function DangerZoneCard() {
               variant="destructive"
               size="sm"
               onClick={() => setDeleteOpen(true)}
+              disabled={!getScimApiKeyResponse?.scimApiKey?.revoked}
             >
               Delete SCIM API Key
             </Button>
           </div>
         </CardContent>
       </Card>
+
+      {/* Revoke Confirmation Dialog */}
+      <AlertDialog open={revokeOpen} onOpenChange={setRevokeOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <TriangleAlert />
+              Are you sure?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently revoke the{" "}
+              <span className="font-semibold">
+                {getScimApiKeyResponse?.scimApiKey?.displayName ||
+                  getScimApiKeyResponse?.scimApiKey?.id}
+              </span>{" "}
+              SCIM API Key. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <Button variant="outline" onClick={() => setRevokeOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleRevoke}>
+              Revoke SCIM API Key
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
