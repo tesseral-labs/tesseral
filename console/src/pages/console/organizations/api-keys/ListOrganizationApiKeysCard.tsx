@@ -21,7 +21,7 @@ import {
 import { DateTime } from "luxon";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate, useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -237,7 +237,6 @@ function CreateApiKeyButton() {
   const [createOpen, setCreateOpen] = useState(false);
   const [secretOpen, setSecretOpen] = useState(false);
   const [apiKey, setApiKey] = useState<APIKey>();
-  const navigate = useNavigate();
 
   const [customDate, setCustomDate] = useState<Date>();
 
