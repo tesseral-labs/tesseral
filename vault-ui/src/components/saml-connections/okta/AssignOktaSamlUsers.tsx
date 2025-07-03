@@ -10,6 +10,11 @@ export function AssignOktaSamlUsers() {
   return (
     <>
       <div className="space-y-4 text-sm">
+        <img
+          className="rounded-xl max-w-full border shadow-md"
+          src="/videos/saml-setup-wizard/okta/users.gif"
+        />
+
         <p className="font-medium">Assign users to the new app.</p>
         <p>
           If you intend to test the connection yourself, remember to assign

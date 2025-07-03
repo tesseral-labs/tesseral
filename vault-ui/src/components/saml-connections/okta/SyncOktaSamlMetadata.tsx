@@ -131,6 +131,11 @@ export function SyncOktaSamlMetadata() {
   return (
     <>
       <div className="space-y-4 text-sm">
+        <img
+          className="rounded-xl max-w-full border shadow-md"
+          src="/videos/saml-setup-wizard/okta/metadata.gif"
+        />
+
         <p className="font-medium">Create your Okta SAML application:</p>
         <ol className="list-decimal list-inside space-y-2">
           <li>Click on the "Sign On" tab</li>
