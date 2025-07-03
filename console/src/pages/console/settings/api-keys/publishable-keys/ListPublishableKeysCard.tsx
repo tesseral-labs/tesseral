@@ -431,6 +431,7 @@ function CreatePublishableKeyButton() {
     await createPublishableKeyMutation.mutateAsync({
       publishableKey: {
         displayName: data.displayName,
+        devMode: data.devMode,
       },
     });
     form.reset(data);
