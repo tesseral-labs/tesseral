@@ -305,20 +305,15 @@ function CreateApiKeyButton() {
       setApiKey(apiKey);
       setCreateOpen(false);
       setSecretOpen(true);
+      await refetch();
 
       toast.success("API Key created successfully");
-
-      await refetch();
-      navigate(`/organizations/${organizationId}/api-keys/${apiKey.id}`);
     }
   }
 
   return (
     <>
-      <Dialog
-        open={!!apiKey?.secretToken && secretOpen}
-        onOpenChange={setSecretOpen}
-      >
+      <Dialog open={secretOpen} onOpenChange={setSecretOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Managed API Key Created</DialogTitle>
