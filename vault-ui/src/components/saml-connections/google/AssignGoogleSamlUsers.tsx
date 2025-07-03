@@ -10,6 +10,11 @@ export function AssignGoogleSamlUsers() {
   return (
     <>
       <div className="space-y-4 text-sm">
+        <img
+          className="rounded-xl max-w-full border shadow-md"
+          src="/videos/saml-setup-wizard/google/users.gif"
+        />
+
         <p className="font-medium">Assign users to the new app.</p>
         <p>
           If you're familiar with Google Workspace organizational units, use

@@ -122,6 +122,11 @@ export function DownloadGoogleSamlMetadata() {
   return (
     <>
       <div className="space-y-4 text-sm">
+        <img
+          className="rounded-xl max-w-full border shadow-md"
+          src="/videos/saml-setup-wizard/google/metadata.gif"
+        />
+
         <p className="font-medium">Download IdP metadata:</p>
 
         <ol className="list-decimal list-inside space-y-2">

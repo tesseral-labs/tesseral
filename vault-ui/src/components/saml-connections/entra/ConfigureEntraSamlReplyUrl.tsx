@@ -18,6 +18,11 @@ export function ConfigureEntraSamlReplyUrl() {
   return (
     <>
       <div className="space-y-4 text-sm">
+        <img
+          className="rounded-xl max-w-full border shadow-md"
+          src="/videos/saml-setup-wizard/entra/reply-url.gif"
+        />
+
         <p className="font-medium">
           Configure SAML Reply URL (Assertion Consumer Service URL)
         </p>

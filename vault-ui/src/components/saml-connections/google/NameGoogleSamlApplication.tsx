@@ -9,6 +9,11 @@ export function NameGoogleSamlApplication() {
   return (
     <>
       <div className="space-y-4 text-sm">
+        <img
+          className="rounded-xl max-w-full border shadow-md"
+          src="/videos/saml-setup-wizard/google/name.gif"
+        />
+
         <p className="font-medium">Name your Google SAML application:</p>
         <ol className="list-decimal list-inside space-y-2">
           <li>Give the new Google application a name.</li>

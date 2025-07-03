@@ -115,6 +115,11 @@ export function DownloadEntraSamlMetadata() {
   return (
     <>
       <div className="space-y-4 text-sm">
+        <img
+          className="rounded-xl max-w-full border shadow-md"
+          src="/videos/saml-setup-wizard/entra/metadata.gif"
+        />
+
         <p className="font-medium">
           Download your application's Federation Metadata XML:
         </p>
