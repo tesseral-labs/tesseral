@@ -190,9 +190,9 @@ export function ListOrganizationApiKeysCard() {
                       </TableCell>
                       <TableCell>
                         {apiKey.revoked ? (
-                          <Badge>Active</Badge>
-                        ) : (
                           <Badge variant="secondary">Revoked</Badge>
+                        ) : (
+                          <Badge>Active</Badge>
                         )}
                       </TableCell>
                       <TableCell>
