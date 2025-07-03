@@ -1,6 +1,6 @@
-FROM --platform=$BUILDPLATFORM golang:1.24-alpine AS build
+FROM --platform=$BUILDPLATFORM golang:1.24 AS build
 
-RUN apk update && apk add --no-cache git ca-certificates tzdata && update-ca-certificates
+RUN apt update && apt install -y git ca-certificates tzdata && update-ca-certificates
 
 WORKDIR /work
 
