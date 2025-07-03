@@ -20,7 +20,7 @@ export function AuditLogsPage() {
         <CardHeader>
           <CardTitle>Audit Logs</CardTitle>
           <CardDescription>
-            View a history of actions effecting your organization.
+            View a history of actions affecting your organization.
           </CardDescription>
         </CardHeader>
         <CardContent>
