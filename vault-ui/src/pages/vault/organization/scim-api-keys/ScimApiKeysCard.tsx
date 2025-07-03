@@ -390,6 +390,33 @@ function ManageScimApiKeyButton({ scimApiKey }: { scimApiKey: SCIMAPIKey }) {
         </DropdownMenuContent>
       </DropdownMenu>
 
+      {/* Revoke Confirmation Dialog */}
+      <AlertDialog open={revokeOpen} onOpenChange={setRevokeOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <TriangleAlert className="w-4 h-4" />
+              Are you sure?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently revoke the{" "}
+              <span className="font-semibold">
+                {scimApiKey.displayName || scimApiKey.id}
+              </span>{" "}
+              SCIM API Key. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <Button variant="outline" onClick={() => setRevokeOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleRevoke}>
+              Revoke SCIM API Key
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <AlertDialogContent>
