@@ -3,6 +3,7 @@ import { useInfiniteQuery, useMutation } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   AlignLeft,
+  Ban,
   LoaderCircle,
   Plus,
   Settings,
@@ -75,6 +76,7 @@ import {
   createSCIMAPIKey,
   deleteSCIMAPIKey,
   listSCIMAPIKeys,
+  revokeSCIMAPIKey,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 import { SCIMAPIKey } from "@/gen/tesseral/frontend/v1/models_pb";
 
@@ -308,9 +310,26 @@ function ManageScimApiKeyButton({ scimApiKey }: { scimApiKey: SCIMAPIKey }) {
       getNextPageParam: (lastPage) => lastPage.nextPageToken || undefined,
     },
   );
+
+  const revokeScimApiKeyMutation = useMutation(revokeSCIMAPIKey);
   const deleteScimApiKeyMutation = useMutation(deleteSCIMAPIKey);
 
+  const [revokeOpen, setRevokeOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+
+  async function handleRevoke() {
+    try {
+      await revokeScimApiKeyMutation.mutateAsync({
+        id: scimApiKey.id,
+      });
+      await refetch();
+      setRevokeOpen(false);
+      toast.success("SCIM API key revoked successfully");
+    } catch {
+      toast.error("Failed to revoke SCIM API key. Please try again.");
+      setRevokeOpen(false);
+    }
+  }
 
   async function handleDelete() {
     try {
@@ -350,7 +369,18 @@ function ManageScimApiKeyButton({ scimApiKey }: { scimApiKey: SCIMAPIKey }) {
           <DropdownMenuSeparator />
           <DropdownMenuItem
             className="group"
+            onClick={() => setRevokeOpen(true)}
+            disabled={scimApiKey.revoked}
+          >
+            <Ban className="text-destructive group-hover:text-destructive" />
+            <span className="text-destructive group-hover:text-destructive">
+              Revoke SCIM API Key
+            </span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="group"
             onClick={() => setDeleteOpen(true)}
+            disabled={!scimApiKey.revoked}
           >
             <Trash className="text-destructive group-hover:text-destructive" />
             <span className="text-destructive group-hover:text-destructive">
@@ -359,6 +389,33 @@ function ManageScimApiKeyButton({ scimApiKey }: { scimApiKey: SCIMAPIKey }) {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {/* Revoke Confirmation Dialog */}
+      <AlertDialog open={revokeOpen} onOpenChange={setRevokeOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <TriangleAlert className="w-4 h-4" />
+              Are you sure?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently revoke the{" "}
+              <span className="font-semibold">
+                {scimApiKey.displayName || scimApiKey.id}
+              </span>{" "}
+              SCIM API Key. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <Button variant="outline" onClick={() => setRevokeOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleRevoke}>
+              Revoke SCIM API Key
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
