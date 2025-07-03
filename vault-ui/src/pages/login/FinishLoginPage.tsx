@@ -27,10 +27,11 @@ export function FinishLoginPage() {
       const url = new URL(redirectUri || preferredRedirect);
 
       if (relayedSessionToken) {
-        const params = new URLSearchParams({
-          [`__tesseral_${settings.projectId}_relayed_session_token`]:
-            relayedSessionToken,
-        });
+        const params = new URLSearchParams(url.search);
+        params.set(
+          `__tesseral_${settings.projectId}_relayed_session_token`,
+          relayedSessionToken,
+        );
 
         if (returnRelayedSessionTokenAsQueryParam) {
           params.set(
