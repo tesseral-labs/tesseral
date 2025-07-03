@@ -21,7 +21,7 @@ import {
 import { DateTime } from "luxon";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate, useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -237,7 +237,6 @@ function CreateApiKeyButton() {
   const [createOpen, setCreateOpen] = useState(false);
   const [secretOpen, setSecretOpen] = useState(false);
   const [apiKey, setApiKey] = useState<APIKey>();
-  const navigate = useNavigate();
 
   const [customDate, setCustomDate] = useState<Date>();
 
@@ -305,20 +304,15 @@ function CreateApiKeyButton() {
       setApiKey(apiKey);
       setCreateOpen(false);
       setSecretOpen(true);
+      await refetch();
 
       toast.success("API Key created successfully");
-
-      await refetch();
-      navigate(`/organizations/${organizationId}/api-keys/${apiKey.id}`);
     }
   }
 
   return (
     <>
-      <Dialog
-        open={!!apiKey?.secretToken && secretOpen}
-        onOpenChange={setSecretOpen}
-      >
+      <Dialog open={secretOpen} onOpenChange={setSecretOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Managed API Key Created</DialogTitle>
