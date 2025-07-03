@@ -163,33 +163,33 @@ function ConfigureVaultCookieDomainButton() {
                   </DialogDescription>
                 </DialogHeader>
 
-                <div className="space-y-6">
-                  <FormField
-                    control={form.control}
-                    name="cookieDomain"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Cookie Domain</FormLabel>
-                        <FormDescription>
-                          Client-side JavaScript on this domain and its
-                          subdomains will have access to User access tokens. You
-                          cannot modify this field until you have configured a
-                          custom Vault domain.
-                        </FormDescription>
-                        <FormMessage />
-                        <FormControl>
-                          <Input
-                            {...field}
-                            placeholder="e.g. vault.example.com"
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(handleSubmit)}>
+                    <div className="space-y-6">
+                      <FormField
+                        control={form.control}
+                        name="cookieDomain"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Cookie Domain</FormLabel>
+                            <FormDescription>
+                              Client-side JavaScript on this domain and its
+                              subdomains will have access to User access tokens.
+                              You cannot modify this field until you have
+                              configured a custom Vault domain.
+                            </FormDescription>
+                            <FormMessage />
+                            <FormControl>
+                              <Input
+                                {...field}
+                                placeholder="e.g. vault.example.com"
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
                     <DialogFooter className="mt-8">
                       <Button variant="outline" onClick={handleCancel}>
                         Cancel
