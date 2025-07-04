@@ -1765,6 +1765,9 @@ components:
                 actorIntermediateSessionId:
                     type: string
                     description: The Intermediate Session that performed the action, if any.
+                actorScimApiKeyId:
+                    type: string
+                    description: The SCIM API Key that performed the event, if any.
                 eventTime:
                     type: string
                     description: When the event occurred.

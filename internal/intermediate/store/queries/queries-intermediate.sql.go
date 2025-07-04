@@ -16,7 +16,7 @@ const createAuditLogEvent = `-- name: CreateAuditLogEvent :one
 INSERT INTO audit_log_events (id, project_id, organization_id, actor_user_id, actor_session_id, resource_type, resource_id, event_name, event_time, event_details, actor_intermediate_session_id)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, coalesce($11, '{}'::jsonb), $10)
 RETURNING
-    id, project_id, organization_id, actor_user_id, actor_session_id, actor_api_key_id, actor_console_user_id, actor_console_session_id, actor_backend_api_key_id, actor_intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details
+    id, project_id, organization_id, actor_user_id, actor_session_id, actor_api_key_id, actor_console_user_id, actor_console_session_id, actor_backend_api_key_id, actor_intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details, actor_scim_api_key_id
 `
 
 type CreateAuditLogEventParams struct {
@@ -64,6 +64,7 @@ func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEve
 		&i.EventName,
 		&i.EventTime,
 		&i.EventDetails,
+		&i.ActorScimApiKeyID,
 	)
 	return i, err
 }
@@ -584,7 +585,7 @@ const createUser = `-- name: CreateUser :one
 INSERT INTO users (id, organization_id, email, display_name, profile_picture_url, google_user_id, microsoft_user_id, github_user_id, is_owner, password_bcrypt)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 `
 
 type CreateUserParams struct {
@@ -623,7 +624,6 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -986,7 +986,7 @@ func (q *Queries) GetOrganizationPrimarySAMLConnection(ctx context.Context, orga
 
 const getOrganizationUserByEmail = `-- name: GetOrganizationUserByEmail :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 FROM
     users
 WHERE
@@ -1011,7 +1011,6 @@ func (q *Queries) GetOrganizationUserByEmail(ctx context.Context, arg GetOrganiz
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -1028,7 +1027,7 @@ func (q *Queries) GetOrganizationUserByEmail(ctx context.Context, arg GetOrganiz
 
 const getOrganizationUserByGithubUserID = `-- name: GetOrganizationUserByGithubUserID :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 FROM
     users
 WHERE
@@ -1053,7 +1052,6 @@ func (q *Queries) GetOrganizationUserByGithubUserID(ctx context.Context, arg Get
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -1070,7 +1068,7 @@ func (q *Queries) GetOrganizationUserByGithubUserID(ctx context.Context, arg Get
 
 const getOrganizationUserByGoogleUserID = `-- name: GetOrganizationUserByGoogleUserID :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 FROM
     users
 WHERE
@@ -1095,7 +1093,6 @@ func (q *Queries) GetOrganizationUserByGoogleUserID(ctx context.Context, arg Get
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -1112,7 +1109,7 @@ func (q *Queries) GetOrganizationUserByGoogleUserID(ctx context.Context, arg Get
 
 const getOrganizationUserByMicrosoftUserID = `-- name: GetOrganizationUserByMicrosoftUserID :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 FROM
     users
 WHERE
@@ -1137,7 +1134,6 @@ func (q *Queries) GetOrganizationUserByMicrosoftUserID(ctx context.Context, arg 
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -1472,7 +1468,7 @@ func (q *Queries) GetSessionDetailsByRefreshTokenSHA256(ctx context.Context, arg
 
 const getUserByID = `-- name: GetUserByID :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 FROM
     users
 WHERE
@@ -1491,7 +1487,6 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -1588,7 +1583,7 @@ func (q *Queries) GetUserPasskeyCredentialIDs(ctx context.Context, userID uuid.U
 
 const getUsersByForLogInWithPassword = `-- name: GetUsersByForLogInWithPassword :many
 SELECT
-    users.id, users.organization_id, users.password_bcrypt, users.google_user_id, users.microsoft_user_id, users.email, users.create_time, users.update_time, users.deactivate_time, users.is_owner, users.failed_password_attempts, users.password_lockout_expire_time, users.authenticator_app_secret_ciphertext, users.failed_authenticator_app_attempts, users.authenticator_app_lockout_expire_time, users.authenticator_app_recovery_code_sha256s, users.display_name, users.profile_picture_url, users.github_user_id
+    users.id, users.organization_id, users.password_bcrypt, users.google_user_id, users.microsoft_user_id, users.email, users.create_time, users.update_time, users.is_owner, users.failed_password_attempts, users.password_lockout_expire_time, users.authenticator_app_secret_ciphertext, users.failed_authenticator_app_attempts, users.authenticator_app_lockout_expire_time, users.authenticator_app_recovery_code_sha256s, users.display_name, users.profile_picture_url, users.github_user_id
 FROM
     users
     JOIN organizations ON users.organization_id = organizations.id
@@ -1623,7 +1618,6 @@ func (q *Queries) GetUsersByForLogInWithPassword(ctx context.Context, arg GetUse
 			&i.Email,
 			&i.CreateTime,
 			&i.UpdateTime,
-			&i.DeactivateTime,
 			&i.IsOwner,
 			&i.FailedPasswordAttempts,
 			&i.PasswordLockoutExpireTime,
@@ -3475,7 +3469,7 @@ SET
 WHERE
     id = $3
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 `
 
 type UpdateUserAuthenticatorAppParams struct {
@@ -3496,7 +3490,6 @@ func (q *Queries) UpdateUserAuthenticatorApp(ctx context.Context, arg UpdateUser
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -3519,7 +3512,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 `
 
 type UpdateUserAuthenticatorAppLockoutExpireTimeParams struct {
@@ -3539,7 +3532,6 @@ func (q *Queries) UpdateUserAuthenticatorAppLockoutExpireTime(ctx context.Contex
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -3562,7 +3554,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 `
 
 type UpdateUserAuthenticatorAppRecoveryCodeSHA256sParams struct {
@@ -3582,7 +3574,6 @@ func (q *Queries) UpdateUserAuthenticatorAppRecoveryCodeSHA256s(ctx context.Cont
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -3611,7 +3602,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 `
 
 type UpdateUserDetailsParams struct {
@@ -3644,7 +3635,6 @@ func (q *Queries) UpdateUserDetails(ctx context.Context, arg UpdateUserDetailsPa
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -3667,7 +3657,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 `
 
 type UpdateUserFailedAuthenticatorAppAttemptsParams struct {
@@ -3687,7 +3677,6 @@ func (q *Queries) UpdateUserFailedAuthenticatorAppAttempts(ctx context.Context, 
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -3710,7 +3699,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 `
 
 type UpdateUserFailedPasswordAttemptsParams struct {
@@ -3730,7 +3719,6 @@ func (q *Queries) UpdateUserFailedPasswordAttempts(ctx context.Context, arg Upda
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -3753,7 +3741,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 `
 
 type UpdateUserIsOwnerParams struct {
@@ -3773,7 +3761,6 @@ func (q *Queries) UpdateUserIsOwner(ctx context.Context, arg UpdateUserIsOwnerPa
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -3796,7 +3783,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 `
 
 type UpdateUserPasswordBcryptParams struct {
@@ -3816,7 +3803,6 @@ func (q *Queries) UpdateUserPasswordBcrypt(ctx context.Context, arg UpdateUserPa
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -3839,7 +3825,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 `
 
 type UpdateUserPasswordLockoutExpireTimeParams struct {
@@ -3859,7 +3845,6 @@ func (q *Queries) UpdateUserPasswordLockoutExpireTime(ctx context.Context, arg U
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,

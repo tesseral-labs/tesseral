@@ -27,6 +27,23 @@ func NewContext(ctx context.Context, scimAPIKey *SCIMAPIKey, projectID string) c
 	})
 }
 
+func SCIMAPIKeyID(ctx context.Context) uuid.UUID {
+	v, ok := ctx.Value(ctxKey{}).(ctxData)
+	if !ok {
+		panic(fmt.Errorf("ctx does not carry authn data"))
+	}
+
+	if v.scimAPIKey == nil {
+		panic(fmt.Errorf("ctx does not carry scimAPIKey"))
+	}
+
+	id, err := idformat.SCIMAPIKey.Parse(v.scimAPIKey.ID)
+	if err != nil {
+		panic(fmt.Errorf("parse scim api key id: %w", err))
+	}
+	return id
+}
+
 func OrganizationID(ctx context.Context) uuid.UUID {
 	v, ok := ctx.Value(ctxKey{}).(ctxData)
 	if !ok {

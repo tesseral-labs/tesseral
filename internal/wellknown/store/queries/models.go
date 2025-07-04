@@ -237,6 +237,7 @@ type AuditLogEvent struct {
 	EventName                  string
 	EventTime                  *time.Time
 	EventDetails               []byte
+	ActorScimApiKeyID          *uuid.UUID
 }
 
 type BackendApiKey struct {
@@ -518,7 +519,6 @@ type User struct {
 	Email                               string
 	CreateTime                          *time.Time
 	UpdateTime                          *time.Time
-	DeactivateTime                      *time.Time
 	IsOwner                             bool
 	FailedPasswordAttempts              int32
 	PasswordLockoutExpireTime           *time.Time
