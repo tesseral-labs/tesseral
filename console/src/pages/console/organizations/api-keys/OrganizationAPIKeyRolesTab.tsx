@@ -261,7 +261,7 @@ const schema = z.object({
 function AssignRoleButton() {
   const { apiKeyId, organizationId } = useParams();
 
-  const { refetch } = useInfiniteQuery(
+  const { data: listAPIKeyRoleAssignmentsResponse, refetch } = useInfiniteQuery(
     listAPIKeyRoleAssignments,
     {
       apiKeyId: apiKeyId,
@@ -289,10 +289,18 @@ function AssignRoleButton() {
     createAPIKeyRoleAssignment,
   );
 
+  const currentRoleAssignments =
+    listAPIKeyRoleAssignmentsResponse?.pages.flatMap(
+      (page) => page.apiKeyRoleAssignments || [],
+    ) || [];
   const roles = [
     ...(listProjectRolesResponse?.roles || []),
     ...(listOrganizationRolesResponse?.roles || []),
-  ];
+  ].filter((role) => {
+    return !currentRoleAssignments.some(
+      (assignment) => assignment.roleId === role.id,
+    );
+  });
 
   const [open, setOpen] = useState(false);
 
@@ -313,16 +321,20 @@ function AssignRoleButton() {
   }
 
   async function handleSubmit(data: z.infer<typeof schema>) {
-    await createApiKeyRoleAssignmentMutation.mutateAsync({
-      apiKeyRoleAssignment: {
-        roleId: data.roleId,
-        apiKeyId: data.apiKeyId,
-      },
-    });
-    await refetch();
-    form.reset();
-    setOpen(false);
-    toast.success("Role assigned successfully.");
+    try {
+      await createApiKeyRoleAssignmentMutation.mutateAsync({
+        apiKeyRoleAssignment: {
+          roleId: data.roleId,
+          apiKeyId: data.apiKeyId,
+        },
+      });
+      await refetch();
+      form.reset();
+      setOpen(false);
+      toast.success("Role assigned successfully.");
+    } catch (error) {
+      toast.error("Failed to assign role.");
+    }
   }
 
   return (
