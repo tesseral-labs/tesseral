@@ -81,9 +81,13 @@ export function OidcConnectionsCard() {
 
   async function handleCreate() {
     try {
+      const isFirstOidcConnection =
+        listOidcConnectionsResponses?.pages[0]?.oidcConnections.length === 0;
       const { oidcConnection } = await createOidcConnectionMutation.mutateAsync(
         {
-          oidcConnection: {},
+          oidcConnection: {
+            primary: isFirstOidcConnection,
+          },
         },
       );
       if (!oidcConnection) {

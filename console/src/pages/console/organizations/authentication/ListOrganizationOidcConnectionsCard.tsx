@@ -198,7 +198,7 @@ function CreateOidcConnectionButton() {
   const { organizationId } = useParams();
   const navigate = useNavigate();
 
-  const { refetch } = useInfiniteQuery(
+  const { data: listOidcConnectionsResponse, refetch } = useInfiniteQuery(
     listOIDCConnections,
     {
       organizationId,
@@ -212,9 +212,12 @@ function CreateOidcConnectionButton() {
   const createOidcConnectionMutation = useMutation(createOIDCConnection);
 
   async function handleCreateOidcConnection() {
+    const isFirstOidcConnection =
+      listOidcConnectionsResponse?.pages[0]?.oidcConnections.length === 0;
     const newOidcConnection = await createOidcConnectionMutation.mutateAsync({
       oidcConnection: {
         organizationId,
+        primary: isFirstOidcConnection,
       },
     });
 
