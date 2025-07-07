@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
+  getOrganization,
   setPassword,
   updateMe,
   whoami,
@@ -171,6 +172,8 @@ const resetSchema = z.object({
 });
 
 function DangerZoneCard() {
+  const { data: getOrganizationResponse } = useQuery(getOrganization, {});
+
   const [resetOpen, setResetOpen] = useState(false);
 
   const setPasswordMutation = useMutation(setPassword);
@@ -198,39 +201,41 @@ function DangerZoneCard() {
 
   return (
     <>
-      <Card className="bg-red-50/50 border-red-200 dark:bg-red-900/40 dark:border-red-700">
-        <CardHeader>
-          <CardTitle className="text-destructive flex items-center gap-2">
-            <TriangleAlert />
-            Danger Zone
-          </CardTitle>
-          <CardDescription>
-            Actions in this section are irreversible and can lead to data loss.
-            Please proceed with caution.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-between gap-8 w-full lg:w-auto flex-wrap lg:flex-nowrap">
-            <div className="space-y-1">
-              <div className="text-sm font-semibold flex items-center gap-2">
-                <RotateCcwKey className="w-6 h-6" />
-                <span>Change password</span>
+      {getOrganizationResponse?.organization?.logInWithPassword && (
+        <Card className="bg-red-50/50 border-red-200 dark:bg-red-900/40 dark:border-red-700">
+          <CardHeader>
+            <CardTitle className="text-destructive flex items-center gap-2">
+              <TriangleAlert />
+              Danger Zone
+            </CardTitle>
+            <CardDescription>
+              Actions in this section are irreversible and can lead to data
+              loss. Please proceed with caution.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between gap-8 w-full lg:w-auto flex-wrap lg:flex-nowrap">
+              <div className="space-y-1">
+                <div className="text-sm font-semibold flex items-center gap-2">
+                  <RotateCcwKey className="w-6 h-6" />
+                  <span>Change password</span>
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  Update the password you use to log in. This cannot be undone.
+                </div>
               </div>
-              <div className="text-sm text-muted-foreground">
-                Update the password you use to log in. This cannot be undone.
-              </div>
+              <Button
+                className="border-destructive text-destructive hover:bg-destructive hover:text-white"
+                variant="outline"
+                size="sm"
+                onClick={() => setResetOpen(true)}
+              >
+                Change password
+              </Button>
             </div>
-            <Button
-              className="border-destructive text-destructive hover:bg-destructive hover:text-white"
-              variant="outline"
-              size="sm"
-              onClick={() => setResetOpen(true)}
-            >
-              Change password
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
 
       <Dialog open={resetOpen} onOpenChange={setResetOpen}>
         <DialogContent>
