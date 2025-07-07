@@ -332,7 +332,7 @@ function AssignRoleButton() {
       form.reset();
       setOpen(false);
       toast.success("Role assigned successfully.");
-    } catch (error) {
+    } catch {
       toast.error("Failed to assign role.");
     }
   }
