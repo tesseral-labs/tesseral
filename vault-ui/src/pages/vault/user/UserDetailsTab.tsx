@@ -172,7 +172,7 @@ const resetSchema = z.object({
 });
 
 function DangerZoneCard() {
-  const { data: getOrganizationResponse } = useQuery(getOrganization, {})
+  const { data: getOrganizationResponse } = useQuery(getOrganization, {});
 
   const [resetOpen, setResetOpen] = useState(false);
 
@@ -209,8 +209,8 @@ function DangerZoneCard() {
               Danger Zone
             </CardTitle>
             <CardDescription>
-              Actions in this section are irreversible and can lead to data loss.
-              Please proceed with caution.
+              Actions in this section are irreversible and can lead to data
+              loss. Please proceed with caution.
             </CardDescription>
           </CardHeader>
           <CardContent>
