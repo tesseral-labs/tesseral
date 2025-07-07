@@ -88,9 +88,13 @@ export function SamlConnectionsCard() {
 
   async function handleCreate() {
     try {
+      const isFirstSamlConnection =
+        listSamlConnectionsResponses?.pages[0]?.samlConnections.length === 0;
       const { samlConnection } = await createSamlConnectionMutation.mutateAsync(
         {
-          samlConnection: {},
+          samlConnection: {
+            primary: isFirstSamlConnection,
+          },
         },
       );
       if (!samlConnection) {

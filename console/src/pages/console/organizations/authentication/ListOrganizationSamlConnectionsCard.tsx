@@ -166,7 +166,7 @@ function CreateSamlConnectionButton() {
   const { organizationId } = useParams();
   const navigate = useNavigate();
 
-  const { refetch } = useInfiniteQuery(
+  const { data: listSamlConnectionsResponse, refetch } = useInfiniteQuery(
     listSAMLConnections,
     {
       organizationId,
@@ -180,9 +180,12 @@ function CreateSamlConnectionButton() {
   const createSamlConnectionMutation = useMutation(createSAMLConnection);
 
   async function handleCreateSamlConnection() {
+    const isFirstSamlConnection =
+      listSamlConnectionsResponse?.pages[0]?.samlConnections.length === 0;
     const newSamlConnection = await createSamlConnectionMutation.mutateAsync({
       samlConnection: {
         organizationId,
+        primary: isFirstSamlConnection,
       },
     });
 
