@@ -150,7 +150,7 @@ func (s *Store) CreateSession(ctx context.Context, req *CreateSessionRequest) (*
 	}
 
 	redirectURI := qProject.RedirectUri
-	if qProject.AfterLoginRedirectUri != nil {
+	if qProject.AfterLoginRedirectUri != nil && *qProject.AfterLoginRedirectUri != "" {
 		redirectURI = *qProject.AfterLoginRedirectUri
 	}
 
