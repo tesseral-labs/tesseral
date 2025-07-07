@@ -268,7 +268,6 @@ function DangerZoneCard() {
                       Enter your new password. It must be at least 8 characters
                       long.
                     </FormDescription>
-                    <FormMessage />
                     <FormControl>
                       <Input
                         {...field}
@@ -290,7 +289,6 @@ function DangerZoneCard() {
                     <FormDescription>
                       Re-enter your new password to confirm.
                     </FormDescription>
-                    <FormMessage />
                     <FormControl>
                       <Input
                         {...field}
