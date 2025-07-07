@@ -160,6 +160,7 @@ function DangerZoneCard() {
   async function handleRevoke() {
     await revokeApiKeyMutation.mutateAsync({ id: apiKeyId });
     await refetch();
+    setRevokeOpen(false);
     toast.success("API Key revoked successfully.");
   }
 
