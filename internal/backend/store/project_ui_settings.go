@@ -120,8 +120,6 @@ func (s *Store) UpdateProjectUISettings(ctx context.Context, req *backendv1.Upda
 		updates.AutoCreateOrganizations = *req.AutoCreateOrganizations
 	}
 
-	fmt.Println("updating project ui settings", req.SelfServeCreateOrganizations)
-
 	updates.SelfServeCreateOrganizations = qProjectUISettings.SelfServeCreateOrganizations
 	if req.SelfServeCreateOrganizations != nil {
 		updates.SelfServeCreateOrganizations = *req.SelfServeCreateOrganizations
