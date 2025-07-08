@@ -291,6 +291,7 @@ message Settings {
   optional string after_login_redirect_uri = 18;
   optional string after_signup_redirect_uri = 19;
   bool auto_create_organizations = 22;
+  bool self_serve_create_organizations = 25;
 }
 
 message CreateProjectRequest {

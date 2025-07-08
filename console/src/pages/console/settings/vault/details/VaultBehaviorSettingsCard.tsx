@@ -35,6 +35,7 @@ import {
 const schema = z.object({
   auditLogsEnabled: z.boolean().optional(),
   autoCreateOrganizations: z.boolean(),
+  selfServeCreateOrganizations: z.boolean(),
 });
 
 export function VaultBehaviorSettingsCard() {
@@ -54,12 +55,16 @@ export function VaultBehaviorSettingsCard() {
       autoCreateOrganizations:
         getProjectUiSettingsResponse?.projectUiSettings
           ?.autoCreateOrganizations ?? false,
+      selfServeCreateOrganizations:
+        getProjectUiSettingsResponse?.projectUiSettings
+          ?.selfServeCreateOrganizations ?? false,
     },
   });
 
   async function handleSubmit(data: z.infer<typeof schema>) {
     await updateProjectUiSettingsMutation.mutateAsync({
       autoCreateOrganizations: data.autoCreateOrganizations,
+      selfServeCreateOrganizations: data.selfServeCreateOrganizations,
     });
     await updateProjectMutation.mutateAsync({
       project: {
@@ -80,6 +85,9 @@ export function VaultBehaviorSettingsCard() {
         autoCreateOrganizations:
           getProjectUiSettingsResponse.projectUiSettings
             ?.autoCreateOrganizations ?? false,
+        selfServeCreateOrganizations:
+          getProjectUiSettingsResponse.projectUiSettings
+            ?.selfServeCreateOrganizations ?? false,
       });
     }
   }, [getProjectUiSettingsResponse, getProjectResponse, form]);
@@ -98,15 +106,38 @@ export function VaultBehaviorSettingsCard() {
           <CardContent className="space-y-6 flex-grow">
             <FormField
               control={form.control}
+              name="selfServeCreateOrganizations"
+              render={({ field }) => (
+                <FormItem className="flex justify-between items-center gap-4">
+                  <div className="space-y-2">
+                    <FormLabel>Self-serve create Organizations</FormLabel>
+                    <FormDescription>
+                      Whether end users can create new Organizations on their
+                      own. When disabled, users can only join existing
+                      Organizations, and cannot create new Organizations.
+                    </FormDescription>
+                    <FormMessage />
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="autoCreateOrganizations"
               render={({ field }) => (
                 <FormItem className="flex justify-between items-center gap-4">
                   <div className="space-y-2">
                     <FormLabel>Auto-create Organizations</FormLabel>
                     <FormDescription>
-                      Automatically create Organizations when a new user signs
-                      up. When disabled, new users will be prompted to name
-                      their Organization upon first login.
+                      Whether to automatically create an Organization when a new
+                      user signs up. When disabled, new users will be prompted
+                      to name their Organization upon first login.
                     </FormDescription>
                     <FormMessage />
                   </div>

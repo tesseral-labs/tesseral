@@ -43,6 +43,15 @@ func (s *Store) CreateOrganization(ctx context.Context, req *intermediatev1.Crea
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
+	qProjectUISettings, err := q.GetProjectUISettings(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project ui settings: %w", err)
+	}
+
+	if !qProjectUISettings.SelfServeCreateOrganizations {
+		return nil, apierror.NewPermissionDeniedError("self-serve organization creation disabled", nil)
+	}
+
 	qOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
 		ID:                 uuid.New(),
 		ProjectID:          authn.ProjectID(ctx),

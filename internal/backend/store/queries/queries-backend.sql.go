@@ -1910,7 +1910,7 @@ func (q *Queries) GetProjectTrustedDomains(ctx context.Context, projectID uuid.U
 
 const getProjectUISettings = `-- name: GetProjectUISettings :one
 SELECT
-    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time, log_in_layout, auto_create_organizations
+    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time, log_in_layout, auto_create_organizations, self_serve_create_organizations
 FROM
     project_ui_settings
 WHERE
@@ -1930,6 +1930,7 @@ func (q *Queries) GetProjectUISettings(ctx context.Context, projectID uuid.UUID)
 		&i.UpdateTime,
 		&i.LogInLayout,
 		&i.AutoCreateOrganizations,
+		&i.SelfServeCreateOrganizations,
 	)
 	return i, err
 }
@@ -3857,22 +3858,24 @@ SET
     detect_dark_mode_enabled = $4,
     dark_mode_primary_color = $5,
     log_in_layout = $6,
-    auto_create_organizations = $7
+    auto_create_organizations = $7,
+    self_serve_create_organizations = $8
 WHERE
     id = $1
     AND project_id = $2
 RETURNING
-    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time, log_in_layout, auto_create_organizations
+    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time, log_in_layout, auto_create_organizations, self_serve_create_organizations
 `
 
 type UpdateProjectUISettingsParams struct {
-	ID                      uuid.UUID
-	ProjectID               uuid.UUID
-	PrimaryColor            *string
-	DetectDarkModeEnabled   bool
-	DarkModePrimaryColor    *string
-	LogInLayout             LogInLayout
-	AutoCreateOrganizations bool
+	ID                           uuid.UUID
+	ProjectID                    uuid.UUID
+	PrimaryColor                 *string
+	DetectDarkModeEnabled        bool
+	DarkModePrimaryColor         *string
+	LogInLayout                  LogInLayout
+	AutoCreateOrganizations      bool
+	SelfServeCreateOrganizations bool
 }
 
 func (q *Queries) UpdateProjectUISettings(ctx context.Context, arg UpdateProjectUISettingsParams) (ProjectUiSetting, error) {
@@ -3884,6 +3887,7 @@ func (q *Queries) UpdateProjectUISettings(ctx context.Context, arg UpdateProject
 		arg.DarkModePrimaryColor,
 		arg.LogInLayout,
 		arg.AutoCreateOrganizations,
+		arg.SelfServeCreateOrganizations,
 	)
 	var i ProjectUiSetting
 	err := row.Scan(
@@ -3896,6 +3900,7 @@ func (q *Queries) UpdateProjectUISettings(ctx context.Context, arg UpdateProject
 		&i.UpdateTime,
 		&i.LogInLayout,
 		&i.AutoCreateOrganizations,
+		&i.SelfServeCreateOrganizations,
 	)
 	return i, err
 }

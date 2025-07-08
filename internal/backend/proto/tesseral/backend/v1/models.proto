@@ -138,6 +138,7 @@ message ProjectUISettings {
   string dark_mode_primary_color = 10;
   string log_in_layout = 11;
   bool auto_create_organizations = 12;
+  bool self_serve_create_organizations = 13;
 }
 
 // An Organization represents one of your corporate customers.

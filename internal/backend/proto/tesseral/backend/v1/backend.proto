@@ -1048,6 +1048,7 @@ message UpdateProjectUISettingsRequest {
   optional bool detect_dark_mode_enabled = 3;
   optional string dark_mode_primary_color = 4;
   optional bool auto_create_organizations = 5;
+  optional bool self_serve_create_organizations = 6;
 }
 
 message UpdateProjectUISettingsResponse {

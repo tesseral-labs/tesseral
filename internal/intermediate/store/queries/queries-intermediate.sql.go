@@ -426,7 +426,7 @@ const createProjectUISettings = `-- name: CreateProjectUISettings :one
 INSERT INTO project_ui_settings (id, project_id)
     VALUES (gen_random_uuid (), $1)
 RETURNING
-    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time, log_in_layout, auto_create_organizations
+    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time, log_in_layout, auto_create_organizations, self_serve_create_organizations
 `
 
 func (q *Queries) CreateProjectUISettings(ctx context.Context, projectID uuid.UUID) (ProjectUiSetting, error) {
@@ -442,6 +442,7 @@ func (q *Queries) CreateProjectUISettings(ctx context.Context, projectID uuid.UU
 		&i.UpdateTime,
 		&i.LogInLayout,
 		&i.AutoCreateOrganizations,
+		&i.SelfServeCreateOrganizations,
 	)
 	return i, err
 }
@@ -1359,7 +1360,7 @@ func (q *Queries) GetProjectTrustedDomains(ctx context.Context, projectID uuid.U
 
 const getProjectUISettings = `-- name: GetProjectUISettings :one
 SELECT
-    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time, log_in_layout, auto_create_organizations
+    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time, log_in_layout, auto_create_organizations, self_serve_create_organizations
 FROM
     project_ui_settings
 WHERE
@@ -1379,6 +1380,7 @@ func (q *Queries) GetProjectUISettings(ctx context.Context, projectID uuid.UUID)
 		&i.UpdateTime,
 		&i.LogInLayout,
 		&i.AutoCreateOrganizations,
+		&i.SelfServeCreateOrganizations,
 	)
 	return i, err
 }
