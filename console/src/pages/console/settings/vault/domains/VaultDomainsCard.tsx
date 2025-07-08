@@ -4,6 +4,7 @@ import { ExternalLink, Globe, LoaderCircle, Settings } from "lucide-react";
 import React, { MouseEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -161,6 +162,7 @@ function ConfigureVaultDomainsButton() {
     });
     await refetch();
     setOpen(false);
+    toast.success("Vault domain settings updated successfully.");
   }
 
   useEffect(() => {

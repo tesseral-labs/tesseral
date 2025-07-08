@@ -120,6 +120,7 @@ function ConfigureEnterpriseSettingsButton() {
         logInWithOidc: data.logInWithOidc,
       },
     });
+    setOpen(false);
     await refetch();
     toast.success("Enterprise settings updated successfully");
   }
