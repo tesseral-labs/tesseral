@@ -8,13 +8,13 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s *Store) GetProjectTrustedOrigins(ctx context.Context, projectID uuid.UUID) ([]string, error) {
+func (s *Store) GetProjectTrustedOrigins(ctx context.Context, projectID uuid.UUID) ([]url.URL, error) {
 	domains, err := s.q.GetProjectTrustedDomains(ctx, projectID)
 	if err != nil {
 		return nil, fmt.Errorf("get project trusted domains: %w", err)
 	}
 
-	var origins []string
+	var origins []url.URL
 	for _, domain := range domains {
 		// Trusted domains are all trusted origins, where the origin scheme is
 		// https. As a special case, if an origin has the hostname "localhost",
@@ -22,10 +22,10 @@ func (s *Store) GetProjectTrustedOrigins(ctx context.Context, projectID uuid.UUI
 		origin := url.URL{Scheme: "https", Host: domain}
 		if origin.Hostname() == "localhost" {
 			originHTTP := url.URL{Scheme: "http", Host: domain}
-			origins = append(origins, originHTTP.String())
+			origins = append(origins, originHTTP)
 		}
 
-		origins = append(origins, origin.String())
+		origins = append(origins, origin)
 	}
 
 	return origins, nil
