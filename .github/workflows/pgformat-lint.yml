@@ -17,9 +17,14 @@ jobs:
           go-version: stable
       - name: pg_format check
         run: |
-          diff sqlc/queries.sql <(docker run --quiet --rm --volume "$(pwd)/sqlc/queries.sql:/work/queries.sql" backplane/pgformatter queries.sql)
-          diff sqlc/queries-backend.sql <(docker run --quiet --rm --volume "$(pwd)/sqlc/queries-backend.sql:/work/queries.sql" backplane/pgformatter queries.sql)
-          diff sqlc/queries-frontend.sql <(docker run --quiet --rm --volume "$(pwd)/sqlc/queries-frontend.sql:/work/queries.sql" backplane/pgformatter queries.sql)
-          diff sqlc/queries-intermediate.sql <(docker run --quiet --rm --volume "$(pwd)/sqlc/queries-intermediate.sql:/work/queries.sql" backplane/pgformatter queries.sql)
-          diff sqlc/queries-saml.sql <(docker run --quiet --rm --volume "$(pwd)/sqlc/queries-saml.sql:/work/queries.sql" backplane/pgformatter queries.sql)
-          diff sqlc/queries-scim.sql <(docker run --quiet --rm --volume "$(pwd)/sqlc/queries-scim.sql:/work/queries.sql" backplane/pgformatter queries.sql)
+          diff sqlc/queries.sql <(./bin/pg_format/pg_format sqlc/queries.sql)
+          diff sqlc/queries-auditlog.sql <(./bin/pg_format/pg_format sqlc/queries-auditlog.sql)
+          diff sqlc/queries-backend.sql <(./bin/pg_format/pg_format sqlc/queries-backend.sql)
+          diff sqlc/queries-frontend.sql <(./bin/pg_format/pg_format sqlc/queries-frontend.sql)
+          diff sqlc/queries-intermediate.sql <(./bin/pg_format/pg_format sqlc/queries-intermediate.sql)
+          diff sqlc/queries-saml.sql <(./bin/pg_format/pg_format sqlc/queries-saml.sql)
+          diff sqlc/queries-oidc.sql <(./bin/pg_format/pg_format sqlc/queries-oidc.sql)
+          diff sqlc/queries-scim.sql <(./bin/pg_format/pg_format sqlc/queries-scim.sql)
+          diff sqlc/queries-common.sql <(./bin/pg_format/pg_format sqlc/queries-common.sql)
+          diff sqlc/queries-wellknown.sql <(./bin/pg_format/pg_format sqlc/queries-wellknown.sql)
+          diff sqlc/queries-configapi.sql <(./bin/pg_format/pg_format sqlc/queries-configapi.sql)
