@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router";
 
@@ -27,6 +27,8 @@ export function ChooseOrganizationPage() {
     useMutation(createOrganization);
   const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
 
+  const [noOrgs, setNoOrgs] = useState(false);
+
   useEffect(() => {
     (async () => {
       if (!listOrganizationsResponse) {
@@ -34,6 +36,11 @@ export function ChooseOrganizationPage() {
       }
 
       if (listOrganizationsResponse.organizations.length === 0) {
+        if (!projectSettings.selfServeCreateOrganizations) {
+          setNoOrgs(true);
+          return;
+        }
+
         if (projectSettings.autoCreateOrganizations) {
           const { data: whoamiResponse } = await refetchWhoami();
 
@@ -69,28 +76,55 @@ export function ChooseOrganizationPage() {
         <CardTitle>Choose an organization</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-2">
-          {listOrganizationsResponse?.organizations?.map((org) => (
-            <Button key={org.id} className="w-full" variant="outline" asChild>
-              <Link to={`/organizations/${org.id}/login`}>
-                {org.displayName}
-              </Link>
+        {noOrgs ? (
+          <>
+            <div className="text-muted-foreground text-sm">
+              No organizations match your login credentials.
+            </div>
+
+            <Button className="mt-4 w-full" variant="outline" asChild>
+              <Link to="/login">Back to Login Page</Link>
             </Button>
-          ))}
-        </div>
+          </>
+        ) : (
+          <>
+            <div className="space-y-2">
+              {listOrganizationsResponse?.organizations?.map((org) => (
+                <Button
+                  key={org.id}
+                  className="w-full"
+                  variant="outline"
+                  asChild
+                >
+                  <Link to={`/organizations/${org.id}/login`}>
+                    {org.displayName}
+                  </Link>
+                </Button>
+              ))}
+            </div>
 
-        <div className="block relative w-full cursor-default my-6">
-          <div className="absolute inset-0 flex items-center border-muted-foreground">
-            <span className="w-full border-t"></span>
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground">or</span>
-          </div>
-        </div>
+            {projectSettings.selfServeCreateOrganizations && (
+              <>
+                <div className="block relative w-full cursor-default my-6">
+                  <div className="absolute inset-0 flex items-center border-muted-foreground">
+                    <span className="w-full border-t"></span>
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-card px-2 text-muted-foreground">
+                      or
+                    </span>
+                  </div>
+                </div>
 
-        <Button className="w-full" variant="outline" asChild>
-          <Link to="/create-organization">Create a new organization</Link>
-        </Button>
+                <Button className="w-full" variant="outline" asChild>
+                  <Link to="/create-organization">
+                    Create a new organization
+                  </Link>
+                </Button>
+              </>
+            )}
+          </>
+        )}
       </CardContent>
     </LoginFlowCard>
   );

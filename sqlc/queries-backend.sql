@@ -592,7 +592,8 @@ SET
     detect_dark_mode_enabled = $4,
     dark_mode_primary_color = $5,
     log_in_layout = $6,
-    auto_create_organizations = $7
+    auto_create_organizations = $7,
+    self_serve_create_organizations = $8
 WHERE
     id = $1
     AND project_id = $2

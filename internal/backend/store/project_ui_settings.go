@@ -58,17 +58,18 @@ func (s *Store) GetProjectUISettings(ctx context.Context, req *backendv1.GetProj
 
 	return &backendv1.GetProjectUISettingsResponse{
 		ProjectUiSettings: &backendv1.ProjectUISettings{
-			Id:                      idformat.ProjectUISettings.Format(qProjectUISettings.ID),
-			ProjectId:               idformat.Project.Format(projectID),
-			PrimaryColor:            derefOrEmpty(qProjectUISettings.PrimaryColor),
-			DetectDarkModeEnabled:   qProjectUISettings.DetectDarkModeEnabled,
-			DarkModePrimaryColor:    derefOrEmpty(qProjectUISettings.DarkModePrimaryColor),
-			LogInLayout:             string(qProjectUISettings.LogInLayout),
-			LogoUrl:                 logoURL,
-			DarkModeLogoUrl:         darkModeLogoURL,
-			CreateTime:              timestamppb.New(*qProjectUISettings.CreateTime),
-			UpdateTime:              timestamppb.New(*qProjectUISettings.UpdateTime),
-			AutoCreateOrganizations: qProjectUISettings.AutoCreateOrganizations,
+			Id:                           idformat.ProjectUISettings.Format(qProjectUISettings.ID),
+			ProjectId:                    idformat.Project.Format(projectID),
+			PrimaryColor:                 derefOrEmpty(qProjectUISettings.PrimaryColor),
+			DetectDarkModeEnabled:        qProjectUISettings.DetectDarkModeEnabled,
+			DarkModePrimaryColor:         derefOrEmpty(qProjectUISettings.DarkModePrimaryColor),
+			LogInLayout:                  string(qProjectUISettings.LogInLayout),
+			LogoUrl:                      logoURL,
+			DarkModeLogoUrl:              darkModeLogoURL,
+			CreateTime:                   timestamppb.New(*qProjectUISettings.CreateTime),
+			UpdateTime:                   timestamppb.New(*qProjectUISettings.UpdateTime),
+			AutoCreateOrganizations:      qProjectUISettings.AutoCreateOrganizations,
+			SelfServeCreateOrganizations: qProjectUISettings.SelfServeCreateOrganizations,
 		},
 	}, nil
 }
@@ -117,6 +118,11 @@ func (s *Store) UpdateProjectUISettings(ctx context.Context, req *backendv1.Upda
 	updates.AutoCreateOrganizations = qProjectUISettings.AutoCreateOrganizations
 	if req.AutoCreateOrganizations != nil {
 		updates.AutoCreateOrganizations = *req.AutoCreateOrganizations
+	}
+
+	updates.SelfServeCreateOrganizations = qProjectUISettings.SelfServeCreateOrganizations
+	if req.SelfServeCreateOrganizations != nil {
+		updates.SelfServeCreateOrganizations = *req.SelfServeCreateOrganizations
 	}
 
 	qUpdatedProjectUISettings, err := q.UpdateProjectUISettings(ctx, updates)

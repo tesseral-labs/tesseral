@@ -417,15 +417,16 @@ type ProjectTrustedDomain struct {
 }
 
 type ProjectUiSetting struct {
-	ID                      uuid.UUID
-	ProjectID               uuid.UUID
-	PrimaryColor            *string
-	DetectDarkModeEnabled   bool
-	DarkModePrimaryColor    *string
-	CreateTime              *time.Time
-	UpdateTime              *time.Time
-	LogInLayout             LogInLayout
-	AutoCreateOrganizations bool
+	ID                           uuid.UUID
+	ProjectID                    uuid.UUID
+	PrimaryColor                 *string
+	DetectDarkModeEnabled        bool
+	DarkModePrimaryColor         *string
+	CreateTime                   *time.Time
+	UpdateTime                   *time.Time
+	LogInLayout                  LogInLayout
+	AutoCreateOrganizations      bool
+	SelfServeCreateOrganizations bool
 }
 
 type ProjectWebhookSetting struct {
