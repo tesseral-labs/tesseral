@@ -73,6 +73,7 @@ export function ConfigureMicrosoftOAuthButton() {
       !getProjectResponse?.project?.logInWithEmail &&
       !getProjectResponse?.project?.logInWithPassword &&
       !getProjectResponse?.project?.logInWithGoogle &&
+      !getProjectResponse?.project?.logInWithMicrosoft &&
       !getProjectResponse?.project?.logInWithGithub
     ) {
       form.setError("logInWithMicrosoft", {
@@ -88,7 +89,7 @@ export function ConfigureMicrosoftOAuthButton() {
     ) {
       form.setError("microsoftOauthClientId", {
         message:
-          "GitHub OAuth Client ID is required when enabling GitHub login.",
+          "Microsoft OAuth Client ID is required when enabling Microsoft login.",
       });
       return;
     }
@@ -99,7 +100,7 @@ export function ConfigureMicrosoftOAuthButton() {
     ) {
       form.setError("microsoftOauthClientSecret", {
         message:
-          "GitHub OAuth Client Secret is required when enabling GitHub login.",
+          "Microsoft OAuth Client Secret is required when enabling Microsoft login.",
       });
       return;
     }

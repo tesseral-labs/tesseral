@@ -71,12 +71,35 @@ export function ConfigureGoogleOAuthButton() {
       !data.logInWithGoogle &&
       !getProjectResponse?.project?.logInWithEmail &&
       !getProjectResponse?.project?.logInWithPassword &&
-      !getProjectResponse?.project?.logInWithGithub &&
-      !getProjectResponse?.project?.logInWithMicrosoft
+      !getProjectResponse?.project?.logInWithGoogle &&
+      !getProjectResponse?.project?.logInWithMicrosoft &&
+      !getProjectResponse?.project?.logInWithGithub
     ) {
       form.setError("logInWithGoogle", {
         message:
           "At least one of Log in with Email, Log in with Password, Log in with Google, Log in with Microsoft, or Log in with GitHub must be enabled.",
+      });
+      return;
+    }
+    if (
+      data.logInWithGoogle &&
+      !data.googleOauthClientId &&
+      !getProjectResponse?.project?.googleOauthClientId
+    ) {
+      form.setError("googleOauthClientId", {
+        message:
+          "Google OAuth Client ID is required when enabling Google login.",
+      });
+      return;
+    }
+    if (
+      data.logInWithGoogle &&
+      !data.googleOauthClientSecret &&
+      !getProjectResponse?.project?.googleOauthClientSecret
+    ) {
+      form.setError("googleOauthClientSecret", {
+        message:
+          "Google OAuth Client Secret is required when enabling Google login.",
       });
       return;
     }
