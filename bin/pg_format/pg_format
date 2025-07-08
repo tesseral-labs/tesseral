@@ -1,0 +1,26 @@
+#!/bin/bash
+#
+# Wrapper script to run pgFormatter via Docker.
+#
+# This script checks if the pgformatter:local Docker image exists.
+# If not, it builds the image from a Dockerfile in the current directory.
+# It then runs the container, passing all script arguments directly to the
+# pg_format command inside the container.
+
+set -eu
+
+IMAGE_NAME="pgformatter:local"
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+if ! docker image inspect "${IMAGE_NAME}" &> /dev/null; then
+    if ! docker build -t "${IMAGE_NAME}" "${DIR}"; then
+        echo "Error: Docker image build failed." >&2
+        exit 1
+    fi
+fi
+
+docker run \
+    --rm \
+    -v "$(pwd)":/work \
+    -w /work \
+    "${IMAGE_NAME}" "$@"

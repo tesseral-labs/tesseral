@@ -46,16 +46,27 @@ proto:
 
 .PHONY: queries
 queries:
-	rm -rf internal/store/queries internal/auditlog/store/queries internal/backend/store/queries internal/frontend/store/queries internal/intermediate/store/queries internal/saml/store/queries internal/scim/store/queries internal/common/store/queries internal/wellknown/store/queries internal/configapi/store/queries
-	docker run --rm --volume "$$(pwd)/sqlc/queries.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
-	docker run --rm --volume "$$(pwd)/sqlc/queries-auditlog.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
-	docker run --rm --volume "$$(pwd)/sqlc/queries-backend.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
-	docker run --rm --volume "$$(pwd)/sqlc/queries-frontend.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
-	docker run --rm --volume "$$(pwd)/sqlc/queries-intermediate.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
-	docker run --rm --volume "$$(pwd)/sqlc/queries-saml.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
-	docker run --rm --volume "$$(pwd)/sqlc/queries-oidc.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
-	docker run --rm --volume "$$(pwd)/sqlc/queries-scim.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
-	docker run --rm --volume "$$(pwd)/sqlc/queries-common.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
-	docker run --rm --volume "$$(pwd)/sqlc/queries-wellknown.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
-	docker run --rm --volume "$$(pwd)/sqlc/queries-configapi.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
+	rm -rf \
+		internal/store/queries \
+		internal/auditlog/store/queries \
+		internal/backend/store/queries \
+		internal/frontend/store/queries \
+		internal/intermediate/store/queries \
+		internal/saml/store/queries \
+		internal/oidc/store/queries \
+		internal/scim/store/queries \
+		internal/common/store/queries \
+		internal/wellknown/store/queries \
+		internal/configapi/store/queries
+	./bin/pg_format/pg_format -i sqlc/queries.sql
+	./bin/pg_format/pg_format -i sqlc/queries-auditlog.sql
+	./bin/pg_format/pg_format -i sqlc/queries-backend.sql
+	./bin/pg_format/pg_format -i sqlc/queries-frontend.sql
+	./bin/pg_format/pg_format -i sqlc/queries-intermediate.sql
+	./bin/pg_format/pg_format -i sqlc/queries-saml.sql
+	./bin/pg_format/pg_format -i sqlc/queries-oidc.sql
+	./bin/pg_format/pg_format -i sqlc/queries-scim.sql
+	./bin/pg_format/pg_format -i sqlc/queries-common.sql
+	./bin/pg_format/pg_format -i sqlc/queries-wellknown.sql
+	./bin/pg_format/pg_format -i sqlc/queries-configapi.sql
 	sqlc -f ./sqlc/sqlc.yaml generate
