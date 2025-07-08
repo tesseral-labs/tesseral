@@ -3,7 +3,7 @@ import React, { useState } from "react";
 
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function SetupWizardVideo({
+export function SetupWizardVideo({
   src,
   width = 1144,
   height = 720,

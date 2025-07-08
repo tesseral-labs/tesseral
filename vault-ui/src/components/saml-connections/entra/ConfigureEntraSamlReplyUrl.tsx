@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 import { getSAMLConnection } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 
-import SetupWizardVideo from "../SetupWizardVideo";
+import { SetupWizardVideo } from "../SetupWizardVideo";
 
 export function ConfigureEntraSamlReplyUrl() {
   const { samlConnectionId } = useParams();

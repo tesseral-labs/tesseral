@@ -9,7 +9,7 @@ import { DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { getSAMLConnection } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 
-import SetupWizardVideo from "../SetupWizardVideo";
+import { SetupWizardVideo } from "../SetupWizardVideo";
 
 export function ConfigureGoogleSamlApplication() {
   const { samlConnectionId } = useParams();

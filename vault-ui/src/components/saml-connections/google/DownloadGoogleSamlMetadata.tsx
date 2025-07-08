@@ -24,7 +24,7 @@ import {
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 import { SAMLMetadata, parseSamlMetadata } from "@/lib/saml";
 
-import SetupWizardVideo from "../SetupWizardVideo";
+import { SetupWizardVideo } from "../SetupWizardVideo";
 
 const schema = z.object({
   googleSamlMetadata: z.string(),

@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 
-import SetupWizardVideo from "../SetupWizardVideo";
+import { SetupWizardVideo } from "../SetupWizardVideo";
 
 export function AssignEntraSamlUsers() {
   const { samlConnectionId } = useParams();

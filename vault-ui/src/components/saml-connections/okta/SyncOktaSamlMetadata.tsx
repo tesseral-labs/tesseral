@@ -23,7 +23,7 @@ import {
   updateSAMLConnection,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 
-import SetupWizardVideo from "../SetupWizardVideo";
+import { SetupWizardVideo } from "../SetupWizardVideo";
 
 interface OktaMetadata {
   idpEntityId: string;
