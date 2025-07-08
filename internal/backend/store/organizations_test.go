@@ -170,3 +170,32 @@ func TestDeleteOrganization(t *testing.T) {
 	require.ErrorAs(t, err, &connectErr)
 	require.Equal(t, connect.CodeNotFound, connectErr.Code())
 }
+
+func TestDeleteOrganization_OIDCConnections(t *testing.T) {
+	t.Parallel()
+
+	ctx, u := newTestUtil(t)
+
+	createResp, err := u.Store.CreateOrganization(ctx, &backendv1.CreateOrganizationRequest{
+		Organization: &backendv1.Organization{
+			DisplayName:   "org1",
+			LogInWithOidc: refOrNil(true),
+		},
+	})
+	require.NoError(t, err)
+	orgID := createResp.Organization.Id
+
+	_, err = u.Store.CreateOIDCConnection(ctx, &backendv1.CreateOIDCConnectionRequest{
+		OidcConnection: &backendv1.OIDCConnection{
+			ConfigurationUrl: "https://accounts.google.com/.well-known/openid-configuration",
+			ClientId:         "client-id",
+			ClientSecret:     "client-secret",
+			OrganizationId:   orgID,
+			Primary:          refOrNil(true),
+		},
+	})
+	require.NoError(t, err)
+
+	_, err = u.Store.DeleteOrganization(ctx, &backendv1.DeleteOrganizationRequest{Id: orgID})
+	require.NoError(t, err)
+}
