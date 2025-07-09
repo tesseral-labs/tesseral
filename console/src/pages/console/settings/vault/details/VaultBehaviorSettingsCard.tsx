@@ -111,6 +111,17 @@ export function VaultBehaviorSettingsCard() {
     }
   }, [form, watchSelfServeCreateUsers]);
 
+  const watchSelfServeCreateOrganizations = useWatch({
+    control: form.control,
+    name: "selfServeCreateOrganizations",
+  });
+
+  useEffect(() => {
+    if (!watchSelfServeCreateOrganizations) {
+      form.setValue("autoCreateOrganizations", false);
+    }
+  })
+
   return (
     <Form {...form}>
       <form className="flex-grow" onSubmit={form.handleSubmit(handleSubmit)}>
@@ -177,9 +188,9 @@ export function VaultBehaviorSettingsCard() {
                   <div className="space-y-2">
                     <FormLabel>Auto-create Organizations</FormLabel>
                     <FormDescription>
-                      Whether to automatically create an Organization when a new
-                      user signs up. When disabled, new users will be prompted
-                      to name their Organization upon first login.
+                      When enabled, automatically create an Organization when a
+                      new user signs up. When disabled, new users will be
+                      prompted to name their new Organization.
                     </FormDescription>
                     <FormMessage />
                   </div>
@@ -187,6 +198,7 @@ export function VaultBehaviorSettingsCard() {
                     <Switch
                       checked={field.value}
                       onCheckedChange={field.onChange}
+                      disabled={!watchSelfServeCreateOrganizations}
                     />
                   </FormControl>
                 </FormItem>
