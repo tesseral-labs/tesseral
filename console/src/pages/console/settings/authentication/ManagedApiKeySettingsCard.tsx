@@ -184,6 +184,7 @@ export function ConfigureManagedApiKeysButton() {
         apiKeySecretTokenPrefix: data.apiKeySecretTokenPrefix,
       },
     });
+    setOpen(false);
     await refetch();
     toast.success("Managed API Key settings updated successfully");
   }
