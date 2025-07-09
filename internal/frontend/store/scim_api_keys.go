@@ -140,9 +140,10 @@ func (s *Store) CreateSCIMAPIKey(ctx context.Context, req *frontendv1.CreateSCIM
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	parseSCIMAPIKey(qSCIMAPIKey).SecretToken = idformat.SCIMAPIKeySecretToken.Format(token)
+	scimAPIKey := parseSCIMAPIKey(qSCIMAPIKey)
+	scimAPIKey.SecretToken = idformat.SCIMAPIKeySecretToken.Format(token)
 
-	return &frontendv1.CreateSCIMAPIKeyResponse{ScimApiKey: parseSCIMAPIKey(qSCIMAPIKey)}, nil
+	return &frontendv1.CreateSCIMAPIKeyResponse{ScimApiKey: scimAPIKey}, nil
 }
 
 func (s *Store) UpdateSCIMAPIKey(ctx context.Context, req *frontendv1.UpdateSCIMAPIKeyRequest) (*frontendv1.UpdateSCIMAPIKeyResponse, error) {
