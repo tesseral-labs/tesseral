@@ -321,20 +321,16 @@ function AssignRoleButton() {
   }
 
   async function handleSubmit(data: z.infer<typeof schema>) {
-    try {
-      await createApiKeyRoleAssignmentMutation.mutateAsync({
-        apiKeyRoleAssignment: {
-          roleId: data.roleId,
-          apiKeyId: data.apiKeyId,
-        },
-      });
-      await refetch();
-      form.reset();
-      setOpen(false);
-      toast.success("Role assigned successfully.");
-    } catch {
-      toast.error("Failed to assign role.");
-    }
+    await createApiKeyRoleAssignmentMutation.mutateAsync({
+      apiKeyRoleAssignment: {
+        roleId: data.roleId,
+        apiKeyId: data.apiKeyId,
+      },
+    });
+    await refetch();
+    form.reset();
+    setOpen(false);
+    toast.success("Role assigned successfully.");
   }
 
   return (
