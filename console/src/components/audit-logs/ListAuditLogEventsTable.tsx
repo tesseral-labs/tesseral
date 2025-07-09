@@ -386,8 +386,8 @@ function AuditLogEventActor({
     useState<Record<string, any>>();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [userActor, setUserActor] = useState<Record<string, any>>();
-  const [scimApiKeyActor, setScimApiKeyActor] =
-    useState<Record<string, unknown>>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [scimApiKeyActor, setScimApiKeyActor] = useState<Record<string, any>>();
 
   useEffect(() => {
     if (getApiKeyResponse?.apiKey) {
@@ -476,7 +476,7 @@ function AuditLogEventActor({
           {userActor && <span className="font-mono">{userActor.email}</span>}
           {scimApiKeyActor && (
             <span className="font-mono">
-              {(scimApiKeyActor.displayName || scimApiKeyActor.id) as string}
+              {scimApiKeyActor.displayName || scimApiKeyActor.id}
             </span>
           )}
         </Badge>
