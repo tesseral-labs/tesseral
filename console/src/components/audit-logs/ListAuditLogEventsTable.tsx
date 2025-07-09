@@ -19,6 +19,7 @@ import {
   consoleListAuditLogEvents,
   getAPIKey,
   getBackendAPIKey,
+  getSCIMAPIKey,
   getUser,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
 import { ConsoleListAuditLogEventsRequest } from "@/gen/tesseral/backend/v1/backend_pb";
@@ -101,6 +102,7 @@ export function ListAuditLogEventsTable({
       actorBackendApiKeyId: listParams.actorBackendApiKeyId,
       actorSessionId: listParams.actorSessionId,
       actorUserId: listParams.actorUserId,
+      actorScimApiKeyId: listParams.actorScimApiKeyId,
       organizationId: listParams.organizationId,
       resourceType: listParams.resourceType,
     },
@@ -323,6 +325,7 @@ function AuditLogEventActor({
     actorBackendApiKeyId,
     actorConsoleUserId,
     actorUserId,
+    actorScimApiKeyId,
   } = auditLogEvent;
 
   const { data: getApiKeyResponse } = useQuery(
@@ -365,6 +368,16 @@ function AuditLogEventActor({
       retry: false,
     },
   );
+  const { data: getScimApiKeyResponse } = useQuery(
+    getSCIMAPIKey,
+    {
+      id: actorScimApiKeyId,
+    },
+    {
+      enabled: !!actorScimApiKeyId,
+      retry: false,
+    },
+  );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [apiKeyActor, setApiKeyActor] = useState<Record<string, any>>();
@@ -373,6 +386,8 @@ function AuditLogEventActor({
     useState<Record<string, any>>();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [userActor, setUserActor] = useState<Record<string, any>>();
+  const [scimApiKeyActor, setScimApiKeyActor] =
+    useState<Record<string, unknown>>();
 
   useEffect(() => {
     if (getApiKeyResponse?.apiKey) {
@@ -430,9 +445,23 @@ function AuditLogEventActor({
     }
   }, [getUserResponse, setUserActor]);
 
+  useEffect(() => {
+    if (getScimApiKeyResponse?.scimApiKey) {
+      const scimApiKey = getScimApiKeyResponse.scimApiKey;
+      const scimApiKeyActor = {
+        ...scimApiKey,
+        createTime: timestampDate(scimApiKey.createTime!).toISOString(),
+        updateTime: timestampDate(scimApiKey.updateTime!).toISOString(),
+      };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (scimApiKeyActor as any).$typeName;
+      setScimApiKeyActor(scimApiKeyActor);
+    }
+  }, [getScimApiKeyResponse, setScimApiKeyActor]);
+
   return (
     <>
-      {apiKeyActor || backendApiKeyActor || userActor ? (
+      {apiKeyActor || backendApiKeyActor || userActor || scimApiKeyActor ? (
         <Badge variant="secondary">
           {apiKeyActor && (
             <span className="font-mono">
@@ -445,6 +474,11 @@ function AuditLogEventActor({
             </span>
           )}
           {userActor && <span className="font-mono">{userActor.email}</span>}
+          {scimApiKeyActor && (
+            <span className="font-mono">
+              {(scimApiKeyActor.displayName || scimApiKeyActor.id) as string}
+            </span>
+          )}
         </Badge>
       ) : (
         <Badge variant="outline">
@@ -498,6 +532,7 @@ function AuditLogEventActorDetails({ event }: { event: ConsoleAuditLogEvent }) {
     actorBackendApiKeyId,
     actorConsoleUserId,
     actorUserId,
+    actorScimApiKeyId,
   } = event;
 
   const { data: getApiKeyResponse } = useQuery(
@@ -534,6 +569,15 @@ function AuditLogEventActorDetails({ event }: { event: ConsoleAuditLogEvent }) {
     },
     {
       enabled: !!actorUserId,
+    },
+  );
+  const { data: getScimApiKeyResponse } = useQuery(
+    getSCIMAPIKey,
+    {
+      id: actorScimApiKeyId,
+    },
+    {
+      enabled: !!actorScimApiKeyId,
     },
   );
 
@@ -606,10 +650,28 @@ function AuditLogEventActorDetails({ event }: { event: ConsoleAuditLogEvent }) {
           </div>
         </div>
       )}
+      {getScimApiKeyResponse?.scimApiKey && (
+        <div className="space-y-1">
+          <div className="font-semibold text-base">SCIM API Key</div>
+          {getScimApiKeyResponse.scimApiKey.displayName && (
+            <div className="font-medium">
+              {getScimApiKeyResponse.scimApiKey.displayName}
+            </div>
+          )}
+          <Link
+            className="inline-flex items-center gap-1 text-xs font-mono px-2 py-1 rounded border text-muted-foreground hover:text-foreground bg-white"
+            to={`/organizations/${event.organizationId}/scim-api-keys/${getScimApiKeyResponse.scimApiKey.id}`}
+          >
+            {getScimApiKeyResponse.scimApiKey.id}{" "}
+            <ExternalLink className="h-3 w-3" />
+          </Link>
+        </div>
+      )}
       {!getApiKeyResponse?.apiKey &&
         !getBackendApiKeyResponse?.backendApiKey &&
         !getFrontendUserResponse?.user &&
-        !getUserResponse?.user && (
+        !getUserResponse?.user &&
+        !getScimApiKeyResponse?.scimApiKey && (
           <div className="text-muted-foreground text-sm">System</div>
         )}
     </div>
