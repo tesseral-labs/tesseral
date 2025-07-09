@@ -72,8 +72,7 @@ export function ConfigureGithubOAuthButton() {
       !getProjectResponse?.project?.logInWithEmail &&
       !getProjectResponse?.project?.logInWithPassword &&
       !getProjectResponse?.project?.logInWithGoogle &&
-      !getProjectResponse?.project?.logInWithMicrosoft &&
-      !getProjectResponse?.project?.logInWithGithub
+      !getProjectResponse?.project?.logInWithMicrosoft
     ) {
       form.setError("logInWithGithub", {
         message:
