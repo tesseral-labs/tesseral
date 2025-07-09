@@ -4,16 +4,15 @@ import { Link, useParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 
+import { SetupWizardVideo } from "../SetupWizardVideo";
+
 export function AssignOktaSamlUsers() {
   const { samlConnectionId } = useParams();
 
   return (
     <>
       <div className="space-y-4 text-sm">
-        <img
-          className="rounded-xl max-w-full border shadow-md"
-          src="/videos/saml-setup-wizard/okta/users.gif"
-        />
+        <SetupWizardVideo src="/videos/saml-setup-wizard/okta/users.gif" />
 
         <p className="font-medium">Assign users to the new app.</p>
         <p>

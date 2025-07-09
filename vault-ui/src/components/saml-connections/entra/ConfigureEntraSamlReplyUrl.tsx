@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 import { getSAMLConnection } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 
+import { SetupWizardVideo } from "../SetupWizardVideo";
+
 export function ConfigureEntraSamlReplyUrl() {
   const { samlConnectionId } = useParams();
   const { data: getSamlConnectionResponse } = useQuery(getSAMLConnection, {
@@ -18,10 +20,7 @@ export function ConfigureEntraSamlReplyUrl() {
   return (
     <>
       <div className="space-y-4 text-sm">
-        <img
-          className="rounded-xl max-w-full border shadow-md"
-          src="/videos/saml-setup-wizard/entra/reply-url.gif"
-        />
+        <SetupWizardVideo src="/videos/saml-setup-wizard/entra/reply-url.gif" />
 
         <p className="font-medium">
           Configure SAML Reply URL (Assertion Consumer Service URL)

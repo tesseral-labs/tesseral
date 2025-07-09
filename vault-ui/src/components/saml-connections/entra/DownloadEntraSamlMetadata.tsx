@@ -24,6 +24,8 @@ import {
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 import { SAMLMetadata, parseSamlMetadata } from "@/lib/saml";
 
+import { SetupWizardVideo } from "../SetupWizardVideo";
+
 const schema = z.object({
   entraSamlMetadata: z.string(),
 });
@@ -115,10 +117,7 @@ export function DownloadEntraSamlMetadata() {
   return (
     <>
       <div className="space-y-4 text-sm">
-        <img
-          className="rounded-xl max-w-full border shadow-md"
-          src="/videos/saml-setup-wizard/entra/metadata.gif"
-        />
+        <SetupWizardVideo src="/videos/saml-setup-wizard/entra/metadata.gif" />
 
         <p className="font-medium">
           Download your application's Federation Metadata XML:

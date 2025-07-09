@@ -9,6 +9,8 @@ import { DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { getSAMLConnection } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 
+import { SetupWizardVideo } from "../SetupWizardVideo";
+
 export function ConfigureGoogleSamlApplication() {
   const { samlConnectionId } = useParams();
 
@@ -24,10 +26,7 @@ export function ConfigureGoogleSamlApplication() {
   return (
     <>
       <div className="text-sm space-y-4">
-        <img
-          className="rounded-xl max-w-full border shadow-md"
-          src="/videos/saml-setup-wizard/google/configure.gif"
-        />
+        <SetupWizardVideo src="/videos/saml-setup-wizard/google/configure.gif" />
 
         <p className="font-medium">Configure your Google SAML application:</p>
         <ol className="list-decimal pl-6">
