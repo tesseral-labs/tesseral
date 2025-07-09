@@ -91,6 +91,17 @@ export function ConfigureGithubOAuthButton() {
       });
       return;
     }
+    if (
+      data.logInWithGithub &&
+      data.githubOauthClientSecret === "" &&
+      !getProjectResponse?.project?.githubOauthClientSecret
+    ) {
+      form.setError("githubOauthClientSecret", {
+        message:
+          "GitHub OAuth Client Secret is required when enabling GitHub login.",
+      });
+      return;
+    }
     await updateProjectMutation.mutateAsync({
       project: {
         logInWithGithub: data.logInWithGithub,
@@ -183,7 +194,7 @@ export function ConfigureGithubOAuthButton() {
                 name="githubOauthClientId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel></FormLabel>
+                    <FormLabel>Client ID</FormLabel>
                     <FormDescription>
                       Your company's GitHub OAuth Client ID.
                     </FormDescription>
@@ -199,7 +210,7 @@ export function ConfigureGithubOAuthButton() {
                 name="githubOauthClientSecret"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel></FormLabel>
+                    <FormLabel>Client Secret</FormLabel>
                     <FormDescription>
                       Your company's GitHub OAuth Client Secret.
                     </FormDescription>
