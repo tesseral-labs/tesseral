@@ -1,26 +1,12 @@
-import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  ArrowLeft,
-  Ban,
-  ChevronDown,
-  LoaderCircle,
-  Trash,
-  TriangleAlert,
-} from "lucide-react";
-import { DateTime } from "luxon";
+import { Ban, LoaderCircle, Trash, TriangleAlert } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useLocation, useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { ValueCopier } from "@/components/core/ValueCopier";
-import { PageContent } from "@/components/page";
-import { PageLoading } from "@/components/page/PageLoading";
-import { Tab, Tabs } from "@/components/page/Tabs";
-import { Title } from "@/components/page/Title";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -29,7 +15,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -39,12 +24,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Form,
   FormControl,
@@ -61,7 +40,6 @@ import {
   revokeSCIMAPIKey,
   updateSCIMAPIKey,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
-import { NotFound } from "@/pages/NotFoundPage";
 
 const schema = z.object({
   displayName: z.string().min(1, "Display name is required"),
