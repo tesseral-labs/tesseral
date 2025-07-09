@@ -20,6 +20,7 @@ import {
   listSwitchableOrganizations,
   whoami,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
+import { useProjectSettings } from "@/lib/project-settings";
 import { cn } from "@/lib/utils";
 
 import {
@@ -42,7 +43,6 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
 } from "../ui/sidebar";
-import { useProjectSettings } from "@/lib/project-settings";
 
 export function VaultSidebar() {
   const { pathname } = useLocation();

@@ -12,9 +12,9 @@ import {
   listOrganizations,
   whoami,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { Organization } from "@/gen/tesseral/intermediate/v1/intermediate_pb";
 import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
 import { useProjectSettings } from "@/lib/project-settings";
-import { Organization } from "@/gen/tesseral/intermediate/v1/intermediate_pb";
 
 export function ChooseOrganizationPage() {
   const projectSettings = useProjectSettings();
@@ -38,7 +38,7 @@ export function ChooseOrganizationPage() {
 
       let organizations = listOrganizationsResponse.organizations;
       if (!projectSettings.selfServeCreateUsers) {
-        organizations = organizations.filter(org => org.userExists);
+        organizations = organizations.filter((org) => org.userExists);
       }
 
       setValidOrgs(organizations);
