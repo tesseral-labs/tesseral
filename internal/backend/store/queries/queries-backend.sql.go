@@ -1910,7 +1910,7 @@ func (q *Queries) GetProjectTrustedDomains(ctx context.Context, projectID uuid.U
 
 const getProjectUISettings = `-- name: GetProjectUISettings :one
 SELECT
-    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time, log_in_layout, auto_create_organizations, self_serve_create_organizations
+    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time, log_in_layout, auto_create_organizations, self_serve_create_organizations, self_serve_create_users
 FROM
     project_ui_settings
 WHERE
@@ -1931,6 +1931,7 @@ func (q *Queries) GetProjectUISettings(ctx context.Context, projectID uuid.UUID)
 		&i.LogInLayout,
 		&i.AutoCreateOrganizations,
 		&i.SelfServeCreateOrganizations,
+		&i.SelfServeCreateUsers,
 	)
 	return i, err
 }
@@ -3859,12 +3860,13 @@ SET
     dark_mode_primary_color = $5,
     log_in_layout = $6,
     auto_create_organizations = $7,
-    self_serve_create_organizations = $8
+    self_serve_create_organizations = $8,
+    self_serve_create_users = $9
 WHERE
     id = $1
     AND project_id = $2
 RETURNING
-    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time, log_in_layout, auto_create_organizations, self_serve_create_organizations
+    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time, log_in_layout, auto_create_organizations, self_serve_create_organizations, self_serve_create_users
 `
 
 type UpdateProjectUISettingsParams struct {
@@ -3876,6 +3878,7 @@ type UpdateProjectUISettingsParams struct {
 	LogInLayout                  LogInLayout
 	AutoCreateOrganizations      bool
 	SelfServeCreateOrganizations bool
+	SelfServeCreateUsers         bool
 }
 
 func (q *Queries) UpdateProjectUISettings(ctx context.Context, arg UpdateProjectUISettingsParams) (ProjectUiSetting, error) {
@@ -3888,6 +3891,7 @@ func (q *Queries) UpdateProjectUISettings(ctx context.Context, arg UpdateProject
 		arg.LogInLayout,
 		arg.AutoCreateOrganizations,
 		arg.SelfServeCreateOrganizations,
+		arg.SelfServeCreateUsers,
 	)
 	var i ProjectUiSetting
 	err := row.Scan(
@@ -3901,6 +3905,7 @@ func (q *Queries) UpdateProjectUISettings(ctx context.Context, arg UpdateProject
 		&i.LogInLayout,
 		&i.AutoCreateOrganizations,
 		&i.SelfServeCreateOrganizations,
+		&i.SelfServeCreateUsers,
 	)
 	return i, err
 }

@@ -70,6 +70,7 @@ func (s *Store) GetProjectUISettings(ctx context.Context, req *backendv1.GetProj
 			UpdateTime:                   timestamppb.New(*qProjectUISettings.UpdateTime),
 			AutoCreateOrganizations:      qProjectUISettings.AutoCreateOrganizations,
 			SelfServeCreateOrganizations: qProjectUISettings.SelfServeCreateOrganizations,
+			SelfServeCreateUsers:         qProjectUISettings.SelfServeCreateUsers,
 		},
 	}, nil
 }
@@ -123,6 +124,11 @@ func (s *Store) UpdateProjectUISettings(ctx context.Context, req *backendv1.Upda
 	updates.SelfServeCreateOrganizations = qProjectUISettings.SelfServeCreateOrganizations
 	if req.SelfServeCreateOrganizations != nil {
 		updates.SelfServeCreateOrganizations = *req.SelfServeCreateOrganizations
+	}
+
+	updates.SelfServeCreateUsers = qProjectUISettings.SelfServeCreateUsers
+	if req.SelfServeCreateUsers != nil {
+		updates.SelfServeCreateUsers = *req.SelfServeCreateUsers
 	}
 
 	qUpdatedProjectUISettings, err := q.UpdateProjectUISettings(ctx, updates)

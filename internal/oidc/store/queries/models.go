@@ -427,6 +427,7 @@ type ProjectUiSetting struct {
 	LogInLayout                  LogInLayout
 	AutoCreateOrganizations      bool
 	SelfServeCreateOrganizations bool
+	SelfServeCreateUsers         bool
 }
 
 type ProjectWebhookSetting struct {

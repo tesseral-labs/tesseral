@@ -32,6 +32,32 @@ func TestCreateUserInvite_Success(t *testing.T) {
 	require.Equal(t, "invitee@example.com", resp.UserInvite.Email)
 }
 
+func TestCreateUserInvite_SelfServeUserCreationDisabled(t *testing.T) {
+	t.Parallel()
+
+	u := newTestUtil(t)
+
+	projectUUID, err := idformat.Project.Parse(u.ProjectID)
+	require.NoError(t, err)
+
+	_, err = u.Environment.DB.Exec(t.Context(), `update project_ui_settings set self_serve_create_users = false where project_id = $1`, projectUUID)
+	require.NoError(t, err)
+
+	ctx := u.NewOrganizationContext(t, &backendv1.Organization{
+		DisplayName: "Test Org",
+	})
+
+	_, err = u.Store.CreateUserInvite(ctx, &frontendv1.CreateUserInviteRequest{
+		UserInvite: &frontendv1.UserInvite{
+			Email: "invitee@example.com",
+			Owner: false,
+		},
+	})
+	var connectErr *connect.Error
+	require.ErrorAs(t, err, &connectErr)
+	require.Equal(t, connect.CodePermissionDenied, connectErr.Code())
+}
+
 func TestCreateUserInvite_AlreadyExists(t *testing.T) {
 	t.Parallel()
 

@@ -1090,6 +1090,34 @@ func (q *Queries) GetProjectTrustedDomains(ctx context.Context, projectID uuid.U
 	return items, nil
 }
 
+const getProjectUISettings = `-- name: GetProjectUISettings :one
+SELECT
+    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time, log_in_layout, auto_create_organizations, self_serve_create_organizations, self_serve_create_users
+FROM
+    project_ui_settings
+WHERE
+    project_id = $1
+`
+
+func (q *Queries) GetProjectUISettings(ctx context.Context, projectID uuid.UUID) (ProjectUiSetting, error) {
+	row := q.db.QueryRow(ctx, getProjectUISettings, projectID)
+	var i ProjectUiSetting
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.PrimaryColor,
+		&i.DetectDarkModeEnabled,
+		&i.DarkModePrimaryColor,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.LogInLayout,
+		&i.AutoCreateOrganizations,
+		&i.SelfServeCreateOrganizations,
+		&i.SelfServeCreateUsers,
+	)
+	return i, err
+}
+
 const getProjectWebhookSettings = `-- name: GetProjectWebhookSettings :one
 SELECT
     id, project_id, app_id, create_time, update_time

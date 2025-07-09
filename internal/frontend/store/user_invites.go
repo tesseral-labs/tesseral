@@ -108,6 +108,15 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *frontendv1.CreateUser
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
+	qProjectUISettings, err := q.GetProjectUISettings(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project ui settings: %w", err)
+	}
+
+	if !qProjectUISettings.SelfServeCreateUsers {
+		return nil, apierror.NewPermissionDeniedError("self-serve user creation disabled", nil)
+	}
+
 	qOrg, err := q.GetOrganizationByID(ctx, authn.OrganizationID(ctx))
 	if err != nil {
 		return nil, fmt.Errorf("get organization by id: %w", err)

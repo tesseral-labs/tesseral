@@ -42,10 +42,12 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
 } from "../ui/sidebar";
+import { useProjectSettings } from "@/lib/project-settings";
 
 export function VaultSidebar() {
   const { pathname } = useLocation();
 
+  const projectSettings = useProjectSettings();
   const { data: getOrganizationResponse } = useQuery(getOrganization);
   const { data: getProjectResponse } = useQuery(getProject);
   const { data: whoamiResponse } = useQuery(whoami);
@@ -116,21 +118,23 @@ export function VaultSidebar() {
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link
-                      className={cn(
-                        pathname.startsWith("/organization/user-invites")
-                          ? "bg-muted text-primary font-medium"
-                          : "",
-                      )}
-                      to="/organization/user-invites"
-                    >
-                      <UserPlus />
-                      User Invites
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                {projectSettings.selfServeCreateUsers && (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <Link
+                        className={cn(
+                          pathname.startsWith("/organization/user-invites")
+                            ? "bg-muted text-primary font-medium"
+                            : "",
+                        )}
+                        to="/organization/user-invites"
+                      >
+                        <UserPlus />
+                        User Invites
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )}
                 {project?.apiKeysEnabled && organization?.apiKeysEnabled && (
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild>

@@ -68,6 +68,14 @@ FROM
 WHERE
     project_id = $1;
 
+-- name: GetProjectUISettings :one
+SELECT
+    *
+FROM
+    project_ui_settings
+WHERE
+    project_id = $1;
+
 -- name: GetSessionByID :one
 SELECT
     *
