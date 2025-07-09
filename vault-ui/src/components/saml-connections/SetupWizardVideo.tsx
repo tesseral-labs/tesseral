@@ -3,16 +3,11 @@ import React, { useState } from "react";
 
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function SetupWizardVideo({
-  src,
-  width = 1144,
-  height = 720,
-}: {
-  src: string;
-  width?: number;
-  height?: number;
-}) {
+export function SetupWizardVideo({ src }: { src: string }) {
   const [loaded, setLoaded] = useState(false);
+
+  const width = 1144;
+  const height = 720;
   const aspectRatio = `${width}/${height}`;
 
   return (
