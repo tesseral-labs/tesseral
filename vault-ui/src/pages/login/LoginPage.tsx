@@ -430,15 +430,17 @@ function LoginPageContents() {
         </CardContent>
       </LoginFlowCard>
 
-      <p className="text-center mt-4 text-xs text-muted-foreground">
-        Don't have an account?{" "}
-        <Link
-          to={`/signup${serializedQueryParamState}`}
-          className="cursor-pointer text-foreground underline underline-offset-2 decoration-muted-foreground"
-        >
-          Sign up.
-        </Link>
-      </p>
+      {settings.selfServeCreateUsers && (
+        <p className="text-center mt-4 text-xs text-muted-foreground">
+          Don't have an account?{" "}
+          <Link
+            to={`/signup${serializedQueryParamState}`}
+            className="cursor-pointer text-foreground underline underline-offset-2 decoration-muted-foreground"
+          >
+            Sign up.
+          </Link>
+        </p>
+      )}
     </>
   );
 }
