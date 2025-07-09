@@ -167,9 +167,15 @@ export function UserDetailsTab() {
   );
 }
 
-const resetSchema = z.object({
-  password: z.string().min(8, "Password must be at least 8 characters long"),
-});
+const resetSchema = z
+  .object({
+    password: z.string().min(8, "Password must be at least 8 characters long"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 function DangerZoneCard() {
   const { data: getOrganizationResponse } = useQuery(getOrganization, {});
@@ -182,6 +188,7 @@ function DangerZoneCard() {
     resolver: zodResolver(resetSchema),
     defaultValues: {
       password: "",
+      confirmPassword: "",
     },
   });
 
@@ -261,7 +268,6 @@ function DangerZoneCard() {
                       Enter your new password. It must be at least 8 characters
                       long.
                     </FormDescription>
-                    <FormMessage />
                     <FormControl>
                       <Input
                         {...field}
@@ -274,17 +280,37 @@ function DangerZoneCard() {
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirm Password</FormLabel>
+                    <FormDescription>
+                      Re-enter your new password to confirm.
+                    </FormDescription>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="password"
+                        placeholder="••••••••"
+                        autoComplete="new-password"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setResetOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={!form.formState.isDirty}>
+                  Change password
+                </Button>
+              </DialogFooter>
             </form>
           </Form>
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setResetOpen(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={!form.formState.isDirty}>
-              Change password
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>
