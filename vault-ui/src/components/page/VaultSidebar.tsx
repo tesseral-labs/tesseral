@@ -325,7 +325,7 @@ function UserMenu() {
         </div>
         <ChevronsUpDown className="ml-auto h-4" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent side="right">
+      <DropdownMenuContent side="right" className="mb-2">
         <DropdownMenuItem>
           {user?.profilePictureUrl ? (
             <img
