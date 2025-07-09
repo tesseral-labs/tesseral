@@ -120,7 +120,7 @@ export function VaultBehaviorSettingsCard() {
     if (!watchSelfServeCreateOrganizations) {
       form.setValue("autoCreateOrganizations", false);
     }
-  })
+  });
 
   return (
     <Form {...form}>
