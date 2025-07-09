@@ -13,7 +13,7 @@ import {
 import { DateTime } from "luxon";
 import React, { MouseEvent, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate, useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -208,7 +208,7 @@ const schema = z.object({
   displayName: z.string().min(1, "Display name is required"),
 });
 
-function CreateScimApiKeyButton({ refetch }: { refetch: () => Promise<any> }) {
+function CreateScimApiKeyButton({ refetch }: { refetch: () => void }) {
   const { organizationId } = useParams();
 
   const createScimApiKeyMutation = useMutation(createSCIMAPIKey);
@@ -252,7 +252,7 @@ function CreateScimApiKeyButton({ refetch }: { refetch: () => Promise<any> }) {
     toast.success("SCIM API key created successfully");
     form.reset();
 
-    await refetch();
+    refetch();
   }
 
   return (
@@ -367,7 +367,7 @@ function ManageScimApiKeyButton({
   refetch,
 }: {
   scimApiKey: SCIMAPIKey;
-  refetch: () => Promise<any>;
+  refetch: () => void;
 }) {
   const { organizationId } = useParams();
 
@@ -381,7 +381,7 @@ function ManageScimApiKeyButton({
     await revokeScimApiKeyMutation.mutateAsync({
       id: scimApiKey.id,
     });
-    await refetch();
+    refetch();
     setRevokeOpen(false);
     toast.success("SCIM API key revoked successfully");
   }
@@ -390,7 +390,7 @@ function ManageScimApiKeyButton({
     await deleteScimApiKeyMutation.mutateAsync({
       id: scimApiKey.id,
     });
-    await refetch();
+    refetch();
     setDeleteOpen(false);
     toast.success("SCIM API key deleted successfully");
   }
