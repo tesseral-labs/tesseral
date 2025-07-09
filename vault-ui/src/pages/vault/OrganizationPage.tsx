@@ -17,6 +17,7 @@ import {
   getOrganization,
   getProject,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
+import { useProjectSettings } from "@/lib/project-settings";
 
 export function OrganizationPage() {
   const { data: getOrganizationResponse } = useQuery(getOrganization);
@@ -47,6 +48,7 @@ export function OrganizationPage() {
 function OrganizationTabs() {
   const { pathname } = useLocation();
 
+  const projectSettings = useProjectSettings();
   const { data: getOrganizationResponse } = useQuery(getOrganization);
   const { data: getProjectResponse } = useQuery(getProject);
 
@@ -71,12 +73,14 @@ function OrganizationTabs() {
         >
           Users
         </TabLink>
-        <TabLink
-          active={pathname.startsWith("/organization/user-invites")}
-          to="/organization/user-invites"
-        >
-          User Invites
-        </TabLink>
+        {projectSettings.selfServeCreateUsers && (
+          <TabLink
+            active={pathname.startsWith("/organization/user-invites")}
+            to="/organization/user-invites"
+          >
+            User Invites
+          </TabLink>
+        )}
         {organization?.apiKeysEnabled && (
           <TabLink
             active={pathname === "/organization/api-keys"}

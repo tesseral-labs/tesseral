@@ -12,6 +12,7 @@ import {
   listOrganizations,
   whoami,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { Organization } from "@/gen/tesseral/intermediate/v1/intermediate_pb";
 import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
 import { useProjectSettings } from "@/lib/project-settings";
 
@@ -27,7 +28,7 @@ export function ChooseOrganizationPage() {
     useMutation(createOrganization);
   const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
 
-  const [noOrgs, setNoOrgs] = useState(false);
+  const [validOrgs, setValidOrgs] = useState<Organization[] | undefined>();
 
   useEffect(() => {
     (async () => {
@@ -35,9 +36,15 @@ export function ChooseOrganizationPage() {
         return;
       }
 
-      if (listOrganizationsResponse.organizations.length === 0) {
+      let organizations = listOrganizationsResponse.organizations;
+      if (!projectSettings.selfServeCreateUsers) {
+        organizations = organizations.filter((org) => org.userExists);
+      }
+
+      setValidOrgs(organizations);
+
+      if (organizations.length === 0) {
         if (!projectSettings.selfServeCreateOrganizations) {
-          setNoOrgs(true);
           return;
         }
 
@@ -76,7 +83,7 @@ export function ChooseOrganizationPage() {
         <CardTitle>Choose an organization</CardTitle>
       </CardHeader>
       <CardContent>
-        {noOrgs ? (
+        {validOrgs !== undefined && validOrgs.length === 0 ? (
           <>
             <div className="text-muted-foreground text-sm">
               No organizations match your login credentials.
@@ -89,7 +96,7 @@ export function ChooseOrganizationPage() {
         ) : (
           <>
             <div className="space-y-2">
-              {listOrganizationsResponse?.organizations?.map((org) => (
+              {validOrgs?.map((org) => (
                 <Button
                   key={org.id}
                   className="w-full"

@@ -47,6 +47,11 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
+	qProjectUISettings, err := q.GetProjectUISettings(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project ui settings: %w", err)
+	}
+
 	slog.InfoContext(ctx, "exchange_intermediate_session_for_session",
 		"organization_id", idformat.Organization.Format(qOrg.ID),
 		"intermediate_session_id", idformat.IntermediateSession.Format(qIntermediateSession.ID),
@@ -76,6 +81,10 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 
 	// if no matching user, create a new one
 	if qUser == nil {
+		if !qProjectUISettings.SelfServeCreateUsers {
+			return nil, apierror.NewPermissionDeniedError("self-serve user creation disabled", nil)
+		}
+
 		slog.InfoContext(ctx, "create_user")
 		qNewUser, err := q.CreateUser(ctx, queries.CreateUserParams{
 			ID:                uuid.New(),

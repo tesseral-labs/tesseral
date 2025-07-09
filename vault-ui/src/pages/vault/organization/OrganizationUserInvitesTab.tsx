@@ -307,7 +307,7 @@ function InviteUserButton() {
                 control={form.control}
                 name="owner"
                 render={({ field }) => (
-                  <FormItem className="flex items-center space-x-2">
+                  <FormItem className="flex justify-between items-center space-x-2">
                     <div className="space-y-2">
                       <FormLabel>Make this user an owner</FormLabel>
                       <FormDescription>
@@ -327,7 +327,7 @@ function InviteUserButton() {
                 control={form.control}
                 name="sendEmail"
                 render={({ field }) => (
-                  <FormItem className="flex items-center space-x-2">
+                  <FormItem className="flex justify-between items-center space-x-2">
                     <div className="space-y-2">
                       <FormLabel>Send invitation email</FormLabel>
                       <FormDescription>

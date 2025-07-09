@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircle, Workflow } from "lucide-react";
 import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -36,6 +36,7 @@ const schema = z.object({
   auditLogsEnabled: z.boolean().optional(),
   autoCreateOrganizations: z.boolean(),
   selfServeCreateOrganizations: z.boolean(),
+  selfServeCreateUsers: z.boolean(),
 });
 
 export function VaultBehaviorSettingsCard() {
@@ -58,6 +59,9 @@ export function VaultBehaviorSettingsCard() {
       selfServeCreateOrganizations:
         getProjectUiSettingsResponse?.projectUiSettings
           ?.selfServeCreateOrganizations ?? false,
+      selfServeCreateUsers:
+        getProjectUiSettingsResponse?.projectUiSettings?.selfServeCreateUsers ??
+        false,
     },
   });
 
@@ -65,6 +69,7 @@ export function VaultBehaviorSettingsCard() {
     await updateProjectUiSettingsMutation.mutateAsync({
       autoCreateOrganizations: data.autoCreateOrganizations,
       selfServeCreateOrganizations: data.selfServeCreateOrganizations,
+      selfServeCreateUsers: data.selfServeCreateUsers,
     });
     await updateProjectMutation.mutateAsync({
       project: {
@@ -88,9 +93,34 @@ export function VaultBehaviorSettingsCard() {
         selfServeCreateOrganizations:
           getProjectUiSettingsResponse.projectUiSettings
             ?.selfServeCreateOrganizations ?? false,
+        selfServeCreateUsers:
+          getProjectUiSettingsResponse.projectUiSettings
+            ?.selfServeCreateUsers ?? false,
       });
     }
   }, [getProjectUiSettingsResponse, getProjectResponse, form]);
+
+  const watchSelfServeCreateUsers = useWatch({
+    control: form.control,
+    name: "selfServeCreateUsers",
+  });
+
+  useEffect(() => {
+    if (!watchSelfServeCreateUsers) {
+      form.setValue("selfServeCreateOrganizations", false);
+    }
+  }, [form, watchSelfServeCreateUsers]);
+
+  const watchSelfServeCreateOrganizations = useWatch({
+    control: form.control,
+    name: "selfServeCreateOrganizations",
+  });
+
+  useEffect(() => {
+    if (!watchSelfServeCreateOrganizations) {
+      form.setValue("autoCreateOrganizations", false);
+    }
+  });
 
   return (
     <Form {...form}>
@@ -106,15 +136,14 @@ export function VaultBehaviorSettingsCard() {
           <CardContent className="space-y-6 flex-grow">
             <FormField
               control={form.control}
-              name="selfServeCreateOrganizations"
+              name="selfServeCreateUsers"
               render={({ field }) => (
                 <FormItem className="flex justify-between items-center gap-4">
                   <div className="space-y-2">
-                    <FormLabel>Self-serve create Organizations</FormLabel>
+                    <FormLabel>Self-serve signup</FormLabel>
                     <FormDescription>
-                      Whether end users can create new Organizations on their
-                      own. When disabled, users can only join existing
-                      Organizations, and cannot create new Organizations.
+                      When enabled, anyone can sign up. When disabled, new Users
+                      must be manually created in the Tesseral Console.
                     </FormDescription>
                     <FormMessage />
                   </div>
@@ -129,15 +158,15 @@ export function VaultBehaviorSettingsCard() {
             />
             <FormField
               control={form.control}
-              name="autoCreateOrganizations"
+              name="selfServeCreateOrganizations"
               render={({ field }) => (
                 <FormItem className="flex justify-between items-center gap-4">
                   <div className="space-y-2">
-                    <FormLabel>Auto-create Organizations</FormLabel>
+                    <FormLabel>Self-serve Organization creation</FormLabel>
                     <FormDescription>
-                      Whether to automatically create an Organization when a new
-                      user signs up. When disabled, new users will be prompted
-                      to name their Organization upon first login.
+                      When enabled, anyone can create new Organizations. When
+                      disabled, new Organizations must be manually created in
+                      the Tesseral Console.
                     </FormDescription>
                     <FormMessage />
                   </div>
@@ -145,6 +174,31 @@ export function VaultBehaviorSettingsCard() {
                     <Switch
                       checked={field.value}
                       onCheckedChange={field.onChange}
+                      disabled={!watchSelfServeCreateUsers}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="autoCreateOrganizations"
+              render={({ field }) => (
+                <FormItem className="flex justify-between items-center gap-4">
+                  <div className="space-y-2">
+                    <FormLabel>Auto-create Organizations</FormLabel>
+                    <FormDescription>
+                      When enabled, automatically create an Organization when a
+                      new user signs up. When disabled, new users will be
+                      prompted to name their new Organization.
+                    </FormDescription>
+                    <FormMessage />
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      disabled={!watchSelfServeCreateOrganizations}
                     />
                   </FormControl>
                 </FormItem>
