@@ -264,9 +264,17 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		return nil, fmt.Errorf("get audit session: %w", err)
 	}
 
+	var samlConnectionID *string
+	if qIntermediateSession.VerifiedSamlConnectionID != nil {
+		samlConnectionID = refOrNil(idformat.SAMLConnection.Format(*qIntermediateSession.VerifiedSamlConnectionID))
+	}
+
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
-		EventName:      "tesseral.sessions.create",
-		EventDetails:   &auditlogv1.CreateSession{Session: auditSession},
+		EventName: "tesseral.sessions.create",
+		EventDetails: &auditlogv1.CreateSession{
+			Session:          auditSession,
+			SamlConnectionId: samlConnectionID,
+		},
 		OrganizationID: &qOrg.ID,
 		ResourceType:   queries.AuditLogEventResourceTypeSession,
 		ResourceID:     &qSession.ID,
@@ -360,16 +368,21 @@ func validateAuthRequirementsSatisfiedInner(qIntermediateSession queries.Interme
 		return apierror.NewFailedPreconditionError("email not verified", nil)
 	}
 
-	if qOrg.LogInWithPassword && !qIntermediateSession.PasswordVerified {
-		return apierror.NewFailedPreconditionError("password not verified", nil)
-	}
+	switch *qIntermediateSession.PrimaryAuthFactor {
+	case queries.PrimaryAuthFactorSaml:
+		break
+	default:
+		if qOrg.LogInWithPassword && !qIntermediateSession.PasswordVerified {
+			return apierror.NewFailedPreconditionError("password not verified", nil)
+		}
 
-	if qOrg.RequireMfa {
-		hasPasskey := qOrg.LogInWithPasskey && qIntermediateSession.PasskeyVerified
-		hasAuthenticatorApp := qOrg.LogInWithAuthenticatorApp && qIntermediateSession.AuthenticatorAppVerified
+		if qOrg.RequireMfa {
+			hasPasskey := qOrg.LogInWithPasskey && qIntermediateSession.PasskeyVerified
+			hasAuthenticatorApp := qOrg.LogInWithAuthenticatorApp && qIntermediateSession.AuthenticatorAppVerified
 
-		if !hasPasskey && !hasAuthenticatorApp {
-			return apierror.NewFailedPreconditionError("mfa required", nil)
+			if !hasPasskey && !hasAuthenticatorApp {
+				return apierror.NewFailedPreconditionError("mfa required", nil)
+			}
 		}
 	}
 
@@ -404,6 +417,13 @@ func validateAuthRequirementsSatisfiedInner(qIntermediateSession queries.Interme
 		}
 
 		if qOrg.LogInWithGithub {
+			return nil
+		}
+	case queries.PrimaryAuthFactorSaml:
+		if qIntermediateSession.VerifiedSamlConnectionID == nil {
+			panic(fmt.Errorf("intermediate session missing verified saml connection id: %v", qIntermediateSession.ID))
+		}
+		if qOrg.LogInWithSaml {
 			return nil
 		}
 	}

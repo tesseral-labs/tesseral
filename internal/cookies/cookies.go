@@ -29,6 +29,17 @@ func (c *Cookier) GetIntermediateAccessToken(projectID uuid.UUID, req connect.An
 	return c.getCookie("intermediate_access_token", projectID, req)
 }
 
+func (c *Cookier) GetIntermediateAccessTokenHTTP(projectID uuid.UUID, req *http.Request) (string, error) {
+	cookie, err := req.Cookie(c.cookieName("intermediate_access_token", projectID))
+	if err != nil {
+		if errors.Is(err, http.ErrNoCookie) {
+			return "", nil // No cookie found, return empty string
+		}
+		return "", fmt.Errorf("get intermediate access token cookie: %w", err)
+	}
+	return cookie.Value, nil
+}
+
 func (c *Cookier) GetOIDCIntermediateSessionToken(projectID uuid.UUID, req *http.Request) (string, error) {
 	cookie, err := req.Cookie(c.cookieName("oidc_intermediate_session", projectID))
 	if err != nil {
