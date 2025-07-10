@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -55,7 +56,11 @@ func (s *Store) CreateIntermediateSession(ctx context.Context, req *intermediate
 
 		var ok bool
 		for _, qTrustedDomain := range qTrustedDomains {
-			if qTrustedDomain.Domain == redirectURL.Host {
+			trustedURL := url.URL{
+				Scheme: redirectURL.Scheme,
+				Host:   qTrustedDomain.Domain,
+			}
+			if trustedURL.Hostname() == redirectURL.Hostname() || (strings.HasSuffix(redirectURL.Hostname(), fmt.Sprintf(".%s", trustedURL.Hostname())) || strings.HasPrefix(redirectURL.Hostname(), fmt.Sprintf("%s:", trustedURL.Hostname()))) {
 				ok = true
 				break
 			}
