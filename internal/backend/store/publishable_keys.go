@@ -98,7 +98,7 @@ func (s *Store) CreatePublishableKey(ctx context.Context, req *backendv1.CreateP
 		ID:          uuid.New(),
 		ProjectID:   authn.ProjectID(ctx),
 		DisplayName: req.PublishableKey.DisplayName,
-		DevMode:     derefOrEmpty(req.PublishableKey.DevMode),
+		DevMode:     derefOrEmpty(req.PublishableKey.CrossDomainMode),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create publishable key: %w", err)
@@ -148,8 +148,8 @@ func (s *Store) UpdatePublishableKey(ctx context.Context, req *backendv1.UpdateP
 		updates.DisplayName = req.PublishableKey.DisplayName
 	}
 
-	if req.PublishableKey.DevMode != nil {
-		updates.DevMode = *req.PublishableKey.DevMode
+	if req.PublishableKey.CrossDomainMode != nil {
+		updates.DevMode = *req.PublishableKey.CrossDomainMode
 	}
 
 	qUpdatedPublishableKey, err := q.UpdatePublishableKey(ctx, updates)
@@ -204,10 +204,10 @@ func (s *Store) DeletePublishableKey(ctx context.Context, req *backendv1.DeleteP
 
 func parsePublishableKey(qPublishableKey queries.PublishableKey) *backendv1.PublishableKey {
 	return &backendv1.PublishableKey{
-		Id:          idformat.PublishableKey.Format(qPublishableKey.ID),
-		DisplayName: qPublishableKey.DisplayName,
-		CreateTime:  timestamppb.New(*qPublishableKey.CreateTime),
-		UpdateTime:  timestamppb.New(*qPublishableKey.UpdateTime),
-		DevMode:     &qPublishableKey.DevMode,
+		Id:              idformat.PublishableKey.Format(qPublishableKey.ID),
+		DisplayName:     qPublishableKey.DisplayName,
+		CreateTime:      timestamppb.New(*qPublishableKey.CreateTime),
+		UpdateTime:      timestamppb.New(*qPublishableKey.UpdateTime),
+		CrossDomainMode: &qPublishableKey.DevMode,
 	}
 }
