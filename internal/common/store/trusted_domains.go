@@ -13,10 +13,5 @@ func (s *Store) GetProjectTrustedOrigins(ctx context.Context, projectID uuid.UUI
 		return nil, fmt.Errorf("get project trusted domains: %w", err)
 	}
 
-	var trustedDomains []string
-	for _, domain := range domains {
-		trustedDomains = append(trustedDomains, domain)
-	}
-
-	return trustedDomains, nil
+	return domains, nil
 }
