@@ -368,10 +368,9 @@ func validateAuthRequirementsSatisfiedInner(qIntermediateSession queries.Interme
 		return apierror.NewFailedPreconditionError("email not verified", nil)
 	}
 
-	switch *qIntermediateSession.PrimaryAuthFactor {
-	case queries.PrimaryAuthFactorSaml:
-		break
-	default:
+	isEnterpriseLogin := *qIntermediateSession.PrimaryAuthFactor == queries.PrimaryAuthFactorSaml
+
+	if !isEnterpriseLogin {
 		if qOrg.LogInWithPassword && !qIntermediateSession.PasswordVerified {
 			return apierror.NewFailedPreconditionError("password not verified", nil)
 		}
