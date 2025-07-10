@@ -398,7 +398,7 @@ func main() {
 		Cookier:           &cookier,
 	}
 	oidcServiceHandler := oidcService.Handler()
-	oidcServiceHandler = oidcinterceptor.New(projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), oidcServiceHandler)
+	oidcServiceHandler = oidcinterceptor.New(oidcStore, projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), &cookier, oidcServiceHandler)
 
 	scimStore := scimstore.New(scimstore.NewStoreParams{
 		DB: db,

@@ -41,7 +41,12 @@ func newTestUtil(t *testing.T) (context.Context, *testUtil) {
 	projectID, _ := environment.NewProject(t)
 	projectUUID, err := idformat.Project.Parse(projectID)
 	require.NoError(t, err)
-	ctx := authn.NewContext(t.Context(), projectUUID)
+
+	secretToken := environment.NewIntermediateSession(t, projectID)
+	qIntermediateSession, err := store.AuthenticateIntermediateSession(t.Context(), projectUUID, secretToken)
+	require.NoError(t, err)
+
+	ctx := authn.NewContext(t.Context(), qIntermediateSession, projectUUID)
 
 	return ctx, &testUtil{
 		Store:       store,

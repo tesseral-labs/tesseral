@@ -269,11 +269,17 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		samlConnectionID = refOrNil(idformat.SAMLConnection.Format(*qIntermediateSession.VerifiedSamlConnectionID))
 	}
 
+	var oidcConnectionID *string
+	if qIntermediateSession.VerifiedOidcConnectionID != nil {
+		oidcConnectionID = refOrNil(idformat.OIDCConnection.Format(*qIntermediateSession.VerifiedOidcConnectionID))
+	}
+
 	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
 		EventName: "tesseral.sessions.create",
 		EventDetails: &auditlogv1.CreateSession{
 			Session:          auditSession,
 			SamlConnectionId: samlConnectionID,
+			OidcConnectionId: oidcConnectionID,
 		},
 		OrganizationID: &qOrg.ID,
 		ResourceType:   queries.AuditLogEventResourceTypeSession,
@@ -368,7 +374,9 @@ func validateAuthRequirementsSatisfiedInner(qIntermediateSession queries.Interme
 		return apierror.NewFailedPreconditionError("email not verified", nil)
 	}
 
-	isEnterpriseLogin := *qIntermediateSession.PrimaryAuthFactor == queries.PrimaryAuthFactorSaml
+	isEnterpriseLogin :=
+		*qIntermediateSession.PrimaryAuthFactor == queries.PrimaryAuthFactorSaml ||
+			*qIntermediateSession.PrimaryAuthFactor == queries.PrimaryAuthFactorOidc
 
 	if !isEnterpriseLogin {
 		if qOrg.LogInWithPassword && !qIntermediateSession.PasswordVerified {
@@ -423,6 +431,13 @@ func validateAuthRequirementsSatisfiedInner(qIntermediateSession queries.Interme
 			panic(fmt.Errorf("intermediate session missing verified saml connection id: %v", qIntermediateSession.ID))
 		}
 		if qOrg.LogInWithSaml {
+			return nil
+		}
+	case queries.PrimaryAuthFactorOidc:
+		if qIntermediateSession.VerifiedOidcConnectionID == nil {
+			panic(fmt.Errorf("intermediate session missing verified oidc connection id: %v", qIntermediateSession.ID))
+		}
+		if qOrg.LogInWithOidc {
 			return nil
 		}
 	}

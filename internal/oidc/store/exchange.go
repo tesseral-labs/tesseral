@@ -2,42 +2,36 @@ package store
 
 import (
 	"context"
-	"crypto/sha256"
 	"encoding/base64"
-	"errors"
 	"fmt"
 	"slices"
-	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5"
-	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/oidc/authn"
 	"github.com/tesseral-labs/tesseral/internal/oidc/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/oidcclient"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
-const sessionDuration = time.Hour * 24 * 7
-
 type OIDCUserData struct {
 	Email               string
 	OrganizationID      string
 	OrganizationDomains []string
+	RedirectURL         string
 }
 
-func (s *Store) ExchangeOIDCCode(ctx context.Context, oidcConnectionID string, oidcIntermediateSessionID string, code string) (*OIDCUserData, error) {
+func (s *Store) ExchangeOIDCCode(ctx context.Context, oidcConnectionID string, code string) (*OIDCUserData, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer rollback()
 
-	oidcIntermediateSessionUUID, err := idformat.OIDCIntermediateSession.Parse(oidcIntermediateSessionID)
+	oidcConnectionUUID, err := idformat.OIDCConnection.Parse(oidcConnectionID)
 	if err != nil {
-		return nil, fmt.Errorf("parse oidc session id: %w", err)
+		return nil, fmt.Errorf("parse oidc connection id: %w", err)
 	}
 
 	qProject, err := q.GetProject(ctx, authn.ProjectID(ctx))
@@ -45,17 +39,9 @@ func (s *Store) ExchangeOIDCCode(ctx context.Context, oidcConnectionID string, o
 		return nil, fmt.Errorf("get project: %w", err)
 	}
 
-	qOIDCSession, err := q.DeleteOIDCIntermediateSession(ctx, oidcIntermediateSessionUUID)
-	if err != nil {
-		return nil, fmt.Errorf("get oidc session: %w", err)
-	}
-	if idformat.OIDCConnection.Format(qOIDCSession.OidcConnectionID) != oidcConnectionID {
-		return nil, fmt.Errorf("oidc intermediate session %s does not match oidc connection %s", oidcIntermediateSessionID, oidcConnectionID)
-	}
-
 	qOIDCConnection, err := q.GetOIDCConnection(ctx, queries.GetOIDCConnectionParams{
 		ProjectID: authn.ProjectID(ctx),
-		ID:        qOIDCSession.OidcConnectionID,
+		ID:        oidcConnectionUUID,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("get oidc connection: %w", err)
@@ -64,10 +50,6 @@ func (s *Store) ExchangeOIDCCode(ctx context.Context, oidcConnectionID string, o
 	organizationDomains, err := q.GetOrganizationDomains(ctx, qOIDCConnection.OrganizationID)
 	if err != nil {
 		return nil, fmt.Errorf("get organization domains: %w", err)
-	}
-
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit transaction: %w", err)
 	}
 
 	config, err := s.oidc.GetConfiguration(ctx, qOIDCConnection.ConfigurationUrl)
@@ -105,7 +87,7 @@ func (s *Store) ExchangeOIDCCode(ctx context.Context, oidcConnectionID string, o
 		ClientID:        qOIDCConnection.ClientID,
 		ClientAuthBasic: clientAuthBasic,
 		ClientAuthPost:  clientAuthPost,
-		CodeVerifier:    qOIDCSession.CodeVerifier,
+		CodeVerifier:    authn.IntermediateSession(ctx).OidcCodeVerifier,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("exchange OIDC code: %w", err)
@@ -119,125 +101,22 @@ func (s *Store) ExchangeOIDCCode(ctx context.Context, oidcConnectionID string, o
 		return nil, fmt.Errorf("validate id token: %w", err)
 	}
 
-	return &OIDCUserData{
-		OrganizationID:      idformat.Organization.Format(qOIDCConnection.OrganizationID),
-		OrganizationDomains: organizationDomains,
-		Email:               claims.Email,
-	}, nil
-}
-
-type CreateSessionRequest struct {
-	OIDCConnectionID string
-	Email            string
-}
-
-type CreateSessionResponse struct {
-	ProjectCookieDomain string
-	RedirectURI         string
-	RefreshToken        string
-}
-
-func (s *Store) CreateSession(ctx context.Context, req CreateSessionRequest) (*CreateSessionResponse, error) {
-	tx, q, commit, rollback, err := s.tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
-	oidcConnectionID, err := idformat.OIDCConnection.Parse(req.OIDCConnectionID)
-	if err != nil {
-		return nil, fmt.Errorf("parse oidc connection id: %w", err)
-	}
-
-	qOIDCConnection, err := q.GetOIDCConnection(ctx, queries.GetOIDCConnectionParams{
-		ProjectID: authn.ProjectID(ctx),
-		ID:        oidcConnectionID,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("get oidc connection: %w", err)
-	}
-
-	qUser, err := s.upsertUser(ctx, q, qOIDCConnection.OrganizationID, req.Email)
-	if err != nil {
-		return nil, fmt.Errorf("upsert user: %w", err)
-	}
-
-	expireTime := time.Now().Add(sessionDuration)
-
-	refreshToken := uuid.New()
-	refreshTokenSHA256 := sha256.Sum256(refreshToken[:])
-	qSession, err := q.CreateSession(ctx, queries.CreateSessionParams{
-		ID:                 uuid.Must(uuid.NewV7()),
-		ExpireTime:         &expireTime,
-		RefreshTokenSha256: refreshTokenSHA256[:],
-		UserID:             qUser.ID,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("create session: %w", err)
-	}
-
-	auditSession, err := s.auditlogStore.GetSession(ctx, tx, qSession.ID)
-	if err != nil {
-		return nil, fmt.Errorf("get audit session: %w", err)
-	}
-
-	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
-		EventName: "tesseral.sessions.create",
-		EventDetails: &auditlogv1.CreateSession{
-			Session:          auditSession,
-			OidcConnectionId: &req.OIDCConnectionID,
-		},
-		ResourceType:   queries.AuditLogEventResourceTypeSession,
-		ResourceID:     &qSession.ID,
-		OrganizationID: &qOIDCConnection.OrganizationID,
+	if err := q.UpdateIntermediateSession(ctx, queries.UpdateIntermediateSessionParams{
+		ID:                       authn.IntermediateSession(ctx).ID,
+		Email:                    &claims.Email,
+		VerifiedOidcConnectionID: (*uuid.UUID)(&oidcConnectionUUID),
 	}); err != nil {
-		return nil, fmt.Errorf("log audit event: %w", err)
-	}
-
-	qProject, err := q.GetProject(ctx, authn.ProjectID(ctx))
-	if err != nil {
-		return nil, fmt.Errorf("get project: %w", err)
+		return nil, fmt.Errorf("update intermediate session: %w", err)
 	}
 
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit transaction: %w", err)
 	}
 
-	redirectURI := qProject.RedirectUri
-	if qProject.AfterLoginRedirectUri != nil && *qProject.AfterLoginRedirectUri != "" {
-		redirectURI = *qProject.AfterLoginRedirectUri
-	}
-
-	return &CreateSessionResponse{
-		ProjectCookieDomain: qProject.CookieDomain,
-		RedirectURI:         redirectURI,
-		RefreshToken:        idformat.SessionRefreshToken.Format(refreshToken),
+	return &OIDCUserData{
+		OrganizationID:      idformat.Organization.Format(qOIDCConnection.OrganizationID),
+		OrganizationDomains: organizationDomains,
+		Email:               claims.Email,
+		RedirectURL:         fmt.Sprintf("https://%s/finish-login", qProject.VaultDomain),
 	}, nil
-}
-
-func (s *Store) upsertUser(ctx context.Context, q *queries.Queries, organizationID uuid.UUID, email string) (*queries.User, error) {
-	qUser, err := q.GetUserByEmail(ctx, queries.GetUserByEmailParams{
-		OrganizationID: organizationID,
-		Email:          email,
-	})
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			// upsert a new user instead
-			qUser, err := q.CreateUser(ctx, queries.CreateUserParams{
-				ID:             uuid.New(),
-				OrganizationID: organizationID,
-				Email:          email,
-				IsOwner:        false,
-			})
-			if err != nil {
-				return nil, fmt.Errorf("create user: %w", err)
-			}
-
-			return &qUser, nil
-		}
-
-		return nil, err
-	}
-
-	return &qUser, nil
 }
