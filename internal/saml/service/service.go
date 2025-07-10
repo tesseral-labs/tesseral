@@ -85,14 +85,14 @@ func (s *Service) init(w http.ResponseWriter, r *http.Request) error {
 }
 
 type acsTemplateData struct {
-	FinishURL    string
+	VerifyACSURL string
 	SAMLResponse string
 }
 
 var acsTemplate = template.Must(template.New("acs").Parse(`
 <html>
 	<body>
-		<form method="POST" action="{{ .FinishURL }}">
+		<form method="POST" action="{{ .VerifyACSURL }}">
 			<input type="hidden" name="SAMLResponse" value="{{ .SAMLResponse }}"></input>
 		</form>
 		<script>
@@ -112,7 +112,7 @@ func (s *Service) acs(w http.ResponseWriter, r *http.Request) error {
 
 	w.Header().Set("Content-Type", "text/html")
 	if err := acsTemplate.Execute(w, acsTemplateData{
-		FinishURL:    fmt.Sprintf("/api/saml/v1/%s/finish", samlConnectionID),
+		VerifyACSURL: fmt.Sprintf("/api/saml/v1/%s/verify-acs", samlConnectionID),
 		SAMLResponse: r.Form.Get("SAMLResponse"),
 	}); err != nil {
 		return fmt.Errorf("execute template: %w", err)
