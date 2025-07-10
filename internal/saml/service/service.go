@@ -26,8 +26,16 @@ func (s *Service) Handler() http.Handler {
 	mux := http.NewServeMux()
 
 	mux.Handle("GET /api/saml/v1/{samlConnectionID}/init", withErr(s.init))
+
+	// The ACS endpoint will be called as a cross-origin POST request from the IdP.
+	//
+	// Since Tesseral cookies are set with SameSite=Lax, the cross-origin POST request
+	// will not have any cookies sent with it.
+	//
+	// To work around this, /acs simply forwards its form body to /verify-acs. The act
+	// of calling POST from the vault domain will attach the cookies to the request.
 	mux.Handle("POST /api/saml/v1/{samlConnectionID}/acs", withErr(s.acs))
-	mux.Handle("POST /api/saml/v1/{samlConnectionID}/finish", withErr(s.finish))
+	mux.Handle("POST /api/saml/v1/{samlConnectionID}/verify-acs", withErr(s.verifyAcs))
 
 	return mux
 }
@@ -113,7 +121,7 @@ func (s *Service) acs(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func (s *Service) finish(w http.ResponseWriter, r *http.Request) error {
+func (s *Service) verifyAcs(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
 	samlConnectionID := r.PathValue("samlConnectionID")
 
