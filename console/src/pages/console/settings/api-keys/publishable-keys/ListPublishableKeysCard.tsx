@@ -329,9 +329,9 @@ function ManagePublishableKeyButton({
                       <div className="space-y-2">
                         <FormLabel>Cross-Domain Mode</FormLabel>
                         <FormDescription>
-                          Enable this if you want to use this key from localhost,
-                          or from a domain that is a subdomain of your Project's
-                          Cookie Domain.
+                          Enable this if you want to use this key from
+                          localhost, or from a domain that is a subdomain of
+                          your Project's Cookie Domain.
                         </FormDescription>
                         <FormMessage />
                       </div>
