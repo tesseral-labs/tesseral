@@ -156,6 +156,11 @@ function LoginPageContents() {
     window.location.href = url;
   }
 
+  async function handleLogInWithSaml(samlConnectionId: string) {
+    await createIntermediateSessionWithRelayedSessionState();
+    window.location.href = `/api/saml/v1/${samlConnectionId}/init`;
+  }
+
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -404,14 +409,16 @@ function LoginPageContents() {
                 )}
 
                 {listSAMLOrganizationsResponse?.organizations?.map((org) => (
-                  <a
+                  <Button
                     key={org.id}
-                    href={`/api/saml/v1/${org.primarySamlConnectionId}/init`}
+                    type="button"
+                    className="mt-4 w-full"
+                    onClick={() =>
+                      handleLogInWithSaml(org.primarySamlConnectionId)
+                    }
                   >
-                    <Button type="button" className="mt-4 w-full">
-                      Log in with SAML ({org.displayName})
-                    </Button>
-                  </a>
+                    Log in with SAML ({org.displayName})
+                  </Button>
                 ))}
 
                 {listOIDCOrganizationsResponse?.organizations?.map((org) => (

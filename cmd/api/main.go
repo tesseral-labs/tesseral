@@ -383,7 +383,7 @@ func main() {
 		Cookier:           &cookier,
 	}
 	samlServiceHandler := samlService.Handler()
-	samlServiceHandler = samlinterceptor.New(projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), samlServiceHandler)
+	samlServiceHandler = samlinterceptor.New(samlStore, projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), &cookier, samlServiceHandler)
 
 	oidcStore := oidcstore.New(oidcstore.NewStoreParams{
 		DB:                        db,

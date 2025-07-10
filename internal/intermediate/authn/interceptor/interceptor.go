@@ -3,6 +3,7 @@ package intermediateinterceptor
 import (
 	"context"
 	"fmt"
+	"slices"
 
 	"connectrpc.com/connect"
 	"github.com/tesseral-labs/tesseral/internal/common/projectid"
@@ -35,10 +36,8 @@ func New(s *store.Store, p *projectid.Sniffer, cookier *cookies.Cookier) connect
 			ctx = authn.NewContext(ctx, nil, requestProjectID)
 
 			// Check if authentication should be skipped
-			for _, rpc := range skipRPCs {
-				if req.Spec().Procedure == rpc {
-					return next(ctx, req)
-				}
+			if slices.Contains(skipRPCs, req.Spec().Procedure) {
+				return next(ctx, req)
 			}
 
 			// Enforce authentication if not skipping
