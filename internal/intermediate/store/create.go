@@ -7,12 +7,12 @@ import (
 	"fmt"
 	"log/slog"
 	"net/url"
-	"strings"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/common/trusteddomains"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
 	intermediatev1 "github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/store/queries"
@@ -52,21 +52,20 @@ func (s *Store) CreateIntermediateSession(ctx context.Context, req *intermediate
 			return nil, fmt.Errorf("get project trusted domains: %w", err)
 		}
 
-		slog.InfoContext(ctx, "check_redirect_uri_trusted_domain", "redirect_uri", req.RedirectUri, "trusted_domains", qTrustedDomains)
-
-		var ok bool
-		for _, qTrustedDomain := range qTrustedDomains {
-			trustedURL := url.URL{
-				Scheme: redirectURL.Scheme,
-				Host:   qTrustedDomain.Domain,
-			}
-			if trustedURL.Hostname() == redirectURL.Hostname() || (strings.HasSuffix(redirectURL.Hostname(), fmt.Sprintf(".%s", trustedURL.Hostname())) || strings.HasPrefix(redirectURL.Hostname(), fmt.Sprintf("%s:", trustedURL.Hostname()))) {
-				ok = true
-				break
-			}
+		var trustedDomains []string
+		for _, qDomain := range qTrustedDomains {
+			domain := qDomain.Domain
+			trustedDomains = append(trustedDomains, domain)
 		}
 
-		if !ok {
+		slog.InfoContext(ctx, "check_redirect_uri_trusted_domain", "redirect_uri", req.RedirectUri, "trusted_domains", qTrustedDomains)
+
+		isTrusted, err := trusteddomains.IsTrustedDomain(trustedDomains, redirectURL.String())
+		if err != nil {
+			return nil, fmt.Errorf("check redirect uri trusted domain: %w", err)
+		}
+
+		if !isTrusted {
 			return nil, apierror.NewInvalidArgumentError("redirect uri must be from a trusted domain", fmt.Errorf("redirect uri: %w", err))
 		}
 	}

@@ -2,12 +2,11 @@ package corstrusteddomains
 
 import (
 	"net/http"
-	"net/url"
-	"strings"
 
 	"github.com/rs/cors"
 	"github.com/tesseral-labs/tesseral/internal/common/projectid"
 	"github.com/tesseral-labs/tesseral/internal/common/store"
+	"github.com/tesseral-labs/tesseral/internal/common/trusteddomains"
 	"go.opentelemetry.io/otel"
 )
 
@@ -33,22 +32,14 @@ func Handler(s *store.Store, p *projectid.Sniffer, h http.Handler) http.Handler 
 
 		cors.New(cors.Options{
 			AllowOriginVaryRequestFunc: func(r *http.Request, origin string) (bool, []string) {
-				originUrl, err := url.Parse(origin)
-
+				isTrusted, err := trusteddomains.IsTrustedDomain(trustedOrigins, origin)
 				if err != nil {
-					// If the origin is not a valid URL, we cannot trust it.
+					http.Error(w, "", http.StatusInternalServerError)
 					return false, nil
 				}
 
-				for _, o := range trustedOrigins {
-					// Check in a port-agnostic way, so that
-					// https://example.com:443 and https://example.com are considered the same.
-					// Also allow subdomains of the trusted origin.
-					// For example, if the trusted origin is https://example.com,
-					// then https://sub.example.com is also allowed.
-					if (o.Hostname() == originUrl.Hostname() || strings.HasSuffix(originUrl.Hostname(), o.Hostname())) && o.Scheme == originUrl.Scheme {
-						return true, []string{origin}
-					}
+				if isTrusted {
+					return true, []string{origin}
 				}
 
 				return false, nil

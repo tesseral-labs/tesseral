@@ -3,30 +3,20 @@ package store
 import (
 	"context"
 	"fmt"
-	"net/url"
 
 	"github.com/google/uuid"
 )
 
-func (s *Store) GetProjectTrustedOrigins(ctx context.Context, projectID uuid.UUID) ([]url.URL, error) {
+func (s *Store) GetProjectTrustedOrigins(ctx context.Context, projectID uuid.UUID) ([]string, error) {
 	domains, err := s.q.GetProjectTrustedDomains(ctx, projectID)
 	if err != nil {
 		return nil, fmt.Errorf("get project trusted domains: %w", err)
 	}
 
-	var origins []url.URL
+	var trustedDomains []string
 	for _, domain := range domains {
-		// Trusted domains are all trusted origins, where the origin scheme is
-		// https. As a special case, if an origin has the hostname "localhost",
-		// then its HTTP (not S) variant is also a trusted origin.
-		origin := url.URL{Scheme: "https", Host: domain}
-		if origin.Hostname() == "localhost" {
-			originHTTP := url.URL{Scheme: "http", Host: domain}
-			origins = append(origins, originHTTP)
-		}
-
-		origins = append(origins, origin)
+		trustedDomains = append(trustedDomains, domain)
 	}
 
-	return origins, nil
+	return trustedDomains, nil
 }
