@@ -172,8 +172,7 @@ func (s *Service) finish(w http.ResponseWriter, r *http.Request) error {
 		VerifiedSAMLConnectionID: samlConnectionID,
 	})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return nil
+		return fmt.Errorf("finish login: %w", err)
 	}
 
 	w.Header().Add("Location", redirectURL)
