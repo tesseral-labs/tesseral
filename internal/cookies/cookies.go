@@ -73,10 +73,6 @@ func (c *Cookier) ExpiredIntermediateAccessToken(ctx context.Context, projectID 
 	return c.expiredCookie(ctx, "intermediate_access_token", projectID)
 }
 
-func (c *Cookier) ExpiredOIDCIntermediateSessionToken(ctx context.Context, projectID uuid.UUID) (string, error) {
-	return c.expiredCookie(ctx, "oidc_intermediate_session", projectID)
-}
-
 func (c *Cookier) expiredCookie(ctx context.Context, name string, projectID uuid.UUID) (string, error) {
 	return c.newCookie(ctx, name, projectID, -1*time.Second, "", false)
 }
