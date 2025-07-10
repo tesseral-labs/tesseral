@@ -156,10 +156,10 @@ export function ListPublishableKeysCard() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        {publishableKey.devMode ? (
-                          <Badge variant="secondary">Development</Badge>
+                        {publishableKey.crossDomainMode ? (
+                          <Badge variant="secondary">Cross-Domain Mode</Badge>
                         ) : (
-                          <Badge>Production</Badge>
+                          <Badge>Default Mode</Badge>
                         )}
                       </TableCell>
                       <TableCell>
@@ -228,7 +228,7 @@ function ManagePublishableKeyButton({
     resolver: zodResolver(schema),
     defaultValues: {
       displayName: publishableKey.displayName,
-      devMode: publishableKey.devMode,
+      crossDomainMode: publishableKey.crossDomainMode,
     },
   });
 
@@ -237,7 +237,7 @@ function ManagePublishableKeyButton({
     e.stopPropagation();
     form.reset({
       displayName: publishableKey.displayName,
-      devMode: publishableKey.devMode,
+      crossDomainMode: publishableKey.crossDomainMode,
     });
     setEditOpen(false);
   }
@@ -256,7 +256,7 @@ function ManagePublishableKeyButton({
       id: publishableKey.id,
       publishableKey: {
         displayName: data.displayName,
-        devMode: data.devMode,
+        crossDomainMode: data.crossDomainMode,
       },
     });
     await refetch();
@@ -323,14 +323,15 @@ function ManagePublishableKeyButton({
                 />
                 <FormField
                   control={form.control}
-                  name="devMode"
+                  name="crossDomainMode"
                   render={({ field }) => (
                     <FormItem className="flex items-center space-x-2">
                       <div className="space-y-2">
-                        <FormLabel>Development Mode</FormLabel>
+                        <FormLabel>Cross-Domain Mode</FormLabel>
                         <FormDescription>
-                          Enable this if you want to use this key in development
-                          environments.
+                          Enable this if you want to use this key from localhost,
+                          or from a domain that is a subdomain of your Project's
+                          Cookie Domain.
                         </FormDescription>
                         <FormMessage />
                       </div>
@@ -398,7 +399,7 @@ function ManagePublishableKeyButton({
 
 const schema = z.object({
   displayName: z.string().min(1, "Display name is required"),
-  devMode: z.boolean(),
+  crossDomainMode: z.boolean(),
 });
 
 function CreatePublishableKeyButton() {
@@ -423,7 +424,7 @@ function CreatePublishableKeyButton() {
     resolver: zodResolver(schema),
     defaultValues: {
       displayName: "",
-      devMode: false,
+      crossDomainMode: false,
     },
   });
 
@@ -431,7 +432,7 @@ function CreatePublishableKeyButton() {
     await createPublishableKeyMutation.mutateAsync({
       publishableKey: {
         displayName: data.displayName,
-        devMode: data.devMode,
+        crossDomainMode: data.crossDomainMode,
       },
     });
     form.reset(data);
@@ -479,14 +480,15 @@ function CreatePublishableKeyButton() {
               />
               <FormField
                 control={form.control}
-                name="devMode"
+                name="crossDomainMode"
                 render={({ field }) => (
                   <FormItem className="flex items-center space-x-2">
                     <div className="space-y-2">
-                      <FormLabel>Development Mode</FormLabel>
+                      <FormLabel>Cross-Domain Mode</FormLabel>
                       <FormDescription>
-                        Enable this if you want to use this key in development
-                        environments.
+                        Enable this if you want to use this key from localhost,
+                        or from a domain that is a subdomain of your Project's
+                        Cookie Domain.
                       </FormDescription>
                       <FormMessage />
                     </div>
