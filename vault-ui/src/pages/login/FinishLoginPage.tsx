@@ -19,10 +19,7 @@ export function FinishLoginPage() {
         returnRelayedSessionTokenAsQueryParam,
       } = await exchangeIntermediateSessionForSessionAsync({});
 
-      const preferredRedirect =
-        (newUser
-          ? settings.afterSignupRedirectUri
-          : settings.afterLoginRedirectUri) || settings.redirectUri;
+      const preferredRedirect = domainToOrigin(settings.cookieDomain);
 
       const url = new URL(redirectUri || preferredRedirect);
 
@@ -51,4 +48,12 @@ export function FinishLoginPage() {
   return (
     <LoaderCircleIcon className="mx-auto text-muted-foreground h-4 w-4 animate-spin" />
   );
+}
+
+function domainToOrigin(domain: string): string {
+  if (domain === "localhost") {
+    return `http://${domain}`;
+  }
+
+  return `https://${domain}`;
 }
