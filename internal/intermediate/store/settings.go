@@ -89,6 +89,7 @@ func (s *Store) GetSettings(ctx context.Context, req *intermediatev1.GetSettings
 			AutoCreateOrganizations:      qProjectUISettings.AutoCreateOrganizations,
 			SelfServeCreateUsers:         qProjectUISettings.SelfServeCreateUsers,
 			SelfServeCreateOrganizations: qProjectUISettings.SelfServeCreateOrganizations,
+			CookieDomain:                 qProject.CookieDomain,
 		},
 	}, nil
 }

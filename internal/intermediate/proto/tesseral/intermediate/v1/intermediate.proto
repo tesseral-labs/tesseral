@@ -267,6 +267,8 @@ enum PrimaryAuthFactor {
   PRIMARY_AUTH_FACTOR_GOOGLE = 2;
   PRIMARY_AUTH_FACTOR_MICROSOFT = 3;
   PRIMARY_AUTH_FACTOR_GITHUB = 4;
+  PRIMARY_AUTH_FACTOR_SAML = 6;
+  PRIMARY_AUTH_FACTOR_OIDC = 7;
 }
 
 message Settings {
@@ -293,6 +295,7 @@ message Settings {
   bool auto_create_organizations = 22;
   bool self_serve_create_organizations = 25;
   bool self_serve_create_users = 26;
+  string cookie_domain = 27;
 }
 
 message CreateProjectRequest {

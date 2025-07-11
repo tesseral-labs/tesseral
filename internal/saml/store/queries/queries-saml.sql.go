@@ -67,82 +67,134 @@ func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEve
 	return i, err
 }
 
-const createSession = `-- name: CreateSession :one
-INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, primary_auth_factor)
-    VALUES ($1, $2, $3, $4, 'saml')
+const createIntermediateSession = `-- name: CreateIntermediateSession :one
+INSERT INTO intermediate_sessions (id, project_id, expire_time, secret_token_sha256)
+    VALUES ($1, $2, $3, $4)
 RETURNING
-    id, user_id, create_time, expire_time, refresh_token_sha256, impersonator_user_id, last_active_time, primary_auth_factor
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
-type CreateSessionParams struct {
-	ID                 uuid.UUID
-	UserID             uuid.UUID
-	ExpireTime         *time.Time
-	RefreshTokenSha256 []byte
+type CreateIntermediateSessionParams struct {
+	ID                uuid.UUID
+	ProjectID         uuid.UUID
+	ExpireTime        *time.Time
+	SecretTokenSha256 []byte
 }
 
-func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error) {
-	row := q.db.QueryRow(ctx, createSession,
+func (q *Queries) CreateIntermediateSession(ctx context.Context, arg CreateIntermediateSessionParams) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, createIntermediateSession,
 		arg.ID,
-		arg.UserID,
+		arg.ProjectID,
 		arg.ExpireTime,
-		arg.RefreshTokenSha256,
+		arg.SecretTokenSha256,
 	)
-	var i Session
+	var i IntermediateSession
 	err := row.Scan(
 		&i.ID,
-		&i.UserID,
+		&i.ProjectID,
 		&i.CreateTime,
 		&i.ExpireTime,
-		&i.RefreshTokenSha256,
-		&i.ImpersonatorUserID,
-		&i.LastActiveTime,
+		&i.Email,
+		&i.GoogleOauthStateSha256,
+		&i.MicrosoftOauthStateSha256,
+		&i.GoogleHostedDomain,
+		&i.GoogleUserID,
+		&i.MicrosoftTenantID,
+		&i.MicrosoftUserID,
+		&i.PasswordVerified,
+		&i.OrganizationID,
+		&i.UpdateTime,
+		&i.SecretTokenSha256,
+		&i.NewUserPasswordBcrypt,
+		&i.EmailVerificationChallengeSha256,
+		&i.EmailVerificationChallengeCompleted,
+		&i.PasskeyCredentialID,
+		&i.PasskeyPublicKey,
+		&i.PasskeyAaguid,
+		&i.PasskeyVerifyChallengeSha256,
+		&i.PasskeyVerified,
+		&i.AuthenticatorAppSecretCiphertext,
+		&i.AuthenticatorAppVerified,
+		&i.PasskeyRpID,
 		&i.PrimaryAuthFactor,
+		&i.RelayedSessionState,
+		&i.PasswordResetCodeSha256,
+		&i.PasswordResetCodeVerified,
+		&i.AuthenticatorAppRecoveryCodeSha256s,
+		&i.UserDisplayName,
+		&i.ProfilePictureUrl,
+		&i.GithubUserID,
+		&i.GithubOauthStateSha256,
+		&i.RedirectUri,
+		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
 
-const createUser = `-- name: CreateUser :one
-INSERT INTO users (id, organization_id, email, is_owner)
-    VALUES ($1, $2, $3, $4)
-RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+const getIntermediateSessionByTokenSHA256AndProjectID = `-- name: GetIntermediateSessionByTokenSHA256AndProjectID :one
+SELECT
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
+FROM
+    intermediate_sessions
+WHERE
+    secret_token_sha256 = $1
+    AND project_id = $2
 `
 
-type CreateUserParams struct {
-	ID             uuid.UUID
-	OrganizationID uuid.UUID
-	Email          string
-	IsOwner        bool
+type GetIntermediateSessionByTokenSHA256AndProjectIDParams struct {
+	SecretTokenSha256 []byte
+	ProjectID         uuid.UUID
 }
 
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRow(ctx, createUser,
-		arg.ID,
-		arg.OrganizationID,
-		arg.Email,
-		arg.IsOwner,
-	)
-	var i User
+func (q *Queries) GetIntermediateSessionByTokenSHA256AndProjectID(ctx context.Context, arg GetIntermediateSessionByTokenSHA256AndProjectIDParams) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, getIntermediateSessionByTokenSHA256AndProjectID, arg.SecretTokenSha256, arg.ProjectID)
+	var i IntermediateSession
 	err := row.Scan(
 		&i.ID,
-		&i.OrganizationID,
-		&i.PasswordBcrypt,
-		&i.GoogleUserID,
-		&i.MicrosoftUserID,
-		&i.Email,
+		&i.ProjectID,
 		&i.CreateTime,
+		&i.ExpireTime,
+		&i.Email,
+		&i.GoogleOauthStateSha256,
+		&i.MicrosoftOauthStateSha256,
+		&i.GoogleHostedDomain,
+		&i.GoogleUserID,
+		&i.MicrosoftTenantID,
+		&i.MicrosoftUserID,
+		&i.PasswordVerified,
+		&i.OrganizationID,
 		&i.UpdateTime,
-		&i.IsOwner,
-		&i.FailedPasswordAttempts,
-		&i.PasswordLockoutExpireTime,
+		&i.SecretTokenSha256,
+		&i.NewUserPasswordBcrypt,
+		&i.EmailVerificationChallengeSha256,
+		&i.EmailVerificationChallengeCompleted,
+		&i.PasskeyCredentialID,
+		&i.PasskeyPublicKey,
+		&i.PasskeyAaguid,
+		&i.PasskeyVerifyChallengeSha256,
+		&i.PasskeyVerified,
 		&i.AuthenticatorAppSecretCiphertext,
-		&i.FailedAuthenticatorAppAttempts,
-		&i.AuthenticatorAppLockoutExpireTime,
+		&i.AuthenticatorAppVerified,
+		&i.PasskeyRpID,
+		&i.PrimaryAuthFactor,
+		&i.RelayedSessionState,
+		&i.PasswordResetCodeSha256,
+		&i.PasswordResetCodeVerified,
 		&i.AuthenticatorAppRecoveryCodeSha256s,
-		&i.DisplayName,
+		&i.UserDisplayName,
 		&i.ProfilePictureUrl,
 		&i.GithubUserID,
+		&i.GithubOauthStateSha256,
+		&i.RedirectUri,
+		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -260,43 +312,31 @@ func (q *Queries) GetSAMLConnection(ctx context.Context, arg GetSAMLConnectionPa
 	return i, err
 }
 
-const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
-FROM
-    users
+const updateIntermediateSession = `-- name: UpdateIntermediateSession :exec
+UPDATE
+    intermediate_sessions
+SET
+    email = $2,
+    verified_saml_connection_id = $3,
+    organization_id = $4,
+    primary_auth_factor = 'saml'
 WHERE
-    organization_id = $1
-    AND email = $2
+    id = $1
 `
 
-type GetUserByEmailParams struct {
-	OrganizationID uuid.UUID
-	Email          string
+type UpdateIntermediateSessionParams struct {
+	ID                       uuid.UUID
+	Email                    *string
+	VerifiedSamlConnectionID *uuid.UUID
+	OrganizationID           *uuid.UUID
 }
 
-func (q *Queries) GetUserByEmail(ctx context.Context, arg GetUserByEmailParams) (User, error) {
-	row := q.db.QueryRow(ctx, getUserByEmail, arg.OrganizationID, arg.Email)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.OrganizationID,
-		&i.PasswordBcrypt,
-		&i.GoogleUserID,
-		&i.MicrosoftUserID,
-		&i.Email,
-		&i.CreateTime,
-		&i.UpdateTime,
-		&i.IsOwner,
-		&i.FailedPasswordAttempts,
-		&i.PasswordLockoutExpireTime,
-		&i.AuthenticatorAppSecretCiphertext,
-		&i.FailedAuthenticatorAppAttempts,
-		&i.AuthenticatorAppLockoutExpireTime,
-		&i.AuthenticatorAppRecoveryCodeSha256s,
-		&i.DisplayName,
-		&i.ProfilePictureUrl,
-		&i.GithubUserID,
+func (q *Queries) UpdateIntermediateSession(ctx context.Context, arg UpdateIntermediateSessionParams) error {
+	_, err := q.db.Exec(ctx, updateIntermediateSession,
+		arg.ID,
+		arg.Email,
+		arg.VerifiedSamlConnectionID,
+		arg.OrganizationID,
 	)
-	return i, err
+	return err
 }

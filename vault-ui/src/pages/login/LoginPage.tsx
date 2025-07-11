@@ -156,6 +156,16 @@ function LoginPageContents() {
     window.location.href = url;
   }
 
+  async function handleLogInWithSaml(samlConnectionId: string) {
+    await createIntermediateSessionWithRelayedSessionState();
+    window.location.href = `/api/saml/v1/${samlConnectionId}/init`;
+  }
+
+  async function handleLogInWithOidc(oidcConnectionId: string) {
+    await createIntermediateSessionWithRelayedSessionState();
+    window.location.href = `/api/oidc/v1/${oidcConnectionId}/init`;
+  }
+
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -404,25 +414,29 @@ function LoginPageContents() {
                 )}
 
                 {listSAMLOrganizationsResponse?.organizations?.map((org) => (
-                  <a
+                  <Button
                     key={org.id}
-                    href={`/api/saml/v1/${org.primarySamlConnectionId}/init`}
+                    type="button"
+                    className="mt-4 w-full"
+                    onClick={() =>
+                      handleLogInWithSaml(org.primarySamlConnectionId)
+                    }
                   >
-                    <Button type="button" className="mt-4 w-full">
-                      Log in with SAML ({org.displayName})
-                    </Button>
-                  </a>
+                    Log in with SAML ({org.displayName})
+                  </Button>
                 ))}
 
                 {listOIDCOrganizationsResponse?.organizations?.map((org) => (
-                  <a
+                  <Button
                     key={org.id}
-                    href={`/api/oidc/v1/${org.primaryOidcConnectionId}/init`}
+                    type="button"
+                    className="mt-4 w-full"
+                    onClick={() =>
+                      handleLogInWithOidc(org.primaryOidcConnectionId)
+                    }
                   >
-                    <Button type="button" className="mt-4 w-full">
-                      Log in with OIDC ({org.displayName})
-                    </Button>
-                  </a>
+                    Log in with OIDC ({org.displayName})
+                  </Button>
                 ))}
               </form>
             </Form>
@@ -430,15 +444,17 @@ function LoginPageContents() {
         </CardContent>
       </LoginFlowCard>
 
-      <p className="text-center mt-4 text-xs text-muted-foreground">
-        Don't have an account?{" "}
-        <Link
-          to={`/signup${serializedQueryParamState}`}
-          className="cursor-pointer text-foreground underline underline-offset-2 decoration-muted-foreground"
-        >
-          Sign up.
-        </Link>
-      </p>
+      {settings.selfServeCreateUsers && (
+        <p className="text-center mt-4 text-xs text-muted-foreground">
+          Don't have an account?{" "}
+          <Link
+            to={`/signup${serializedQueryParamState}`}
+            className="cursor-pointer text-foreground underline underline-offset-2 decoration-muted-foreground"
+          >
+            Sign up.
+          </Link>
+        </p>
+      )}
     </>
   );
 }

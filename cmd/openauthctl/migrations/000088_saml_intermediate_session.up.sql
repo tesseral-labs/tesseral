@@ -1,0 +1,1 @@
+alter table intermediate_sessions add column verified_saml_connection_id uuid;

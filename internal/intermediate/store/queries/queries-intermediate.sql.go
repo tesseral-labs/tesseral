@@ -110,7 +110,7 @@ const createIntermediateSession = `-- name: CreateIntermediateSession :one
 INSERT INTO intermediate_sessions (id, project_id, expire_time, email, google_user_id, microsoft_user_id, github_user_id, secret_token_sha256, primary_auth_factor, email_verification_challenge_completed, relayed_session_state, redirect_uri, return_relayed_session_token_as_query_param)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 type CreateIntermediateSessionParams struct {
@@ -184,6 +184,10 @@ func (q *Queries) CreateIntermediateSession(ctx context.Context, arg CreateInter
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -820,7 +824,7 @@ func (q *Queries) GetEmailVerifiedByMicrosoftUserID(ctx context.Context, arg Get
 
 const getIntermediateSessionByID = `-- name: GetIntermediateSessionByID :one
 SELECT
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 FROM
     intermediate_sessions
 WHERE
@@ -868,13 +872,17 @@ func (q *Queries) GetIntermediateSessionByID(ctx context.Context, id uuid.UUID) 
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
 
 const getIntermediateSessionByTokenSHA256AndProjectID = `-- name: GetIntermediateSessionByTokenSHA256AndProjectID :one
 SELECT
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 FROM
     intermediate_sessions
 WHERE
@@ -928,6 +936,10 @@ func (q *Queries) GetIntermediateSessionByTokenSHA256AndProjectID(ctx context.Co
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -2039,7 +2051,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 func (q *Queries) RevokeIntermediateSession(ctx context.Context, id uuid.UUID) (IntermediateSession, error) {
@@ -2083,6 +2095,10 @@ func (q *Queries) RevokeIntermediateSession(ctx context.Context, id uuid.UUID) (
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -2121,7 +2137,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 type UpdateIntermediateSessionAuthenticatorAppBackupCodeSHA256sParams struct {
@@ -2170,6 +2186,10 @@ func (q *Queries) UpdateIntermediateSessionAuthenticatorAppBackupCodeSHA256s(ctx
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -2183,7 +2203,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 type UpdateIntermediateSessionAuthenticatorAppSecretCiphertextParams struct {
@@ -2232,6 +2252,10 @@ func (q *Queries) UpdateIntermediateSessionAuthenticatorAppSecretCiphertext(ctx 
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -2245,7 +2269,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 func (q *Queries) UpdateIntermediateSessionAuthenticatorAppVerified(ctx context.Context, id uuid.UUID) (IntermediateSession, error) {
@@ -2289,6 +2313,10 @@ func (q *Queries) UpdateIntermediateSessionAuthenticatorAppVerified(ctx context.
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -2303,7 +2331,7 @@ WHERE
     AND (email IS NULL
         OR email = $1)
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 type UpdateIntermediateSessionEmailParams struct {
@@ -2352,6 +2380,10 @@ func (q *Queries) UpdateIntermediateSessionEmail(ctx context.Context, arg Update
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -2364,7 +2396,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 func (q *Queries) UpdateIntermediateSessionEmailVerificationChallengeCompleted(ctx context.Context, id uuid.UUID) (IntermediateSession, error) {
@@ -2408,6 +2440,10 @@ func (q *Queries) UpdateIntermediateSessionEmailVerificationChallengeCompleted(c
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -2420,7 +2456,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 type UpdateIntermediateSessionEmailVerificationChallengeSha256Params struct {
@@ -2469,6 +2505,10 @@ func (q *Queries) UpdateIntermediateSessionEmailVerificationChallengeSha256(ctx 
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -2484,7 +2524,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 type UpdateIntermediateSessionGithubDetailsParams struct {
@@ -2542,6 +2582,10 @@ func (q *Queries) UpdateIntermediateSessionGithubDetails(ctx context.Context, ar
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -2554,7 +2598,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 type UpdateIntermediateSessionGithubOAuthStateSHA256Params struct {
@@ -2603,6 +2647,10 @@ func (q *Queries) UpdateIntermediateSessionGithubOAuthStateSHA256(ctx context.Co
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -2619,7 +2667,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 type UpdateIntermediateSessionGoogleDetailsParams struct {
@@ -2679,6 +2727,10 @@ func (q *Queries) UpdateIntermediateSessionGoogleDetails(ctx context.Context, ar
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -2691,7 +2743,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 type UpdateIntermediateSessionGoogleOAuthStateSHA256Params struct {
@@ -2740,6 +2792,10 @@ func (q *Queries) UpdateIntermediateSessionGoogleOAuthStateSHA256(ctx context.Co
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -2754,7 +2810,7 @@ SET
 WHERE
     id = $4
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 type UpdateIntermediateSessionMicrosoftDetailsParams struct {
@@ -2810,6 +2866,10 @@ func (q *Queries) UpdateIntermediateSessionMicrosoftDetails(ctx context.Context,
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -2822,7 +2882,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 type UpdateIntermediateSessionMicrosoftOAuthStateSHA256Params struct {
@@ -2871,6 +2931,10 @@ func (q *Queries) UpdateIntermediateSessionMicrosoftOAuthStateSHA256(ctx context
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -2884,7 +2948,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 type UpdateIntermediateSessionNewUserPasswordBcryptParams struct {
@@ -2933,6 +2997,10 @@ func (q *Queries) UpdateIntermediateSessionNewUserPasswordBcrypt(ctx context.Con
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -2945,7 +3013,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 type UpdateIntermediateSessionOrganizationIDParams struct {
@@ -2994,6 +3062,10 @@ func (q *Queries) UpdateIntermediateSessionOrganizationID(ctx context.Context, a
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -3008,7 +3080,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 func (q *Queries) UpdateIntermediateSessionPasskeyVerified(ctx context.Context, id uuid.UUID) (IntermediateSession, error) {
@@ -3052,6 +3124,10 @@ func (q *Queries) UpdateIntermediateSessionPasskeyVerified(ctx context.Context, 
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -3065,7 +3141,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 type UpdateIntermediateSessionPasskeyVerifyChallengeSHA256Params struct {
@@ -3114,6 +3190,10 @@ func (q *Queries) UpdateIntermediateSessionPasskeyVerifyChallengeSHA256(ctx cont
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -3126,7 +3206,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 type UpdateIntermediateSessionPasswordResetCodeSHA256Params struct {
@@ -3175,6 +3255,10 @@ func (q *Queries) UpdateIntermediateSessionPasswordResetCodeSHA256(ctx context.C
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -3188,7 +3272,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 func (q *Queries) UpdateIntermediateSessionPasswordResetCodeVerified(ctx context.Context, id uuid.UUID) (IntermediateSession, error) {
@@ -3232,6 +3316,10 @@ func (q *Queries) UpdateIntermediateSessionPasswordResetCodeVerified(ctx context
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -3245,7 +3333,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 type UpdateIntermediateSessionPasswordVerifiedParams struct {
@@ -3294,6 +3382,10 @@ func (q *Queries) UpdateIntermediateSessionPasswordVerified(ctx context.Context,
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -3306,7 +3398,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 type UpdateIntermediateSessionPrimaryAuthFactorParams struct {
@@ -3355,6 +3447,10 @@ func (q *Queries) UpdateIntermediateSessionPrimaryAuthFactor(ctx context.Context
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
@@ -3372,7 +3468,7 @@ SET
 WHERE
     id = $5
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 type UpdateIntermediateSessionRegisterPasskeyParams struct {
@@ -3430,6 +3526,10 @@ func (q *Queries) UpdateIntermediateSessionRegisterPasskey(ctx context.Context, 
 		&i.GithubOauthStateSha256,
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }

@@ -56,7 +56,6 @@ queries:
 		internal/oidc/store/queries \
 		internal/scim/store/queries \
 		internal/common/store/queries \
-		internal/wellknown/store/queries \
 		internal/configapi/store/queries
 	./bin/pg_format/pg_format -i sqlc/queries.sql
 	./bin/pg_format/pg_format -i sqlc/queries-auditlog.sql
@@ -67,6 +66,5 @@ queries:
 	./bin/pg_format/pg_format -i sqlc/queries-oidc.sql
 	./bin/pg_format/pg_format -i sqlc/queries-scim.sql
 	./bin/pg_format/pg_format -i sqlc/queries-common.sql
-	./bin/pg_format/pg_format -i sqlc/queries-wellknown.sql
 	./bin/pg_format/pg_format -i sqlc/queries-configapi.sql
 	sqlc -f ./sqlc/sqlc.yaml generate

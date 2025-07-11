@@ -26,7 +26,16 @@ func (s *Service) Handler() http.Handler {
 	mux := http.NewServeMux()
 
 	mux.Handle("GET /api/saml/v1/{samlConnectionID}/init", withErr(s.init))
+
+	// The ACS endpoint will be called as a cross-origin POST request from the IdP.
+	//
+	// Since Tesseral cookies are set with SameSite=Lax, the cross-origin POST request
+	// will not have any cookies sent with it.
+	//
+	// To work around this, /acs simply forwards its form body to /verify-acs. The act
+	// of calling POST from the vault domain will attach the cookies to the request.
 	mux.Handle("POST /api/saml/v1/{samlConnectionID}/acs", withErr(s.acs))
+	mux.Handle("POST /api/saml/v1/{samlConnectionID}/verify-acs", withErr(s.verifyAcs))
 
 	return mux
 }
@@ -75,7 +84,44 @@ func (s *Service) init(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
+type acsTemplateData struct {
+	VerifyACSURL string
+	SAMLResponse string
+}
+
+var acsTemplate = template.Must(template.New("acs").Parse(`
+<html>
+	<body>
+		<form method="POST" action="{{ .VerifyACSURL }}">
+			<input type="hidden" name="SAMLResponse" value="{{ .SAMLResponse }}"></input>
+		</form>
+		<script>
+			document.forms[0].submit();
+		</script>
+	</body>
+</html>
+`))
+
 func (s *Service) acs(w http.ResponseWriter, r *http.Request) error {
+	samlConnectionID := r.PathValue("samlConnectionID")
+
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return nil
+	}
+
+	w.Header().Set("Content-Type", "text/html")
+	if err := acsTemplate.Execute(w, acsTemplateData{
+		VerifyACSURL: fmt.Sprintf("/api/saml/v1/%s/verify-acs", samlConnectionID),
+		SAMLResponse: r.Form.Get("SAMLResponse"),
+	}); err != nil {
+		return fmt.Errorf("execute template: %w", err)
+	}
+
+	return nil
+}
+
+func (s *Service) verifyAcs(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
 	samlConnectionID := r.PathValue("samlConnectionID")
 
@@ -114,33 +160,30 @@ func (s *Service) acs(w http.ResponseWriter, r *http.Request) error {
 		return nil
 	}
 
-	createSessionRes, err := s.Store.CreateSession(ctx, &store.CreateSessionRequest{
-		SAMLConnectionID: samlConnectionID,
-		Email:            email,
+	// For IdP-initiated SAML, the intermediate session is not present and must be created.
+	intermediateSessionID := authn.IntermediateSessionID(ctx)
+	if intermediateSessionID == nil {
+		intermediateSession, err := s.Store.CreateIntermediateSession(ctx)
+		if err != nil {
+			return fmt.Errorf("create intermediate session: %w", err)
+		}
+		intermediateAccessToken, err := s.Cookier.NewIntermediateAccessToken(ctx, authn.ProjectID(ctx), intermediateSession.SecretToken)
+		if err != nil {
+			return fmt.Errorf("create intermediate access token cookie: %w", err)
+		}
+		w.Header().Set("Set-Cookie", intermediateAccessToken)
+		ctx = authn.NewContext(ctx, intermediateSession.IntermediateSession, authn.ProjectID(ctx))
+	}
+
+	redirectURL, err := s.Store.FinishLogin(ctx, store.FinishLoginRequest{
+		Email:                    email,
+		VerifiedSAMLConnectionID: samlConnectionID,
 	})
 	if err != nil {
-		return fmt.Errorf("create session: %w", err)
+		return fmt.Errorf("finish login: %w", err)
 	}
 
-	accessToken, err := s.AccessTokenIssuer.NewAccessToken(ctx, authn.ProjectID(ctx), createSessionRes.RefreshToken)
-	if err != nil {
-		return fmt.Errorf("issue access token: %w", err)
-	}
-
-	refreshTokenCookie, err := s.Cookier.NewRefreshToken(ctx, authn.ProjectID(ctx), createSessionRes.RefreshToken)
-	if err != nil {
-		return fmt.Errorf("issue refresh token cookie: %w", err)
-	}
-
-	accessTokenCookie, err := s.Cookier.NewAccessToken(ctx, authn.ProjectID(ctx), accessToken)
-	if err != nil {
-		return fmt.Errorf("issue access token cookie: %w", err)
-	}
-
-	w.Header().Add("Set-Cookie", refreshTokenCookie)
-	w.Header().Add("Set-Cookie", accessTokenCookie)
-
-	w.Header().Add("Location", createSessionRes.RedirectURI)
+	w.Header().Add("Location", redirectURL)
 	w.WriteHeader(http.StatusFound)
 	return nil
 }

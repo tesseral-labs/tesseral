@@ -25,26 +25,31 @@ FROM
 WHERE
     organization_id = $1;
 
--- name: GetUserByEmail :one
+-- name: GetIntermediateSessionByTokenSHA256AndProjectID :one
 SELECT
     *
 FROM
-    users
+    intermediate_sessions
 WHERE
-    organization_id = $1
-    AND email = $2;
+    secret_token_sha256 = $1
+    AND project_id = $2;
 
--- name: CreateUser :one
-INSERT INTO users (id, organization_id, email, is_owner)
+-- name: CreateIntermediateSession :one
+INSERT INTO intermediate_sessions (id, project_id, expire_time, secret_token_sha256)
     VALUES ($1, $2, $3, $4)
 RETURNING
     *;
 
--- name: CreateSession :one
-INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, primary_auth_factor)
-    VALUES ($1, $2, $3, $4, 'saml')
-RETURNING
-    *;
+-- name: UpdateIntermediateSession :exec
+UPDATE
+    intermediate_sessions
+SET
+    email = $2,
+    verified_saml_connection_id = $3,
+    organization_id = $4,
+    primary_auth_factor = 'saml'
+WHERE
+    id = $1;
 
 -- name: CreateAuditLogEvent :one
 INSERT INTO audit_log_events (id, project_id, organization_id, actor_user_id, actor_session_id, resource_type, resource_id, event_name, event_time, event_details)

@@ -287,6 +287,10 @@ type IntermediateSession struct {
 	GithubOauthStateSha256                []byte
 	RedirectUri                           *string
 	ReturnRelayedSessionTokenAsQueryParam bool
+	VerifiedSamlConnectionID              *uuid.UUID
+	OidcState                             *string
+	OidcCodeVerifier                      *string
+	VerifiedOidcConnectionID              *uuid.UUID
 }
 
 type OauthVerifiedEmail struct {
@@ -308,12 +312,6 @@ type OidcConnection struct {
 	ConfigurationUrl       string
 	ClientID               string
 	ClientSecretCiphertext []byte
-}
-
-type OidcIntermediateSession struct {
-	ID               uuid.UUID
-	OidcConnectionID uuid.UUID
-	CodeVerifier     *string
 }
 
 type Organization struct {

@@ -17,8 +17,8 @@ func TestCreatePublishableKey_Success(t *testing.T) {
 
 	resp, err := u.Store.CreatePublishableKey(ctx, &backendv1.CreatePublishableKeyRequest{
 		PublishableKey: &backendv1.PublishableKey{
-			DisplayName: "key1",
-			DevMode:     refOrNil(true),
+			DisplayName:     "key1",
+			CrossDomainMode: refOrNil(true),
 		},
 	})
 	require.NoError(t, err)
@@ -27,7 +27,7 @@ func TestCreatePublishableKey_Success(t *testing.T) {
 	require.NotEmpty(t, resp.PublishableKey.Id)
 	require.NotEmpty(t, resp.PublishableKey.CreateTime)
 	require.NotEmpty(t, resp.PublishableKey.UpdateTime)
-	require.True(t, *resp.PublishableKey.DevMode)
+	require.True(t, *resp.PublishableKey.CrossDomainMode)
 }
 
 func TestGetPublishableKey_Exists(t *testing.T) {
@@ -78,13 +78,13 @@ func TestUpdatePublishableKey_UpdatesFields(t *testing.T) {
 	updateResp, err := u.Store.UpdatePublishableKey(ctx, &backendv1.UpdatePublishableKeyRequest{
 		Id: keyID,
 		PublishableKey: &backendv1.PublishableKey{
-			DisplayName: "key2",
-			DevMode:     refOrNil(false),
+			DisplayName:     "key2",
+			CrossDomainMode: refOrNil(false),
 		},
 	})
 	require.NoError(t, err)
 	require.Equal(t, "key2", updateResp.PublishableKey.DisplayName)
-	require.False(t, *updateResp.PublishableKey.DevMode)
+	require.False(t, *updateResp.PublishableKey.CrossDomainMode)
 }
 
 func TestDeletePublishableKey_RemovesKey(t *testing.T) {
