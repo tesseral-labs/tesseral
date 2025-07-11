@@ -115,7 +115,7 @@ export function ListOrganizationScimApiKeysCard() {
           A SCIM API key lets this customer do enterprise directory syncing.
         </CardDescription>
         <CardAction>
-          <CreateScimApiKeyButton refetch={refetch} />
+          <CreateScimApiKeyButton onSuccess={refetch} />
         </CardAction>
       </CardHeader>
       <CardContent>
@@ -177,7 +177,7 @@ export function ListOrganizationScimApiKeysCard() {
                       <TableCell className="text-right">
                         <ManageScimApiKeyButton
                           scimApiKey={scimApiKey}
-                          refetch={refetch}
+                          onSuccess={refetch}
                         />
                       </TableCell>
                     </TableRow>
@@ -208,7 +208,7 @@ const schema = z.object({
   displayName: z.string().min(1, "Display name is required"),
 });
 
-function CreateScimApiKeyButton({ refetch }: { refetch: () => void }) {
+function CreateScimApiKeyButton({ onSuccess }: { onSuccess: () => void }) {
   const { organizationId } = useParams();
 
   const createScimApiKeyMutation = useMutation(createSCIMAPIKey);
@@ -252,7 +252,7 @@ function CreateScimApiKeyButton({ refetch }: { refetch: () => void }) {
     toast.success("SCIM API key created successfully");
     form.reset();
 
-    refetch();
+    onSuccess();
   }
 
   return (
@@ -364,10 +364,10 @@ function CreateScimApiKeyButton({ refetch }: { refetch: () => void }) {
 
 function ManageScimApiKeyButton({
   scimApiKey,
-  refetch,
+  onSuccess,
 }: {
   scimApiKey: SCIMAPIKey;
-  refetch: () => void;
+  onSuccess: () => void;
 }) {
   const { organizationId } = useParams();
 
@@ -381,7 +381,7 @@ function ManageScimApiKeyButton({
     await revokeScimApiKeyMutation.mutateAsync({
       id: scimApiKey.id,
     });
-    refetch();
+    onSuccess();
     setRevokeOpen(false);
     toast.success("SCIM API key revoked successfully");
   }
@@ -390,7 +390,7 @@ function ManageScimApiKeyButton({
     await deleteScimApiKeyMutation.mutateAsync({
       id: scimApiKey.id,
     });
-    refetch();
+    onSuccess();
     setDeleteOpen(false);
     toast.success("SCIM API key deleted successfully");
   }
