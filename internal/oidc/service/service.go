@@ -3,11 +3,9 @@ package service
 import (
 	"fmt"
 	"net/http"
-	"slices"
 
 	"github.com/tesseral-labs/tesseral/internal/common/accesstoken"
 	"github.com/tesseral-labs/tesseral/internal/cookies"
-	"github.com/tesseral-labs/tesseral/internal/emailaddr"
 	"github.com/tesseral-labs/tesseral/internal/oidc/authn"
 	"github.com/tesseral-labs/tesseral/internal/oidc/store"
 )
@@ -63,23 +61,12 @@ func (s *Service) exchange(w http.ResponseWriter, r *http.Request) error {
 		return fmt.Errorf("OIDC session state mismatch: expected %s, got %s", *expectedState, state)
 	}
 
-	oidcSessionData, err := s.Store.ExchangeOIDCCode(ctx, oidcConnectionID, code)
+	redirectURL, err := s.Store.ExchangeOIDCCode(ctx, oidcConnectionID, code)
 	if err != nil {
 		return fmt.Errorf("exchange OIDC code: %w", err)
 	}
 
-	email := oidcSessionData.Email
-	domain, err := emailaddr.Parse(email)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return nil
-	}
-	if !slices.Contains(oidcSessionData.OrganizationDomains, domain) {
-		http.Error(w, "bad domain", http.StatusBadRequest)
-		return nil
-	}
-
-	http.Redirect(w, r, oidcSessionData.RedirectURL, http.StatusFound)
+	http.Redirect(w, r, redirectURL, http.StatusFound)
 	return nil
 }
 

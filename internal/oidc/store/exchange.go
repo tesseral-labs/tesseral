@@ -9,34 +9,28 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
+	"github.com/tesseral-labs/tesseral/internal/emailaddr"
 	"github.com/tesseral-labs/tesseral/internal/oidc/authn"
 	"github.com/tesseral-labs/tesseral/internal/oidc/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/oidcclient"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
-type OIDCUserData struct {
-	Email               string
-	OrganizationID      string
-	OrganizationDomains []string
-	RedirectURL         string
-}
-
-func (s *Store) ExchangeOIDCCode(ctx context.Context, oidcConnectionID string, code string) (*OIDCUserData, error) {
+func (s *Store) ExchangeOIDCCode(ctx context.Context, oidcConnectionID string, code string) (string, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	defer rollback()
 
 	oidcConnectionUUID, err := idformat.OIDCConnection.Parse(oidcConnectionID)
 	if err != nil {
-		return nil, fmt.Errorf("parse oidc connection id: %w", err)
+		return "", fmt.Errorf("parse oidc connection id: %w", err)
 	}
 
 	qProject, err := q.GetProject(ctx, authn.ProjectID(ctx))
 	if err != nil {
-		return nil, fmt.Errorf("get project: %w", err)
+		return "", fmt.Errorf("get project: %w", err)
 	}
 
 	qOIDCConnection, err := q.GetOIDCConnection(ctx, queries.GetOIDCConnectionParams{
@@ -44,17 +38,17 @@ func (s *Store) ExchangeOIDCCode(ctx context.Context, oidcConnectionID string, c
 		ID:        oidcConnectionUUID,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("get oidc connection: %w", err)
+		return "", fmt.Errorf("get oidc connection: %w", err)
 	}
 
 	organizationDomains, err := q.GetOrganizationDomains(ctx, qOIDCConnection.OrganizationID)
 	if err != nil {
-		return nil, fmt.Errorf("get organization domains: %w", err)
+		return "", fmt.Errorf("get organization domains: %w", err)
 	}
 
 	config, err := s.oidc.GetConfiguration(ctx, qOIDCConnection.ConfigurationUrl)
 	if err != nil {
-		return nil, fmt.Errorf("get OIDC configuration: %w", err)
+		return "", fmt.Errorf("get OIDC configuration: %w", err)
 	}
 
 	var (
@@ -68,7 +62,7 @@ func (s *Store) ExchangeOIDCCode(ctx context.Context, oidcConnectionID string, c
 			CiphertextBlob:      qOIDCConnection.ClientSecretCiphertext,
 		})
 		if err != nil {
-			return nil, fmt.Errorf("decrypt oidc client secret: %w", err)
+			return "", fmt.Errorf("decrypt oidc client secret: %w", err)
 		}
 		switch {
 		case slices.Contains(config.TokenEndpointAuthMethodsSupported, "client_secret_post"):
@@ -76,7 +70,7 @@ func (s *Store) ExchangeOIDCCode(ctx context.Context, oidcConnectionID string, c
 		case slices.Contains(config.TokenEndpointAuthMethodsSupported, "client_secret_basic") || len(config.TokenEndpointAuthMethodsSupported) == 0: // If omitted, the default is client_secret_basic
 			clientAuthBasic = base64.StdEncoding.EncodeToString(fmt.Appendf(nil, "%s:%s", qOIDCConnection.ClientID, string(decryptRes.Plaintext)))
 		default:
-			return nil, fmt.Errorf("OIDC connection %s does not support client authentication method for token endpoint: %s", oidcConnectionID, config.TokenEndpointAuthMethodsSupported)
+			return "", fmt.Errorf("OIDC connection %s does not support client authentication method for token endpoint: %s", oidcConnectionID, config.TokenEndpointAuthMethodsSupported)
 		}
 	}
 
@@ -90,7 +84,7 @@ func (s *Store) ExchangeOIDCCode(ctx context.Context, oidcConnectionID string, c
 		CodeVerifier:    authn.IntermediateSession(ctx).OidcCodeVerifier,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("exchange OIDC code: %w", err)
+		return "", fmt.Errorf("exchange OIDC code: %w", err)
 	}
 
 	claims, err := s.oidc.ValidateIDToken(ctx, oidcclient.ValidateIDTokenRequest{
@@ -98,7 +92,7 @@ func (s *Store) ExchangeOIDCCode(ctx context.Context, oidcConnectionID string, c
 		IDToken:       tokenRes.IDToken,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("validate id token: %w", err)
+		return "", fmt.Errorf("validate id token: %w", err)
 	}
 
 	if err := q.UpdateIntermediateSession(ctx, queries.UpdateIntermediateSessionParams{
@@ -106,17 +100,20 @@ func (s *Store) ExchangeOIDCCode(ctx context.Context, oidcConnectionID string, c
 		Email:                    &claims.Email,
 		VerifiedOidcConnectionID: (*uuid.UUID)(&oidcConnectionUUID),
 	}); err != nil {
-		return nil, fmt.Errorf("update intermediate session: %w", err)
+		return "", fmt.Errorf("update intermediate session: %w", err)
+	}
+
+	domain, err := emailaddr.Parse(claims.Email)
+	if err != nil {
+		return "", fmt.Errorf("parse email address: %w", err)
+	}
+	if !slices.Contains(organizationDomains, domain) {
+		return "", fmt.Errorf("bad domain: %s", domain)
 	}
 
 	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit transaction: %w", err)
+		return "", fmt.Errorf("commit transaction: %w", err)
 	}
 
-	return &OIDCUserData{
-		OrganizationID:      idformat.Organization.Format(qOIDCConnection.OrganizationID),
-		OrganizationDomains: organizationDomains,
-		Email:               claims.Email,
-		RedirectURL:         fmt.Sprintf("https://%s/finish-login", qProject.VaultDomain),
-	}, nil
+	return fmt.Sprintf("https://%s/finish-login", qProject.VaultDomain), nil
 }
