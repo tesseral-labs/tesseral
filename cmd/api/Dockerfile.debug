@@ -1,8 +1,5 @@
 FROM --platform=$BUILDPLATFORM golang:1.24
 
-ARG TARGETOS
-ARG TARGETARCH
-
 RUN apt update && apt install -y git ca-certificates tzdata && update-ca-certificates
 
 # Build Delve
