@@ -603,6 +603,9 @@ message AuditLogEvent {
   // The Intermediate Session that performed the action, if any.
   string actor_intermediate_session_id = 9;
 
+  // The SCIM API Key that performed the event, if any.
+  string actor_scim_api_key_id = 14;
+
   // When the event occurred.
   google.protobuf.Timestamp event_time = 10;
 
@@ -642,6 +645,7 @@ message ConsoleAuditLogEvent {
   string actor_api_key_id = 5;
   string actor_backend_api_key_id = 8;
   string actor_intermediate_session_id = 9;
+  string actor_scim_api_key_id = 15;
 
   string actor_console_user_id = 10;
   string actor_console_session_id = 11;

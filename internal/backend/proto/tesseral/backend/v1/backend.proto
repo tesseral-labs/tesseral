@@ -1299,6 +1299,7 @@ message ConsoleListAuditLogEventsRequest {
   string actor_session_id = 4;
   string actor_api_key_id = 5;
   string actor_backend_api_key_id = 6;
+  string actor_scim_api_key_id = 12;
   AuditLogEventResourceType resource_type = 7;
   string resource_id = 8;
   google.protobuf.Timestamp filter_start_time = 9;
@@ -1317,6 +1318,7 @@ message ConsoleListAuditLogEventNamesRequest {
   string actor_backend_api_key_id = 3;
   string actor_session_id = 4;
   string actor_user_id = 5;
+  string actor_scim_api_key_id = 7;
   AuditLogEventResourceType resource_type = 6;
 }
 

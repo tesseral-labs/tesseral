@@ -26,6 +26,7 @@ func (s *Store) GetOrganization(ctx context.Context, db queries.DBTX, id uuid.UU
 		LogInWithGoogle:           &qOrganization.LogInWithGoogle,
 		LogInWithMicrosoft:        &qOrganization.LogInWithMicrosoft,
 		LogInWithSaml:             &qOrganization.LogInWithSaml,
+		LogInWithOidc:             &qOrganization.LogInWithOidc,
 		ScimEnabled:               &qOrganization.ScimEnabled,
 		LogInWithAuthenticatorApp: &qOrganization.LogInWithAuthenticatorApp,
 		LogInWithPasskey:          &qOrganization.LogInWithPasskey,

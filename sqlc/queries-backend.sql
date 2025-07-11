@@ -1200,8 +1200,8 @@ WHERE api_key_role_assignments.api_key_id = api_keys.id
     AND organizations.project_id = $2;
 
 -- name: CreateAuditLogEvent :one
-INSERT INTO audit_log_events (id, project_id, organization_id, actor_user_id, actor_session_id, actor_api_key_id, actor_console_user_id, actor_console_session_id, actor_backend_api_key_id, actor_intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, coalesce(@event_details, '{}'::jsonb))
+INSERT INTO audit_log_events (id, project_id, organization_id, actor_user_id, actor_session_id, actor_api_key_id, actor_console_user_id, actor_console_session_id, actor_backend_api_key_id, actor_intermediate_session_id, actor_scim_api_key_id, resource_type, resource_id, event_name, event_time, event_details)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, coalesce(@event_details, '{}'::jsonb))
 RETURNING
     *;
 
@@ -1266,6 +1266,8 @@ WHERE
         OR @actor_api_key_id IS NULL)
     AND (actor_backend_api_key_id = @actor_backend_api_key_id
         OR @actor_backend_api_key_id IS NULL)
+    AND (actor_scim_api_key_id = @actor_scim_api_key_id
+        OR @actor_scim_api_key_id IS NULL)
     AND (resource_type = @resource_type
         OR @resource_type IS NULL)
     AND (resource_id = @resource_id
@@ -1292,6 +1294,8 @@ WHERE
         OR @actor_session_id IS NULL)
     AND (actor_backend_api_key_id = @actor_backend_api_key_id
         OR @actor_backend_api_key_id IS NULL)
+    AND (actor_scim_api_key_id = @actor_scim_api_key_id
+        OR @actor_scim_api_key_id IS NULL)
     AND (resource_type = @resource_type
         OR @resource_type IS NULL)
 ORDER BY

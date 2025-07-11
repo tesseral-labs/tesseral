@@ -25,6 +25,8 @@ import { OrganizationApiKeyLogsTab } from "./pages/console/organizations/api-key
 import { OrganizationApiKeyPage } from "./pages/console/organizations/api-keys/OrganizationApiKeyPage";
 import { OrganizationOidcConnectionPage } from "./pages/console/organizations/oidc-connections/OrganizationOidcConnectionPage";
 import { OrganizationSamlConnectionPage } from "./pages/console/organizations/saml-connections/OrganizationSamlConnectionPage";
+import { OrganizationScimApiKeyDetailsTab } from "./pages/console/organizations/scim-api-keys/OrganizationScimApiKeyDetailsTab";
+import { OrganizationScimApiKeyLogsTab } from "./pages/console/organizations/scim-api-keys/OrganizationScimApiKeyLogsTab";
 import { OrganizationScimApiKeyPage } from "./pages/console/organizations/scim-api-keys/OrganizationScimApiKeyPage";
 import { UserActivityTab } from "./pages/console/organizations/users/UserActivityTab";
 import { UserHistoryTab } from "./pages/console/organizations/users/UserHistoryTab";
@@ -158,7 +160,10 @@ function AppWithinQueryClient() {
             <Route
               path="organizations/:organizationId/scim-api-keys/:scimApiKeyId"
               element={<OrganizationScimApiKeyPage />}
-            />
+            >
+              <Route path="" element={<OrganizationScimApiKeyDetailsTab />} />
+              <Route path="logs" element={<OrganizationScimApiKeyLogsTab />} />
+            </Route>
 
             <Route path="settings">
               <Route path="" element={<SettingsOverviewPage />} />

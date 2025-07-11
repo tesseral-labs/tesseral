@@ -59,8 +59,10 @@ WHERE
         OR $5 IS NULL)
     AND (actor_backend_api_key_id = $6
         OR $6 IS NULL)
-    AND (resource_type = $7
+    AND (actor_scim_api_key_id = $7
         OR $7 IS NULL)
+    AND (resource_type = $8
+        OR $8 IS NULL)
 ORDER BY
     event_name
 `
@@ -72,6 +74,7 @@ type ConsoleListAuditLogEventNamesParams struct {
 	ActorUserID          *uuid.UUID
 	ActorSessionID       *uuid.UUID
 	ActorBackendApiKeyID *uuid.UUID
+	ActorScimApiKeyID    *uuid.UUID
 	ResourceType         *AuditLogEventResourceType
 }
 
@@ -83,6 +86,7 @@ func (q *Queries) ConsoleListAuditLogEventNames(ctx context.Context, arg Console
 		arg.ActorUserID,
 		arg.ActorSessionID,
 		arg.ActorBackendApiKeyID,
+		arg.ActorScimApiKeyID,
 		arg.ResourceType,
 	)
 	if err != nil {
@@ -105,7 +109,7 @@ func (q *Queries) ConsoleListAuditLogEventNames(ctx context.Context, arg Console
 
 const consoleListAuditLogEvents = `-- name: ConsoleListAuditLogEvents :many
 SELECT
-    id, project_id, organization_id, actor_user_id, actor_session_id, actor_api_key_id, actor_console_user_id, actor_console_session_id, actor_backend_api_key_id, actor_intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details
+    id, project_id, organization_id, actor_user_id, actor_session_id, actor_api_key_id, actor_console_user_id, actor_console_session_id, actor_backend_api_key_id, actor_intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details, actor_scim_api_key_id
 FROM
     audit_log_events
 WHERE
@@ -126,11 +130,13 @@ WHERE
         OR $9 IS NULL)
     AND (actor_backend_api_key_id = $10
         OR $10 IS NULL)
-    AND (resource_type = $11
+    AND (actor_scim_api_key_id = $11
         OR $11 IS NULL)
-    AND (resource_id = $12
+    AND (resource_type = $12
         OR $12 IS NULL)
-    AND id <= $13
+    AND (resource_id = $13
+        OR $13 IS NULL)
+    AND id <= $14
 ORDER BY
     id DESC
 LIMIT $1
@@ -147,6 +153,7 @@ type ConsoleListAuditLogEventsParams struct {
 	ActorSessionID       *uuid.UUID
 	ActorApiKeyID        *uuid.UUID
 	ActorBackendApiKeyID *uuid.UUID
+	ActorScimApiKeyID    *uuid.UUID
 	ResourceType         *AuditLogEventResourceType
 	ResourceID           *uuid.UUID
 	ID                   uuid.UUID
@@ -164,6 +171,7 @@ func (q *Queries) ConsoleListAuditLogEvents(ctx context.Context, arg ConsoleList
 		arg.ActorSessionID,
 		arg.ActorApiKeyID,
 		arg.ActorBackendApiKeyID,
+		arg.ActorScimApiKeyID,
 		arg.ResourceType,
 		arg.ResourceID,
 		arg.ID,
@@ -191,6 +199,7 @@ func (q *Queries) ConsoleListAuditLogEvents(ctx context.Context, arg ConsoleList
 			&i.EventName,
 			&i.EventTime,
 			&i.EventDetails,
+			&i.ActorScimApiKeyID,
 		); err != nil {
 			return nil, err
 		}
@@ -267,10 +276,10 @@ func (q *Queries) CreateAPIKeyRoleAssignment(ctx context.Context, arg CreateAPIK
 }
 
 const createAuditLogEvent = `-- name: CreateAuditLogEvent :one
-INSERT INTO audit_log_events (id, project_id, organization_id, actor_user_id, actor_session_id, actor_api_key_id, actor_console_user_id, actor_console_session_id, actor_backend_api_key_id, actor_intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, coalesce($15, '{}'::jsonb))
+INSERT INTO audit_log_events (id, project_id, organization_id, actor_user_id, actor_session_id, actor_api_key_id, actor_console_user_id, actor_console_session_id, actor_backend_api_key_id, actor_intermediate_session_id, actor_scim_api_key_id, resource_type, resource_id, event_name, event_time, event_details)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, coalesce($16, '{}'::jsonb))
 RETURNING
-    id, project_id, organization_id, actor_user_id, actor_session_id, actor_api_key_id, actor_console_user_id, actor_console_session_id, actor_backend_api_key_id, actor_intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details
+    id, project_id, organization_id, actor_user_id, actor_session_id, actor_api_key_id, actor_console_user_id, actor_console_session_id, actor_backend_api_key_id, actor_intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details, actor_scim_api_key_id
 `
 
 type CreateAuditLogEventParams struct {
@@ -284,6 +293,7 @@ type CreateAuditLogEventParams struct {
 	ActorConsoleSessionID      *uuid.UUID
 	ActorBackendApiKeyID       *uuid.UUID
 	ActorIntermediateSessionID *uuid.UUID
+	ActorScimApiKeyID          *uuid.UUID
 	ResourceType               *AuditLogEventResourceType
 	ResourceID                 *uuid.UUID
 	EventName                  string
@@ -303,6 +313,7 @@ func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEve
 		arg.ActorConsoleSessionID,
 		arg.ActorBackendApiKeyID,
 		arg.ActorIntermediateSessionID,
+		arg.ActorScimApiKeyID,
 		arg.ResourceType,
 		arg.ResourceID,
 		arg.EventName,
@@ -326,6 +337,7 @@ func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEve
 		&i.EventName,
 		&i.EventTime,
 		&i.EventDetails,
+		&i.ActorScimApiKeyID,
 	)
 	return i, err
 }
@@ -691,7 +703,7 @@ const createUser = `-- name: CreateUser :one
 INSERT INTO users (id, organization_id, google_user_id, microsoft_user_id, github_user_id, email, is_owner)
     VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 `
 
 type CreateUserParams struct {
@@ -724,7 +736,6 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -1364,7 +1375,7 @@ const existsUserWithEmailInOrganization = `-- name: ExistsUserWithEmailInOrganiz
 SELECT
     EXISTS (
         SELECT
-            id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+            id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
         FROM
             users
         WHERE
@@ -2150,7 +2161,7 @@ func (q *Queries) GetSessionSigningKeysByProjectID(ctx context.Context, projectI
 
 const getUser = `-- name: GetUser :one
 SELECT
-    users.id, users.organization_id, users.password_bcrypt, users.google_user_id, users.microsoft_user_id, users.email, users.create_time, users.update_time, users.deactivate_time, users.is_owner, users.failed_password_attempts, users.password_lockout_expire_time, users.authenticator_app_secret_ciphertext, users.failed_authenticator_app_attempts, users.authenticator_app_lockout_expire_time, users.authenticator_app_recovery_code_sha256s, users.display_name, users.profile_picture_url, users.github_user_id
+    users.id, users.organization_id, users.password_bcrypt, users.google_user_id, users.microsoft_user_id, users.email, users.create_time, users.update_time, users.is_owner, users.failed_password_attempts, users.password_lockout_expire_time, users.authenticator_app_secret_ciphertext, users.failed_authenticator_app_attempts, users.authenticator_app_lockout_expire_time, users.authenticator_app_recovery_code_sha256s, users.display_name, users.profile_picture_url, users.github_user_id
 FROM
     users
     JOIN organizations ON users.organization_id = organizations.id
@@ -2176,7 +2187,6 @@ func (q *Queries) GetUser(ctx context.Context, arg GetUserParams) (User, error) 
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -2193,7 +2203,7 @@ func (q *Queries) GetUser(ctx context.Context, arg GetUserParams) (User, error) 
 
 const getUserForImpersonation = `-- name: GetUserForImpersonation :one
 SELECT
-    users.id, users.organization_id, users.password_bcrypt, users.google_user_id, users.microsoft_user_id, users.email, users.create_time, users.update_time, users.deactivate_time, users.is_owner, users.failed_password_attempts, users.password_lockout_expire_time, users.authenticator_app_secret_ciphertext, users.failed_authenticator_app_attempts, users.authenticator_app_lockout_expire_time, users.authenticator_app_recovery_code_sha256s, users.display_name, users.profile_picture_url, users.github_user_id
+    users.id, users.organization_id, users.password_bcrypt, users.google_user_id, users.microsoft_user_id, users.email, users.create_time, users.update_time, users.is_owner, users.failed_password_attempts, users.password_lockout_expire_time, users.authenticator_app_secret_ciphertext, users.failed_authenticator_app_attempts, users.authenticator_app_lockout_expire_time, users.authenticator_app_recovery_code_sha256s, users.display_name, users.profile_picture_url, users.github_user_id
 FROM
     users
     JOIN organizations ON users.organization_id = organizations.id
@@ -2220,7 +2230,6 @@ func (q *Queries) GetUserForImpersonation(ctx context.Context, arg GetUserForImp
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -3156,7 +3165,7 @@ func (q *Queries) ListUserRoleAssignmentsByUser(ctx context.Context, arg ListUse
 
 const listUsers = `-- name: ListUsers :many
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 FROM
     users
 WHERE
@@ -3191,7 +3200,6 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 			&i.Email,
 			&i.CreateTime,
 			&i.UpdateTime,
-			&i.DeactivateTime,
 			&i.IsOwner,
 			&i.FailedPasswordAttempts,
 			&i.PasswordLockoutExpireTime,
@@ -4128,7 +4136,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 `
 
 type UpdateUserParams struct {
@@ -4163,7 +4171,6 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -4187,7 +4194,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 `
 
 type UpdateUserPasswordParams struct {
@@ -4207,7 +4214,6 @@ func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPassword
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
