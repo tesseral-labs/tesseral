@@ -13,7 +13,6 @@ export function FinishLoginPage() {
   useEffect(() => {
     (async () => {
       const {
-        newUser,
         relayedSessionToken,
         redirectUri,
         returnRelayedSessionTokenAsQueryParam,
