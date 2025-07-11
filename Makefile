@@ -23,6 +23,10 @@ bootstrap:
 dev:
 	docker compose up --build --watch
 
+.PHONY: debug
+debug:
+	docker compose --project-name=tesseral-debug --file=docker-compose.debug.yaml up --build --watch
+
 .PHONY: migrate
 ARGS = $(wordlist 2, $(words $(MAKECMDGOALS)), $(MAKECMDGOALS))
 migrate:

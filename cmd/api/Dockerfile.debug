@@ -1,0 +1,24 @@
+FROM --platform=$BUILDPLATFORM golang:1.24
+
+ARG TARGETOS
+ARG TARGETARCH
+
+RUN apt update && apt install -y git ca-certificates tzdata && update-ca-certificates
+
+# Build Delve
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go install -ldflags "-s -w -extldflags '-static'" github.com/go-delve/delve/cmd/dlv@latest
+
+WORKDIR /work
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY cmd ./cmd
+COPY internal ./internal
+
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -gcflags "all=-N -l" -o api ./cmd/api
+
+EXPOSE 40000
+EXPOSE 3001
+
+ENTRYPOINT ["/go/bin/dlv", "--listen=:40000", "--headless=true", "--api-version=2", "--accept-multiclient", "exec", "/work/api"]
