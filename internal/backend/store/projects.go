@@ -362,7 +362,9 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 			return nil, fmt.Errorf("delete project trusted domains by project id: %w", err)
 		}
 
-		for domain := range trustedDomains {
+		for trustedDomain := range trustedDomains {
+			domain := strings.Split(trustedDomain, ":")[0] // Remove port if present
+
 			if _, err := q.CreateProjectTrustedDomain(ctx, queries.CreateProjectTrustedDomainParams{
 				ID:        uuid.New(),
 				ProjectID: authn.ProjectID(ctx),

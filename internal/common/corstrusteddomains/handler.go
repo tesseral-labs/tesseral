@@ -6,6 +6,7 @@ import (
 	"github.com/rs/cors"
 	"github.com/tesseral-labs/tesseral/internal/common/projectid"
 	"github.com/tesseral-labs/tesseral/internal/common/store"
+	"github.com/tesseral-labs/tesseral/internal/common/trusteddomains"
 	"go.opentelemetry.io/otel"
 )
 
@@ -30,7 +31,19 @@ func Handler(s *store.Store, p *projectid.Sniffer, h http.Handler) http.Handler 
 		}
 
 		cors.New(cors.Options{
-			AllowedOrigins:   trustedOrigins,
+			AllowOriginVaryRequestFunc: func(r *http.Request, origin string) (bool, []string) {
+				isTrusted, err := trusteddomains.IsTrustedDomain(trustedOrigins, origin)
+				if err != nil {
+					http.Error(w, "", http.StatusInternalServerError)
+					return false, nil
+				}
+
+				if isTrusted {
+					return true, []string{origin}
+				}
+
+				return false, nil
+			},
 			AllowedHeaders:   []string{"*"},
 			AllowCredentials: true,
 			AllowedMethods: []string{
