@@ -289,18 +289,15 @@ function AssignRoleButton() {
     createAPIKeyRoleAssignment,
   );
 
-  const currentRoleAssignments =
-    listAPIKeyRoleAssignmentsResponse?.pages.flatMap(
-      (page) => page.apiKeyRoleAssignments || [],
-    ) || [];
+  const assignedRoles =
+    listAPIKeyRoleAssignmentsResponse?.pages
+      .flatMap((page) => page.apiKeyRoleAssignments)
+      .map((assignment) => assignment.roleId) || [];
+
   const roles = [
     ...(listProjectRolesResponse?.roles || []),
     ...(listOrganizationRolesResponse?.roles || []),
-  ].filter((role) => {
-    return !currentRoleAssignments.some(
-      (assignment) => assignment.roleId === role.id,
-    );
-  });
+  ].filter((role) => !assignedRoles.includes(role.id));
 
   const [open, setOpen] = useState(false);
 
