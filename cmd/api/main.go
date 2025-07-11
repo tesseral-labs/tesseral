@@ -66,8 +66,6 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/secretload"
 	"github.com/tesseral-labs/tesseral/internal/slogcorrelation"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
-	wellknownservice "github.com/tesseral-labs/tesseral/internal/wellknown/service"
-	wellknownstore "github.com/tesseral-labs/tesseral/internal/wellknown/store"
 	"go.opentelemetry.io/contrib/bridges/otelslog"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
@@ -408,14 +406,6 @@ func main() {
 	}
 	scimServiceHandler := scimService.Handler(projectid.NewSniffer(config.AuthAppsRootDomain, commonStore))
 
-	wellknownStore := wellknownstore.New(wellknownstore.NewStoreParams{
-		DB: db,
-	})
-	wellknownService := wellknownservice.Service{
-		Store: wellknownStore,
-	}
-	wellknownServiceHandler := wellknownService.Handler(projectid.NewSniffer(config.AuthAppsRootDomain, commonStore))
-
 	configapiStore := configapistore.New(configapistore.NewStoreParams{
 		DB: db,
 	})
@@ -458,9 +448,6 @@ func main() {
 
 	// Register scimservice
 	mux.Handle("/api/scim/", scimServiceHandler)
-
-	// Register wellknownservice
-	mux.Handle("/.well-known/", wellknownServiceHandler)
 
 	// Register configapiservice
 	mux.Handle("/api/config-api/", http.StripPrefix("/api/config-api", configapiServiceHandler))

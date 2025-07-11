@@ -26,5 +26,4 @@ jobs:
           diff sqlc/queries-oidc.sql <(./bin/pg_format/pg_format sqlc/queries-oidc.sql)
           diff sqlc/queries-scim.sql <(./bin/pg_format/pg_format sqlc/queries-scim.sql)
           diff sqlc/queries-common.sql <(./bin/pg_format/pg_format sqlc/queries-common.sql)
-          diff sqlc/queries-wellknown.sql <(./bin/pg_format/pg_format sqlc/queries-wellknown.sql)
           diff sqlc/queries-configapi.sql <(./bin/pg_format/pg_format sqlc/queries-configapi.sql)
