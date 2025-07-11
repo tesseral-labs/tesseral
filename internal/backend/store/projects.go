@@ -225,21 +225,6 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		updates.LogInWithPasskey = *req.Project.LogInWithPasskey
 	}
 
-	updates.RedirectUri = qProject.RedirectUri
-	if req.Project.RedirectUri != "" {
-		updates.RedirectUri = req.Project.RedirectUri
-	}
-
-	updates.AfterLoginRedirectUri = qProject.AfterLoginRedirectUri
-	if req.Project.AfterLoginRedirectUri != nil {
-		updates.AfterLoginRedirectUri = req.Project.AfterLoginRedirectUri
-	}
-
-	updates.AfterSignupRedirectUri = qProject.AfterSignupRedirectUri
-	if req.Project.AfterSignupRedirectUri != nil {
-		updates.AfterSignupRedirectUri = req.Project.AfterSignupRedirectUri
-	}
-
 	updates.ApiKeysEnabled = qProject.ApiKeysEnabled
 	if req.Project.ApiKeysEnabled != nil {
 		updates.ApiKeysEnabled = *req.Project.ApiKeysEnabled
@@ -377,7 +362,9 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 			return nil, fmt.Errorf("delete project trusted domains by project id: %w", err)
 		}
 
-		for domain := range trustedDomains {
+		for trustedDomain := range trustedDomains {
+			domain := strings.Split(trustedDomain, ":")[0] // Remove port if present
+
 			if _, err := q.CreateProjectTrustedDomain(ctx, queries.CreateProjectTrustedDomainParams{
 				ID:        uuid.New(),
 				ProjectID: authn.ProjectID(ctx),
@@ -437,9 +424,6 @@ func (s *Store) parseProject(qProject *queries.Project, qProjectTrustedDomains [
 		VaultDomainCustom:          qProject.VaultDomain != fmt.Sprintf("%s.%s", strings.ReplaceAll(idformat.Project.Format(qProject.ID), "_", "-"), s.authAppsRootDomain),
 		TrustedDomains:             trustedDomains,
 		CookieDomain:               qProject.CookieDomain,
-		RedirectUri:                qProject.RedirectUri,
-		AfterLoginRedirectUri:      qProject.AfterLoginRedirectUri,
-		AfterSignupRedirectUri:     qProject.AfterSignupRedirectUri,
 		EmailSendFromDomain:        qProject.EmailSendFromDomain,
 		ApiKeysEnabled:             &qProject.ApiKeysEnabled,
 		ApiKeySecretTokenPrefix:    qProject.ApiKeySecretTokenPrefix,

@@ -106,9 +106,15 @@ function ConfigureVaultTrustedDomainsButton() {
   }
 
   async function handleSubmit(data: z.infer<typeof schema>) {
+    const trustedDomains = data.trustedDomains.map((domain) => {
+      // Exclude port from trusted domains
+      const parts = domain.split(":");
+      return parts[0]; // Return only the domain part
+    });
+
     await updateProjectMutation.mutateAsync({
       project: {
-        trustedDomains: data.trustedDomains,
+        trustedDomains,
       },
     });
     await refetch();

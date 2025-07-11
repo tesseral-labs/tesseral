@@ -295,6 +295,7 @@ message Settings {
   bool auto_create_organizations = 22;
   bool self_serve_create_organizations = 25;
   bool self_serve_create_users = 26;
+  string cookie_domain = 27;
 }
 
 message CreateProjectRequest {

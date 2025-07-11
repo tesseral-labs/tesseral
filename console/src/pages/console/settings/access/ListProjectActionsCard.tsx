@@ -122,7 +122,7 @@ export function ListProjectActionsCard() {
                         )}
                       </TableCell>
                       <TableCell className="text-right">
-                        <ManageProjectActionButtion action={action} />
+                        <ManageProjectActionButton action={action} />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -262,7 +262,7 @@ function CreateProjectActionButton() {
   );
 }
 
-function ManageProjectActionButtion({ action }: { action: Action }) {
+function ManageProjectActionButton({ action }: { action: Action }) {
   const { refetch: refetchRoles } = useInfiniteQuery(
     listRoles,
     {
@@ -283,9 +283,8 @@ function ManageProjectActionButtion({ action }: { action: Action }) {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      name: getRBACPolicyResponse?.rbacPolicy?.actions[0]?.name || "",
-      description:
-        getRBACPolicyResponse?.rbacPolicy?.actions[0]?.description || "",
+      name: action.name,
+      description: action.description,
     },
   });
 
