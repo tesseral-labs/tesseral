@@ -37,5 +37,4 @@ func TestGetOIDCConnectionInitData(t *testing.T) {
 	// Validate the response
 	require.NotNil(t, res)
 	require.Contains(t, res.AuthorizationURL, "https://accounts.google.com/o/oauth2/v2/auth")
-	require.NotEmpty(t, res.State)
 }

@@ -66,118 +66,67 @@ func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEve
 	return i, err
 }
 
-const createOIDCIntermediateSession = `-- name: CreateOIDCIntermediateSession :one
-INSERT INTO oidc_intermediate_sessions (id, oidc_connection_id, code_verifier)
-    VALUES ($1, $2, $3)
-RETURNING
-    id, oidc_connection_id, code_verifier
+const getIntermediateSessionByTokenSHA256AndProjectID = `-- name: GetIntermediateSessionByTokenSHA256AndProjectID :one
+SELECT
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
+FROM
+    intermediate_sessions
+WHERE
+    secret_token_sha256 = $1
+    AND project_id = $2
 `
 
-type CreateOIDCIntermediateSessionParams struct {
-	ID               uuid.UUID
-	OidcConnectionID uuid.UUID
-	CodeVerifier     *string
+type GetIntermediateSessionByTokenSHA256AndProjectIDParams struct {
+	SecretTokenSha256 []byte
+	ProjectID         uuid.UUID
 }
 
-func (q *Queries) CreateOIDCIntermediateSession(ctx context.Context, arg CreateOIDCIntermediateSessionParams) (OidcIntermediateSession, error) {
-	row := q.db.QueryRow(ctx, createOIDCIntermediateSession, arg.ID, arg.OidcConnectionID, arg.CodeVerifier)
-	var i OidcIntermediateSession
-	err := row.Scan(&i.ID, &i.OidcConnectionID, &i.CodeVerifier)
-	return i, err
-}
-
-const createSession = `-- name: CreateSession :one
-INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, primary_auth_factor)
-    VALUES ($1, $2, $3, $4, 'oidc')
-RETURNING
-    id, user_id, create_time, expire_time, refresh_token_sha256, impersonator_user_id, last_active_time, primary_auth_factor
-`
-
-type CreateSessionParams struct {
-	ID                 uuid.UUID
-	UserID             uuid.UUID
-	ExpireTime         *time.Time
-	RefreshTokenSha256 []byte
-}
-
-func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error) {
-	row := q.db.QueryRow(ctx, createSession,
-		arg.ID,
-		arg.UserID,
-		arg.ExpireTime,
-		arg.RefreshTokenSha256,
-	)
-	var i Session
+func (q *Queries) GetIntermediateSessionByTokenSHA256AndProjectID(ctx context.Context, arg GetIntermediateSessionByTokenSHA256AndProjectIDParams) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, getIntermediateSessionByTokenSHA256AndProjectID, arg.SecretTokenSha256, arg.ProjectID)
+	var i IntermediateSession
 	err := row.Scan(
 		&i.ID,
-		&i.UserID,
+		&i.ProjectID,
 		&i.CreateTime,
 		&i.ExpireTime,
-		&i.RefreshTokenSha256,
-		&i.ImpersonatorUserID,
-		&i.LastActiveTime,
-		&i.PrimaryAuthFactor,
-	)
-	return i, err
-}
-
-const createUser = `-- name: CreateUser :one
-INSERT INTO users (id, organization_id, email, is_owner)
-    VALUES ($1, $2, $3, $4)
-RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
-`
-
-type CreateUserParams struct {
-	ID             uuid.UUID
-	OrganizationID uuid.UUID
-	Email          string
-	IsOwner        bool
-}
-
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRow(ctx, createUser,
-		arg.ID,
-		arg.OrganizationID,
-		arg.Email,
-		arg.IsOwner,
-	)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.OrganizationID,
-		&i.PasswordBcrypt,
-		&i.GoogleUserID,
-		&i.MicrosoftUserID,
 		&i.Email,
-		&i.CreateTime,
+		&i.GoogleOauthStateSha256,
+		&i.MicrosoftOauthStateSha256,
+		&i.GoogleHostedDomain,
+		&i.GoogleUserID,
+		&i.MicrosoftTenantID,
+		&i.MicrosoftUserID,
+		&i.PasswordVerified,
+		&i.OrganizationID,
 		&i.UpdateTime,
-		&i.DeactivateTime,
-		&i.IsOwner,
-		&i.FailedPasswordAttempts,
-		&i.PasswordLockoutExpireTime,
+		&i.SecretTokenSha256,
+		&i.NewUserPasswordBcrypt,
+		&i.EmailVerificationChallengeSha256,
+		&i.EmailVerificationChallengeCompleted,
+		&i.PasskeyCredentialID,
+		&i.PasskeyPublicKey,
+		&i.PasskeyAaguid,
+		&i.PasskeyVerifyChallengeSha256,
+		&i.PasskeyVerified,
 		&i.AuthenticatorAppSecretCiphertext,
-		&i.FailedAuthenticatorAppAttempts,
-		&i.AuthenticatorAppLockoutExpireTime,
+		&i.AuthenticatorAppVerified,
+		&i.PasskeyRpID,
+		&i.PrimaryAuthFactor,
+		&i.RelayedSessionState,
+		&i.PasswordResetCodeSha256,
+		&i.PasswordResetCodeVerified,
 		&i.AuthenticatorAppRecoveryCodeSha256s,
-		&i.DisplayName,
+		&i.UserDisplayName,
 		&i.ProfilePictureUrl,
 		&i.GithubUserID,
+		&i.GithubOauthStateSha256,
+		&i.RedirectUri,
+		&i.ReturnRelayedSessionTokenAsQueryParam,
+		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
-	return i, err
-}
-
-const deleteOIDCIntermediateSession = `-- name: DeleteOIDCIntermediateSession :one
-DELETE FROM oidc_intermediate_sessions
-WHERE id = $1
-RETURNING
-    id, oidc_connection_id, code_verifier
-`
-
-func (q *Queries) DeleteOIDCIntermediateSession(ctx context.Context, id uuid.UUID) (OidcIntermediateSession, error) {
-	row := q.db.QueryRow(ctx, deleteOIDCIntermediateSession, id)
-	var i OidcIntermediateSession
-	err := row.Scan(&i.ID, &i.OidcConnectionID, &i.CodeVerifier)
 	return i, err
 }
 
@@ -294,44 +243,52 @@ func (q *Queries) GetProject(ctx context.Context, id uuid.UUID) (Project, error)
 	return i, err
 }
 
-const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
-FROM
-    users
+const initIntermediateSession = `-- name: InitIntermediateSession :exec
+UPDATE
+    intermediate_sessions
+SET
+    oidc_state = $2,
+    oidc_code_verifier = $3,
+    organization_id = $4,
+    primary_auth_factor = 'oidc'
 WHERE
-    organization_id = $1
-    AND email = $2
+    id = $1
 `
 
-type GetUserByEmailParams struct {
-	OrganizationID uuid.UUID
-	Email          string
+type InitIntermediateSessionParams struct {
+	ID               uuid.UUID
+	OidcState        *string
+	OidcCodeVerifier *string
+	OrganizationID   *uuid.UUID
 }
 
-func (q *Queries) GetUserByEmail(ctx context.Context, arg GetUserByEmailParams) (User, error) {
-	row := q.db.QueryRow(ctx, getUserByEmail, arg.OrganizationID, arg.Email)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.OrganizationID,
-		&i.PasswordBcrypt,
-		&i.GoogleUserID,
-		&i.MicrosoftUserID,
-		&i.Email,
-		&i.CreateTime,
-		&i.UpdateTime,
-		&i.DeactivateTime,
-		&i.IsOwner,
-		&i.FailedPasswordAttempts,
-		&i.PasswordLockoutExpireTime,
-		&i.AuthenticatorAppSecretCiphertext,
-		&i.FailedAuthenticatorAppAttempts,
-		&i.AuthenticatorAppLockoutExpireTime,
-		&i.AuthenticatorAppRecoveryCodeSha256s,
-		&i.DisplayName,
-		&i.ProfilePictureUrl,
-		&i.GithubUserID,
+func (q *Queries) InitIntermediateSession(ctx context.Context, arg InitIntermediateSessionParams) error {
+	_, err := q.db.Exec(ctx, initIntermediateSession,
+		arg.ID,
+		arg.OidcState,
+		arg.OidcCodeVerifier,
+		arg.OrganizationID,
 	)
-	return i, err
+	return err
+}
+
+const updateIntermediateSession = `-- name: UpdateIntermediateSession :exec
+UPDATE
+    intermediate_sessions
+SET
+    email = $2,
+    verified_oidc_connection_id = $3
+WHERE
+    id = $1
+`
+
+type UpdateIntermediateSessionParams struct {
+	ID                       uuid.UUID
+	Email                    *string
+	VerifiedOidcConnectionID *uuid.UUID
+}
+
+func (q *Queries) UpdateIntermediateSession(ctx context.Context, arg UpdateIntermediateSessionParams) error {
+	_, err := q.db.Exec(ctx, updateIntermediateSession, arg.ID, arg.Email, arg.VerifiedOidcConnectionID)
+	return err
 }

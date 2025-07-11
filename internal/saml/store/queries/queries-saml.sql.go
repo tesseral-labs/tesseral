@@ -70,7 +70,7 @@ const createIntermediateSession = `-- name: CreateIntermediateSession :one
 INSERT INTO intermediate_sessions (id, project_id, expire_time, secret_token_sha256)
     VALUES ($1, $2, $3, $4)
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 `
 
 type CreateIntermediateSessionParams struct {
@@ -127,13 +127,16 @@ func (q *Queries) CreateIntermediateSession(ctx context.Context, arg CreateInter
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
 		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }
 
 const getIntermediateSessionByTokenSHA256AndProjectID = `-- name: GetIntermediateSessionByTokenSHA256AndProjectID :one
 SELECT
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, passkey_rp_id, primary_auth_factor, relayed_session_state, password_reset_code_sha256, password_reset_code_verified, authenticator_app_recovery_code_sha256s, user_display_name, profile_picture_url, github_user_id, github_oauth_state_sha256, redirect_uri, return_relayed_session_token_as_query_param, verified_saml_connection_id, oidc_state, oidc_code_verifier, verified_oidc_connection_id
 FROM
     intermediate_sessions
 WHERE
@@ -188,6 +191,9 @@ func (q *Queries) GetIntermediateSessionByTokenSHA256AndProjectID(ctx context.Co
 		&i.RedirectUri,
 		&i.ReturnRelayedSessionTokenAsQueryParam,
 		&i.VerifiedSamlConnectionID,
+		&i.OidcState,
+		&i.OidcCodeVerifier,
+		&i.VerifiedOidcConnectionID,
 	)
 	return i, err
 }

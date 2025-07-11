@@ -161,6 +161,11 @@ function LoginPageContents() {
     window.location.href = `/api/saml/v1/${samlConnectionId}/init`;
   }
 
+  async function handleLogInWithOidc(oidcConnectionId: string) {
+    await createIntermediateSessionWithRelayedSessionState();
+    window.location.href = `/api/oidc/v1/${oidcConnectionId}/init`;
+  }
+
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -422,14 +427,16 @@ function LoginPageContents() {
                 ))}
 
                 {listOIDCOrganizationsResponse?.organizations?.map((org) => (
-                  <a
+                  <Button
                     key={org.id}
-                    href={`/api/oidc/v1/${org.primaryOidcConnectionId}/init`}
+                    type="button"
+                    className="mt-4 w-full"
+                    onClick={() =>
+                      handleLogInWithOidc(org.primaryOidcConnectionId)
+                    }
                   >
-                    <Button type="button" className="mt-4 w-full">
-                      Log in with OIDC ({org.displayName})
-                    </Button>
-                  </a>
+                    Log in with OIDC ({org.displayName})
+                  </Button>
                 ))}
               </form>
             </Form>

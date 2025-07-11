@@ -15,7 +15,6 @@ import (
 
 type OIDCConnectionInitData struct {
 	AuthorizationURL string
-	State            string
 }
 
 func (s *Store) GetOIDCConnectionInitData(ctx context.Context, oidcConnectionID string) (*OIDCConnectionInitData, error) {
@@ -63,9 +62,8 @@ func (s *Store) GetOIDCConnectionInitData(ctx context.Context, oidcConnectionID 
 	query.Set("scope", "openid email profile")
 	query.Set("redirect_uri", fmt.Sprintf("https://%s/api/oidc/v1/%s/callback", qProject.VaultDomain, oidcConnectionID))
 
-	intermediateSessionID := uuid.New()
-	formattedIntermediateSessionID := idformat.OIDCIntermediateSession.Format(intermediateSessionID)
-	query.Set("state", formattedIntermediateSessionID)
+	state := uuid.New().String()
+	query.Set("state", state)
 
 	// If PKCE is supported, generate code verifier and challenge.
 	//
@@ -87,10 +85,11 @@ func (s *Store) GetOIDCConnectionInitData(ctx context.Context, oidcConnectionID 
 
 	authorizationURL.RawQuery = query.Encode()
 
-	if _, err := q.CreateOIDCIntermediateSession(ctx, queries.CreateOIDCIntermediateSessionParams{
-		ID:               intermediateSessionID,
-		OidcConnectionID: oidcConnectionUUID,
-		CodeVerifier:     codeVerifier,
+	if err := q.InitIntermediateSession(ctx, queries.InitIntermediateSessionParams{
+		ID:               authn.IntermediateSession(ctx).ID,
+		OrganizationID:   &qOIDCConnection.OrganizationID,
+		OidcState:        &state,
+		OidcCodeVerifier: codeVerifier,
 	}); err != nil {
 		return nil, fmt.Errorf("create OIDC session: %w", err)
 	}
@@ -113,6 +112,5 @@ func (s *Store) GetOIDCConnectionInitData(ctx context.Context, oidcConnectionID 
 
 	return &OIDCConnectionInitData{
 		AuthorizationURL: authorizationURL.String(),
-		State:            formattedIntermediateSessionID,
 	}, nil
 }

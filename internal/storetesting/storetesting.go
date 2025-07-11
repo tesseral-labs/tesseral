@@ -279,3 +279,31 @@ INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, primary_au
 	}
 	return formattedSessionID, refreshToken
 }
+
+func (e *Environment) NewIntermediateSession(t *testing.T, projectID string) string {
+	intermediateSessionID := uuid.New()
+	projectUUID, err := idformat.Project.Parse(projectID)
+	if err != nil {
+		t.Fatalf("failed to parse project ID: %v", err)
+	}
+
+	const intermediateSessionDuration = time.Minute * 15
+	expireTime := time.Now().Add(intermediateSessionDuration)
+
+	secretToken := uuid.New()
+	secretTokenSHA256 := sha256.Sum256(secretToken[:])
+	_, err = e.DB.Exec(t.Context(), `
+INSERT INTO intermediate_sessions (id, project_id, expire_time, secret_token_sha256)
+  VALUES ($1::uuid, $2::uuid, $3, $4);
+`,
+		intermediateSessionID.String(),
+		uuid.UUID(projectUUID).String(),
+		expireTime,
+		secretTokenSHA256[:],
+	)
+	if err != nil {
+		t.Fatalf("failed to create intermediate session: %v", err)
+	}
+
+	return idformat.IntermediateSessionSecretToken.Format(secretToken)
+}

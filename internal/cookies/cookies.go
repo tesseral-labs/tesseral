@@ -40,17 +40,6 @@ func (c *Cookier) GetIntermediateAccessTokenHTTP(projectID uuid.UUID, req *http.
 	return cookie.Value, nil
 }
 
-func (c *Cookier) GetOIDCIntermediateSessionToken(projectID uuid.UUID, req *http.Request) (string, error) {
-	cookie, err := req.Cookie(c.cookieName("oidc_intermediate_session", projectID))
-	if err != nil {
-		if errors.Is(err, http.ErrNoCookie) {
-			return "", nil // No cookie found, return empty string
-		}
-		return "", fmt.Errorf("get oidc intermediate session cookie: %w", err)
-	}
-	return cookie.Value, nil
-}
-
 func (c *Cookier) getCookie(name string, projectID uuid.UUID, req connect.AnyRequest) (string, error) {
 	cookieName := c.cookieName(name, projectID)
 
@@ -84,10 +73,6 @@ func (c *Cookier) ExpiredIntermediateAccessToken(ctx context.Context, projectID 
 	return c.expiredCookie(ctx, "intermediate_access_token", projectID)
 }
 
-func (c *Cookier) ExpiredOIDCIntermediateSessionToken(ctx context.Context, projectID uuid.UUID) (string, error) {
-	return c.expiredCookie(ctx, "oidc_intermediate_session", projectID)
-}
-
 func (c *Cookier) expiredCookie(ctx context.Context, name string, projectID uuid.UUID) (string, error) {
 	return c.newCookie(ctx, name, projectID, -1*time.Second, "", false)
 }
@@ -102,10 +87,6 @@ func (c *Cookier) NewAccessToken(ctx context.Context, projectID uuid.UUID, value
 
 func (c *Cookier) NewIntermediateAccessToken(ctx context.Context, projectID uuid.UUID, value string) (string, error) {
 	return c.newCookie(ctx, "intermediate_access_token", projectID, 15*time.Minute, value, true)
-}
-
-func (c *Cookier) NewOIDCIntermediateSessionToken(ctx context.Context, projectID uuid.UUID, value string) (string, error) {
-	return c.newCookie(ctx, "oidc_intermediate_session", projectID, 15*time.Minute, value, true)
 }
 
 func (c *Cookier) newCookie(ctx context.Context, name string, projectID uuid.UUID, maxAge time.Duration, value string, httpOnly bool) (string, error) {

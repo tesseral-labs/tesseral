@@ -122,6 +122,10 @@ func (s *Store) getIntermediateSessionEmailVerified(ctx context.Context, q *quer
 		return true, nil
 	}
 
+	if qIntermediateSession.VerifiedOidcConnectionID != nil {
+		return true, nil
+	}
+
 	if qIntermediateSession.EmailVerificationChallengeCompleted {
 		return true, nil
 	}
@@ -164,6 +168,8 @@ func parseIntermediateSession(qIntermediateSession queries.IntermediateSession, 
 			primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GITHUB
 		case queries.PrimaryAuthFactorSaml:
 			primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_SAML
+		case queries.PrimaryAuthFactorOidc:
+			primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_OIDC
 		}
 	}
 
