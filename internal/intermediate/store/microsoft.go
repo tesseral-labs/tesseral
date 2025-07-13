@@ -38,8 +38,12 @@ func (s *Store) GetMicrosoftOAuthRedirectURL(ctx context.Context, req *intermedi
 		return nil, fmt.Errorf("enforce project login enabled: %w", err)
 	}
 
-	if qProject.MicrosoftOauthClientID == nil {
-		return nil, apierror.NewFailedPreconditionError("microsoft oauth client id not set", fmt.Errorf("microsoft oauth client id not set"))
+	clientID := s.defaultMicrosoftOAuthClientID
+	redirectURI := s.defaultMicrosoftOAuthRedirectURI
+
+	if qProject.MicrosoftOauthClientID != nil {
+		clientID = *qProject.MicrosoftOauthClientID
+		redirectURI = req.RedirectUrl
 	}
 
 	state := uuid.NewString()
@@ -52,8 +56,8 @@ func (s *Store) GetMicrosoftOAuthRedirectURL(ctx context.Context, req *intermedi
 	}
 
 	url := microsoftoauth.GetAuthorizeURL(&microsoftoauth.GetAuthorizeURLRequest{
-		MicrosoftOAuthClientID: *qProject.MicrosoftOauthClientID,
-		RedirectURI:            req.RedirectUrl,
+		MicrosoftOAuthClientID: clientID,
+		RedirectURI:            redirectURI,
 		State:                  state,
 	})
 
@@ -76,8 +80,24 @@ func (s *Store) RedeemMicrosoftOAuthCode(ctx context.Context, req *intermediatev
 		return nil, fmt.Errorf("enforce project login enabled: %w", err)
 	}
 
-	if qProject.MicrosoftOauthClientID == nil || qProject.MicrosoftOauthClientSecretCiphertext == nil {
-		return nil, apierror.NewFailedPreconditionError("microsoft oauth client id or secret not set", fmt.Errorf("microsoft oauth client id or secret not set"))
+	clientID := s.defaultMicrosoftOAuthClientID
+	clientSecret := s.defaultMicrosoftOAuthClientSecret
+	redirectURI := s.defaultMicrosoftOAuthRedirectURI
+
+	if qProject.MicrosoftOauthClientID != nil && qProject.MicrosoftOauthClientSecretCiphertext != nil {
+		clientID = *qProject.MicrosoftOauthClientID
+		redirectURI = req.RedirectUrl
+
+		decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
+			CiphertextBlob:      qProject.MicrosoftOauthClientSecretCiphertext,
+			EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
+			KeyId:               &s.microsoftOAuthClientSecretsKMSKeyID,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("decrypt microsoft oauth client secret: %v", err)
+		}
+
+		clientSecret = string(decryptRes.Plaintext)
 	}
 
 	stateSHA := sha256.Sum256([]byte(req.State))
@@ -85,19 +105,10 @@ func (s *Store) RedeemMicrosoftOAuthCode(ctx context.Context, req *intermediatev
 		return nil, apierror.NewInvalidArgumentError("invalid state", fmt.Errorf("invalid state"))
 	}
 
-	decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
-		CiphertextBlob:      qProject.MicrosoftOauthClientSecretCiphertext,
-		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		KeyId:               &s.microsoftOAuthClientSecretsKMSKeyID,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("decrypt microsoft oauth client secret: %v", err)
-	}
-
 	redeemRes, err := s.microsoftOAuthClient.RedeemCode(ctx, &microsoftoauth.RedeemCodeRequest{
-		MicrosoftOAuthClientID:     *qProject.MicrosoftOauthClientID,
-		MicrosoftOAuthClientSecret: string(decryptRes.Plaintext),
-		RedirectURI:                req.RedirectUrl,
+		MicrosoftOAuthClientID:     clientID,
+		MicrosoftOAuthClientSecret: clientSecret,
+		RedirectURI:                redirectURI,
 		Code:                       req.Code,
 	})
 	if err != nil {

@@ -38,8 +38,12 @@ func (s *Store) GetGoogleOAuthRedirectURL(ctx context.Context, req *intermediate
 		return nil, fmt.Errorf("enforce project login enabled: %w", err)
 	}
 
-	if qProject.GoogleOauthClientID == nil {
-		return nil, apierror.NewFailedPreconditionError("google oauth client id not set", fmt.Errorf("google oauth client id not set"))
+	clientID := s.defaultGoogleOAuthClientID
+	redirectURI := s.defaultGoogleOAuthRedirectURI
+
+	if qProject.GoogleOauthClientID != nil {
+		clientID = *qProject.GoogleOauthClientID
+		redirectURI = req.RedirectUrl
 	}
 
 	state := uuid.NewString()
@@ -52,8 +56,8 @@ func (s *Store) GetGoogleOAuthRedirectURL(ctx context.Context, req *intermediate
 	}
 
 	url := googleoauth.GetAuthorizeURL(&googleoauth.GetAuthorizeURLRequest{
-		GoogleOAuthClientID: *qProject.GoogleOauthClientID,
-		RedirectURI:         req.RedirectUrl,
+		GoogleOAuthClientID: clientID,
+		RedirectURI:         redirectURI,
 		State:               state,
 	})
 
@@ -76,8 +80,24 @@ func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.R
 		return nil, fmt.Errorf("enforce project login enabled: %w", err)
 	}
 
-	if qProject.GoogleOauthClientID == nil || qProject.GoogleOauthClientSecretCiphertext == nil {
-		return nil, apierror.NewFailedPreconditionError("google oauth client id or secret not set", fmt.Errorf("google oauth client id or secret not set"))
+	clientID := s.defaultGoogleOAuthClientID
+	clientSecret := s.defaultGoogleOAuthClientSecret
+	redirectURI := s.defaultGoogleOAuthRedirectURI
+
+	if qProject.GoogleOauthClientID != nil && qProject.GoogleOauthClientSecretCiphertext != nil {
+		clientID = *qProject.GoogleOauthClientID
+		redirectURI = req.RedirectUrl
+
+		decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
+			CiphertextBlob:      qProject.GoogleOauthClientSecretCiphertext,
+			EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
+			KeyId:               &s.googleOAuthClientSecretsKMSKeyID,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("decrypt google oauth client secret: %v", err)
+		}
+
+		clientSecret = string(decryptRes.Plaintext)
 	}
 
 	stateSHA := sha256.Sum256([]byte(req.State))
@@ -85,19 +105,10 @@ func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.R
 		return nil, apierror.NewInvalidArgumentError("invalid state", fmt.Errorf("invalid state"))
 	}
 
-	decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
-		CiphertextBlob:      qProject.GoogleOauthClientSecretCiphertext,
-		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		KeyId:               &s.googleOAuthClientSecretsKMSKeyID,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("decrypt google oauth client secret: %v", err)
-	}
-
 	redeemRes, err := s.googleOAuthClient.RedeemCode(ctx, &googleoauth.RedeemCodeRequest{
-		GoogleOAuthClientID:     *qProject.GoogleOauthClientID,
-		GoogleOAuthClientSecret: string(decryptRes.Plaintext),
-		RedirectURI:             req.RedirectUrl,
+		GoogleOAuthClientID:     clientID,
+		GoogleOAuthClientSecret: clientSecret,
+		RedirectURI:             redirectURI,
 		Code:                    req.Code,
 	})
 	if err != nil {

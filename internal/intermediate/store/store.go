@@ -48,6 +48,12 @@ type Store struct {
 	stripeClient                          *stripeclient.API
 	svixClient                            *svix.Svix
 	auditlogStore                         *auditlogstore.Store
+	defaultGoogleOAuthClientID            string
+	defaultGoogleOAuthClientSecret        string
+	defaultGoogleOAuthRedirectURI         string
+	defaultMicrosoftOAuthClientID         string
+	defaultMicrosoftOAuthClientSecret     string
+	defaultMicrosoftOAuthRedirectURI      string
 }
 
 type NewStoreParams struct {
@@ -73,6 +79,12 @@ type NewStoreParams struct {
 	StripeClient                          *stripeclient.API
 	SvixClient                            *svix.Svix
 	AuditlogStore                         *auditlogstore.Store
+	DefaultGoogleOAuthClientID            string
+	DefaultGoogleOAuthClientSecret        string
+	DefaultGoogleOAuthRedirectURI         string
+	DefaultMicrosoftOAuthClientID         string
+	DefaultMicrosoftOAuthClientSecret     string
+	DefaultMicrosoftOAuthRedirectURI      string
 }
 
 func New(p NewStoreParams) *Store {
@@ -104,6 +116,12 @@ func New(p NewStoreParams) *Store {
 		stripeClient:                          p.StripeClient,
 		svixClient:                            p.SvixClient,
 		auditlogStore:                         p.AuditlogStore,
+		defaultGoogleOAuthClientID:            p.DefaultGoogleOAuthClientID,
+		defaultGoogleOAuthClientSecret:        p.DefaultGoogleOAuthClientSecret,
+		defaultGoogleOAuthRedirectURI:         p.DefaultGoogleOAuthRedirectURI,
+		defaultMicrosoftOAuthClientID:         p.DefaultMicrosoftOAuthClientID,
+		defaultMicrosoftOAuthClientSecret:     p.DefaultMicrosoftOAuthClientSecret,
+		defaultMicrosoftOAuthRedirectURI:      p.DefaultMicrosoftOAuthRedirectURI,
 	}
 
 	return store
