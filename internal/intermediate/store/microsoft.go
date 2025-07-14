@@ -41,7 +41,7 @@ func (s *Store) GetMicrosoftOAuthRedirectURL(ctx context.Context, req *intermedi
 	clientID := s.defaultMicrosoftOAuthClientID
 	redirectURI := s.defaultMicrosoftOAuthRedirectURI
 
-	if qProject.MicrosoftOauthClientID != nil {
+	if derefOrEmpty(qProject.MicrosoftOauthClientID) != "" {
 		clientID = *qProject.MicrosoftOauthClientID
 		redirectURI = req.RedirectUrl
 	}
@@ -84,7 +84,7 @@ func (s *Store) RedeemMicrosoftOAuthCode(ctx context.Context, req *intermediatev
 	clientSecret := s.defaultMicrosoftOAuthClientSecret
 	redirectURI := s.defaultMicrosoftOAuthRedirectURI
 
-	if qProject.MicrosoftOauthClientID != nil && qProject.MicrosoftOauthClientSecretCiphertext != nil {
+	if derefOrEmpty(qProject.MicrosoftOauthClientID) != "" {
 		clientID = *qProject.MicrosoftOauthClientID
 		redirectURI = req.RedirectUrl
 

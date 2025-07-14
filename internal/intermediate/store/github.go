@@ -41,7 +41,7 @@ func (s *Store) GetGithubOAuthRedirectURL(ctx context.Context, req *intermediate
 	clientID := s.defaultGitHubOAuthClientID
 	redirectURI := s.defaultGitHubOAuthRedirectURI
 
-	if qProject.GithubOauthClientID != nil {
+	if derefOrEmpty(qProject.GithubOauthClientID) != "" {
 		clientID = *qProject.GithubOauthClientID
 		redirectURI = req.RedirectUrl
 	}
@@ -84,7 +84,7 @@ func (s *Store) RedeemGithubOAuthCode(ctx context.Context, req *intermediatev1.R
 	clientSecret := s.defaultGitHubOAuthClientSecret
 	redirectURI := s.defaultGitHubOAuthRedirectURI
 
-	if qProject.GithubOauthClientID != nil && qProject.GithubOauthClientSecretCiphertext != nil {
+	if derefOrEmpty(qProject.GithubOauthClientID) != "" {
 		clientID = *qProject.GithubOauthClientID
 		redirectURI = req.RedirectUrl
 
