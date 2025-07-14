@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ExternalLink, LoaderCircle, Settings } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { Link } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -132,6 +132,8 @@ export function ConfigureGoogleOAuthButton() {
     }
   }, [getProjectResponse, form]);
 
+  const watchLogInWithGoogle = useWatch({ control: form.control, name: "logInWithGoogle"})
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -187,14 +189,15 @@ export function ConfigureGoogleOAuthButton() {
                         value={field.value ? "default" : "custom"}
                         onValueChange={(value) => field.onChange(value === "default")}
                         className="mt-2 gap-0 -space-y-px"
+                        disabled={!watchLogInWithGoogle}
                       >
                         <div className={clsx(
                           "flex items-start space-x-3 p-4 border rounded-t-lg",
                           field.value && "bg-muted/50 border-primary relative"
                         )}>
-                          <RadioGroupItem value="default" className="mt-1" />
+                          <RadioGroupItem id="default" value="default" className="mt-1" />
                           <div className="flex-1 space-y-1">
-                            <Label className="text-sm font-medium">
+                            <Label htmlFor="default" className="text-sm font-medium">
                               Default Google OAuth Client
                             </Label>
                             <p className="text-xs text-muted-foreground">
@@ -207,9 +210,9 @@ export function ConfigureGoogleOAuthButton() {
                           !field.value && "bg-muted/50 border-primary"
                         )}>
                           <div className="flex items-start space-x-3 p-4">
-                            <RadioGroupItem value="custom" className="mt-1" />
+                            <RadioGroupItem id="custom" value="custom" className="mt-1" />
                             <div className="flex-1 space-y-1">
-                              <Label className="text-sm font-medium">
+                              <Label htmlFor="custom" className="text-sm font-medium">
                                 Custom Google OAuth Client
                               </Label>
                               <p className="text-xs text-muted-foreground">
