@@ -41,7 +41,7 @@ func (s *Store) GetGoogleOAuthRedirectURL(ctx context.Context, req *intermediate
 	clientID := s.defaultGoogleOAuthClientID
 	redirectURI := s.defaultGoogleOAuthRedirectURI
 
-	if qProject.GoogleOauthClientID != nil {
+	if derefOrEmpty(qProject.GoogleOauthClientID) != "" {
 		clientID = *qProject.GoogleOauthClientID
 		redirectURI = req.RedirectUrl
 	}
@@ -84,7 +84,7 @@ func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.R
 	clientSecret := s.defaultGoogleOAuthClientSecret
 	redirectURI := s.defaultGoogleOAuthRedirectURI
 
-	if qProject.GoogleOauthClientID != nil && qProject.GoogleOauthClientSecretCiphertext != nil {
+	if derefOrEmpty(qProject.GoogleOauthClientID) != "" {
 		clientID = *qProject.GoogleOauthClientID
 		redirectURI = req.RedirectUrl
 
