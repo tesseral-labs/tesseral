@@ -19,6 +19,7 @@ func (s *Service) Handler() http.Handler {
 	mux := http.NewServeMux()
 	mux.Handle("GET /google-oauth-callback", withErr(s.googleOAuthCallback))
 	mux.Handle("GET /microsoft-oauth-callback", withErr(s.microsoftOAuthCallback))
+	mux.Handle("GET /github-oauth-callback", withErr(s.gitHubOAuthCallback))
 	return mux
 }
 

@@ -38,8 +38,12 @@ func (s *Store) GetGithubOAuthRedirectURL(ctx context.Context, req *intermediate
 		return nil, fmt.Errorf("enforce project login enabled: %w", err)
 	}
 
-	if qProject.GithubOauthClientID == nil {
-		return nil, apierror.NewFailedPreconditionError("github oauth client id not set", fmt.Errorf("github oauth client id not set"))
+	clientID := s.defaultGitHubOAuthClientID
+	redirectURI := s.defaultGitHubOAuthRedirectURI
+
+	if qProject.GithubOauthClientID != nil {
+		clientID = *qProject.GithubOauthClientID
+		redirectURI = req.RedirectUrl
 	}
 
 	state := uuid.NewString()
@@ -52,8 +56,8 @@ func (s *Store) GetGithubOAuthRedirectURL(ctx context.Context, req *intermediate
 	}
 
 	url := githuboauth.GetAuthorizeURL(&githuboauth.GetAuthorizeURLRequest{
-		GithubOAuthClientID: *qProject.GithubOauthClientID,
-		RedirectURI:         req.RedirectUrl,
+		GithubOAuthClientID: clientID,
+		RedirectURI:         redirectURI,
 		State:               state,
 	})
 
@@ -76,8 +80,24 @@ func (s *Store) RedeemGithubOAuthCode(ctx context.Context, req *intermediatev1.R
 		return nil, fmt.Errorf("enforce project login enabled: %w", err)
 	}
 
-	if qProject.GithubOauthClientID == nil || qProject.GithubOauthClientSecretCiphertext == nil {
-		return nil, apierror.NewFailedPreconditionError("github oauth client id or secret not set", fmt.Errorf("github oauth client id or secret not set"))
+	clientID := s.defaultGitHubOAuthClientID
+	clientSecret := s.defaultGitHubOAuthClientSecret
+	redirectURI := s.defaultGitHubOAuthRedirectURI
+
+	if qProject.GithubOauthClientID != nil && qProject.GithubOauthClientSecretCiphertext != nil {
+		clientID = *qProject.GithubOauthClientID
+		redirectURI = req.RedirectUrl
+
+		decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
+			CiphertextBlob:      qProject.GithubOauthClientSecretCiphertext,
+			EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
+			KeyId:               &s.githubOAuthClientSecretsKMSKeyID,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("decrypt github oauth client secret: %v", err)
+		}
+
+		clientSecret = string(decryptRes.Plaintext)
 	}
 
 	stateSHA := sha256.Sum256([]byte(req.State))
@@ -85,19 +105,10 @@ func (s *Store) RedeemGithubOAuthCode(ctx context.Context, req *intermediatev1.R
 		return nil, apierror.NewInvalidArgumentError("invalid state", fmt.Errorf("invalid state"))
 	}
 
-	decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
-		CiphertextBlob:      qProject.GithubOauthClientSecretCiphertext,
-		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		KeyId:               &s.githubOAuthClientSecretsKMSKeyID,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("decrypt github oauth client secret: %v", err)
-	}
-
 	redeemRes, err := s.githubOAuthClient.RedeemCode(ctx, &githuboauth.RedeemCodeRequest{
-		GithubOAuthClientID:     *qProject.GithubOauthClientID,
-		GithubOAuthClientSecret: string(decryptRes.Plaintext),
-		RedirectURI:             req.RedirectUrl,
+		GithubOAuthClientID:     clientID,
+		GithubOAuthClientSecret: clientSecret,
+		RedirectURI:             redirectURI,
 		Code:                    req.Code,
 	})
 	if err != nil {

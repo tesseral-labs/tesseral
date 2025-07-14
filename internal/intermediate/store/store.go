@@ -54,6 +54,9 @@ type Store struct {
 	defaultMicrosoftOAuthClientID         string
 	defaultMicrosoftOAuthClientSecret     string
 	defaultMicrosoftOAuthRedirectURI      string
+	defaultGitHubOAuthClientID            string
+	defaultGitHubOAuthClientSecret        string
+	defaultGitHubOAuthRedirectURI         string
 }
 
 type NewStoreParams struct {
@@ -85,6 +88,9 @@ type NewStoreParams struct {
 	DefaultMicrosoftOAuthClientID         string
 	DefaultMicrosoftOAuthClientSecret     string
 	DefaultMicrosoftOAuthRedirectURI      string
+	DefaultGitHubOAuthClientID            string
+	DefaultGitHubOAuthClientSecret        string
+	DefaultGitHubOAuthRedirectURI         string
 }
 
 func New(p NewStoreParams) *Store {
@@ -122,6 +128,9 @@ func New(p NewStoreParams) *Store {
 		defaultMicrosoftOAuthClientID:         p.DefaultMicrosoftOAuthClientID,
 		defaultMicrosoftOAuthClientSecret:     p.DefaultMicrosoftOAuthClientSecret,
 		defaultMicrosoftOAuthRedirectURI:      p.DefaultMicrosoftOAuthRedirectURI,
+		defaultGitHubOAuthClientID:            p.DefaultGitHubOAuthClientID,
+		defaultGitHubOAuthClientSecret:        p.DefaultGitHubOAuthClientSecret,
+		defaultGitHubOAuthRedirectURI:         p.DefaultGitHubOAuthRedirectURI,
 	}
 
 	return store

@@ -137,6 +137,9 @@ func main() {
 		DefaultMicrosoftOAuthClientID       string        `conf:"default_microsoft_oauth_client_id,noredact"`
 		DefaultMicrosoftOAuthClientSecret   string        `conf:"default_microsoft_oauth_client_secret"`
 		DefaultMicrosoftOAuthRedirectURI    string        `conf:"default_microsoft_oauth_redirect_uri,noredact"`
+		DefaultGitHubOAuthClientID          string        `conf:"default_github_oauth_client_id,noredact"`
+		DefaultGitHubOAuthClientSecret      string        `conf:"default_github_oauth_client_secret"`
+		DefaultGitHubOAuthRedirectURI       string        `conf:"default_github_oauth_redirect_uri,noredact"`
 	}{
 		PageEncodingValue: "0000000000000000000000000000000000000000000000000000000000000000",
 	}
@@ -366,6 +369,9 @@ func main() {
 		DefaultMicrosoftOAuthClientID:         config.DefaultMicrosoftOAuthClientID,
 		DefaultMicrosoftOAuthClientSecret:     config.DefaultMicrosoftOAuthClientSecret,
 		DefaultMicrosoftOAuthRedirectURI:      config.DefaultMicrosoftOAuthRedirectURI,
+		DefaultGitHubOAuthClientID:            config.DefaultGitHubOAuthClientID,
+		DefaultGitHubOAuthClientSecret:        config.DefaultGitHubOAuthClientSecret,
+		DefaultGitHubOAuthRedirectURI:         config.DefaultGitHubOAuthRedirectURI,
 	})
 	intermediateConnectPath, intermediateConnectHandler := intermediatev1connect.NewIntermediateServiceHandler(
 		&intermediateservice.Service{
