@@ -1,12 +1,12 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
+import clsx from "clsx";
 import { ExternalLink, LoaderCircle, Settings } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Link } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
-import clsx from "clsx";
 
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { Button } from "@/components/ui/button";
@@ -31,7 +31,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import {
   getProject,
@@ -90,8 +89,7 @@ export function ConfigureGithubOAuthButton() {
       !data.githubOauthClientId
     ) {
       form.setError("githubOauthClientId", {
-        message:
-          "GitHub OAuth Client ID is required when using custom client.",
+        message: "GitHub OAuth Client ID is required when using custom client.",
       });
       return;
     }
@@ -109,8 +107,12 @@ export function ConfigureGithubOAuthButton() {
     await updateProjectMutation.mutateAsync({
       project: {
         logInWithGithub: data.logInWithGithub,
-        githubOauthClientId: data.useDefaultGithubClient ? "" : data.githubOauthClientId,
-        githubOauthClientSecret: data.useDefaultGithubClient ? "" : data.githubOauthClientSecret,
+        githubOauthClientId: data.useDefaultGithubClient
+          ? ""
+          : data.githubOauthClientId,
+        githubOauthClientSecret: data.useDefaultGithubClient
+          ? ""
+          : data.githubOauthClientSecret,
       },
     });
     await refetch();
@@ -123,7 +125,8 @@ export function ConfigureGithubOAuthButton() {
     if (getProjectResponse) {
       form.reset({
         logInWithGithub: getProjectResponse.project?.logInWithGithub,
-        useDefaultGithubClient: !getProjectResponse.project?.githubOauthClientId,
+        useDefaultGithubClient:
+          !getProjectResponse.project?.githubOauthClientId,
         githubOauthClientId:
           getProjectResponse.project?.githubOauthClientId || "",
         githubOauthClientSecret:
@@ -132,7 +135,10 @@ export function ConfigureGithubOAuthButton() {
     }
   }, [getProjectResponse, form]);
 
-  const watchLogInWithGithub = useWatch({ control: form.control, name: "logInWithGithub"})
+  const watchLogInWithGithub = useWatch({
+    control: form.control,
+    name: "logInWithGithub",
+  });
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -182,41 +188,66 @@ export function ConfigureGithubOAuthButton() {
                   <FormItem>
                     <FormLabel>OAuth Client Configuration</FormLabel>
                     <FormDescription>
-                      Choose whether to use Tesseral's default GitHub OAuth client or provide your own.
+                      Choose whether to use Tesseral's default GitHub OAuth
+                      client or provide your own.
                     </FormDescription>
                     <FormControl>
                       <RadioGroup
                         value={field.value ? "default" : "custom"}
-                        onValueChange={(value) => field.onChange(value === "default")}
+                        onValueChange={(value) =>
+                          field.onChange(value === "default")
+                        }
                         className="mt-2 gap-0 -space-y-px"
                         disabled={!watchLogInWithGithub}
                       >
-                        <div className={clsx(
-                          "flex items-start space-x-3 p-4 border rounded-t-lg",
-                          field.value && "bg-muted/50 border-primary relative"
-                        )}>
-                          <RadioGroupItem id="default" value="default" className="mt-1" />
+                        <div
+                          className={clsx(
+                            "flex items-start space-x-3 p-4 border rounded-t-lg",
+                            field.value &&
+                              "bg-muted/50 border-primary relative",
+                          )}
+                        >
+                          <RadioGroupItem
+                            id="default"
+                            value="default"
+                            className="mt-1"
+                          />
                           <div className="flex-1 space-y-1">
-                            <Label htmlFor="default" className="text-sm font-medium">
+                            <Label
+                              htmlFor="default"
+                              className="text-sm font-medium"
+                            >
                               Default GitHub OAuth Client
                             </Label>
                             <p className="text-xs text-muted-foreground">
-                              Use Tesseral's preconfigured GitHub OAuth client. This is the easiest option and requires no additional setup.
+                              Use Tesseral's preconfigured GitHub OAuth client.
+                              This is the easiest option and requires no
+                              additional setup.
                             </p>
                           </div>
                         </div>
-                        <div className={clsx(
-                          "border rounded-b-lg",
-                          !field.value && "bg-muted/50 border-primary"
-                        )}>
+                        <div
+                          className={clsx(
+                            "border rounded-b-lg",
+                            !field.value && "bg-muted/50 border-primary",
+                          )}
+                        >
                           <div className="flex items-start space-x-3 p-4">
-                            <RadioGroupItem id="custom" value="custom" className="mt-1" />
+                            <RadioGroupItem
+                              id="custom"
+                              value="custom"
+                              className="mt-1"
+                            />
                             <div className="flex-1 space-y-1">
-                              <Label htmlFor="custom" className="text-sm font-medium">
+                              <Label
+                                htmlFor="custom"
+                                className="text-sm font-medium"
+                              >
                                 Custom GitHub OAuth Client
                               </Label>
                               <p className="text-xs text-muted-foreground">
-                                Use your own GitHub OAuth application with custom branding and settings.
+                                Use your own GitHub OAuth application with
+                                custom branding and settings.
                               </p>
                             </div>
                           </div>
@@ -225,13 +256,15 @@ export function ConfigureGithubOAuthButton() {
                               <div className="flex flex-col gap-2 text-sm">
                                 <Label>Callback URL</Label>
                                 <span>
-                                  Use this as the Authorized redirect URI in your GitHub OAuth app settings.{" "}
+                                  Use this as the Authorized redirect URI in
+                                  your GitHub OAuth app settings.{" "}
                                   <Link
                                     to="https://tesseral.com/docs/login-methods/primary-factors/log-in-with-github"
                                     target="_blank"
                                     className="underline"
                                   >
-                                    Docs <ExternalLink className="inline size-3" />
+                                    Docs{" "}
+                                    <ExternalLink className="inline size-3" />
                                   </Link>
                                 </span>
                                 <ValueCopier
