@@ -76,12 +76,12 @@ export function ConfigureMicrosoftOAuthButton() {
       !data.logInWithMicrosoft &&
       !getProjectResponse?.project?.logInWithEmail &&
       !getProjectResponse?.project?.logInWithPassword &&
-      !getProjectResponse?.project?.logInWithMicrosoft &&
+      !getProjectResponse?.project?.logInWithGoogle &&
       !getProjectResponse?.project?.logInWithGithub
     ) {
       form.setError("logInWithMicrosoft", {
         message:
-          "At least one of Log in with Email, Log in with Password, Log in with Microsoft, Log in with Microsoft, or Log in with GitHub must be enabled.",
+          "At least one of Log in with Email, Log in with Password, Log in with Google, Log in with Microsoft, or Log in with GitHub must be enabled.",
       });
       return;
     }

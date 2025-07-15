@@ -75,11 +75,11 @@ export function ConfigureGithubOAuthButton() {
       !getProjectResponse?.project?.logInWithEmail &&
       !getProjectResponse?.project?.logInWithPassword &&
       !getProjectResponse?.project?.logInWithMicrosoft &&
-      !getProjectResponse?.project?.logInWithGithub
+      !getProjectResponse?.project?.logInWithGoogle
     ) {
       form.setError("logInWithGithub", {
         message:
-          "At least one of Log in with Email, Log in with Password, Log in with GitHub, Log in with Microsoft, or Log in with GitHub must be enabled.",
+          "At least one of Log in with Email, Log in with Password, Log in with Google, Log in with Microsoft, or Log in with GitHub must be enabled.",
       });
       return;
     }
