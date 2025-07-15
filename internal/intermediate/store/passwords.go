@@ -436,7 +436,7 @@ func (s *Store) IssuePasswordResetCode(ctx context.Context, req *intermediatev1.
 		emailQuotaDaily = *qProject.EmailQuotaDaily
 	}
 
-	slog.InfoContext(ctx, "email_daily_quota_usage", "usage", qEmailDailyQuotaUsage.QuotaUsage, "quota", qProject.EmailQuotaDaily)
+	slog.InfoContext(ctx, "email_daily_quota_usage", "usage", qEmailDailyQuotaUsage.QuotaUsage, "quota", emailQuotaDaily)
 
 	if qEmailDailyQuotaUsage.QuotaUsage > emailQuotaDaily {
 		slog.InfoContext(ctx, "email_daily_quota_exceeded")
