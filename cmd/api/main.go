@@ -89,10 +89,9 @@ func main() {
 		panic(fmt.Errorf("init sentry: %w", err))
 	}
 
+	jsonHandler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{AddSource: true})
 	slogHandler := ctxlog.NewHandler(
-		sentryintegration.NewSlogHandler(
-			slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{AddSource: true}),
-		),
+		sentryintegration.NewSlogHandler(jsonHandler),
 	)
 	slog.SetDefault(slog.New(slogHandler))
 
@@ -188,7 +187,7 @@ func main() {
 
 		slogHandler := ctxlog.NewHandler(
 			sentryintegration.NewSlogHandler(
-				otelslog.NewHandler("api"),
+				multiOutputHandler{jsonHandler, otelslog.NewHandler("api")},
 			),
 		)
 		slog.SetDefault(slog.New(slogHandler))
