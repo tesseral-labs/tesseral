@@ -85,7 +85,7 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *interm
 		emailQuotaDaily = *qProject.EmailQuotaDaily
 	}
 
-	slog.InfoContext(ctx, "email_daily_quota_usage", "usage", qEmailDailyQuotaUsage.QuotaUsage, "quota", qProject.EmailQuotaDaily)
+	slog.InfoContext(ctx, "email_daily_quota_usage", "usage", qEmailDailyQuotaUsage.QuotaUsage, "quota", emailQuotaDaily)
 
 	if qEmailDailyQuotaUsage.QuotaUsage > emailQuotaDaily {
 		slog.InfoContext(ctx, "email_daily_quota_exceeded")

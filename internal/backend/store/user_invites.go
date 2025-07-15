@@ -162,7 +162,7 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *backendv1.CreateUserI
 		emailQuotaDaily = *qProject.EmailQuotaDaily
 	}
 
-	slog.InfoContext(ctx, "email_daily_quota_usage", "usage", qEmailDailyQuotaUsage.QuotaUsage, "quota", qProject.EmailQuotaDaily)
+	slog.InfoContext(ctx, "email_daily_quota_usage", "usage", qEmailDailyQuotaUsage.QuotaUsage, "quota", emailQuotaDaily)
 
 	if qEmailDailyQuotaUsage.QuotaUsage > emailQuotaDaily {
 		slog.InfoContext(ctx, "email_daily_quota_exceeded")
