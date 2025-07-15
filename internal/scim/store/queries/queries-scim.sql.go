@@ -28,11 +28,64 @@ func (q *Queries) CountUsers(ctx context.Context, organizationID uuid.UUID) (int
 	return count, err
 }
 
+const createAuditLogEvent = `-- name: CreateAuditLogEvent :one
+INSERT INTO audit_log_events (id, project_id, organization_id, actor_scim_api_key_id, resource_type, resource_id, event_name, event_time, event_details)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, coalesce($9, '{}'::jsonb))
+RETURNING
+    id, project_id, organization_id, actor_user_id, actor_session_id, actor_api_key_id, actor_console_user_id, actor_console_session_id, actor_backend_api_key_id, actor_intermediate_session_id, resource_type, resource_id, event_name, event_time, event_details, actor_scim_api_key_id
+`
+
+type CreateAuditLogEventParams struct {
+	ID                uuid.UUID
+	ProjectID         uuid.UUID
+	OrganizationID    *uuid.UUID
+	ActorScimApiKeyID *uuid.UUID
+	ResourceType      *AuditLogEventResourceType
+	ResourceID        *uuid.UUID
+	EventName         string
+	EventTime         *time.Time
+	EventDetails      interface{}
+}
+
+func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEventParams) (AuditLogEvent, error) {
+	row := q.db.QueryRow(ctx, createAuditLogEvent,
+		arg.ID,
+		arg.ProjectID,
+		arg.OrganizationID,
+		arg.ActorScimApiKeyID,
+		arg.ResourceType,
+		arg.ResourceID,
+		arg.EventName,
+		arg.EventTime,
+		arg.EventDetails,
+	)
+	var i AuditLogEvent
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.OrganizationID,
+		&i.ActorUserID,
+		&i.ActorSessionID,
+		&i.ActorApiKeyID,
+		&i.ActorConsoleUserID,
+		&i.ActorConsoleSessionID,
+		&i.ActorBackendApiKeyID,
+		&i.ActorIntermediateSessionID,
+		&i.ResourceType,
+		&i.ResourceID,
+		&i.EventName,
+		&i.EventTime,
+		&i.EventDetails,
+		&i.ActorScimApiKeyID,
+	)
+	return i, err
+}
+
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (id, organization_id, email, is_owner)
     VALUES ($1, $2, $3, $4)
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 `
 
 type CreateUserParams struct {
@@ -59,7 +112,6 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -74,26 +126,21 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	return i, err
 }
 
-const deactivateUser = `-- name: DeactivateUser :one
-UPDATE
-    users
-SET
-    deactivate_time = $1
-WHERE
-    id = $2
-    AND organization_id = $3
+const deleteUser = `-- name: DeleteUser :one
+DELETE FROM users
+WHERE id = $1
+    AND organization_id = $2
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 `
 
-type DeactivateUserParams struct {
-	DeactivateTime *time.Time
+type DeleteUserParams struct {
 	ID             uuid.UUID
 	OrganizationID uuid.UUID
 }
 
-func (q *Queries) DeactivateUser(ctx context.Context, arg DeactivateUserParams) (User, error) {
-	row := q.db.QueryRow(ctx, deactivateUser, arg.DeactivateTime, arg.ID, arg.OrganizationID)
+func (q *Queries) DeleteUser(ctx context.Context, arg DeleteUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, deleteUser, arg.ID, arg.OrganizationID)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -104,7 +151,6 @@ func (q *Queries) DeactivateUser(ctx context.Context, arg DeactivateUserParams) 
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -180,7 +226,7 @@ func (q *Queries) GetSCIMAPIKeyByTokenSHA256(ctx context.Context, arg GetSCIMAPI
 
 const getUserByEmail = `-- name: GetUserByEmail :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 FROM
     users
 WHERE
@@ -205,7 +251,6 @@ func (q *Queries) GetUserByEmail(ctx context.Context, arg GetUserByEmailParams) 
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -222,7 +267,7 @@ func (q *Queries) GetUserByEmail(ctx context.Context, arg GetUserByEmailParams) 
 
 const getUserByID = `-- name: GetUserByID :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 FROM
     users
 WHERE
@@ -247,7 +292,6 @@ func (q *Queries) GetUserByID(ctx context.Context, arg GetUserByIDParams) (User,
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
@@ -264,7 +308,7 @@ func (q *Queries) GetUserByID(ctx context.Context, arg GetUserByIDParams) (User,
 
 const listUsers = `-- name: ListUsers :many
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 FROM
     users
 WHERE
@@ -298,7 +342,6 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 			&i.Email,
 			&i.CreateTime,
 			&i.UpdateTime,
-			&i.DeactivateTime,
 			&i.IsOwner,
 			&i.FailedPasswordAttempts,
 			&i.PasswordLockoutExpireTime,
@@ -324,29 +367,22 @@ const updateUser = `-- name: UpdateUser :one
 UPDATE
     users
 SET
-    email = $1,
-    deactivate_time = $2
+    email = $1
 WHERE
-    id = $3
-    AND organization_id = $4
+    id = $2
+    AND organization_id = $3
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time, authenticator_app_recovery_code_sha256s, display_name, profile_picture_url, github_user_id
 `
 
 type UpdateUserParams struct {
 	Email          string
-	DeactivateTime *time.Time
 	ID             uuid.UUID
 	OrganizationID uuid.UUID
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
-	row := q.db.QueryRow(ctx, updateUser,
-		arg.Email,
-		arg.DeactivateTime,
-		arg.ID,
-		arg.OrganizationID,
-	)
+	row := q.db.QueryRow(ctx, updateUser, arg.Email, arg.ID, arg.OrganizationID)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -357,7 +393,6 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.DeactivateTime,
 		&i.IsOwner,
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,

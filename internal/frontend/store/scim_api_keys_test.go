@@ -28,6 +28,7 @@ func TestCreateSCIMAPIKey_SCIMEnabled(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, resp.ScimApiKey)
 	require.Equal(t, "scim-key-1", resp.ScimApiKey.DisplayName)
+	require.NotEmpty(t, resp.ScimApiKey.SecretToken)
 }
 
 func TestCreateSCIMAPIKey_SCIMDisabled(t *testing.T) {

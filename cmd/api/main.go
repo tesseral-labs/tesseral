@@ -419,7 +419,8 @@ func main() {
 	oidcServiceHandler = oidcinterceptor.New(oidcStore, projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), &cookier, oidcServiceHandler)
 
 	scimStore := scimstore.New(scimstore.NewStoreParams{
-		DB: db,
+		DB:            db,
+		AuditlogStore: &auditlogStore,
 	})
 	scimService := scimservice.Service{
 		Store: scimStore,

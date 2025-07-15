@@ -19,6 +19,7 @@ message Organization {
   optional bool log_in_with_google = 6;
   optional bool log_in_with_microsoft = 7;
   optional bool log_in_with_saml = 8;
+  optional bool log_in_with_oidc = 17;
   optional bool scim_enabled = 9;
   optional bool log_in_with_authenticator_app = 10;
   optional bool log_in_with_passkey = 11;

@@ -13,10 +13,11 @@ import {
 import { DateTime } from "luxon";
 import React, { MouseEvent, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { SecretCopier } from "@/components/core/SecretCopier";
 import { ValueCopier } from "@/components/core/ValueCopier";
 import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 import {
@@ -87,6 +88,7 @@ export function ScimApiKeysCard() {
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
+    refetch,
   } = useInfiniteQuery(
     listSCIMAPIKeys,
     {
@@ -109,7 +111,7 @@ export function ScimApiKeysCard() {
           A SCIM API key lets you do enterprise directory syncing.
         </CardDescription>
         <CardAction>
-          <CreateScimApiKeyButton />
+          <CreateScimApiKeyButton onSuccess={refetch} />
         </CardAction>
       </CardHeader>
       <CardContent>
@@ -169,7 +171,10 @@ export function ScimApiKeysCard() {
                           ).toRelative()}
                       </TableCell>
                       <TableCell className="text-right">
-                        <ManageScimApiKeyButton scimApiKey={scimApiKey} />
+                        <ManageScimApiKeyButton
+                          scimApiKey={scimApiKey}
+                          onSuccess={refetch}
+                        />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -199,12 +204,12 @@ const schema = z.object({
   displayName: z.string().min(1, "Display name is required"),
 });
 
-function CreateScimApiKeyButton() {
-  const navigate = useNavigate();
-
+function CreateScimApiKeyButton({ onSuccess }: { onSuccess: () => void }) {
   const createScimApiKeyMutation = useMutation(createSCIMAPIKey);
 
-  const [open, setOpen] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
+  const [secretOpen, setSecretOpen] = useState(false);
+  const [scimApiKey, setScimApiKey] = useState<SCIMAPIKey>();
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -216,7 +221,7 @@ function CreateScimApiKeyButton() {
   function handleCancel(e: MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     e.stopPropagation();
-    setOpen(false);
+    setCreateOpen(false);
     return false;
   }
 
@@ -229,88 +234,132 @@ function CreateScimApiKeyButton() {
 
     if (!scimApiKey) {
       toast.error("Failed to create SCIM API key. Please try again.");
-      setOpen(false);
+      setCreateOpen(false);
       return;
     }
 
+    setScimApiKey(scimApiKey);
+    setSecretOpen(true);
+    setCreateOpen(false);
+
     toast.success("SCIM API key created successfully");
     form.reset();
-    navigate(`/organization/scim-api-keys/${scimApiKey.id}`);
+
+    onSuccess();
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button size="sm">
-          <Plus />
-          Create SCIM API Key
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Create SCIM API Key</DialogTitle>
-          <DialogDescription>
-            Create a new SCIM API key for this organization.
-          </DialogDescription>
-        </DialogHeader>
+    <>
+      <Dialog
+        open={!!scimApiKey?.secretToken && secretOpen}
+        onOpenChange={setSecretOpen}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>API Key Created</DialogTitle>
+            <DialogDescription>
+              API Key was created successfully.
+            </DialogDescription>
+          </DialogHeader>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)}>
-            <div className="space-y-6">
-              <FormField
-                control={form.control}
-                name="displayName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Display Name</FormLabel>
-                    <FormDescription>
-                      The human-friendly name for this SCIM API key.
-                    </FormDescription>
-                    <FormMessage />
-                    <FormControl>
-                      <Input placeholder="Display name" {...field} />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
-            <DialogFooter className="mt-8">
-              <Button variant="outline" onClick={handleCancel}>
-                Cancel
-              </Button>
-              <Button
-                disabled={
-                  !form.formState.isDirty || createScimApiKeyMutation.isPending
-                }
-                type="submit"
-              >
-                {createScimApiKeyMutation.isPending && (
-                  <LoaderCircle className="animate-spin" />
-                )}
-                {createScimApiKeyMutation.isPending
-                  ? "Creating SCIM API Key"
-                  : "Create SCIM API Key"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+          <div className="text-sm font-medium leading-none">
+            API Key Secret Token
+          </div>
+
+          {scimApiKey?.secretToken && (
+            <SecretCopier
+              placeholder={`tesseral_secret_scim_api_key_•••••••••••••••••••••••••••••••••••••••••••••••••••••••`}
+              secret={scimApiKey.secretToken}
+            />
+          )}
+
+          <div className="text-sm text-muted-foreground">
+            Store this secret in your secrets manager. You will not be able to
+            see this secret token again later.
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSecretOpen(false)}>
+              Close
+            </Button>
+            {!!scimApiKey?.id && (
+              <Link to={`/organization/scim-api-keys/${scimApiKey.id}`}>
+                <Button>View API Key</Button>
+              </Link>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+        <DialogTrigger asChild>
+          <Button size="sm">
+            <Plus />
+            Create SCIM API Key
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create SCIM API Key</DialogTitle>
+            <DialogDescription>
+              Create a new SCIM API key for this organization.
+            </DialogDescription>
+          </DialogHeader>
+
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleSubmit)}>
+              <div className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="displayName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Display Name</FormLabel>
+                      <FormDescription>
+                        The human-friendly name for this SCIM API key.
+                      </FormDescription>
+                      <FormMessage />
+                      <FormControl>
+                        <Input placeholder="Display name" {...field} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <DialogFooter className="mt-8">
+                <Button variant="outline" onClick={handleCancel}>
+                  Cancel
+                </Button>
+                <Button
+                  disabled={
+                    !form.formState.isDirty ||
+                    createScimApiKeyMutation.isPending
+                  }
+                  type="submit"
+                >
+                  {createScimApiKeyMutation.isPending && (
+                    <LoaderCircle className="animate-spin" />
+                  )}
+                  {createScimApiKeyMutation.isPending
+                    ? "Creating SCIM API Key"
+                    : "Create SCIM API Key"}
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
-function ManageScimApiKeyButton({ scimApiKey }: { scimApiKey: SCIMAPIKey }) {
-  const { refetch } = useInfiniteQuery(
-    listSCIMAPIKeys,
-    {
-      pageToken: "",
-    },
-    {
-      pageParamKey: "pageToken",
-      getNextPageParam: (lastPage) => lastPage.nextPageToken || undefined,
-    },
-  );
-
+function ManageScimApiKeyButton({
+  scimApiKey,
+  onSuccess,
+}: {
+  scimApiKey: SCIMAPIKey;
+  onSuccess: () => void;
+}) {
   const revokeScimApiKeyMutation = useMutation(revokeSCIMAPIKey);
   const deleteScimApiKeyMutation = useMutation(deleteSCIMAPIKey);
 
@@ -322,7 +371,7 @@ function ManageScimApiKeyButton({ scimApiKey }: { scimApiKey: SCIMAPIKey }) {
       await revokeScimApiKeyMutation.mutateAsync({
         id: scimApiKey.id,
       });
-      await refetch();
+      onSuccess();
       setRevokeOpen(false);
       toast.success("SCIM API key revoked successfully");
     } catch {
@@ -336,7 +385,7 @@ function ManageScimApiKeyButton({ scimApiKey }: { scimApiKey: SCIMAPIKey }) {
       await deleteScimApiKeyMutation.mutateAsync({
         id: scimApiKey.id,
       });
-      await refetch();
+      onSuccess();
       setDeleteOpen(false);
       toast.success("SCIM API key deleted successfully");
     } catch {

@@ -10,7 +10,9 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
+	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
+	"github.com/tesseral-labs/tesseral/internal/uuidv7"
 	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -233,7 +235,10 @@ func TestConsoleListCustomAuditLogEvents_PaginateByActor(t *testing.T) {
 	orgID := u.Environment.NewOrganization(t, u.ProjectID, &backendv1.Organization{
 		DisplayName:    "test",
 		ApiKeysEnabled: refOrNil(true),
+		ScimEnabled:    refOrNil(true),
 	})
+	orgUUID, err := idformat.Organization.Parse(orgID)
+	require.NoError(t, err)
 
 	userID := u.Environment.NewUser(t, orgID, &backendv1.User{
 		Email: "test@example.com",
@@ -252,6 +257,17 @@ func TestConsoleListCustomAuditLogEvents_PaginateByActor(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, apiKey)
 	apiKeyID := apiKey.ApiKey.Id
+
+	scimApiKey, err := u.Store.CreateSCIMAPIKey(ctx, &backendv1.CreateSCIMAPIKeyRequest{
+		ScimApiKey: &backendv1.SCIMAPIKey{
+			OrganizationId: orgID,
+			DisplayName:    "test-scim-key",
+		},
+	})
+	require.NoError(t, err)
+	require.NotNil(t, scimApiKey)
+	scimApiKeyID, err := idformat.SCIMAPIKey.Parse(scimApiKey.ScimApiKey.Id)
+	require.NoError(t, err)
 
 	// Org-wide events
 	for i := range 5 {
@@ -283,6 +299,20 @@ func TestConsoleListCustomAuditLogEvents_PaginateByActor(t *testing.T) {
 		})
 		require.NoError(t, err)
 	}
+	// SCIM API Key-specific events
+	for i := range 5 {
+		eventTime := time.Now()
+		eventID := uuidv7.NewWithTime(eventTime)
+		_, err := u.Store.q.CreateAuditLogEvent(ctx, queries.CreateAuditLogEventParams{
+			ID:                eventID,
+			ProjectID:         authn.ProjectID(ctx),
+			OrganizationID:    (*uuid.UUID)(&orgUUID),
+			EventName:         fmt.Sprintf("custom.scim_api_key.%d", i),
+			EventTime:         &eventTime,
+			ActorScimApiKeyID: (*uuid.UUID)(&scimApiKeyID),
+		})
+		require.NoError(t, err)
+	}
 
 	t.Run("AllEvents", func(t *testing.T) {
 		t.Parallel()
@@ -301,8 +331,17 @@ func TestConsoleListCustomAuditLogEvents_PaginateByActor(t *testing.T) {
 		})
 		require.NoError(t, err)
 		require.NotNil(t, resp2)
-		require.Len(t, resp2.AuditLogEvents, 5+1 /* CreateAPIKey creates an event */)
-		require.Empty(t, resp2.NextPageToken)
+		require.Len(t, resp2.AuditLogEvents, 10)
+		require.NotEmpty(t, resp2.NextPageToken)
+
+		resp3, err := u.Store.ConsoleListCustomAuditLogEvents(ctx, &backendv1.ConsoleListAuditLogEventsRequest{
+			OrganizationId: orgID,
+			PageToken:      resp2.NextPageToken,
+		})
+		require.NoError(t, err)
+		require.NotNil(t, resp3)
+		require.Len(t, resp3.AuditLogEvents, 2 /* CreateAPIKey + CreateSCIMAPIKey create an event */)
+		require.Empty(t, resp3.NextPageToken)
 	})
 
 	t.Run("ByActorUserID", func(t *testing.T) {
@@ -380,6 +419,32 @@ func TestConsoleListCustomAuditLogEvents_PaginateByActor(t *testing.T) {
 			"custom.api_key.2",
 			"custom.api_key.3",
 			"custom.api_key.4",
+		}, respEventNames.EventNames)
+	})
+
+	t.Run("ByActorSCIMAPIKeyID", func(t *testing.T) {
+		t.Parallel()
+
+		resp, err := u.Store.ConsoleListCustomAuditLogEvents(ctx, &backendv1.ConsoleListAuditLogEventsRequest{
+			OrganizationId:    orgID,
+			ActorScimApiKeyId: idformat.SCIMAPIKey.Format(scimApiKeyID),
+		})
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		require.Len(t, resp.AuditLogEvents, 5)
+		require.Empty(t, resp.NextPageToken)
+
+		respEventNames, err := u.Store.ConsoleListAuditLogEventNames(ctx, &backendv1.ConsoleListAuditLogEventNamesRequest{
+			ActorScimApiKeyId: idformat.SCIMAPIKey.Format(scimApiKeyID),
+		})
+		require.NoError(t, err)
+		require.NotNil(t, respEventNames)
+		require.ElementsMatch(t, []string{
+			"custom.scim_api_key.0",
+			"custom.scim_api_key.1",
+			"custom.scim_api_key.2",
+			"custom.scim_api_key.3",
+			"custom.scim_api_key.4",
 		}, respEventNames.EventNames)
 	})
 }

@@ -6,12 +6,13 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"strings"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
+	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/emailaddr"
 	"github.com/tesseral-labs/tesseral/internal/scim/authn"
 	"github.com/tesseral-labs/tesseral/internal/scim/internal/scimpatch"
@@ -72,7 +73,7 @@ func (s *Store) ListUsers(ctx context.Context, req *ListUsersRequest) (*ListUser
 		return &ListUsersResponse{
 			Schemas:      []string{"urn:ietf:params:scim:api:messages:2.0:ListResponse"},
 			TotalResults: 1,
-			Users:        []User{formatUser(false, qUser)},
+			Users:        []User{formatUser(false, qUser, true)},
 		}, nil
 	}
 
@@ -102,7 +103,7 @@ func (s *Store) ListUsers(ctx context.Context, req *ListUsersRequest) (*ListUser
 
 	users := []User{} // intentionally not initialized as nil to avoid a JSON `null`
 	for _, qUser := range qUsers {
-		users = append(users, formatUser(false, qUser))
+		users = append(users, formatUser(false, qUser, true))
 	}
 
 	return &ListUsersResponse{
@@ -142,11 +143,11 @@ func (s *Store) GetUser(ctx context.Context, id string) (User, error) {
 		return nil, fmt.Errorf("get user by id: %w", err)
 	}
 
-	return formatUser(true, qUser), nil
+	return formatUser(true, qUser, true), nil
 }
 
 func (s *Store) CreateUser(ctx context.Context, user User) (User, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -170,15 +171,32 @@ func (s *Store) CreateUser(ctx context.Context, user User) (User, error) {
 		return nil, fmt.Errorf("create user: %w", err)
 	}
 
+	auditUser, err := s.auditlogStore.GetUser(ctx, tx, qUser.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get user for audit log: %w", err)
+	}
+
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.users.create",
+		EventDetails: &auditlogv1.CreateUser{
+			User: auditUser,
+		},
+		OrganizationID: &qUser.OrganizationID,
+		ResourceType:   queries.AuditLogEventResourceTypeUser,
+		ResourceID:     &qUser.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("log audit event: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return formatUser(true, qUser), nil
+	return formatUser(true, qUser, true), nil
 }
 
 func (s *Store) UpdateUser(ctx context.Context, id string, user User) (User, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -198,17 +216,18 @@ func (s *Store) UpdateUser(ctx context.Context, id string, user User) (User, err
 		return nil, fmt.Errorf("validate email domain: %w", err)
 	}
 
-	// todo do we care about this bumping deactivate_time any time an update happens to the user?
-	var deactivateTime *time.Time
 	if !parsed.Active {
-		now := time.Now()
-		deactivateTime = &now
+		return s.DeleteUser(ctx, id)
+	}
+
+	auditPreviousUser, err := s.auditlogStore.GetUser(ctx, tx, userID)
+	if err != nil {
+		return nil, fmt.Errorf("get user for audit log: %w", err)
 	}
 
 	qUser, err := q.UpdateUser(ctx, queries.UpdateUserParams{
 		OrganizationID: authn.OrganizationID(ctx),
 		ID:             userID,
-		DeactivateTime: deactivateTime,
 		Email:          parsed.UserName,
 	})
 	if err != nil {
@@ -225,11 +244,29 @@ func (s *Store) UpdateUser(ctx context.Context, id string, user User) (User, err
 		return nil, fmt.Errorf("update user: %w", err)
 	}
 
+	auditUser, err := s.auditlogStore.GetUser(ctx, tx, qUser.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get user for audit log: %w", err)
+	}
+
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.users.update",
+		EventDetails: &auditlogv1.UpdateUser{
+			PreviousUser: auditPreviousUser,
+			User:         auditUser,
+		},
+		OrganizationID: &qUser.OrganizationID,
+		ResourceType:   queries.AuditLogEventResourceTypeUser,
+		ResourceID:     &qUser.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("log audit event: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return formatUser(true, qUser), nil
+	return formatUser(true, qUser, true), nil
 }
 
 type PatchOperations struct {
@@ -237,7 +274,7 @@ type PatchOperations struct {
 }
 
 func (s *Store) PatchUser(ctx context.Context, id string, operations PatchOperations) (User, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -268,7 +305,7 @@ func (s *Store) PatchUser(ctx context.Context, id string, operations PatchOperat
 	}
 
 	// load current state in SCIM representation
-	scimUser := jsonify(formatUser(false, qUser))
+	scimUser := jsonify(formatUser(false, qUser, true))
 
 	// apply patches to that representation
 	if err := scimpatch.Patch(operations.Operations, &scimUser); err != nil {
@@ -294,17 +331,18 @@ func (s *Store) PatchUser(ctx context.Context, id string, operations PatchOperat
 		return nil, fmt.Errorf("validate email domain: %w", err)
 	}
 
-	// todo do we care about this bumping deactivate_time any time an update happens to the user?
-	var deactivateTime *time.Time
 	if !parsed.Active {
-		now := time.Now()
-		deactivateTime = &now
+		return s.DeleteUser(ctx, id)
+	}
+
+	auditPreviousUser, err := s.auditlogStore.GetUser(ctx, tx, userID)
+	if err != nil {
+		return nil, fmt.Errorf("get user for audit log: %w", err)
 	}
 
 	qUser, err = q.UpdateUser(ctx, queries.UpdateUserParams{
 		OrganizationID: authn.OrganizationID(ctx),
 		ID:             userID,
-		DeactivateTime: deactivateTime,
 		Email:          parsed.UserName,
 	})
 	if err != nil {
@@ -321,42 +359,89 @@ func (s *Store) PatchUser(ctx context.Context, id string, operations PatchOperat
 		return nil, fmt.Errorf("update user: %w", err)
 	}
 
+	auditUser, err := s.auditlogStore.GetUser(ctx, tx, qUser.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get user for audit log: %w", err)
+	}
+
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.users.update",
+		EventDetails: &auditlogv1.UpdateUser{
+			PreviousUser: auditPreviousUser,
+			User:         auditUser,
+		},
+		OrganizationID: &qUser.OrganizationID,
+		ResourceType:   queries.AuditLogEventResourceTypeUser,
+		ResourceID:     &qUser.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("log audit event: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return formatUser(true, qUser), nil
+	return formatUser(true, qUser, true), nil
 }
 
-func (s *Store) DeleteUser(ctx context.Context, id string) error {
-	_, q, commit, rollback, err := s.tx(ctx)
+func (s *Store) DeleteUser(ctx context.Context, id string) (User, error) {
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer rollback()
 
 	userID, err := idformat.User.Parse(id)
 	if err != nil {
-		return &SCIMError{
+		return nil, &SCIMError{
 			Status: http.StatusBadRequest,
 			Detail: "invalid user id",
 		}
 	}
 
-	now := time.Now()
-	if _, err := q.DeactivateUser(ctx, queries.DeactivateUserParams{
+	qUser, err := q.GetUserByID(ctx, queries.GetUserByIDParams{
 		OrganizationID: authn.OrganizationID(ctx),
 		ID:             userID,
-		DeactivateTime: &now,
+	})
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, &SCIMError{
+				Status: http.StatusNotFound,
+				Detail: "user not found",
+			}
+		}
+		return nil, fmt.Errorf("get user by id: %w", err)
+	}
+
+	auditUser, err := s.auditlogStore.GetUser(ctx, tx, userID)
+	if err != nil {
+		return nil, fmt.Errorf("get user for audit log: %w", err)
+	}
+
+	if _, err := q.DeleteUser(ctx, queries.DeleteUserParams{
+		ID:             userID,
+		OrganizationID: authn.OrganizationID(ctx),
 	}); err != nil {
-		return fmt.Errorf("deactivate user: %w", err)
+		return nil, fmt.Errorf("delete user: %w", err)
+	}
+
+	if _, err := s.logAuditEvent(ctx, q, logAuditEventParams{
+		EventName: "tesseral.users.delete",
+		EventDetails: &auditlogv1.DeleteUser{
+			User: auditUser,
+		},
+		OrganizationID: &qUser.OrganizationID,
+		ResourceType:   queries.AuditLogEventResourceTypeUser,
+		ResourceID:     &qUser.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("log audit event: %w", err)
 	}
 
 	if err := commit(); err != nil {
-		return fmt.Errorf("commit: %w", err)
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return nil
+	return formatUser(true, qUser, false), nil
 }
 
 func parseUser(user User) (*parsedUser, error) {
@@ -373,11 +458,12 @@ func parseUser(user User) (*parsedUser, error) {
 	} else if a, ok := m["active"].(bool); ok {
 		active = a
 	} else if a, ok := m["active"].(string); ok {
-		if a == "True" {
+		switch a {
+		case "True":
 			active = true
-		} else if a == "False" {
+		case "False":
 			active = false
-		} else {
+		default:
 			return nil, fmt.Errorf("active must be a boolean")
 		}
 	} else {
@@ -390,7 +476,7 @@ func parseUser(user User) (*parsedUser, error) {
 	}, nil
 }
 
-func formatUser(withSchema bool, qUser queries.User) User {
+func formatUser(withSchema bool, qUser queries.User, active bool) User {
 	var schemas []string
 	if withSchema {
 		schemas = []string{"urn:ietf:params:scim:schemas:core:2.0:User"}
@@ -400,7 +486,7 @@ func formatUser(withSchema bool, qUser queries.User) User {
 		Schemas:  schemas,
 		ID:       idformat.User.Format(qUser.ID),
 		UserName: qUser.Email,
-		Active:   qUser.DeactivateTime == nil,
+		Active:   active,
 	}
 }
 
@@ -428,14 +514,7 @@ func (s *Store) validateEmailDomain(ctx context.Context, q *queries.Queries, ema
 		return fmt.Errorf("get organization domains: %w", err)
 	}
 
-	var domainOk bool
-	for _, orgDomain := range qOrganizationDomains {
-		if orgDomain == domain {
-			domainOk = true
-			break
-		}
-	}
-
+	domainOk := slices.Contains(qOrganizationDomains, domain)
 	if !domainOk {
 		return &SCIMError{
 			Status: http.StatusBadRequest,

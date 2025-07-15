@@ -224,7 +224,7 @@ func (s *Service) patchUser(w http.ResponseWriter, r *http.Request) error {
 
 func (s *Service) deleteUser(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
-	if err := s.Store.DeleteUser(ctx, r.PathValue("userID")); err != nil {
+	if _, err := s.Store.DeleteUser(ctx, r.PathValue("userID")); err != nil {
 		var scimError *store.SCIMError
 		if errors.As(err, &scimError) {
 			w.Header().Set("Content-Type", "application/scim+json")
