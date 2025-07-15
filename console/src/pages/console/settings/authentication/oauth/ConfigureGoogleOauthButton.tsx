@@ -1,8 +1,9 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
+import clsx from "clsx";
 import { ExternalLink, LoaderCircle, Settings } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { Link } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -29,7 +30,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import {
   getProject,
@@ -38,6 +39,7 @@ import {
 
 const schema = z.object({
   logInWithGoogle: z.boolean(),
+  useDefaultGoogleClient: z.boolean(),
   googleOauthClientId: z.string(),
   googleOauthClientSecret: z.string(),
 });
@@ -52,6 +54,7 @@ export function ConfigureGoogleOAuthButton() {
     resolver: zodResolver(schema),
     defaultValues: {
       logInWithGoogle: getProjectResponse?.project?.logInWithGoogle || false,
+      useDefaultGoogleClient: !getProjectResponse?.project?.googleOauthClientId,
       googleOauthClientId:
         getProjectResponse?.project?.googleOauthClientId || "",
       googleOauthClientSecret:
@@ -82,31 +85,34 @@ export function ConfigureGoogleOAuthButton() {
     }
     if (
       data.logInWithGoogle &&
-      !data.googleOauthClientId &&
-      !getProjectResponse?.project?.googleOauthClientId
+      !data.useDefaultGoogleClient &&
+      !data.googleOauthClientId
     ) {
       form.setError("googleOauthClientId", {
-        message:
-          "Google OAuth Client ID is required when enabling Google login.",
+        message: "Google OAuth Client ID is required when using custom client.",
       });
       return;
     }
     if (
       data.logInWithGoogle &&
-      !data.googleOauthClientSecret &&
-      !getProjectResponse?.project?.googleOauthClientSecret
+      !data.useDefaultGoogleClient &&
+      !data.googleOauthClientSecret
     ) {
       form.setError("googleOauthClientSecret", {
         message:
-          "Google OAuth Client Secret is required when enabling Google login.",
+          "Google OAuth Client Secret is required when using custom client.",
       });
       return;
     }
     await updateProjectMutation.mutateAsync({
       project: {
         logInWithGoogle: data.logInWithGoogle,
-        googleOauthClientId: data.googleOauthClientId,
-        googleOauthClientSecret: data.googleOauthClientSecret,
+        googleOauthClientId: data.useDefaultGoogleClient
+          ? ""
+          : data.googleOauthClientId,
+        googleOauthClientSecret: data.useDefaultGoogleClient
+          ? ""
+          : data.googleOauthClientSecret,
       },
     });
     await refetch();
@@ -119,6 +125,8 @@ export function ConfigureGoogleOAuthButton() {
     if (getProjectResponse) {
       form.reset({
         logInWithGoogle: getProjectResponse.project?.logInWithGoogle,
+        useDefaultGoogleClient:
+          !getProjectResponse.project?.googleOauthClientId,
         googleOauthClientId:
           getProjectResponse.project?.googleOauthClientId || "",
         googleOauthClientSecret:
@@ -126,6 +134,11 @@ export function ConfigureGoogleOAuthButton() {
       });
     }
   }, [getProjectResponse, form]);
+
+  const watchLogInWithGoogle = useWatch({
+    control: form.control,
+    name: "logInWithGoogle",
+  });
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -139,29 +152,8 @@ export function ConfigureGoogleOAuthButton() {
         <DialogHeader>
           <DialogTitle>Configure Google OAuth</DialogTitle>
           <DialogDescription>
-            Configure Google OAuth settings for your project. You will need to
-            provide the Client ID and Client Secret obtained from your Google
-            OAuth application.
+            Configure Google OAuth settings for your project.
           </DialogDescription>
-          <div className="flex flex-col gap-2 text-muted-foreground text-sm">
-            <Separator className="my-4" />
-            <Label className="font-semibold">Callback URL</Label>
-            <span>
-              Use this as the Authorized redirect URI in your Google OAuth app
-              settings.{" "}
-              <Link
-                to="https://tesseral.com/docs/login-methods/primary-factors/log-in-with-google"
-                target="_blank"
-                className="underline"
-              >
-                Docs <ExternalLink className="inline size-3" />
-              </Link>
-            </span>
-            <ValueCopier
-              value={`https://${getProjectResponse?.project?.vaultDomain}/google-oauth-callback`}
-            />
-          </div>
-          <Separator className="my-4" />
         </DialogHeader>
 
         <Form {...form}>
@@ -191,37 +183,139 @@ export function ConfigureGoogleOAuthButton() {
               />
               <FormField
                 control={form.control}
-                name="googleOauthClientId"
+                name="useDefaultGoogleClient"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Client ID</FormLabel>
+                    <FormLabel>OAuth Client Configuration</FormLabel>
                     <FormDescription>
-                      Your company's Google OAuth Client ID.
+                      Choose whether to use Tesseral's default Google OAuth
+                      client or provide your own.
                     </FormDescription>
-                    <FormMessage />
                     <FormControl>
-                      <Input placeholder="Google OAuth Client ID" {...field} />
+                      <RadioGroup
+                        value={field.value ? "default" : "custom"}
+                        onValueChange={(value) =>
+                          field.onChange(value === "default")
+                        }
+                        className="mt-2 gap-0 -space-y-px"
+                        disabled={!watchLogInWithGoogle}
+                      >
+                        <div
+                          className={clsx(
+                            "flex items-start space-x-3 p-4 border rounded-t-lg",
+                            field.value &&
+                              "bg-muted/50 border-primary relative",
+                          )}
+                        >
+                          <RadioGroupItem
+                            id="default"
+                            value="default"
+                            className="mt-1"
+                          />
+                          <div className="flex-1 space-y-1">
+                            <Label
+                              htmlFor="default"
+                              className="text-sm font-medium"
+                            >
+                              Default Google OAuth Client
+                            </Label>
+                            <p className="text-xs text-muted-foreground">
+                              Use Tesseral's preconfigured Google OAuth client.
+                              This is the easiest option and requires no
+                              additional setup.
+                            </p>
+                          </div>
+                        </div>
+                        <div
+                          className={clsx(
+                            "border rounded-b-lg",
+                            !field.value && "bg-muted/50 border-primary",
+                          )}
+                        >
+                          <div className="flex items-start space-x-3 p-4">
+                            <RadioGroupItem
+                              id="custom"
+                              value="custom"
+                              className="mt-1"
+                            />
+                            <div className="flex-1 space-y-1">
+                              <Label
+                                htmlFor="custom"
+                                className="text-sm font-medium"
+                              >
+                                Custom Google OAuth Client
+                              </Label>
+                              <p className="text-xs text-muted-foreground">
+                                Use your own Google OAuth application with
+                                custom branding and settings.
+                              </p>
+                            </div>
+                          </div>
+                          {!field.value && (
+                            <div className="p-4 pt-0 space-y-4">
+                              <div className="flex flex-col gap-2 text-sm">
+                                <Label>Callback URL</Label>
+                                <span>
+                                  Use this as the Authorized redirect URI in
+                                  your Google OAuth app settings.{" "}
+                                  <Link
+                                    to="https://tesseral.com/docs/login-methods/primary-factors/log-in-with-google"
+                                    target="_blank"
+                                    className="underline"
+                                  >
+                                    Docs{" "}
+                                    <ExternalLink className="inline size-3" />
+                                  </Link>
+                                </span>
+                                <ValueCopier
+                                  value={`https://${getProjectResponse?.project?.vaultDomain}/google-oauth-callback`}
+                                />
+                              </div>
+                              <FormField
+                                control={form.control}
+                                name="googleOauthClientId"
+                                render={({ field: clientIdField }) => (
+                                  <FormItem>
+                                    <FormLabel>Client ID</FormLabel>
+                                    <FormDescription>
+                                      Your company's Google OAuth Client ID.
+                                    </FormDescription>
+                                    <FormControl>
+                                      <Input
+                                        placeholder="Google OAuth Client ID"
+                                        {...clientIdField}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="googleOauthClientSecret"
+                                render={({ field: clientSecretField }) => (
+                                  <FormItem>
+                                    <FormLabel>Client Secret</FormLabel>
+                                    <FormDescription>
+                                      Your company's Google OAuth Client Secret.
+                                    </FormDescription>
+                                    <FormControl>
+                                      <Input
+                                        type="password"
+                                        placeholder="Google OAuth Client Secret"
+                                        {...clientSecretField}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      </RadioGroup>
                     </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="googleOauthClientSecret"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Client Secret</FormLabel>
-                    <FormDescription>
-                      Your company's Google OAuth Client Secret.
-                    </FormDescription>
                     <FormMessage />
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Google OAuth Client Secret"
-                        {...field}
-                      />
-                    </FormControl>
                   </FormItem>
                 )}
               />

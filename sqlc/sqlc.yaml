@@ -115,3 +115,10 @@ sql:
       go:
         <<: *go
         out: "../internal/oidc/store/queries"
+  - engine: "postgresql"
+    queries: "queries-defaultoauth.sql"
+    schema: "../cmd/openauthctl/migrations"
+    gen:
+      go:
+        <<: *go
+        out: "../internal/defaultoauth/store/queries"

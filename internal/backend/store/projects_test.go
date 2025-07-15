@@ -58,11 +58,11 @@ func TestUpdateProject_UpdatesFields(t *testing.T) {
 	updateResp, err := u.Store.UpdateProject(ctx, &backendv1.UpdateProjectRequest{
 		Project: &backendv1.Project{
 			DisplayName:                "new-project-name",
-			GoogleOauthClientId:        "new-google-client-id",
+			GoogleOauthClientId:        refOrNil("new-google-client-id"),
 			GoogleOauthClientSecret:    "new-google-client-secret",
-			MicrosoftOauthClientId:     "new-microsoft-client-id",
+			MicrosoftOauthClientId:     refOrNil("new-microsoft-client-id"),
 			MicrosoftOauthClientSecret: "new-microsoft-client-secret",
-			GithubOauthClientId:        "new-github-client-id",
+			GithubOauthClientId:        refOrNil("new-github-client-id"),
 			GithubOauthClientSecret:    "new-github-client-secret",
 			CookieDomain:               "cookies.example.com",
 			TrustedDomains: []string{
@@ -78,11 +78,11 @@ func TestUpdateProject_UpdatesFields(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, "new-project-name", getResp2.Project.DisplayName)
 	require.NotEqual(t, oldName, getResp2.Project.DisplayName)
-	require.Equal(t, "new-google-client-id", getResp2.Project.GoogleOauthClientId)
+	require.Equal(t, refOrNil("new-google-client-id"), getResp2.Project.GoogleOauthClientId)
 	require.Empty(t, getResp2.Project.GoogleOauthClientSecret)
-	require.Equal(t, "new-microsoft-client-id", getResp2.Project.MicrosoftOauthClientId)
+	require.Equal(t, refOrNil("new-microsoft-client-id"), getResp2.Project.MicrosoftOauthClientId)
 	require.Empty(t, getResp2.Project.MicrosoftOauthClientSecret)
-	require.Equal(t, "new-github-client-id", getResp2.Project.GithubOauthClientId)
+	require.Equal(t, refOrNil("new-github-client-id"), getResp2.Project.GithubOauthClientId)
 	require.Empty(t, getResp2.Project.GithubOauthClientSecret)
 	require.Equal(t, "cookies.example.com", getResp2.Project.CookieDomain)
 	require.ElementsMatch(t, []string{

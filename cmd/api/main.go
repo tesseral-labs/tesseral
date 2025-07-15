@@ -37,6 +37,8 @@ import (
 	configapistore "github.com/tesseral-labs/tesseral/internal/configapi/store"
 	"github.com/tesseral-labs/tesseral/internal/cookies"
 	"github.com/tesseral-labs/tesseral/internal/dbconn"
+	defaultoauthservice "github.com/tesseral-labs/tesseral/internal/defaultoauth/service"
+	defaultoauthstore "github.com/tesseral-labs/tesseral/internal/defaultoauth/store"
 	frontendinterceptor "github.com/tesseral-labs/tesseral/internal/frontend/authn/interceptor"
 	"github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1/frontendv1connect"
 	frontendservice "github.com/tesseral-labs/tesseral/internal/frontend/service"
@@ -129,6 +131,15 @@ func main() {
 		StripeAPIKey                        string        `conf:"stripe_api_key"`
 		StripePriceIDGrowthTier             string        `conf:"stripe_price_id_growth_tier,noredact"`
 		SvixApiKey                          string        `conf:"svix_api_key"`
+		DefaultGoogleOAuthClientID          string        `conf:"default_google_oauth_client_id,noredact"`
+		DefaultGoogleOAuthClientSecret      string        `conf:"default_google_oauth_client_secret"`
+		DefaultGoogleOAuthRedirectURI       string        `conf:"default_google_oauth_redirect_uri,noredact"`
+		DefaultMicrosoftOAuthClientID       string        `conf:"default_microsoft_oauth_client_id,noredact"`
+		DefaultMicrosoftOAuthClientSecret   string        `conf:"default_microsoft_oauth_client_secret"`
+		DefaultMicrosoftOAuthRedirectURI    string        `conf:"default_microsoft_oauth_redirect_uri,noredact"`
+		DefaultGitHubOAuthClientID          string        `conf:"default_github_oauth_client_id,noredact"`
+		DefaultGitHubOAuthClientSecret      string        `conf:"default_github_oauth_client_secret"`
+		DefaultGitHubOAuthRedirectURI       string        `conf:"default_github_oauth_redirect_uri,noredact"`
 	}{
 		PageEncodingValue: "0000000000000000000000000000000000000000000000000000000000000000",
 	}
@@ -352,6 +363,15 @@ func main() {
 		StripeClient:                          stripeClient,
 		SvixClient:                            svixClient,
 		AuditlogStore:                         &auditlogStore,
+		DefaultGoogleOAuthClientID:            config.DefaultGoogleOAuthClientID,
+		DefaultGoogleOAuthClientSecret:        config.DefaultGoogleOAuthClientSecret,
+		DefaultGoogleOAuthRedirectURI:         config.DefaultGoogleOAuthRedirectURI,
+		DefaultMicrosoftOAuthClientID:         config.DefaultMicrosoftOAuthClientID,
+		DefaultMicrosoftOAuthClientSecret:     config.DefaultMicrosoftOAuthClientSecret,
+		DefaultMicrosoftOAuthRedirectURI:      config.DefaultMicrosoftOAuthRedirectURI,
+		DefaultGitHubOAuthClientID:            config.DefaultGitHubOAuthClientID,
+		DefaultGitHubOAuthClientSecret:        config.DefaultGitHubOAuthClientSecret,
+		DefaultGitHubOAuthRedirectURI:         config.DefaultGitHubOAuthRedirectURI,
 	})
 	intermediateConnectPath, intermediateConnectHandler := intermediatev1connect.NewIntermediateServiceHandler(
 		&intermediateservice.Service{
@@ -414,6 +434,11 @@ func main() {
 	}
 	configapiServiceHandler := configapiService.Handler()
 
+	defaultoauthService := defaultoauthservice.Service{
+		Store: &defaultoauthstore.Store{DB: db},
+	}
+	defaultoauthServiceHandler := defaultoauthService.Handler()
+
 	connectMux := http.NewServeMux()
 	connectMux.Handle(backendConnectPath, backendConnectHandler)
 	connectMux.Handle(frontendConnectPath, frontendConnectHandler)
@@ -451,6 +476,9 @@ func main() {
 
 	// Register configapiservice
 	mux.Handle("/api/config-api/", http.StripPrefix("/api/config-api", configapiServiceHandler))
+
+	// Register defaultoauthservice
+	mux.Handle("/api/default-oauth/", http.StripPrefix("/api/default-oauth", defaultoauthServiceHandler))
 
 	// These handlers are registered in a FILO order much like
 	// a Matryoshka doll
