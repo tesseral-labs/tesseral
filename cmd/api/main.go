@@ -53,6 +53,7 @@ import (
 	intermediatestore "github.com/tesseral-labs/tesseral/internal/intermediate/store"
 	"github.com/tesseral-labs/tesseral/internal/loadenv"
 	"github.com/tesseral-labs/tesseral/internal/microsoftoauth"
+	"github.com/tesseral-labs/tesseral/internal/multislog"
 	oidcinterceptor "github.com/tesseral-labs/tesseral/internal/oidc/authn/interceptor"
 	oidcservice "github.com/tesseral-labs/tesseral/internal/oidc/service"
 	oidcstore "github.com/tesseral-labs/tesseral/internal/oidc/store"
@@ -187,7 +188,7 @@ func main() {
 
 		slogHandler := ctxlog.NewHandler(
 			sentryintegration.NewSlogHandler(
-				multiOutputHandler{jsonHandler, otelslog.NewHandler("api")},
+				multislog.Handler{jsonHandler, otelslog.NewHandler("api")},
 			),
 		)
 		slog.SetDefault(slog.New(slogHandler))
