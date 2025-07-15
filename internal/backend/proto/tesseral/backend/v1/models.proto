@@ -49,7 +49,7 @@ message Project {
   optional bool log_in_with_passkey = 14;
 
   // The OAuth Client ID to use for "Log in with Google".
-  string google_oauth_client_id = 8;
+  optional string google_oauth_client_id = 8;
 
   // The OAuth Client Secret to use for "Log in with Google".
   //
@@ -57,7 +57,7 @@ message Project {
   string google_oauth_client_secret = 9;
 
   // The OAuth Client ID to use for "Log in with Microsoft".
-  string microsoft_oauth_client_id = 10;
+  optional string microsoft_oauth_client_id = 10;
 
   // The OAuth Client Secret to use for "Log in with Microsoft".
   //
@@ -65,7 +65,7 @@ message Project {
   string microsoft_oauth_client_secret = 11;
 
   // The OAuth Client ID to use for "Log in with GitHub".
-  string github_oauth_client_id = 26;
+  optional string github_oauth_client_id = 26;
 
   // The OAuth Client ID to use for "Log in with GitHub"
   //

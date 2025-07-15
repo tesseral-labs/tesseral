@@ -56,7 +56,8 @@ queries:
 		internal/oidc/store/queries \
 		internal/scim/store/queries \
 		internal/common/store/queries \
-		internal/configapi/store/queries
+		internal/configapi/store/queries \
+		internal/defaultoauth/store/queries
 	./bin/pg_format/pg_format -i sqlc/queries.sql
 	./bin/pg_format/pg_format -i sqlc/queries-auditlog.sql
 	./bin/pg_format/pg_format -i sqlc/queries-backend.sql
@@ -67,4 +68,5 @@ queries:
 	./bin/pg_format/pg_format -i sqlc/queries-scim.sql
 	./bin/pg_format/pg_format -i sqlc/queries-common.sql
 	./bin/pg_format/pg_format -i sqlc/queries-configapi.sql
+	./bin/pg_format/pg_format -i sqlc/queries-defaultoauth.sql
 	sqlc -f ./sqlc/sqlc.yaml generate

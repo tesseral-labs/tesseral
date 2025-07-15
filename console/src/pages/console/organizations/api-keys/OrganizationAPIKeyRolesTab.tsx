@@ -261,7 +261,7 @@ const schema = z.object({
 function AssignRoleButton() {
   const { apiKeyId, organizationId } = useParams();
 
-  const { refetch } = useInfiniteQuery(
+  const { data: listAPIKeyRoleAssignmentsResponse, refetch } = useInfiniteQuery(
     listAPIKeyRoleAssignments,
     {
       apiKeyId: apiKeyId,
@@ -289,10 +289,15 @@ function AssignRoleButton() {
     createAPIKeyRoleAssignment,
   );
 
+  const assignedRoles =
+    listAPIKeyRoleAssignmentsResponse?.pages
+      .flatMap((page) => page.apiKeyRoleAssignments)
+      .map((assignment) => assignment.roleId) || [];
+
   const roles = [
     ...(listProjectRolesResponse?.roles || []),
     ...(listOrganizationRolesResponse?.roles || []),
-  ];
+  ].filter((role) => !assignedRoles.includes(role.id));
 
   const [open, setOpen] = useState(false);
 

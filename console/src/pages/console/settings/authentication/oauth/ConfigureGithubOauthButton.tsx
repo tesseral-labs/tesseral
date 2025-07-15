@@ -1,8 +1,9 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
+import clsx from "clsx";
 import { ExternalLink, LoaderCircle, Settings } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { Link } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -29,7 +30,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import {
   getProject,
@@ -38,6 +39,7 @@ import {
 
 const schema = z.object({
   logInWithGithub: z.boolean(),
+  useDefaultGithubClient: z.boolean(),
   githubOauthClientId: z.string(),
   githubOauthClientSecret: z.string(),
 });
@@ -52,6 +54,7 @@ export function ConfigureGithubOAuthButton() {
     resolver: zodResolver(schema),
     defaultValues: {
       logInWithGithub: getProjectResponse?.project?.logInWithGithub || false,
+      useDefaultGithubClient: !getProjectResponse?.project?.githubOauthClientId,
       githubOauthClientId:
         getProjectResponse?.project?.githubOauthClientId || "",
       githubOauthClientSecret:
@@ -71,8 +74,8 @@ export function ConfigureGithubOAuthButton() {
       !data.logInWithGithub &&
       !getProjectResponse?.project?.logInWithEmail &&
       !getProjectResponse?.project?.logInWithPassword &&
-      !getProjectResponse?.project?.logInWithGoogle &&
-      !getProjectResponse?.project?.logInWithMicrosoft
+      !getProjectResponse?.project?.logInWithMicrosoft &&
+      !getProjectResponse?.project?.logInWithGoogle
     ) {
       form.setError("logInWithGithub", {
         message:
@@ -82,31 +85,34 @@ export function ConfigureGithubOAuthButton() {
     }
     if (
       data.logInWithGithub &&
-      data.githubOauthClientId === "" &&
-      !getProjectResponse?.project?.githubOauthClientId
+      !data.useDefaultGithubClient &&
+      !data.githubOauthClientId
     ) {
       form.setError("githubOauthClientId", {
-        message:
-          "GitHub OAuth Client ID is required when enabling GitHub login.",
+        message: "GitHub OAuth Client ID is required when using custom client.",
       });
       return;
     }
     if (
       data.logInWithGithub &&
-      data.githubOauthClientSecret === "" &&
-      !getProjectResponse?.project?.githubOauthClientSecret
+      !data.useDefaultGithubClient &&
+      !data.githubOauthClientSecret
     ) {
       form.setError("githubOauthClientSecret", {
         message:
-          "GitHub OAuth Client Secret is required when enabling GitHub login.",
+          "GitHub OAuth Client Secret is required when using custom client.",
       });
       return;
     }
     await updateProjectMutation.mutateAsync({
       project: {
         logInWithGithub: data.logInWithGithub,
-        githubOauthClientId: data.githubOauthClientId,
-        githubOauthClientSecret: data.githubOauthClientSecret,
+        githubOauthClientId: data.useDefaultGithubClient
+          ? ""
+          : data.githubOauthClientId,
+        githubOauthClientSecret: data.useDefaultGithubClient
+          ? ""
+          : data.githubOauthClientSecret,
       },
     });
     await refetch();
@@ -119,6 +125,8 @@ export function ConfigureGithubOAuthButton() {
     if (getProjectResponse) {
       form.reset({
         logInWithGithub: getProjectResponse.project?.logInWithGithub,
+        useDefaultGithubClient:
+          !getProjectResponse.project?.githubOauthClientId,
         githubOauthClientId:
           getProjectResponse.project?.githubOauthClientId || "",
         githubOauthClientSecret:
@@ -126,6 +134,11 @@ export function ConfigureGithubOAuthButton() {
       });
     }
   }, [getProjectResponse, form]);
+
+  const watchLogInWithGithub = useWatch({
+    control: form.control,
+    name: "logInWithGithub",
+  });
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -139,29 +152,8 @@ export function ConfigureGithubOAuthButton() {
         <DialogHeader>
           <DialogTitle>Configure GitHub OAuth</DialogTitle>
           <DialogDescription>
-            Configure GitHub OAuth settings for your project. You will need to
-            provide the Client ID and Client Secret obtained from your GitHub
-            OAuth application.
+            Configure GitHub OAuth settings for your project.
           </DialogDescription>
-          <div className="flex flex-col gap-2 text-muted-foreground text-sm">
-            <Separator className="my-4" />
-            <Label className="font-semibold">Callback URL</Label>
-            <span>
-              Use this as the Authorization callback URL in your GitHub OAuth
-              app settings.{" "}
-              <Link
-                to="https://tesseral.com/docs/login-methods/primary-factors/log-in-with-github"
-                target="_blank"
-                className="underline"
-              >
-                Docs <ExternalLink className="inline size-3" />
-              </Link>
-            </span>
-            <ValueCopier
-              value={`https://${getProjectResponse?.project?.vaultDomain}/github-oauth-callback`}
-            />
-          </div>
-          <Separator className="my-4" />
         </DialogHeader>
 
         <Form {...form}>
@@ -191,37 +183,139 @@ export function ConfigureGithubOAuthButton() {
               />
               <FormField
                 control={form.control}
-                name="githubOauthClientId"
+                name="useDefaultGithubClient"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Client ID</FormLabel>
+                    <FormLabel>OAuth Client Configuration</FormLabel>
                     <FormDescription>
-                      Your company's GitHub OAuth Client ID.
+                      Choose whether to use Tesseral's default GitHub OAuth
+                      client or provide your own.
                     </FormDescription>
-                    <FormMessage />
                     <FormControl>
-                      <Input placeholder="GitHub OAuth Client ID" {...field} />
+                      <RadioGroup
+                        value={field.value ? "default" : "custom"}
+                        onValueChange={(value) =>
+                          field.onChange(value === "default")
+                        }
+                        className="mt-2 gap-0 -space-y-px"
+                        disabled={!watchLogInWithGithub}
+                      >
+                        <div
+                          className={clsx(
+                            "flex items-start space-x-3 p-4 border rounded-t-lg",
+                            field.value &&
+                              "bg-muted/50 border-primary relative",
+                          )}
+                        >
+                          <RadioGroupItem
+                            id="default"
+                            value="default"
+                            className="mt-1"
+                          />
+                          <div className="flex-1 space-y-1">
+                            <Label
+                              htmlFor="default"
+                              className="text-sm font-medium"
+                            >
+                              Default GitHub OAuth Client
+                            </Label>
+                            <p className="text-xs text-muted-foreground">
+                              Use Tesseral's preconfigured GitHub OAuth client.
+                              This is the easiest option and requires no
+                              additional setup.
+                            </p>
+                          </div>
+                        </div>
+                        <div
+                          className={clsx(
+                            "border rounded-b-lg",
+                            !field.value && "bg-muted/50 border-primary",
+                          )}
+                        >
+                          <div className="flex items-start space-x-3 p-4">
+                            <RadioGroupItem
+                              id="custom"
+                              value="custom"
+                              className="mt-1"
+                            />
+                            <div className="flex-1 space-y-1">
+                              <Label
+                                htmlFor="custom"
+                                className="text-sm font-medium"
+                              >
+                                Custom GitHub OAuth Client
+                              </Label>
+                              <p className="text-xs text-muted-foreground">
+                                Use your own GitHub OAuth application with
+                                custom branding and settings.
+                              </p>
+                            </div>
+                          </div>
+                          {!field.value && (
+                            <div className="p-4 pt-0 space-y-4">
+                              <div className="flex flex-col gap-2 text-sm">
+                                <Label>Callback URL</Label>
+                                <span>
+                                  Use this as the Authorized redirect URI in
+                                  your GitHub OAuth app settings.{" "}
+                                  <Link
+                                    to="https://tesseral.com/docs/login-methods/primary-factors/log-in-with-github"
+                                    target="_blank"
+                                    className="underline"
+                                  >
+                                    Docs{" "}
+                                    <ExternalLink className="inline size-3" />
+                                  </Link>
+                                </span>
+                                <ValueCopier
+                                  value={`https://${getProjectResponse?.project?.vaultDomain}/github-oauth-callback`}
+                                />
+                              </div>
+                              <FormField
+                                control={form.control}
+                                name="githubOauthClientId"
+                                render={({ field: clientIdField }) => (
+                                  <FormItem>
+                                    <FormLabel>Client ID</FormLabel>
+                                    <FormDescription>
+                                      Your company's GitHub OAuth Client ID.
+                                    </FormDescription>
+                                    <FormControl>
+                                      <Input
+                                        placeholder="GitHub OAuth Client ID"
+                                        {...clientIdField}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="githubOauthClientSecret"
+                                render={({ field: clientSecretField }) => (
+                                  <FormItem>
+                                    <FormLabel>Client Secret</FormLabel>
+                                    <FormDescription>
+                                      Your company's GitHub OAuth Client Secret.
+                                    </FormDescription>
+                                    <FormControl>
+                                      <Input
+                                        type="password"
+                                        placeholder="GitHub OAuth Client Secret"
+                                        {...clientSecretField}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      </RadioGroup>
                     </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="githubOauthClientSecret"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Client Secret</FormLabel>
-                    <FormDescription>
-                      Your company's GitHub OAuth Client Secret.
-                    </FormDescription>
                     <FormMessage />
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="GitHub OAuth Client Secret"
-                        {...field}
-                      />
-                    </FormControl>
                   </FormItem>
                 )}
               />

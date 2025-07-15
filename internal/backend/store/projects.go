@@ -121,8 +121,8 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 	}
 
 	updates.GoogleOauthClientID = qProject.GoogleOauthClientID
-	if req.Project.GoogleOauthClientId != "" {
-		updates.GoogleOauthClientID = &req.Project.GoogleOauthClientId
+	if req.Project.GoogleOauthClientId != nil {
+		updates.GoogleOauthClientID = req.Project.GoogleOauthClientId
 	}
 
 	updates.GoogleOauthClientSecretCiphertext = qProject.GoogleOauthClientSecretCiphertext
@@ -140,8 +140,8 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 	}
 
 	updates.MicrosoftOauthClientID = qProject.MicrosoftOauthClientID
-	if req.Project.MicrosoftOauthClientId != "" {
-		updates.MicrosoftOauthClientID = &req.Project.MicrosoftOauthClientId
+	if req.Project.MicrosoftOauthClientId != nil {
+		updates.MicrosoftOauthClientID = req.Project.MicrosoftOauthClientId
 	}
 
 	updates.MicrosoftOauthClientSecretCiphertext = qProject.MicrosoftOauthClientSecretCiphertext
@@ -159,8 +159,8 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 	}
 
 	updates.GithubOauthClientID = qProject.GithubOauthClientID
-	if req.Project.GithubOauthClientId != "" {
-		updates.GithubOauthClientID = &req.Project.GithubOauthClientId
+	if req.Project.GithubOauthClientId != nil {
+		updates.GithubOauthClientID = req.Project.GithubOauthClientId
 	}
 
 	updates.GithubOauthClientSecretCiphertext = qProject.GithubOauthClientSecretCiphertext
@@ -414,11 +414,11 @@ func (s *Store) parseProject(qProject *queries.Project, qProjectTrustedDomains [
 		LogInWithOidc:              &qProject.LogInWithOidc,
 		LogInWithAuthenticatorApp:  &qProject.LogInWithAuthenticatorApp,
 		LogInWithPasskey:           &qProject.LogInWithPasskey,
-		GoogleOauthClientId:        derefOrEmpty(qProject.GoogleOauthClientID),
+		GoogleOauthClientId:        qProject.GoogleOauthClientID,
 		GoogleOauthClientSecret:    "", // intentionally left blank
-		MicrosoftOauthClientId:     derefOrEmpty(qProject.MicrosoftOauthClientID),
+		MicrosoftOauthClientId:     qProject.MicrosoftOauthClientID,
 		MicrosoftOauthClientSecret: "", // intentionally left blank
-		GithubOauthClientId:        derefOrEmpty(qProject.GithubOauthClientID),
+		GithubOauthClientId:        qProject.GithubOauthClientID,
 		GithubOauthClientSecret:    "", // intentionally left blank
 		VaultDomain:                qProject.VaultDomain,
 		VaultDomainCustom:          qProject.VaultDomain != fmt.Sprintf("%s.%s", strings.ReplaceAll(idformat.Project.Format(qProject.ID), "_", "-"), s.authAppsRootDomain),
