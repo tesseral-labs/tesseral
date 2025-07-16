@@ -28,7 +28,7 @@ export function ImpersonatePage() {
   }, [
     redeemUserImpersonationTokenAsync,
     secretUserImpersonationToken,
-    settings.redirectUri,
+    settings.cookieDomain,
   ]);
 
   return (
