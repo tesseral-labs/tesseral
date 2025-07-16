@@ -23,7 +23,7 @@ export function ImpersonatePage() {
         secretUserImpersonationToken: secretUserImpersonationToken!,
       });
 
-      window.location.href = settings.redirectUri;
+      window.location.href = domainToOrigin(settings.cookieDomain);
     })();
   }, [
     redeemUserImpersonationTokenAsync,
@@ -34,4 +34,12 @@ export function ImpersonatePage() {
   return (
     <LoaderCircleIcon className="mx-auto text-muted-foreground h-4 w-4 animate-spin" />
   );
+}
+
+function domainToOrigin(domain: string): string {
+  if (domain === "localhost") {
+    return `http://${domain}`;
+  }
+
+  return `https://${domain}`;
 }
