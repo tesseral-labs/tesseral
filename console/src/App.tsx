@@ -49,6 +49,7 @@ import { StripeCheckoutSuccessPage } from "./pages/console/stripe/StripeCheckout
 import { AuthenticateAnotherWayPage } from "./pages/login/AuthenticateAnotherWayPage";
 import { ChooseProjectPage } from "./pages/login/ChooseProjectPage";
 import { CreateProjectPage } from "./pages/login/CreateProjectPage";
+import { CreateSandboxProjectPage } from "./pages/login/CreateSandboxProjectPage";
 import { FinishLoginPage } from "./pages/login/FinishLoginPage";
 import { ForgotPasswordPage } from "./pages/login/ForgotPasswordPage";
 import { GithubOAuthCallbackPage } from "./pages/login/GithubOAuthCallbackPage";
@@ -214,6 +215,10 @@ function AppWithinQueryClient() {
             />
             <Route path="choose-organization" element={<ChooseProjectPage />} />
             <Route path="create-organization" element={<CreateProjectPage />} />
+            <Route
+              path="create-sandbox-project"
+              element={<CreateSandboxProjectPage />}
+            />
             <Route
               path="organizations/:organizationId/login"
               element={<OrganizationLoginPage />}

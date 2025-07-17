@@ -309,8 +309,7 @@ message CreateProjectResponse {
 
 message OnboardingCreateProjectsRequest {
   string display_name = 1;
-  string prod_url = 2;
-  string dev_url = 3;
+  string app_url = 2;
 }
 
 message OnboardingCreateProjectsResponse {

@@ -310,6 +310,9 @@ const (
 	// BackendServiceConsoleListAuditLogEventNamesProcedure is the fully-qualified name of the
 	// BackendService's ConsoleListAuditLogEventNames RPC.
 	BackendServiceConsoleListAuditLogEventNamesProcedure = "/tesseral.backend.v1.BackendService/ConsoleListAuditLogEventNames"
+	// BackendServiceConsoleCreateProjectProcedure is the fully-qualified name of the BackendService's
+	// ConsoleCreateProject RPC.
+	BackendServiceConsoleCreateProjectProcedure = "/tesseral.backend.v1.BackendService/ConsoleCreateProject"
 )
 
 // BackendServiceClient is a client for the tesseral.backend.v1.BackendService service.
@@ -465,6 +468,7 @@ type BackendServiceClient interface {
 	GetProjectWebhookManagementURL(context.Context, *connect.Request[v1.GetProjectWebhookManagementURLRequest]) (*connect.Response[v1.GetProjectWebhookManagementURLResponse], error)
 	ConsoleListAuditLogEvents(context.Context, *connect.Request[v1.ConsoleListAuditLogEventsRequest]) (*connect.Response[v1.ConsoleListAuditLogEventsResponse], error)
 	ConsoleListAuditLogEventNames(context.Context, *connect.Request[v1.ConsoleListAuditLogEventNamesRequest]) (*connect.Response[v1.ConsoleListAuditLogEventNamesResponse], error)
+	ConsoleCreateProject(context.Context, *connect.Request[v1.ConsoleCreateProjectRequest]) (*connect.Response[v1.ConsoleCreateProjectResponse], error)
 }
 
 // NewBackendServiceClient constructs a client for the tesseral.backend.v1.BackendService service.
@@ -1036,6 +1040,12 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("ConsoleListAuditLogEventNames")),
 			connect.WithClientOptions(opts...),
 		),
+		consoleCreateProject: connect.NewClient[v1.ConsoleCreateProjectRequest, v1.ConsoleCreateProjectResponse](
+			httpClient,
+			baseURL+BackendServiceConsoleCreateProjectProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("ConsoleCreateProject")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -1134,6 +1144,7 @@ type backendServiceClient struct {
 	getProjectWebhookManagementURL        *connect.Client[v1.GetProjectWebhookManagementURLRequest, v1.GetProjectWebhookManagementURLResponse]
 	consoleListAuditLogEvents             *connect.Client[v1.ConsoleListAuditLogEventsRequest, v1.ConsoleListAuditLogEventsResponse]
 	consoleListAuditLogEventNames         *connect.Client[v1.ConsoleListAuditLogEventNamesRequest, v1.ConsoleListAuditLogEventNamesResponse]
+	consoleCreateProject                  *connect.Client[v1.ConsoleCreateProjectRequest, v1.ConsoleCreateProjectResponse]
 }
 
 // GetProject calls tesseral.backend.v1.BackendService.GetProject.
@@ -1608,6 +1619,11 @@ func (c *backendServiceClient) ConsoleListAuditLogEventNames(ctx context.Context
 	return c.consoleListAuditLogEventNames.CallUnary(ctx, req)
 }
 
+// ConsoleCreateProject calls tesseral.backend.v1.BackendService.ConsoleCreateProject.
+func (c *backendServiceClient) ConsoleCreateProject(ctx context.Context, req *connect.Request[v1.ConsoleCreateProjectRequest]) (*connect.Response[v1.ConsoleCreateProjectResponse], error) {
+	return c.consoleCreateProject.CallUnary(ctx, req)
+}
+
 // BackendServiceHandler is an implementation of the tesseral.backend.v1.BackendService service.
 type BackendServiceHandler interface {
 	// Get the current project.
@@ -1761,6 +1777,7 @@ type BackendServiceHandler interface {
 	GetProjectWebhookManagementURL(context.Context, *connect.Request[v1.GetProjectWebhookManagementURLRequest]) (*connect.Response[v1.GetProjectWebhookManagementURLResponse], error)
 	ConsoleListAuditLogEvents(context.Context, *connect.Request[v1.ConsoleListAuditLogEventsRequest]) (*connect.Response[v1.ConsoleListAuditLogEventsResponse], error)
 	ConsoleListAuditLogEventNames(context.Context, *connect.Request[v1.ConsoleListAuditLogEventNamesRequest]) (*connect.Response[v1.ConsoleListAuditLogEventNamesResponse], error)
+	ConsoleCreateProject(context.Context, *connect.Request[v1.ConsoleCreateProjectRequest]) (*connect.Response[v1.ConsoleCreateProjectResponse], error)
 }
 
 // NewBackendServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -2328,6 +2345,12 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("ConsoleListAuditLogEventNames")),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceConsoleCreateProjectHandler := connect.NewUnaryHandler(
+		BackendServiceConsoleCreateProjectProcedure,
+		svc.ConsoleCreateProject,
+		connect.WithSchema(backendServiceMethods.ByName("ConsoleCreateProject")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/tesseral.backend.v1.BackendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case BackendServiceGetProjectProcedure:
@@ -2516,6 +2539,8 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceConsoleListAuditLogEventsHandler.ServeHTTP(w, r)
 		case BackendServiceConsoleListAuditLogEventNamesProcedure:
 			backendServiceConsoleListAuditLogEventNamesHandler.ServeHTTP(w, r)
+		case BackendServiceConsoleCreateProjectProcedure:
+			backendServiceConsoleCreateProjectHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -2895,4 +2920,8 @@ func (UnimplementedBackendServiceHandler) ConsoleListAuditLogEvents(context.Cont
 
 func (UnimplementedBackendServiceHandler) ConsoleListAuditLogEventNames(context.Context, *connect.Request[v1.ConsoleListAuditLogEventNamesRequest]) (*connect.Response[v1.ConsoleListAuditLogEventNamesResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.ConsoleListAuditLogEventNames is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) ConsoleCreateProject(context.Context, *connect.Request[v1.ConsoleCreateProjectRequest]) (*connect.Response[v1.ConsoleCreateProjectResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.ConsoleCreateProject is not implemented"))
 }

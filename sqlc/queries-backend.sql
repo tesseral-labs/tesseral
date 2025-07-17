@@ -1301,3 +1301,27 @@ WHERE
 ORDER BY
     event_name;
 
+-- name: ConsoleCreateProject :one
+INSERT INTO projects (id, organization_id, stripe_customer_id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_github, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_oidc, log_in_with_authenticator_app, log_in_with_passkey, cookie_domain, audit_logs_enabled, entitled_backend_api_keys, entitled_custom_vault_domains, vault_domain, email_send_from_domain, redirect_uri)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
+RETURNING
+    *;
+
+-- name: CreateProjectUISettings :one
+INSERT INTO project_ui_settings (id, project_id)
+    VALUES (gen_random_uuid (), $1)
+RETURNING
+    *;
+
+-- name: CreateSessionSigningKey :one
+INSERT INTO session_signing_keys (id, project_id, public_key, private_key_cipher_text, create_time, expire_time)
+    VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING
+    *;
+
+-- name: CreateProjectWebhookSettings :one
+INSERT INTO project_webhook_settings (id, project_id, app_id)
+    VALUES ($1, $2, $3)
+RETURNING
+    *;
+

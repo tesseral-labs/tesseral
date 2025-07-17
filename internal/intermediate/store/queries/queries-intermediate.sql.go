@@ -479,6 +479,39 @@ func (q *Queries) CreateProjectWebhookSettings(ctx context.Context, arg CreatePr
 	return i, err
 }
 
+const createPublishableKey = `-- name: CreatePublishableKey :one
+INSERT INTO publishable_keys (id, project_id, display_name, dev_mode)
+    VALUES ($1, $2, $3, $4)
+RETURNING
+    id, project_id, create_time, update_time, display_name, dev_mode
+`
+
+type CreatePublishableKeyParams struct {
+	ID          uuid.UUID
+	ProjectID   uuid.UUID
+	DisplayName string
+	DevMode     bool
+}
+
+func (q *Queries) CreatePublishableKey(ctx context.Context, arg CreatePublishableKeyParams) (PublishableKey, error) {
+	row := q.db.QueryRow(ctx, createPublishableKey,
+		arg.ID,
+		arg.ProjectID,
+		arg.DisplayName,
+		arg.DevMode,
+	)
+	var i PublishableKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DisplayName,
+		&i.DevMode,
+	)
+	return i, err
+}
+
 const createRelayedSession = `-- name: CreateRelayedSession :one
 INSERT INTO relayed_sessions (session_id, relayed_session_token_expire_time, relayed_session_token_sha256, relayed_refresh_token_sha256, state)
     VALUES ($1, $2, $3, $4, $5)

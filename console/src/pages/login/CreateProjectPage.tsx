@@ -29,8 +29,7 @@ import { onboardingCreateProjects } from "@/gen/tesseral/intermediate/v1/interme
 
 const schema = z.object({
   displayName: z.string().nonempty(),
-  productionAppUrl: z.string().url(),
-  localhostAppUrl: z.string().url().startsWith("http://localhost:"),
+  appUrl: z.string().url(),
 });
 
 export function CreateProjectPage() {
@@ -38,8 +37,7 @@ export function CreateProjectPage() {
     resolver: zodResolver(schema),
     defaultValues: {
       displayName: "",
-      productionAppUrl: "",
-      localhostAppUrl: "",
+      appUrl: "",
     },
   });
 
@@ -54,8 +52,7 @@ export function CreateProjectPage() {
 
     await onboardingCreateProjectsAsync({
       displayName: values.displayName,
-      prodUrl: values.productionAppUrl,
-      devUrl: values.localhostAppUrl,
+      appUrl: values.appUrl,
     });
 
     navigate("/");
@@ -94,33 +91,14 @@ export function CreateProjectPage() {
 
             <FormField
               control={form.control}
-              name="productionAppUrl"
+              name="appUrl"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Production App URL</FormLabel>
+                  <FormLabel>App URL</FormLabel>
                   <FormControl>
                     <Input placeholder="https://app.example.com" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    Where does your app live in production?
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="localhostAppUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Development App URL</FormLabel>
-                  <FormControl>
-                    <Input placeholder="http://localhost:3000" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    What localhost URL does your app live on?
-                  </FormDescription>
+                  <FormDescription>Where does your app run?</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

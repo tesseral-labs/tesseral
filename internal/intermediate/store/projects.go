@@ -179,19 +179,12 @@ func (s *Store) OnboardingCreateProjects(ctx context.Context, req *intermediatev
 		return nil, fmt.Errorf("enforce project login enabled: %w", err)
 	}
 
-	// create two keypairs, for dev and prod
-	devPublicKey, devPrivateKeyCiphertext, err := s.onboardingGenerateSessionSigningKey(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("generate dev session signing key: %w", err)
-	}
-
-	prodPublicKey, prodPrivateKeyCiphertext, err := s.onboardingGenerateSessionSigningKey(ctx)
+	sandboxPublicKey, sandboxPrivateKeyCiphertext, err := s.onboardingGenerateSessionSigningKey(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("generate prod session signing key: %w", err)
 	}
 
-	qDevProjectID := uuid.New()
-	qProdProjectID := uuid.New()
+	qSandboxProjectID := uuid.New()
 
 	slog.InfoContext(ctx, "stripe_client_exists", "stripe_client_exists", s.stripeClient != nil)
 
@@ -201,7 +194,7 @@ func (s *Store) OnboardingCreateProjects(ctx context.Context, req *intermediatev
 			Name:  &req.DisplayName,
 			Email: qIntermediateSession.Email,
 			Metadata: map[string]string{
-				"tesseral_project_ids": fmt.Sprintf("%s,%s", idformat.Project.Format(qDevProjectID), idformat.Project.Format(qProdProjectID)),
+				"tesseral_project_ids": idformat.Project.Format(qSandboxProjectID),
 			},
 		})
 		if err != nil {
@@ -218,33 +211,21 @@ func (s *Store) OnboardingCreateProjects(ctx context.Context, req *intermediatev
 	}
 	defer rollback()
 
-	qDevUser, err := s.createProjectForCurrentUser(ctx, q, &qIntermediateSession, createProjectForCurrentUserArgs{
-		ProjectID:                          qDevProjectID,
+	qSandboxUser, err := s.createProjectForCurrentUser(ctx, q, &qIntermediateSession, createProjectForCurrentUserArgs{
+		ProjectID:                          qSandboxProjectID,
 		StripeCustomerID:                   stripeCustomerID,
-		RedirectURI:                        req.DevUrl,
-		DisplayName:                        fmt.Sprintf("%s Dev", req.DisplayName),
-		SessionSigningPublicKey:            devPublicKey,
-		SessionSigningPrivateKeyCiphertext: devPrivateKeyCiphertext,
+		RedirectURI:                        req.AppUrl,
+		DisplayName:                        req.DisplayName,
+		SessionSigningPublicKey:            sandboxPublicKey,
+		SessionSigningPrivateKeyCiphertext: sandboxPrivateKeyCiphertext,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("create dev project for current user: %w", err)
+		return nil, fmt.Errorf("create sandbox project for current user: %w", err)
 	}
 
-	if _, err := s.createProjectForCurrentUser(ctx, q, &qIntermediateSession, createProjectForCurrentUserArgs{
-		ProjectID:                          qProdProjectID,
-		StripeCustomerID:                   stripeCustomerID,
-		RedirectURI:                        req.ProdUrl,
-		DisplayName:                        req.DisplayName,
-		SessionSigningPublicKey:            prodPublicKey,
-		SessionSigningPrivateKeyCiphertext: prodPrivateKeyCiphertext,
-	}); err != nil {
-		return nil, fmt.Errorf("create prod project for current user: %w", err)
-	}
-
-	slog.InfoContext(ctx, "created_projects",
+	slog.InfoContext(ctx, "created_project",
 		"display_name", req.DisplayName,
-		"dev_project_id", idformat.Project.Format(qDevProjectID),
-		"prod_project_id", idformat.Project.Format(qProdProjectID))
+		"sandbox_project_id", idformat.Project.Format(qSandboxProjectID))
 
 	expireTime := time.Now().Add(sessionDuration)
 
@@ -255,7 +236,7 @@ func (s *Store) OnboardingCreateProjects(ctx context.Context, req *intermediatev
 		ID:                 uuid.Must(uuid.NewV7()),
 		ExpireTime:         &expireTime,
 		RefreshTokenSha256: refreshTokenSHA256[:],
-		UserID:             qDevUser.ID,
+		UserID:             qSandboxUser.ID,
 		PrimaryAuthFactor:  *qIntermediateSession.PrimaryAuthFactor,
 	}); err != nil {
 		return nil, fmt.Errorf("create session: %w", err)
@@ -334,6 +315,7 @@ func (s *Store) createProjectForCurrentUser(ctx context.Context, q *queries.Quer
 		LogInWithEmail:     qDogfoodProject.LogInWithEmail,
 		LogInWithGoogle:    qDogfoodProject.LogInWithGoogle,
 		LogInWithMicrosoft: qDogfoodProject.LogInWithMicrosoft,
+		LogInWithGithub:    qDogfoodProject.LogInWithGithub,
 		LogInWithPassword:  qDogfoodProject.LogInWithPassword,
 		ScimEnabled:        false,
 	})
@@ -445,6 +427,16 @@ func (s *Store) createProjectForCurrentUser(ctx context.Context, q *queries.Quer
 	// Create a Svix application for the project to send webhooks to
 	if _, err := s.createProjectWebhookSettings(ctx, q, qProject); err != nil {
 		return nil, fmt.Errorf("create webhook: %w", err)
+	}
+
+	// Create a Publishable Key for the Project
+	if _, err := q.CreatePublishableKey(ctx, queries.CreatePublishableKeyParams{
+		ID:          uuid.New(),
+		ProjectID:   args.ProjectID,
+		DisplayName: "Default Publishable Key",
+		DevMode:     true,
+	}); err != nil {
+		return nil, fmt.Errorf("create publishable key: %w", err)
 	}
 
 	return &qUser, nil

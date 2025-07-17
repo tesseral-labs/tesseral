@@ -426,6 +426,7 @@ service BackendService {
 
   rpc ConsoleListAuditLogEvents(ConsoleListAuditLogEventsRequest) returns (ConsoleListAuditLogEventsResponse);
   rpc ConsoleListAuditLogEventNames(ConsoleListAuditLogEventNamesRequest) returns (ConsoleListAuditLogEventNamesResponse);
+  rpc ConsoleCreateProject(ConsoleCreateProjectRequest) returns (ConsoleCreateProjectResponse);
 }
 
 message GetProjectRequest {}
@@ -1324,4 +1325,14 @@ message ConsoleListAuditLogEventNamesRequest {
 
 message ConsoleListAuditLogEventNamesResponse {
   repeated string event_names = 1;
+}
+
+message ConsoleCreateProjectRequest {
+  string display_name = 1;
+  string app_url = 2;
+}
+
+message ConsoleCreateProjectResponse {
+  Project project = 1;
+  string organization_id = 2;
 }

@@ -802,3 +802,9 @@ FROM
 WHERE
     id = $1;
 
+-- name: CreatePublishableKey :one
+INSERT INTO publishable_keys (id, project_id, display_name, dev_mode)
+    VALUES ($1, $2, $3, $4)
+RETURNING
+    *;
+

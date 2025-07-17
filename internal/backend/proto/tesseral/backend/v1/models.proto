@@ -655,3 +655,23 @@ message ConsoleAuditLogEvent {
   string event_name = 13;
   google.protobuf.Struct event_details = 14;
 }
+
+message ProjectWebhookSettings {
+  // The Webhook ID. Starts with `webhook_...`.
+  string id = 1;
+
+  // The Project this Webhook belongs to.
+  string project_id = 2;
+
+  // The URL to send the webhook to.
+  string url = 3;
+
+  // The secret token used to sign the webhook.
+  string app_id = 4;
+
+  // When the Webhook was created.
+  google.protobuf.Timestamp create_time = 5;
+
+  // When the Webhook was last updated.
+  google.protobuf.Timestamp update_time = 6;
+}

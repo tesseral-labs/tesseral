@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   BookOpen,
   Bug,
@@ -8,9 +9,11 @@ import {
   Key,
   LifeBuoy,
   ListCheck,
+  LoaderCircleIcon,
   Lock,
   LogOut,
   Menu,
+  Plus,
   Settings,
   Settings2,
   Shield,
@@ -19,8 +22,10 @@ import {
   Webhook,
 } from "lucide-react";
 import React, { Dispatch, SetStateAction, useState } from "react";
+import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { z } from "zod";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -43,6 +48,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { API_URL } from "@/config";
 import {
+  consoleCreateProject,
   getProject,
   getProjectWebhookManagementURL,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
@@ -59,6 +65,25 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../ui/accordion";
+import { Button } from "../ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
+import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
 import { BreadcrumbBar } from "./BreadcrumbBar";
 
@@ -372,49 +397,151 @@ function NavigationMobile({
   );
 }
 
+const schema = z.object({
+  displayName: z.string().nonempty(),
+  appUrl: z.string().url(),
+});
+
 function NavigationProjects() {
+  const navigate = useNavigate();
+
+  const createProjectMutation = useMutation(consoleCreateProject, {});
   const { data: getProjectResponse } = useQuery(getProject, {});
   const { data: listSwitchableOrganizationsResponse } = useQuery(
     listSwitchableOrganizations,
     {},
   );
 
+  const [createProjectOpen, setCreateProjectOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      displayName: "",
+      appUrl: "",
+    },
+  });
+
+  async function handleSubmit(data: z.infer<typeof schema>) {
+    setSubmitting(true);
+    try {
+      const { organizationId } = await createProjectMutation.mutateAsync(data);
+      setCreateProjectOpen(false);
+      navigate(`/switch-organizations/${organizationId}`);
+    } catch (error) {
+      console.error("Error creating project:", error);
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   return (
-    <NavigationMenuItem>
-      <NavigationMenuTrigger className="text-sm font-medium ring-0 active:ring-0 focus:ring-0">
-        {getProjectResponse?.project?.displayName}
-      </NavigationMenuTrigger>
-      <NavigationMenuContent>
-        <div className="font-semibold mb-2 text-xs px-2">Projects</div>
-        <Separator className="mb-2" />
-        <div className="w-[300px] space-y-2">
-          {listSwitchableOrganizationsResponse?.switchableOrganizations?.map(
-            (org) => (
-              <NavigationMenuLink
-                key={org.id}
-                asChild
-                className={cn(navigationMenuTriggerStyle(), "w-full")}
-              >
-                <Link
-                  className="h-full w-full"
-                  id={org.id}
-                  to={`/switch-organizations/${org.id}`}
+    <>
+      <NavigationMenuItem>
+        <NavigationMenuTrigger className="text-sm font-medium ring-0 active:ring-0 focus:ring-0">
+          {getProjectResponse?.project?.displayName}
+        </NavigationMenuTrigger>
+        <NavigationMenuContent>
+          <div className="font-semibold mb-2 text-xs px-2">Projects</div>
+          <Separator className="mb-2" />
+          <div className="w-[300px] space-y-2">
+            {listSwitchableOrganizationsResponse?.switchableOrganizations?.map(
+              (org) => (
+                <NavigationMenuLink
+                  key={org.id}
+                  asChild
+                  className={cn(navigationMenuTriggerStyle(), "w-full")}
                 >
-                  <div className="flex items-center justify-start w-full font-medium text-xs">
-                    <Avatar className="mr-4 h-6 w-6 rounded-full">
-                      <AvatarFallback className="rounded-full bg-muted-foreground/15 text-muted-foreground text-sm font-semibold">
-                        {org.displayName?.substring(0, 1)?.toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    {org.displayName}
-                  </div>
-                </Link>
-              </NavigationMenuLink>
-            ),
-          )}
-        </div>
-      </NavigationMenuContent>
-    </NavigationMenuItem>
+                  <Link
+                    className="h-full w-full"
+                    id={org.id}
+                    to={`/switch-organizations/${org.id}`}
+                  >
+                    <div className="flex items-center justify-start w-full font-medium text-xs">
+                      <Avatar className="mr-4 h-6 w-6 rounded-full">
+                        <AvatarFallback className="rounded-full bg-muted-foreground/15 text-muted-foreground text-sm font-semibold">
+                          {org.displayName?.substring(0, 1)?.toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      {org.displayName}
+                    </div>
+                  </Link>
+                </NavigationMenuLink>
+              ),
+            )}
+          </div>
+          <Separator className="mb-2" />
+          <Button
+            className="w-full justify-start text-xs"
+            onClick={() => setCreateProjectOpen(true)}
+            size="sm"
+            variant="ghost"
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            New Project
+          </Button>
+        </NavigationMenuContent>
+      </NavigationMenuItem>
+      <Dialog open={createProjectOpen} onOpenChange={setCreateProjectOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create a new Project</DialogTitle>
+            <DialogDescription>
+              Fill out the form below to create a new Project.
+            </DialogDescription>
+          </DialogHeader>
+
+          <Form {...form}>
+            <form
+              className="space-y-4"
+              onSubmit={form.handleSubmit(handleSubmit)}
+            >
+              <FormField
+                control={form.control}
+                name="displayName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Project Name</FormLabel>
+                    <FormDescription>
+                      What's your company's name?
+                    </FormDescription>
+                    <FormMessage />
+                    <FormControl>
+                      <Input placeholder="Example Corporation" {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="appUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>App URL</FormLabel>
+                    <FormDescription>Where does your app run?</FormDescription>
+                    <FormMessage />
+                    <FormControl>
+                      <Input placeholder="https://app.example.com" {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <DialogFooter>
+                <Button disabled={submitting} type="submit">
+                  {submitting && (
+                    <LoaderCircleIcon className="h-4 w-4 animate-spin" />
+                  )}
+                  Create Project
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 

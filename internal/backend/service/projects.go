@@ -8,6 +8,14 @@ import (
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 )
 
+func (s *Service) ConsoleCreateProject(ctx context.Context, req *connect.Request[backendv1.ConsoleCreateProjectRequest]) (*connect.Response[backendv1.ConsoleCreateProjectResponse], error) {
+	res, err := s.Store.ConsoleCreateProject(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+	return connect.NewResponse(res), nil
+}
+
 func (s *Service) GetProject(ctx context.Context, req *connect.Request[backendv1.GetProjectRequest]) (*connect.Response[backendv1.GetProjectResponse], error) {
 	res, err := s.Store.GetProject(ctx, req.Msg)
 	if err != nil {
