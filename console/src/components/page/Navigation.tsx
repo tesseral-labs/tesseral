@@ -486,9 +486,9 @@ function NavigationProjects() {
       <Dialog open={createProjectOpen} onOpenChange={setCreateProjectOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Create a new project</DialogTitle>
+            <DialogTitle>Create a new Project</DialogTitle>
             <DialogDescription>
-              Fill out the form below to create a new project.
+              Fill out the form below to create a new Project.
             </DialogDescription>
           </DialogHeader>
 
