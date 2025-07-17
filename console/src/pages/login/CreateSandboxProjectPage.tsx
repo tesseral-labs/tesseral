@@ -28,14 +28,14 @@ export function CreateSandboxProjectPage() {
         });
 
         navigate("/");
-      } catch (error) {
+      } catch {
         // Fall back to manual creation if auto-creation fails
         navigate("/create-organization");
       }
     }
 
     createProject();
-  }, []);
+  }, [onboardingCreateProjectsAsync, navigate]);
 
   return (
     <LoginFlowCard>
