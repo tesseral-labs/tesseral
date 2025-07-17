@@ -42,6 +42,99 @@ func (q *Queries) BatchGetRoleActionsByRoleID(ctx context.Context, dollar_1 []uu
 	return items, nil
 }
 
+const consoleCreateProject = `-- name: ConsoleCreateProject :one
+INSERT INTO projects (id, organization_id, stripe_customer_id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_github, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_oidc, log_in_with_authenticator_app, log_in_with_passkey, cookie_domain, audit_logs_enabled, entitled_backend_api_keys, entitled_custom_vault_domains, vault_domain, email_send_from_domain, redirect_uri)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
+RETURNING
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix, audit_logs_enabled, log_in_with_oidc
+`
+
+type ConsoleCreateProjectParams struct {
+	ID                         uuid.UUID
+	OrganizationID             *uuid.UUID
+	StripeCustomerID           *string
+	DisplayName                string
+	LogInWithGoogle            bool
+	LogInWithMicrosoft         bool
+	LogInWithGithub            bool
+	LogInWithEmail             bool
+	LogInWithPassword          bool
+	LogInWithSaml              bool
+	LogInWithOidc              bool
+	LogInWithAuthenticatorApp  bool
+	LogInWithPasskey           bool
+	CookieDomain               string
+	AuditLogsEnabled           bool
+	EntitledBackendApiKeys     bool
+	EntitledCustomVaultDomains bool
+	VaultDomain                string
+	EmailSendFromDomain        string
+	RedirectUri                string
+}
+
+func (q *Queries) ConsoleCreateProject(ctx context.Context, arg ConsoleCreateProjectParams) (Project, error) {
+	row := q.db.QueryRow(ctx, consoleCreateProject,
+		arg.ID,
+		arg.OrganizationID,
+		arg.StripeCustomerID,
+		arg.DisplayName,
+		arg.LogInWithGoogle,
+		arg.LogInWithMicrosoft,
+		arg.LogInWithGithub,
+		arg.LogInWithEmail,
+		arg.LogInWithPassword,
+		arg.LogInWithSaml,
+		arg.LogInWithOidc,
+		arg.LogInWithAuthenticatorApp,
+		arg.LogInWithPasskey,
+		arg.CookieDomain,
+		arg.AuditLogsEnabled,
+		arg.EntitledBackendApiKeys,
+		arg.EntitledCustomVaultDomains,
+		arg.VaultDomain,
+		arg.EmailSendFromDomain,
+		arg.RedirectUri,
+	)
+	var i Project
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.LogInWithPassword,
+		&i.LogInWithGoogle,
+		&i.LogInWithMicrosoft,
+		&i.GoogleOauthClientID,
+		&i.MicrosoftOauthClientID,
+		&i.GoogleOauthClientSecretCiphertext,
+		&i.MicrosoftOauthClientSecretCiphertext,
+		&i.DisplayName,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.LoginsDisabled,
+		&i.LogInWithAuthenticatorApp,
+		&i.LogInWithPasskey,
+		&i.LogInWithEmail,
+		&i.LogInWithSaml,
+		&i.RedirectUri,
+		&i.AfterLoginRedirectUri,
+		&i.AfterSignupRedirectUri,
+		&i.VaultDomain,
+		&i.EmailSendFromDomain,
+		&i.CookieDomain,
+		&i.EmailQuotaDaily,
+		&i.StripeCustomerID,
+		&i.EntitledCustomVaultDomains,
+		&i.EntitledBackendApiKeys,
+		&i.LogInWithGithub,
+		&i.GithubOauthClientID,
+		&i.GithubOauthClientSecretCiphertext,
+		&i.ApiKeysEnabled,
+		&i.ApiKeySecretTokenPrefix,
+		&i.AuditLogsEnabled,
+		&i.LogInWithOidc,
+	)
+	return i, err
+}
+
 const consoleListAuditLogEventNames = `-- name: ConsoleListAuditLogEventNames :many
 SELECT DISTINCT
     event_name
@@ -558,6 +651,58 @@ func (q *Queries) CreateProjectTrustedDomain(ctx context.Context, arg CreateProj
 	return i, err
 }
 
+const createProjectUISettings = `-- name: CreateProjectUISettings :one
+INSERT INTO project_ui_settings (id, project_id)
+    VALUES (gen_random_uuid (), $1)
+RETURNING
+    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time, log_in_layout, auto_create_organizations, self_serve_create_organizations, self_serve_create_users
+`
+
+func (q *Queries) CreateProjectUISettings(ctx context.Context, projectID uuid.UUID) (ProjectUiSetting, error) {
+	row := q.db.QueryRow(ctx, createProjectUISettings, projectID)
+	var i ProjectUiSetting
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.PrimaryColor,
+		&i.DetectDarkModeEnabled,
+		&i.DarkModePrimaryColor,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.LogInLayout,
+		&i.AutoCreateOrganizations,
+		&i.SelfServeCreateOrganizations,
+		&i.SelfServeCreateUsers,
+	)
+	return i, err
+}
+
+const createProjectWebhookSettings = `-- name: CreateProjectWebhookSettings :one
+INSERT INTO project_webhook_settings (id, project_id, app_id)
+    VALUES ($1, $2, $3)
+RETURNING
+    id, project_id, app_id, create_time, update_time
+`
+
+type CreateProjectWebhookSettingsParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+	AppID     string
+}
+
+func (q *Queries) CreateProjectWebhookSettings(ctx context.Context, arg CreateProjectWebhookSettingsParams) (ProjectWebhookSetting, error) {
+	row := q.db.QueryRow(ctx, createProjectWebhookSettings, arg.ID, arg.ProjectID, arg.AppID)
+	var i ProjectWebhookSetting
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.AppID,
+		&i.CreateTime,
+		&i.UpdateTime,
+	)
+	return i, err
+}
+
 const createPublishableKey = `-- name: CreatePublishableKey :one
 INSERT INTO publishable_keys (id, project_id, display_name, dev_mode)
     VALUES ($1, $2, $3, $4)
@@ -695,6 +840,43 @@ func (q *Queries) CreateSCIMAPIKey(ctx context.Context, arg CreateSCIMAPIKeyPara
 		&i.DisplayName,
 		&i.CreateTime,
 		&i.UpdateTime,
+	)
+	return i, err
+}
+
+const createSessionSigningKey = `-- name: CreateSessionSigningKey :one
+INSERT INTO session_signing_keys (id, project_id, public_key, private_key_cipher_text, create_time, expire_time)
+    VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING
+    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
+`
+
+type CreateSessionSigningKeyParams struct {
+	ID                   uuid.UUID
+	ProjectID            uuid.UUID
+	PublicKey            []byte
+	PrivateKeyCipherText []byte
+	CreateTime           *time.Time
+	ExpireTime           *time.Time
+}
+
+func (q *Queries) CreateSessionSigningKey(ctx context.Context, arg CreateSessionSigningKeyParams) (SessionSigningKey, error) {
+	row := q.db.QueryRow(ctx, createSessionSigningKey,
+		arg.ID,
+		arg.ProjectID,
+		arg.PublicKey,
+		arg.PrivateKeyCipherText,
+		arg.CreateTime,
+		arg.ExpireTime,
+	)
+	var i SessionSigningKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.PublicKey,
+		&i.PrivateKeyCipherText,
+		&i.CreateTime,
+		&i.ExpireTime,
 	)
 	return i, err
 }

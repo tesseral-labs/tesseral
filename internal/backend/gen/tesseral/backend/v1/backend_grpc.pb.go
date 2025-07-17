@@ -112,6 +112,7 @@ const (
 	BackendService_GetProjectWebhookManagementURL_FullMethodName        = "/tesseral.backend.v1.BackendService/GetProjectWebhookManagementURL"
 	BackendService_ConsoleListAuditLogEvents_FullMethodName             = "/tesseral.backend.v1.BackendService/ConsoleListAuditLogEvents"
 	BackendService_ConsoleListAuditLogEventNames_FullMethodName         = "/tesseral.backend.v1.BackendService/ConsoleListAuditLogEventNames"
+	BackendService_ConsoleCreateProject_FullMethodName                  = "/tesseral.backend.v1.BackendService/ConsoleCreateProject"
 )
 
 // BackendServiceClient is the client API for BackendService service.
@@ -269,6 +270,7 @@ type BackendServiceClient interface {
 	GetProjectWebhookManagementURL(ctx context.Context, in *GetProjectWebhookManagementURLRequest, opts ...grpc.CallOption) (*GetProjectWebhookManagementURLResponse, error)
 	ConsoleListAuditLogEvents(ctx context.Context, in *ConsoleListAuditLogEventsRequest, opts ...grpc.CallOption) (*ConsoleListAuditLogEventsResponse, error)
 	ConsoleListAuditLogEventNames(ctx context.Context, in *ConsoleListAuditLogEventNamesRequest, opts ...grpc.CallOption) (*ConsoleListAuditLogEventNamesResponse, error)
+	ConsoleCreateProject(ctx context.Context, in *ConsoleCreateProjectRequest, opts ...grpc.CallOption) (*ConsoleCreateProjectResponse, error)
 }
 
 type backendServiceClient struct {
@@ -1209,6 +1211,16 @@ func (c *backendServiceClient) ConsoleListAuditLogEventNames(ctx context.Context
 	return out, nil
 }
 
+func (c *backendServiceClient) ConsoleCreateProject(ctx context.Context, in *ConsoleCreateProjectRequest, opts ...grpc.CallOption) (*ConsoleCreateProjectResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ConsoleCreateProjectResponse)
+	err := c.cc.Invoke(ctx, BackendService_ConsoleCreateProject_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BackendServiceServer is the server API for BackendService service.
 // All implementations must embed UnimplementedBackendServiceServer
 // for forward compatibility.
@@ -1364,6 +1376,7 @@ type BackendServiceServer interface {
 	GetProjectWebhookManagementURL(context.Context, *GetProjectWebhookManagementURLRequest) (*GetProjectWebhookManagementURLResponse, error)
 	ConsoleListAuditLogEvents(context.Context, *ConsoleListAuditLogEventsRequest) (*ConsoleListAuditLogEventsResponse, error)
 	ConsoleListAuditLogEventNames(context.Context, *ConsoleListAuditLogEventNamesRequest) (*ConsoleListAuditLogEventNamesResponse, error)
+	ConsoleCreateProject(context.Context, *ConsoleCreateProjectRequest) (*ConsoleCreateProjectResponse, error)
 	mustEmbedUnimplementedBackendServiceServer()
 }
 
@@ -1652,6 +1665,9 @@ func (UnimplementedBackendServiceServer) ConsoleListAuditLogEvents(context.Conte
 }
 func (UnimplementedBackendServiceServer) ConsoleListAuditLogEventNames(context.Context, *ConsoleListAuditLogEventNamesRequest) (*ConsoleListAuditLogEventNamesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ConsoleListAuditLogEventNames not implemented")
+}
+func (UnimplementedBackendServiceServer) ConsoleCreateProject(context.Context, *ConsoleCreateProjectRequest) (*ConsoleCreateProjectResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConsoleCreateProject not implemented")
 }
 func (UnimplementedBackendServiceServer) mustEmbedUnimplementedBackendServiceServer() {}
 func (UnimplementedBackendServiceServer) testEmbeddedByValue()                        {}
@@ -3348,6 +3364,24 @@ func _BackendService_ConsoleListAuditLogEventNames_Handler(srv interface{}, ctx 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_ConsoleCreateProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConsoleCreateProjectRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).ConsoleCreateProject(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_ConsoleCreateProject_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).ConsoleCreateProject(ctx, req.(*ConsoleCreateProjectRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BackendService_ServiceDesc is the grpc.ServiceDesc for BackendService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -3726,6 +3760,10 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ConsoleListAuditLogEventNames",
 			Handler:    _BackendService_ConsoleListAuditLogEventNames_Handler,
+		},
+		{
+			MethodName: "ConsoleCreateProject",
+			Handler:    _BackendService_ConsoleCreateProject_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

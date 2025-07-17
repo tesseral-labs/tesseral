@@ -16,7 +16,7 @@ export function ChooseProjectPage() {
   useEffect(() => {
     if (listOrganizationsResponse?.organizations) {
       if (listOrganizationsResponse.organizations.length === 0) {
-        navigate("/create-organization");
+        navigate("/create-sandbox-project");
       }
     }
   }, [listOrganizationsResponse, navigate]);

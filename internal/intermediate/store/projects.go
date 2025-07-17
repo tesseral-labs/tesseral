@@ -194,7 +194,7 @@ func (s *Store) OnboardingCreateProjects(ctx context.Context, req *intermediatev
 			Name:  &req.DisplayName,
 			Email: qIntermediateSession.Email,
 			Metadata: map[string]string{
-				"tesseral_project_ids": fmt.Sprintf("%s,%s", idformat.Project.Format(qSandboxProjectID)),
+				"tesseral_project_ids": idformat.Project.Format(qSandboxProjectID),
 			},
 		})
 		if err != nil {
@@ -214,7 +214,7 @@ func (s *Store) OnboardingCreateProjects(ctx context.Context, req *intermediatev
 	qSandboxUser, err := s.createProjectForCurrentUser(ctx, q, &qIntermediateSession, createProjectForCurrentUserArgs{
 		ProjectID:                          qSandboxProjectID,
 		StripeCustomerID:                   stripeCustomerID,
-		RedirectURI:                        req.ProdUrl,
+		RedirectURI:                        req.AppUrl,
 		DisplayName:                        req.DisplayName,
 		SessionSigningPublicKey:            sandboxPublicKey,
 		SessionSigningPrivateKeyCiphertext: sandboxPrivateKeyCiphertext,
@@ -315,6 +315,7 @@ func (s *Store) createProjectForCurrentUser(ctx context.Context, q *queries.Quer
 		LogInWithEmail:     qDogfoodProject.LogInWithEmail,
 		LogInWithGoogle:    qDogfoodProject.LogInWithGoogle,
 		LogInWithMicrosoft: qDogfoodProject.LogInWithMicrosoft,
+		LogInWithGithub:    qDogfoodProject.LogInWithGithub,
 		LogInWithPassword:  qDogfoodProject.LogInWithPassword,
 		ScimEnabled:        false,
 	})
@@ -426,6 +427,16 @@ func (s *Store) createProjectForCurrentUser(ctx context.Context, q *queries.Quer
 	// Create a Svix application for the project to send webhooks to
 	if _, err := s.createProjectWebhookSettings(ctx, q, qProject); err != nil {
 		return nil, fmt.Errorf("create webhook: %w", err)
+	}
+
+	// Create a Publishable Key for the Project
+	if _, err := q.CreatePublishableKey(ctx, queries.CreatePublishableKeyParams{
+		ID:          uuid.New(),
+		ProjectID:   args.ProjectID,
+		DisplayName: "Default Publishable Key",
+		DevMode:     true,
+	}); err != nil {
+		return nil, fmt.Errorf("create publishable key: %w", err)
 	}
 
 	return &qUser, nil
