@@ -179,19 +179,12 @@ func (s *Store) OnboardingCreateProjects(ctx context.Context, req *intermediatev
 		return nil, fmt.Errorf("enforce project login enabled: %w", err)
 	}
 
-	// create two keypairs, for dev and prod
-	devPublicKey, devPrivateKeyCiphertext, err := s.onboardingGenerateSessionSigningKey(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("generate dev session signing key: %w", err)
-	}
-
-	prodPublicKey, prodPrivateKeyCiphertext, err := s.onboardingGenerateSessionSigningKey(ctx)
+	sandboxPublicKey, sandboxPrivateKeyCiphertext, err := s.onboardingGenerateSessionSigningKey(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("generate prod session signing key: %w", err)
 	}
 
-	qDevProjectID := uuid.New()
-	qProdProjectID := uuid.New()
+	qSandboxProjectID := uuid.New()
 
 	slog.InfoContext(ctx, "stripe_client_exists", "stripe_client_exists", s.stripeClient != nil)
 
@@ -201,7 +194,7 @@ func (s *Store) OnboardingCreateProjects(ctx context.Context, req *intermediatev
 			Name:  &req.DisplayName,
 			Email: qIntermediateSession.Email,
 			Metadata: map[string]string{
-				"tesseral_project_ids": fmt.Sprintf("%s,%s", idformat.Project.Format(qDevProjectID), idformat.Project.Format(qProdProjectID)),
+				"tesseral_project_ids": fmt.Sprintf("%s,%s", idformat.Project.Format(qSandboxProjectID)),
 			},
 		})
 		if err != nil {
@@ -218,33 +211,21 @@ func (s *Store) OnboardingCreateProjects(ctx context.Context, req *intermediatev
 	}
 	defer rollback()
 
-	qDevUser, err := s.createProjectForCurrentUser(ctx, q, &qIntermediateSession, createProjectForCurrentUserArgs{
-		ProjectID:                          qDevProjectID,
-		StripeCustomerID:                   stripeCustomerID,
-		RedirectURI:                        req.DevUrl,
-		DisplayName:                        fmt.Sprintf("%s Dev", req.DisplayName),
-		SessionSigningPublicKey:            devPublicKey,
-		SessionSigningPrivateKeyCiphertext: devPrivateKeyCiphertext,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("create dev project for current user: %w", err)
-	}
-
-	if _, err := s.createProjectForCurrentUser(ctx, q, &qIntermediateSession, createProjectForCurrentUserArgs{
-		ProjectID:                          qProdProjectID,
+	qSandboxUser, err := s.createProjectForCurrentUser(ctx, q, &qIntermediateSession, createProjectForCurrentUserArgs{
+		ProjectID:                          qSandboxProjectID,
 		StripeCustomerID:                   stripeCustomerID,
 		RedirectURI:                        req.ProdUrl,
 		DisplayName:                        req.DisplayName,
-		SessionSigningPublicKey:            prodPublicKey,
-		SessionSigningPrivateKeyCiphertext: prodPrivateKeyCiphertext,
-	}); err != nil {
-		return nil, fmt.Errorf("create prod project for current user: %w", err)
+		SessionSigningPublicKey:            sandboxPublicKey,
+		SessionSigningPrivateKeyCiphertext: sandboxPrivateKeyCiphertext,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("create sandbox project for current user: %w", err)
 	}
 
-	slog.InfoContext(ctx, "created_projects",
+	slog.InfoContext(ctx, "created_project",
 		"display_name", req.DisplayName,
-		"dev_project_id", idformat.Project.Format(qDevProjectID),
-		"prod_project_id", idformat.Project.Format(qProdProjectID))
+		"sandbox_project_id", idformat.Project.Format(qSandboxProjectID))
 
 	expireTime := time.Now().Add(sessionDuration)
 
@@ -255,7 +236,7 @@ func (s *Store) OnboardingCreateProjects(ctx context.Context, req *intermediatev
 		ID:                 uuid.Must(uuid.NewV7()),
 		ExpireTime:         &expireTime,
 		RefreshTokenSha256: refreshTokenSHA256[:],
-		UserID:             qDevUser.ID,
+		UserID:             qSandboxUser.ID,
 		PrimaryAuthFactor:  *qIntermediateSession.PrimaryAuthFactor,
 	}); err != nil {
 		return nil, fmt.Errorf("create session: %w", err)
