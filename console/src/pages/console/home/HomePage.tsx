@@ -24,7 +24,6 @@ import {
   getProjectOnboardingProgress,
   getProjectWebhookManagementURL,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
-import { stepCompleted } from "@/lib/onboarding";
 
 import { OnboardingCard } from "./OnboardingCard";
 import { UpgradeCard } from "./UpgradeCard";
@@ -45,16 +44,11 @@ export function HomePage() {
 
   const onboardingCompleted =
     getProjectOnboardingProgressResponse?.progress?.onboardingSkipped ||
-    (stepCompleted(
-      getProjectOnboardingProgressResponse?.progress
-        ?.configureAuthenticationTime,
-    ) &&
-      stepCompleted(
-        getProjectOnboardingProgressResponse?.progress?.logInToVaultTime,
-      ) &&
-      stepCompleted(
-        getProjectOnboardingProgressResponse?.progress?.manageOrganizationsTime,
-      ));
+    (!!getProjectOnboardingProgressResponse?.progress
+      ?.configureAuthenticationTime &&
+      !!getProjectOnboardingProgressResponse?.progress?.logInToVaultTime &&
+      !!getProjectOnboardingProgressResponse?.progress
+        ?.manageOrganizationsTime);
 
   return (
     <PageContent>

@@ -10,7 +10,6 @@ import (
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (s *Store) GetProjectOnboardingProgress(ctx context.Context, req *backendv1.GetProjectOnboardingProgressRequest) (*backendv1.GetProjectOnboardingProgressResponse, error) {
@@ -86,11 +85,11 @@ func (s *Store) UpdateProjectOnboardingProgress(ctx context.Context, req *backen
 func parseProjectOnboardingProgress(qProgress queries.ProjectOnboardingProgress) *backendv1.ProjectOnboardingProgress {
 	return &backendv1.ProjectOnboardingProgress{
 		ProjectId:                   idformat.Project.Format(qProgress.ProjectID),
-		ConfigureAuthenticationTime: timestamppb.New(derefOrEmpty(qProgress.ConfigureAuthenticationTime)),
-		LogInToVaultTime:            timestamppb.New(derefOrEmpty(qProgress.LogInToVaultTime)),
-		ManageOrganizationsTime:     timestamppb.New(derefOrEmpty(qProgress.ManageOrganizationsTime)),
+		ConfigureAuthenticationTime: timestampOrNil(qProgress.ConfigureAuthenticationTime),
+		LogInToVaultTime:            timestampOrNil(qProgress.LogInToVaultTime),
+		ManageOrganizationsTime:     timestampOrNil(qProgress.ManageOrganizationsTime),
 		OnboardingSkipped:           qProgress.OnboardingSkipped,
-		CreateTime:                  timestamppb.New(derefOrEmpty(qProgress.CreateTime)),
-		UpdateTime:                  timestamppb.New(derefOrEmpty(qProgress.UpdateTime)),
+		CreateTime:                  timestampOrNil(qProgress.CreateTime),
+		UpdateTime:                  timestampOrNil(qProgress.UpdateTime),
 	}
 }

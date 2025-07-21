@@ -28,7 +28,6 @@ import {
   listPublishableKeys,
   updateProjectOnboardingProgress,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
-import { stepCompleted } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
 
 export function OnboardingCard() {
@@ -47,15 +46,13 @@ export function OnboardingCard() {
   );
 
   // Onboarding status
-  const configureAuthenticationCompleted = stepCompleted(
-    getProjectOnboardingProgressResponse?.progress?.configureAuthenticationTime,
-  );
-  const logInToVaultCompleted = stepCompleted(
-    getProjectOnboardingProgressResponse?.progress?.logInToVaultTime,
-  );
-  const manageOrganizationsCompleted = stepCompleted(
-    getProjectOnboardingProgressResponse?.progress?.manageOrganizationsTime,
-  );
+  const configureAuthenticationCompleted =
+    !!getProjectOnboardingProgressResponse?.progress
+      ?.configureAuthenticationTime;
+  const logInToVaultCompleted =
+    !!getProjectOnboardingProgressResponse?.progress?.logInToVaultTime;
+  const manageOrganizationsCompleted =
+    !!getProjectOnboardingProgressResponse?.progress?.manageOrganizationsTime;
 
   const stepsCompleted =
     Number(configureAuthenticationCompleted) +
