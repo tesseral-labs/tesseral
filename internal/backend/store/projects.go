@@ -563,7 +563,7 @@ func (s *Store) ConsoleCreateProject(ctx context.Context, req *backendv1.Console
 	}
 
 	// Add the new project to the Stripe customer metadata
-	if err := s.upsertStripeCustomerProjectID(ctx, idformat.Project.Format(qNewProject.ID), qProject.StripeCustomerID); err != nil {
+	if err := s.upsertStripeCustomerProjectID(idformat.Project.Format(qNewProject.ID), qProject.StripeCustomerID); err != nil {
 		return nil, fmt.Errorf("upsert stripe customer project id: %w", err)
 	}
 
@@ -601,7 +601,7 @@ func (s *Store) generateSessionSigningKey(ctx context.Context) (*ecdsa.PublicKey
 	return privateKey.Public().(*ecdsa.PublicKey), sskEncryptOutput.CiphertextBlob, nil
 }
 
-func (s *Store) upsertStripeCustomerProjectID(ctx context.Context, projectID string, stripeCustomerID *string) error {
+func (s *Store) upsertStripeCustomerProjectID(projectID string, stripeCustomerID *string) error {
 	if stripeCustomerID == nil || *stripeCustomerID == "" {
 		return fmt.Errorf("stripe customer ID is required to upsert project ID")
 	}
@@ -614,7 +614,7 @@ func (s *Store) upsertStripeCustomerProjectID(ctx context.Context, projectID str
 	var projectIDs []string
 	var projectIDExists bool
 	if customer.Metadata != nil {
-		if projectIDStr, ok := customer.Metadata["project_id"]; ok {
+		if projectIDStr, ok := customer.Metadata["tesseral_project_ids"]; ok {
 			storedProjectIDs := strings.Split(projectIDStr, ",")
 
 			// Looping over all stored project IDs to prevent duplicates
@@ -633,7 +633,7 @@ func (s *Store) upsertStripeCustomerProjectID(ctx context.Context, projectID str
 
 	if _, err := s.stripe.Customers.Update(*stripeCustomerID, &stripe.CustomerParams{
 		Metadata: map[string]string{
-			"project_id": strings.Join(projectIDs, ","),
+			"tesseral_project_ids": strings.Join(projectIDs, ","),
 		},
 	}); err != nil {
 		return fmt.Errorf("update stripe customer metadata: %w", err)
