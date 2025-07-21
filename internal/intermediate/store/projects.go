@@ -374,8 +374,9 @@ func (s *Store) createProjectForCurrentUser(ctx context.Context, q *queries.Quer
 		EmailSendFromDomain: fmt.Sprintf("mail.%s", s.authAppsRootDomain),
 		DisplayName:         args.DisplayName,
 		LogInWithEmail:      true,
-		LogInWithGoogle:     false,
-		LogInWithMicrosoft:  false,
+		LogInWithGithub:     true,
+		LogInWithGoogle:     true,
+		LogInWithMicrosoft:  true,
 		LogInWithPassword:   false,
 		LogInWithSaml:       false,
 	})

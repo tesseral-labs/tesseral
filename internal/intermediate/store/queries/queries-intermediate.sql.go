@@ -329,8 +329,8 @@ func (q *Queries) CreatePasskey(ctx context.Context, arg CreatePasskeyParams) (P
 }
 
 const createProject = `-- name: CreateProject :one
-INSERT INTO projects (id, organization_id, display_name, redirect_uri, vault_domain, email_send_from_domain, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_saml, log_in_with_email, cookie_domain, stripe_customer_id)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+INSERT INTO projects (id, organization_id, display_name, redirect_uri, vault_domain, email_send_from_domain, log_in_with_google, log_in_with_microsoft, log_in_with_github, log_in_with_password, log_in_with_saml, log_in_with_email, cookie_domain, stripe_customer_id)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
 RETURNING
     id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix, audit_logs_enabled, log_in_with_oidc
 `
@@ -344,6 +344,7 @@ type CreateProjectParams struct {
 	EmailSendFromDomain string
 	LogInWithGoogle     bool
 	LogInWithMicrosoft  bool
+	LogInWithGithub     bool
 	LogInWithPassword   bool
 	LogInWithSaml       bool
 	LogInWithEmail      bool
@@ -361,6 +362,7 @@ func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (P
 		arg.EmailSendFromDomain,
 		arg.LogInWithGoogle,
 		arg.LogInWithMicrosoft,
+		arg.LogInWithGithub,
 		arg.LogInWithPassword,
 		arg.LogInWithSaml,
 		arg.LogInWithEmail,

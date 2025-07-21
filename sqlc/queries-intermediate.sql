@@ -652,8 +652,8 @@ RETURNING
     *;
 
 -- name: CreateProject :one
-INSERT INTO projects (id, organization_id, display_name, redirect_uri, vault_domain, email_send_from_domain, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_saml, log_in_with_email, cookie_domain, stripe_customer_id)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+INSERT INTO projects (id, organization_id, display_name, redirect_uri, vault_domain, email_send_from_domain, log_in_with_google, log_in_with_microsoft, log_in_with_github, log_in_with_password, log_in_with_saml, log_in_with_email, cookie_domain, stripe_customer_id)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
 RETURNING
     *;
 
