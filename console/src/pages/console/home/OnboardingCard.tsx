@@ -1,14 +1,6 @@
 import { timestampNow } from "@bufbuild/protobuf/wkt";
 import { useMutation, useQuery } from "@connectrpc/connect-query";
-import {
-  Building2,
-  Check,
-  LogIn,
-  Shield,
-  Star,
-  Users,
-  XIcon,
-} from "lucide-react";
+import { Building2, Check, LogIn, Shield, Star, XIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 
