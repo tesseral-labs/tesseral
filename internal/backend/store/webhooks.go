@@ -12,22 +12,13 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func (s *Store) createSvixApplication(ctx context.Context, displayName string) (*models.ApplicationOut, error) {
+func (s *Store) createProjectWebhookSettings(ctx context.Context, q *queries.Queries, qProject queries.Project) (*backendv1.ProjectWebhookSettings, error) {
 	// Create a new Svix application
-	app, err := s.svixClient.Application.Create(ctx, models.ApplicationIn{
-		Name: displayName,
+	svixApplication, err := s.svixClient.Application.Create(ctx, models.ApplicationIn{
+		Name: qProject.DisplayName,
 	}, nil)
 	if err != nil {
 		return nil, err
-	}
-
-	return app, nil
-}
-
-func (s *Store) createProjectWebhookSettings(ctx context.Context, q *queries.Queries, qProject queries.Project) (*backendv1.ProjectWebhookSettings, error) {
-	svixApplication, err := s.createSvixApplication(ctx, qProject.DisplayName)
-	if err != nil {
-		return nil, fmt.Errorf("create svix application: %w", err)
 	}
 
 	qWebhook, err := q.CreateProjectWebhookSettings(ctx, queries.CreateProjectWebhookSettingsParams{
