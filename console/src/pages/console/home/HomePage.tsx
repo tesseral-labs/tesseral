@@ -21,34 +21,69 @@ import {
 } from "@/components/ui/card";
 import {
   getProjectEntitlements,
+  getProjectOnboardingProgress,
   getProjectWebhookManagementURL,
 } from "@/gen/tesseral/backend/v1/backend-BackendService_connectquery";
+import { stepCompleted } from "@/lib/onboarding";
 
+import { OnboardingCard } from "./OnboardingCard";
 import { UpgradeCard } from "./UpgradeCard";
 import { VisitVaultCard } from "./VisitVaultCard";
-import { WelcomeCard } from "./WelcomeCard";
 
 export function HomePage() {
   const {
     data: getProjectEntitlementsResponse,
     isLoading: isLoadingEntitlements,
   } = useQuery(getProjectEntitlements);
-  const { data: getProjectWebhookManagementUrlResponse } = useQuery(
-    getProjectWebhookManagementURL,
+  const {
+    data: getProjectWebhookManagementUrlResponse,
+    isLoading: isLoadingProgress,
+  } = useQuery(getProjectWebhookManagementURL);
+  const { data: getProjectOnboardingProgressResponse } = useQuery(
+    getProjectOnboardingProgress,
   );
+
+  const onboardingCompleted =
+    getProjectOnboardingProgressResponse?.progress?.onboardingSkipped ||
+    (stepCompleted(
+      getProjectOnboardingProgressResponse?.progress
+        ?.configureAuthenticationTime,
+    ) &&
+      stepCompleted(
+        getProjectOnboardingProgressResponse?.progress?.logInToVaultTime,
+      ) &&
+      stepCompleted(
+        getProjectOnboardingProgressResponse?.progress?.manageOrganizationsTime,
+      ));
 
   return (
     <PageContent>
       <Title title="Home" />
 
+      {!isLoadingProgress && !onboardingCompleted && (
+        <div>
+          <div className="font-semibold tracking-wider text-xs text-muted-foreground/50 uppercase mb-4">
+            Setup
+          </div>
+          <OnboardingCard />
+        </div>
+      )}
+
+      <div className="font-semibold tracking-wider text-xs text-muted-foreground/50 uppercase mb-4">
+        Vault
+      </div>
       <div className={"grid grid-cols-1 lg:grid-cols-3 gap-8"}>
-        <WelcomeCard />
         <VisitVaultCard />
         {!isLoadingEntitlements &&
           !getProjectEntitlementsResponse?.entitledBackendApiKeys && (
             <UpgradeCard />
           )}
       </div>
+
+      <div className="font-semibold tracking-wider text-xs text-muted-foreground/50 uppercase mb-4">
+        Project Management
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
         <Link to="/organizations">
           <Card className="hover:shadow-md transition-all ease-in-out">

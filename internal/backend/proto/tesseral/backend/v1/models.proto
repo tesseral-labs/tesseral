@@ -675,3 +675,13 @@ message ProjectWebhookSettings {
   // When the Webhook was last updated.
   google.protobuf.Timestamp update_time = 6;
 }
+
+message ProjectOnboardingProgress {
+  string project_id = 1;
+  google.protobuf.Timestamp configure_authentication_time = 2;
+  google.protobuf.Timestamp log_in_to_vault_time = 3;
+  google.protobuf.Timestamp manage_organizations_time = 4;
+  optional bool onboarding_skipped = 5;
+  google.protobuf.Timestamp create_time = 6;
+  google.protobuf.Timestamp update_time = 7;
+}

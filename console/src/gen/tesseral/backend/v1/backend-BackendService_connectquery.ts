@@ -586,6 +586,16 @@ export const consoleListAuditLogEvents = BackendService.method.consoleListAuditL
 export const consoleListAuditLogEventNames = BackendService.method.consoleListAuditLogEventNames;
 
 /**
+ * @generated from rpc tesseral.backend.v1.BackendService.GetProjectOnboardingProgress
+ */
+export const getProjectOnboardingProgress = BackendService.method.getProjectOnboardingProgress;
+
+/**
+ * @generated from rpc tesseral.backend.v1.BackendService.UpdateProjectOnboardingProgress
+ */
+export const updateProjectOnboardingProgress = BackendService.method.updateProjectOnboardingProgress;
+
+/**
  * @generated from rpc tesseral.backend.v1.BackendService.ConsoleCreateProject
  */
 export const consoleCreateProject = BackendService.method.consoleCreateProject;

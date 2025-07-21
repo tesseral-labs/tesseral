@@ -11,8 +11,8 @@ export function UpgradeCard() {
   return (
     <Card className="lg:col-span-1 bg-gradient-to-br from-violet-500 via-purple-500 to-blue-500 border-0 text-white relative overflow-hidden shadow-xl">
       <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
-      <CardContent className="p-6 relative flex h-full">
-        <div className="flex flex-wrap w-full">
+      <CardContent className="relative flex flex-grow">
+        <div className="flex flex-wrap w-full flex-grow">
           <div className="w-full space-y-4 md:flex-grow">
             <div className="flex items-center space-x-3">
               <div className="p-2 rounded-full bg-white/20 backdrop-blur-sm">

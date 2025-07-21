@@ -426,6 +426,10 @@ service BackendService {
 
   rpc ConsoleListAuditLogEvents(ConsoleListAuditLogEventsRequest) returns (ConsoleListAuditLogEventsResponse);
   rpc ConsoleListAuditLogEventNames(ConsoleListAuditLogEventNamesRequest) returns (ConsoleListAuditLogEventNamesResponse);
+
+  rpc GetProjectOnboardingProgress(GetProjectOnboardingProgressRequest) returns (GetProjectOnboardingProgressResponse);
+  rpc UpdateProjectOnboardingProgress(UpdateProjectOnboardingProgressRequest) returns (UpdateProjectOnboardingProgressResponse);
+
   rpc ConsoleCreateProject(ConsoleCreateProjectRequest) returns (ConsoleCreateProjectResponse);
 }
 
@@ -1335,4 +1339,18 @@ message ConsoleCreateProjectRequest {
 message ConsoleCreateProjectResponse {
   Project project = 1;
   string organization_id = 2;
+}
+
+message GetProjectOnboardingProgressRequest {}
+
+message GetProjectOnboardingProgressResponse {
+  ProjectOnboardingProgress progress = 1;
+}
+
+message UpdateProjectOnboardingProgressRequest {
+  ProjectOnboardingProgress progress = 1;
+}
+
+message UpdateProjectOnboardingProgressResponse {
+  ProjectOnboardingProgress progress = 1;
 }

@@ -310,6 +310,12 @@ const (
 	// BackendServiceConsoleListAuditLogEventNamesProcedure is the fully-qualified name of the
 	// BackendService's ConsoleListAuditLogEventNames RPC.
 	BackendServiceConsoleListAuditLogEventNamesProcedure = "/tesseral.backend.v1.BackendService/ConsoleListAuditLogEventNames"
+	// BackendServiceGetProjectOnboardingProgressProcedure is the fully-qualified name of the
+	// BackendService's GetProjectOnboardingProgress RPC.
+	BackendServiceGetProjectOnboardingProgressProcedure = "/tesseral.backend.v1.BackendService/GetProjectOnboardingProgress"
+	// BackendServiceUpdateProjectOnboardingProgressProcedure is the fully-qualified name of the
+	// BackendService's UpdateProjectOnboardingProgress RPC.
+	BackendServiceUpdateProjectOnboardingProgressProcedure = "/tesseral.backend.v1.BackendService/UpdateProjectOnboardingProgress"
 	// BackendServiceConsoleCreateProjectProcedure is the fully-qualified name of the BackendService's
 	// ConsoleCreateProject RPC.
 	BackendServiceConsoleCreateProjectProcedure = "/tesseral.backend.v1.BackendService/ConsoleCreateProject"
@@ -468,6 +474,8 @@ type BackendServiceClient interface {
 	GetProjectWebhookManagementURL(context.Context, *connect.Request[v1.GetProjectWebhookManagementURLRequest]) (*connect.Response[v1.GetProjectWebhookManagementURLResponse], error)
 	ConsoleListAuditLogEvents(context.Context, *connect.Request[v1.ConsoleListAuditLogEventsRequest]) (*connect.Response[v1.ConsoleListAuditLogEventsResponse], error)
 	ConsoleListAuditLogEventNames(context.Context, *connect.Request[v1.ConsoleListAuditLogEventNamesRequest]) (*connect.Response[v1.ConsoleListAuditLogEventNamesResponse], error)
+	GetProjectOnboardingProgress(context.Context, *connect.Request[v1.GetProjectOnboardingProgressRequest]) (*connect.Response[v1.GetProjectOnboardingProgressResponse], error)
+	UpdateProjectOnboardingProgress(context.Context, *connect.Request[v1.UpdateProjectOnboardingProgressRequest]) (*connect.Response[v1.UpdateProjectOnboardingProgressResponse], error)
 	ConsoleCreateProject(context.Context, *connect.Request[v1.ConsoleCreateProjectRequest]) (*connect.Response[v1.ConsoleCreateProjectResponse], error)
 }
 
@@ -1040,6 +1048,18 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("ConsoleListAuditLogEventNames")),
 			connect.WithClientOptions(opts...),
 		),
+		getProjectOnboardingProgress: connect.NewClient[v1.GetProjectOnboardingProgressRequest, v1.GetProjectOnboardingProgressResponse](
+			httpClient,
+			baseURL+BackendServiceGetProjectOnboardingProgressProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("GetProjectOnboardingProgress")),
+			connect.WithClientOptions(opts...),
+		),
+		updateProjectOnboardingProgress: connect.NewClient[v1.UpdateProjectOnboardingProgressRequest, v1.UpdateProjectOnboardingProgressResponse](
+			httpClient,
+			baseURL+BackendServiceUpdateProjectOnboardingProgressProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("UpdateProjectOnboardingProgress")),
+			connect.WithClientOptions(opts...),
+		),
 		consoleCreateProject: connect.NewClient[v1.ConsoleCreateProjectRequest, v1.ConsoleCreateProjectResponse](
 			httpClient,
 			baseURL+BackendServiceConsoleCreateProjectProcedure,
@@ -1144,6 +1164,8 @@ type backendServiceClient struct {
 	getProjectWebhookManagementURL        *connect.Client[v1.GetProjectWebhookManagementURLRequest, v1.GetProjectWebhookManagementURLResponse]
 	consoleListAuditLogEvents             *connect.Client[v1.ConsoleListAuditLogEventsRequest, v1.ConsoleListAuditLogEventsResponse]
 	consoleListAuditLogEventNames         *connect.Client[v1.ConsoleListAuditLogEventNamesRequest, v1.ConsoleListAuditLogEventNamesResponse]
+	getProjectOnboardingProgress          *connect.Client[v1.GetProjectOnboardingProgressRequest, v1.GetProjectOnboardingProgressResponse]
+	updateProjectOnboardingProgress       *connect.Client[v1.UpdateProjectOnboardingProgressRequest, v1.UpdateProjectOnboardingProgressResponse]
 	consoleCreateProject                  *connect.Client[v1.ConsoleCreateProjectRequest, v1.ConsoleCreateProjectResponse]
 }
 
@@ -1619,6 +1641,18 @@ func (c *backendServiceClient) ConsoleListAuditLogEventNames(ctx context.Context
 	return c.consoleListAuditLogEventNames.CallUnary(ctx, req)
 }
 
+// GetProjectOnboardingProgress calls
+// tesseral.backend.v1.BackendService.GetProjectOnboardingProgress.
+func (c *backendServiceClient) GetProjectOnboardingProgress(ctx context.Context, req *connect.Request[v1.GetProjectOnboardingProgressRequest]) (*connect.Response[v1.GetProjectOnboardingProgressResponse], error) {
+	return c.getProjectOnboardingProgress.CallUnary(ctx, req)
+}
+
+// UpdateProjectOnboardingProgress calls
+// tesseral.backend.v1.BackendService.UpdateProjectOnboardingProgress.
+func (c *backendServiceClient) UpdateProjectOnboardingProgress(ctx context.Context, req *connect.Request[v1.UpdateProjectOnboardingProgressRequest]) (*connect.Response[v1.UpdateProjectOnboardingProgressResponse], error) {
+	return c.updateProjectOnboardingProgress.CallUnary(ctx, req)
+}
+
 // ConsoleCreateProject calls tesseral.backend.v1.BackendService.ConsoleCreateProject.
 func (c *backendServiceClient) ConsoleCreateProject(ctx context.Context, req *connect.Request[v1.ConsoleCreateProjectRequest]) (*connect.Response[v1.ConsoleCreateProjectResponse], error) {
 	return c.consoleCreateProject.CallUnary(ctx, req)
@@ -1777,6 +1811,8 @@ type BackendServiceHandler interface {
 	GetProjectWebhookManagementURL(context.Context, *connect.Request[v1.GetProjectWebhookManagementURLRequest]) (*connect.Response[v1.GetProjectWebhookManagementURLResponse], error)
 	ConsoleListAuditLogEvents(context.Context, *connect.Request[v1.ConsoleListAuditLogEventsRequest]) (*connect.Response[v1.ConsoleListAuditLogEventsResponse], error)
 	ConsoleListAuditLogEventNames(context.Context, *connect.Request[v1.ConsoleListAuditLogEventNamesRequest]) (*connect.Response[v1.ConsoleListAuditLogEventNamesResponse], error)
+	GetProjectOnboardingProgress(context.Context, *connect.Request[v1.GetProjectOnboardingProgressRequest]) (*connect.Response[v1.GetProjectOnboardingProgressResponse], error)
+	UpdateProjectOnboardingProgress(context.Context, *connect.Request[v1.UpdateProjectOnboardingProgressRequest]) (*connect.Response[v1.UpdateProjectOnboardingProgressResponse], error)
 	ConsoleCreateProject(context.Context, *connect.Request[v1.ConsoleCreateProjectRequest]) (*connect.Response[v1.ConsoleCreateProjectResponse], error)
 }
 
@@ -2345,6 +2381,18 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("ConsoleListAuditLogEventNames")),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceGetProjectOnboardingProgressHandler := connect.NewUnaryHandler(
+		BackendServiceGetProjectOnboardingProgressProcedure,
+		svc.GetProjectOnboardingProgress,
+		connect.WithSchema(backendServiceMethods.ByName("GetProjectOnboardingProgress")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceUpdateProjectOnboardingProgressHandler := connect.NewUnaryHandler(
+		BackendServiceUpdateProjectOnboardingProgressProcedure,
+		svc.UpdateProjectOnboardingProgress,
+		connect.WithSchema(backendServiceMethods.ByName("UpdateProjectOnboardingProgress")),
+		connect.WithHandlerOptions(opts...),
+	)
 	backendServiceConsoleCreateProjectHandler := connect.NewUnaryHandler(
 		BackendServiceConsoleCreateProjectProcedure,
 		svc.ConsoleCreateProject,
@@ -2539,6 +2587,10 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceConsoleListAuditLogEventsHandler.ServeHTTP(w, r)
 		case BackendServiceConsoleListAuditLogEventNamesProcedure:
 			backendServiceConsoleListAuditLogEventNamesHandler.ServeHTTP(w, r)
+		case BackendServiceGetProjectOnboardingProgressProcedure:
+			backendServiceGetProjectOnboardingProgressHandler.ServeHTTP(w, r)
+		case BackendServiceUpdateProjectOnboardingProgressProcedure:
+			backendServiceUpdateProjectOnboardingProgressHandler.ServeHTTP(w, r)
 		case BackendServiceConsoleCreateProjectProcedure:
 			backendServiceConsoleCreateProjectHandler.ServeHTTP(w, r)
 		default:
@@ -2920,6 +2972,14 @@ func (UnimplementedBackendServiceHandler) ConsoleListAuditLogEvents(context.Cont
 
 func (UnimplementedBackendServiceHandler) ConsoleListAuditLogEventNames(context.Context, *connect.Request[v1.ConsoleListAuditLogEventNamesRequest]) (*connect.Response[v1.ConsoleListAuditLogEventNamesResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.ConsoleListAuditLogEventNames is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) GetProjectOnboardingProgress(context.Context, *connect.Request[v1.GetProjectOnboardingProgressRequest]) (*connect.Response[v1.GetProjectOnboardingProgressResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetProjectOnboardingProgress is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) UpdateProjectOnboardingProgress(context.Context, *connect.Request[v1.UpdateProjectOnboardingProgressRequest]) (*connect.Response[v1.UpdateProjectOnboardingProgressResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.UpdateProjectOnboardingProgress is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) ConsoleCreateProject(context.Context, *connect.Request[v1.ConsoleCreateProjectRequest]) (*connect.Response[v1.ConsoleCreateProjectResponse], error) {

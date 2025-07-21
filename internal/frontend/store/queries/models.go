@@ -409,6 +409,17 @@ type ProjectEmailQuotaDailyUsage struct {
 	QuotaUsage int32
 }
 
+type ProjectOnboardingProgress struct {
+	ID                          uuid.UUID
+	ProjectID                   uuid.UUID
+	ConfigureAuthenticationTime *time.Time
+	LogInToVaultTime            *time.Time
+	ManageOrganizationsTime     *time.Time
+	OnboardingSkipped           *bool
+	CreateTime                  *time.Time
+	UpdateTime                  *time.Time
+}
+
 type ProjectTrustedDomain struct {
 	ID        uuid.UUID
 	ProjectID uuid.UUID

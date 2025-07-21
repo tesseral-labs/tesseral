@@ -2072,6 +2072,31 @@ func (q *Queries) GetProjectIDOrganizationBacks(ctx context.Context, organizatio
 	return id, err
 }
 
+const getProjectOnboardingProgress = `-- name: GetProjectOnboardingProgress :one
+SELECT
+    id, project_id, configure_authentication_time, log_in_to_vault_time, manage_organizations_time, onboarding_skipped, create_time, update_time
+FROM
+    project_onboarding_progress
+WHERE
+    project_id = $1
+`
+
+func (q *Queries) GetProjectOnboardingProgress(ctx context.Context, projectID uuid.UUID) (ProjectOnboardingProgress, error) {
+	row := q.db.QueryRow(ctx, getProjectOnboardingProgress, projectID)
+	var i ProjectOnboardingProgress
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.ConfigureAuthenticationTime,
+		&i.LogInToVaultTime,
+		&i.ManageOrganizationsTime,
+		&i.OnboardingSkipped,
+		&i.CreateTime,
+		&i.UpdateTime,
+	)
+	return i, err
+}
+
 const getProjectTrustedDomains = `-- name: GetProjectTrustedDomains :many
 SELECT
     id, project_id, domain
@@ -4433,6 +4458,50 @@ func (q *Queries) UpsertAction(ctx context.Context, arg UpsertActionParams) erro
 		arg.Description,
 	)
 	return err
+}
+
+const upsertProjectOnboardingProgress = `-- name: UpsertProjectOnboardingProgress :one
+INSERT INTO project_onboarding_progress (project_id, configure_authentication_time, log_in_to_vault_time, manage_organizations_time, onboarding_skipped, create_time, update_time)
+    VALUES ($1, $2, $3, $4, $5, now(), now())
+ON CONFLICT (project_id)
+    DO UPDATE SET
+        update_time = now(),
+        configure_authentication_time = COALESCE(EXCLUDED.configure_authentication_time, project_onboarding_progress.configure_authentication_time),
+        log_in_to_vault_time = COALESCE(EXCLUDED.log_in_to_vault_time, project_onboarding_progress.log_in_to_vault_time),
+        manage_organizations_time = COALESCE(EXCLUDED.manage_organizations_time, project_onboarding_progress.manage_organizations_time),
+        onboarding_skipped = COALESCE(EXCLUDED.onboarding_skipped, project_onboarding_progress.onboarding_skipped)
+    RETURNING
+        id, project_id, configure_authentication_time, log_in_to_vault_time, manage_organizations_time, onboarding_skipped, create_time, update_time
+`
+
+type UpsertProjectOnboardingProgressParams struct {
+	ProjectID                   uuid.UUID
+	ConfigureAuthenticationTime *time.Time
+	LogInToVaultTime            *time.Time
+	ManageOrganizationsTime     *time.Time
+	OnboardingSkipped           *bool
+}
+
+func (q *Queries) UpsertProjectOnboardingProgress(ctx context.Context, arg UpsertProjectOnboardingProgressParams) (ProjectOnboardingProgress, error) {
+	row := q.db.QueryRow(ctx, upsertProjectOnboardingProgress,
+		arg.ProjectID,
+		arg.ConfigureAuthenticationTime,
+		arg.LogInToVaultTime,
+		arg.ManageOrganizationsTime,
+		arg.OnboardingSkipped,
+	)
+	var i ProjectOnboardingProgress
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.ConfigureAuthenticationTime,
+		&i.LogInToVaultTime,
+		&i.ManageOrganizationsTime,
+		&i.OnboardingSkipped,
+		&i.CreateTime,
+		&i.UpdateTime,
+	)
+	return i, err
 }
 
 const upsertProjectTrustedDomain = `-- name: UpsertProjectTrustedDomain :exec
