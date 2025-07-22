@@ -122,3 +122,10 @@ sql:
       go:
         <<: *go
         out: "../internal/defaultoauth/store/queries"
+  - engine: "postgresql"
+    queries: "queries-backgroundworker.sql"
+    schema: "../cmd/openauthctl/migrations"
+    gen:
+      go:
+        <<: *go
+        out: "../internal/backgroundworker/store/queries"

@@ -438,8 +438,6 @@ type ProjectUiSetting struct {
 	AutoCreateOrganizations      bool
 	SelfServeCreateOrganizations bool
 	SelfServeCreateUsers         bool
-	LogoUrl                      *string
-	DarkModeLogoUrl              *string
 }
 
 type ProjectWebhookSetting struct {

@@ -33,7 +33,7 @@ func (s *Store) createProjectWebhookSettings(ctx context.Context, q *queries.Que
 	qWebhook, err := q.CreateProjectWebhookSettings(ctx, queries.CreateProjectWebhookSettingsParams{
 		ID:        uuid.New(),
 		ProjectID: qProject.ID,
-		AppID:     svixApplication.Id,
+		AppID:     refOrNil(svixApplication.Id),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create webhook: %w", err)
@@ -45,7 +45,7 @@ func (s *Store) createProjectWebhookSettings(ctx context.Context, q *queries.Que
 func parseProjectWebhookSettings(qWebhook queries.ProjectWebhookSetting) *intermediatev1.ProjectWebhookSettings {
 	return &intermediatev1.ProjectWebhookSettings{
 		Id:         idformat.ProjectWebhookSettings.Format(qWebhook.ID),
-		AppId:      qWebhook.AppID,
+		AppId:      derefOrEmpty(qWebhook.AppID),
 		CreateTime: timestamppb.New(*qWebhook.CreateTime),
 		UpdateTime: timestamppb.New(*qWebhook.UpdateTime),
 	}

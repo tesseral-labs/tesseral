@@ -21,12 +21,16 @@ func (s *Store) GetProjectWebhookManagementURL(ctx context.Context, req *backend
 		return nil, fmt.Errorf("get project webhook settings: %w", err)
 	}
 
-	dashboard, err := s.svixClient.Authentication.AppPortalAccess(ctx, qProjectWebhookSettings.AppID, models.AppPortalAccessIn{}, nil)
-	if err != nil {
-		return nil, fmt.Errorf("get app portal access: %w", err)
+	res := &backendv1.GetProjectWebhookManagementURLResponse{}
+
+	if qProjectWebhookSettings.AppID == nil || *qProjectWebhookSettings.AppID == "" {
+		dashboard, err := s.svixClient.Authentication.AppPortalAccess(ctx, *qProjectWebhookSettings.AppID, models.AppPortalAccessIn{}, nil)
+		if err != nil {
+			return nil, fmt.Errorf("get app portal access: %w", err)
+		}
+
+		res.Url = dashboard.Url
 	}
 
-	return &backendv1.GetProjectWebhookManagementURLResponse{
-		Url: dashboard.Url,
-	}, nil
+	return res, nil
 }

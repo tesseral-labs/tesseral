@@ -319,18 +319,20 @@ func (s *Store) sendSyncUserEvent(ctx context.Context, qUser queries.User) error
 		return fmt.Errorf("get project by id: %w", err)
 	}
 
-	message, err := s.svixClient.Message.Create(ctx, qProjectWebhookSettings.AppID, models.MessageIn{
-		EventType: "sync.user",
-		Payload: map[string]interface{}{
-			"type":   "sync.user",
-			"userId": idformat.User.Format(qUser.ID),
-		},
-	}, nil)
-	if err != nil {
-		return fmt.Errorf("create message: %w", err)
-	}
+	if qProjectWebhookSettings.AppID == nil || *qProjectWebhookSettings.AppID == "" {
+		message, err := s.svixClient.Message.Create(ctx, *qProjectWebhookSettings.AppID, models.MessageIn{
+			EventType: "sync.user",
+			Payload: map[string]interface{}{
+				"type":   "sync.user",
+				"userId": idformat.User.Format(qUser.ID),
+			},
+		}, nil)
+		if err != nil {
+			return fmt.Errorf("create message: %w", err)
+		}
 
-	slog.InfoContext(ctx, "svix_message_created", "message_id", message.Id, "event_type", message.EventType, "user_id", idformat.User.Format(qUser.ID))
+		slog.InfoContext(ctx, "svix_message_created", "message_id", message.Id, "event_type", message.EventType, "user_id", idformat.User.Format(qUser.ID))
+	}
 
 	return nil
 }
