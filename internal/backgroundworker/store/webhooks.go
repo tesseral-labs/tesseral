@@ -4,25 +4,19 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/svix/svix-webhooks/go/models"
-	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
 type WebhookArgs struct {
-	ProjectID    string                 `json:"project_id"`
-	EventName    string                 `json:"event_name"`
+	EventType    string                 `json:"event_type"`
 	EventPayload map[string]interface{} `json:"event_payload"`
 }
 
-func (WebhookArgs) Kind() string { return "webhook" }
-
-func (s *Store) SendWebhook(ctx context.Context, args WebhookArgs) error {
-	projectID, err := idformat.Project.Parse(args.ProjectID)
-	if err != nil {
-		return fmt.Errorf("parse project id: %w", err)
-	}
+func (s *Store) SendWebhook(ctx context.Context, projectID uuid.UUID, args WebhookArgs) error {
 
 	qProjectWebhookSettings, err := s.q.GetProjectWebhookSettings(ctx, projectID)
 	if err != nil {
@@ -40,12 +34,15 @@ func (s *Store) SendWebhook(ctx context.Context, args WebhookArgs) error {
 
 	if qProjectWebhookSettings.AppID != nil && *qProjectWebhookSettings.AppID != "" {
 		// If the project has an app ID, we can send the webhook via Svix
-		if _, err := s.svix.Message.Create(ctx, *qProjectWebhookSettings.AppID, models.MessageIn{
-			EventType: args.EventName,
+		message, err := s.svix.Message.Create(ctx, *qProjectWebhookSettings.AppID, models.MessageIn{
+			EventType: args.EventType,
 			Payload:   args.EventPayload,
-		}, nil); err != nil {
+		}, nil)
+		if err != nil {
 			return fmt.Errorf("send webhook via svix: %w", err)
 		}
+
+		slog.InfoContext(ctx, "svix_message_created", "message_id", message.Id, "event_type", message.EventType, "event_payload", args.EventPayload)
 	}
 
 	return nil

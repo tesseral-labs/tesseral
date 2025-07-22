@@ -39,7 +39,7 @@ func main() {
 
 	riverWorkers := river.NewWorkers()
 
-	if err := river.AddWorkerSafely(riverWorkers, &workers.WebhookWorker{
+	if err := river.AddWorkerSafely(riverWorkers, &workers.BackgroundWorker{
 		Store: store.New(store.NewStoreParams{
 			DB:   db,
 			Svix: svixClient,
@@ -47,6 +47,4 @@ func main() {
 	}); err != nil {
 		panic(err)
 	}
-
-	// TODO: Add key rotation worker
 }
