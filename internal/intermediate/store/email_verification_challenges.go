@@ -188,7 +188,7 @@ func (s *Store) sendEmailVerificationChallenge(ctx context.Context, toAddress st
 	subject := fmt.Sprintf("%s - Verify your email address", qProject.DisplayName)
 
 	vaultDomain := qProject.VaultDomain
-	if authn.ProjectID(ctx) == *s.dogfoodProjectID {
+	if authn.ProjectID(ctx) == *s.consoleProjectID {
 		vaultDomain = s.consoleDomain
 	}
 

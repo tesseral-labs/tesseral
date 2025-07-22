@@ -31,7 +31,7 @@ Bootstrap a Tesseral database.
 
 Outputs, tab-separated, a project ID, an email, and a very sensitive password.
 
-The project ID is the bootstrap ("dogfood") project ID. The email and password
+The project ID is the bootstrap ("console") project ID. The email and password
 are a login method for an admin user in that project.
 
 Delete this admin user before deploying this Tesseral instance in production.
@@ -67,18 +67,18 @@ func bootstrap(ctx context.Context, args bootstrapArgs) error {
 		SessionSigningKeyKmsKeyID: args.SessionSigningKMSKeyID,
 	})
 
-	res, err := s.CreateDogfoodProject(ctx, &store.CreateDogfoodProjectRequest{
+	res, err := s.CreateConsoleProject(ctx, &store.CreateConsoleProjectRequest{
 		RootUserEmail: args.RootUserEmail,
 		ConsoleDomain: args.ConsoleDomain,
 		VaultDomain:   args.VaultDomain,
 	})
 	if err != nil {
-		return fmt.Errorf("create dogfood project: %w", err)
+		return fmt.Errorf("create console project: %w", err)
 	}
 
 	fmt.Printf(
 		"%s\t%s\t%s\n",
-		res.DogfoodProjectID,
+		res.ConsoleProjectID,
 		res.BootstrapUserEmail,
 		res.BootstrapUserVerySensitivePassword,
 	)

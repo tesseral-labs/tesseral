@@ -26,8 +26,8 @@ import (
 )
 
 func (s *Store) CreateProject(ctx context.Context, req *intermediatev1.CreateProjectRequest) (*intermediatev1.CreateProjectResponse, error) {
-	if authn.ProjectID(ctx) != *s.dogfoodProjectID {
-		return nil, apierror.NewPermissionDeniedError("cannot create a project", fmt.Errorf("create project attempted on non-dogfood project: %s", authn.ProjectID(ctx)))
+	if authn.ProjectID(ctx) != *s.consoleProjectID {
+		return nil, apierror.NewPermissionDeniedError("cannot create a project", fmt.Errorf("create project attempted on non-console project: %s", authn.ProjectID(ctx)))
 	}
 
 	_, q, commit, rollback, err := s.tx(ctx)
@@ -46,12 +46,12 @@ func (s *Store) CreateProject(ctx context.Context, req *intermediatev1.CreatePro
 	formattedNewProjectID := idformat.Project.Format(newProjectID)
 	newProjectVaultDomain := fmt.Sprintf("%s.%s", strings.ReplaceAll(formattedNewProjectID, "_", "-"), s.authAppsRootDomain)
 
-	// create a new organization under the dogfood project, accepting the same
+	// create a new organization under the console project, accepting the same
 	// primary login method used to get to this point
 	qOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
 		ID:                 uuid.New(),
 		DisplayName:        fmt.Sprintf("%s Backing Organization", formattedNewProjectID),
-		ProjectID:          *s.dogfoodProjectID,
+		ProjectID:          *s.consoleProjectID,
 		LogInWithEmail:     intermediateSession.PrimaryAuthFactor == intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_EMAIL,
 		LogInWithGoogle:    intermediateSession.PrimaryAuthFactor == intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GOOGLE,
 		LogInWithMicrosoft: intermediateSession.PrimaryAuthFactor == intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_MICROSOFT,
@@ -299,24 +299,24 @@ func (s *Store) createProjectForCurrentUser(ctx context.Context, q *queries.Quer
 		return nil, fmt.Errorf("parse redirect uri: %w", err)
 	}
 
-	qDogfoodProject, err := q.GetProjectByID(ctx, *s.dogfoodProjectID)
+	qConsoleProject, err := q.GetProjectByID(ctx, *s.consoleProjectID)
 	if err != nil {
-		return nil, fmt.Errorf("get dogfood project by id: %w", err)
+		return nil, fmt.Errorf("get console project by id: %w", err)
 	}
 
-	// create a new organization under the dogfood project, accepting the same
+	// create a new organization under the console project, accepting the same
 	// primary login method used to get to this point
 	qOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
 		ID:          uuid.New(),
 		DisplayName: fmt.Sprintf("%s Backing Organization", formattedNewProjectID),
-		ProjectID:   *s.dogfoodProjectID,
+		ProjectID:   *s.consoleProjectID,
 
-		// same logic as in ordinary s.CreateOrganization, but against dogfood project
-		LogInWithEmail:     qDogfoodProject.LogInWithEmail,
-		LogInWithGoogle:    qDogfoodProject.LogInWithGoogle,
-		LogInWithMicrosoft: qDogfoodProject.LogInWithMicrosoft,
-		LogInWithGithub:    qDogfoodProject.LogInWithGithub,
-		LogInWithPassword:  qDogfoodProject.LogInWithPassword,
+		// same logic as in ordinary s.CreateOrganization, but against console project
+		LogInWithEmail:     qConsoleProject.LogInWithEmail,
+		LogInWithGoogle:    qConsoleProject.LogInWithGoogle,
+		LogInWithMicrosoft: qConsoleProject.LogInWithMicrosoft,
+		LogInWithGithub:    qConsoleProject.LogInWithGithub,
+		LogInWithPassword:  qConsoleProject.LogInWithPassword,
 		ScimEnabled:        false,
 	})
 	if err != nil {

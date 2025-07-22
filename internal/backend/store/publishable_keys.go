@@ -16,8 +16,8 @@ import (
 )
 
 func (s *Store) ListPublishableKeys(ctx context.Context, req *backendv1.ListPublishableKeysRequest) (*backendv1.ListPublishableKeysResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	_, q, _, rollback, err := s.tx(ctx)
@@ -59,8 +59,8 @@ func (s *Store) ListPublishableKeys(ctx context.Context, req *backendv1.ListPubl
 }
 
 func (s *Store) GetPublishableKey(ctx context.Context, req *backendv1.GetPublishableKeyRequest) (*backendv1.GetPublishableKeyResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	id, err := idformat.PublishableKey.Parse(req.Id)
@@ -84,8 +84,8 @@ func (s *Store) GetPublishableKey(ctx context.Context, req *backendv1.GetPublish
 }
 
 func (s *Store) CreatePublishableKey(ctx context.Context, req *backendv1.CreatePublishableKeyRequest) (*backendv1.CreatePublishableKeyResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	_, q, commit, rollback, err := s.tx(ctx)
@@ -112,8 +112,8 @@ func (s *Store) CreatePublishableKey(ctx context.Context, req *backendv1.CreateP
 }
 
 func (s *Store) UpdatePublishableKey(ctx context.Context, req *backendv1.UpdatePublishableKeyRequest) (*backendv1.UpdatePublishableKeyResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	_, q, commit, rollback, err := s.tx(ctx)
@@ -165,8 +165,8 @@ func (s *Store) UpdatePublishableKey(ctx context.Context, req *backendv1.UpdateP
 }
 
 func (s *Store) DeletePublishableKey(ctx context.Context, req *backendv1.DeletePublishableKeyRequest) (*backendv1.DeletePublishableKeyResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	_, q, commit, rollback, err := s.tx(ctx)

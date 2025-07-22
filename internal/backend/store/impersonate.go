@@ -18,11 +18,11 @@ import (
 const userImpersonationTokenDuration = time.Second * 30
 
 func (s *Store) CreateUserImpersonationToken(ctx context.Context, req *backendv1.CreateUserImpersonationTokenRequest) (*backendv1.CreateUserImpersonationTokenResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
-	impersonatorID, err := idformat.User.Parse(authn.GetContextData(ctx).DogfoodSession.UserID)
+	impersonatorID, err := idformat.User.Parse(authn.GetContextData(ctx).ConsoleSession.UserID)
 	if err != nil {
 		panic(fmt.Errorf("parse user id: %w", err))
 	}
@@ -34,7 +34,7 @@ func (s *Store) CreateUserImpersonationToken(ctx context.Context, req *backendv1
 	defer rollback()
 
 	qImpersonator, err := q.GetUser(ctx, queries.GetUserParams{
-		ProjectID: *s.dogfoodProjectID,
+		ProjectID: *s.consoleProjectID,
 		ID:        impersonatorID,
 	})
 	if err != nil {

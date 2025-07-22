@@ -10,7 +10,7 @@ import (
 
 type ContextData struct {
 	ProjectAPIKey  *BackendAPIKeyContextData
-	DogfoodSession *DogfoodSessionContextData
+	ConsoleSession *ConsoleSessionContextData
 }
 
 type BackendAPIKeyContextData struct {
@@ -18,14 +18,14 @@ type BackendAPIKeyContextData struct {
 	ProjectID       string
 }
 
-// DogfoodSessionContextData contains data related to a user logged into
+// ConsoleSessionContextData contains data related to a user logged into
 // app.tesseral.com.
-type DogfoodSessionContextData struct {
+type ConsoleSessionContextData struct {
 	UserID    string
 	SessionID string
 
 	// ProjectID is the ID of the project the user is manipulating. This is
-	// almost never the same thing as the dogfood project.
+	// almost never the same thing as the console project.
 	ProjectID string
 }
 
@@ -35,8 +35,8 @@ func NewBackendAPIKeyContext(ctx context.Context, projectAPIKey *BackendAPIKeyCo
 	return context.WithValue(ctx, ctxKey{}, ContextData{ProjectAPIKey: projectAPIKey})
 }
 
-func NewDogfoodSessionContext(ctx context.Context, dogfoodSession DogfoodSessionContextData) context.Context {
-	return context.WithValue(ctx, ctxKey{}, ContextData{DogfoodSession: &dogfoodSession})
+func NewConsoleSessionContext(ctx context.Context, consoleSession ConsoleSessionContextData) context.Context {
+	return context.WithValue(ctx, ctxKey{}, ContextData{ConsoleSession: &consoleSession})
 }
 
 func GetContextData(ctx context.Context) ContextData {
@@ -57,8 +57,8 @@ func ProjectID(ctx context.Context) uuid.UUID {
 	switch {
 	case v.ProjectAPIKey != nil:
 		projectID = v.ProjectAPIKey.ProjectID
-	case v.DogfoodSession != nil:
-		projectID = v.DogfoodSession.ProjectID
+	case v.ConsoleSession != nil:
+		projectID = v.ConsoleSession.ProjectID
 	default:
 		panic("unsupported authn ctx data")
 	}

@@ -20,8 +20,8 @@ import (
 )
 
 func (s *Store) GetVaultDomainSettings(ctx context.Context, req *backendv1.GetVaultDomainSettingsRequest) (*backendv1.GetVaultDomainSettingsResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	vaultDomainSettings, err := s.getVaultDomainSettings(ctx)
@@ -35,8 +35,8 @@ func (s *Store) GetVaultDomainSettings(ctx context.Context, req *backendv1.GetVa
 }
 
 func (s *Store) UpdateVaultDomainSettings(ctx context.Context, req *backendv1.UpdateVaultDomainSettingsRequest) (*backendv1.UpdateVaultDomainSettingsResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	qProject, err := s.q.GetProjectByID(ctx, authn.ProjectID(ctx))
@@ -113,8 +113,8 @@ func (s *Store) UpdateVaultDomainSettings(ctx context.Context, req *backendv1.Up
 }
 
 func (s *Store) EnableCustomVaultDomain(ctx context.Context, req *backendv1.EnableCustomVaultDomainRequest) (*backendv1.EnableCustomVaultDomainResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	vaultDomainSettings, err := s.getVaultDomainSettings(ctx)
@@ -162,8 +162,8 @@ func (s *Store) EnableCustomVaultDomain(ctx context.Context, req *backendv1.Enab
 }
 
 func (s *Store) EnableEmailSendFromDomain(ctx context.Context, req *backendv1.EnableEmailSendFromDomainRequest) (*backendv1.EnableEmailSendFromDomainResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	vaultDomainSettings, err := s.getVaultDomainSettings(ctx)

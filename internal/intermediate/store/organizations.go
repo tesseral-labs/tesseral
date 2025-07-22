@@ -18,8 +18,8 @@ import (
 )
 
 func (s *Store) CreateOrganization(ctx context.Context, req *intermediatev1.CreateOrganizationRequest) (*intermediatev1.CreateOrganizationResponse, error) {
-	if authn.ProjectID(ctx) == *s.dogfoodProjectID {
-		return nil, apierror.NewFailedPreconditionError("cannot create organization in this project", fmt.Errorf("dogfood project does not support directo organization creation"))
+	if authn.ProjectID(ctx) == *s.consoleProjectID {
+		return nil, apierror.NewFailedPreconditionError("cannot create organization in this project", fmt.Errorf("console project does not support directo organization creation"))
 	}
 
 	intermediateSession := authn.IntermediateSession(ctx)
@@ -195,9 +195,9 @@ func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListO
 			org.UserHasPasskey = hasPasskeys
 		}
 
-		// if we're servicing the dogfood project, then show the display name of
+		// if we're servicing the console project, then show the display name of
 		// the project this organization backs
-		if authn.ProjectID(ctx) == *s.dogfoodProjectID {
+		if authn.ProjectID(ctx) == *s.consoleProjectID {
 			qBackedProject, err := q.GetProjectByBackingOrganizationID(ctx, &qOrg.ID)
 			if err != nil {
 				return nil, fmt.Errorf("get project by backing organization id: %w", err)

@@ -20,8 +20,8 @@ var errAuthorizationHeaderRequired = errors.New("authorization header is require
 
 var tracer = otel.Tracer("github.com/tesseral-labs/tesseral/internal/backend/authn/interceptor")
 
-func New(s *store.Store, dogfoodProjectID string) connect.UnaryInterceptorFunc {
-	cookieName := fmt.Sprintf("tesseral_%s_access_token", dogfoodProjectID)
+func New(s *store.Store, consoleProjectID string) connect.UnaryInterceptorFunc {
+	cookieName := fmt.Sprintf("tesseral_%s_access_token", consoleProjectID)
 
 	return func(next connect.UnaryFunc) connect.UnaryFunc {
 		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
@@ -74,12 +74,12 @@ func New(s *store.Store, dogfoodProjectID string) connect.UnaryInterceptorFunc {
 					return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("no access token found in cookies"))
 				}
 
-				sessionCtxData, err := authenticateAccessToken(ctx, s, dogfoodProjectID, accessToken)
+				sessionCtxData, err := authenticateAccessToken(ctx, s, consoleProjectID, accessToken)
 				if err != nil {
 					return nil, fmt.Errorf("authenticate access token: %w", err)
 				}
 
-				ctx = authn.NewDogfoodSessionContext(ctx, *sessionCtxData)
+				ctx = authn.NewConsoleSessionContext(ctx, *sessionCtxData)
 			}
 
 			return next(ctx, req)
@@ -87,14 +87,14 @@ func New(s *store.Store, dogfoodProjectID string) connect.UnaryInterceptorFunc {
 	}
 }
 
-func authenticateAccessToken(ctx context.Context, s *store.Store, dogfoodProjectID, accessToken string) (*authn.DogfoodSessionContextData, error) {
+func authenticateAccessToken(ctx context.Context, s *store.Store, consoleProjectID, accessToken string) (*authn.ConsoleSessionContextData, error) {
 	// our customers do this logic using our SDK, but we can't use that
 	// ourselves here; fetch the public key indicated by accessToken and then
 	// authenticate using that public key
 
-	sessionPublicKeys, err := s.GetSessionPublicKeysByProjectID(ctx, dogfoodProjectID)
+	sessionPublicKeys, err := s.GetSessionPublicKeysByProjectID(ctx, consoleProjectID)
 	if err != nil {
-		return nil, fmt.Errorf("get dogfood session public keys: %w", err)
+		return nil, fmt.Errorf("get console session public keys: %w", err)
 	}
 
 	kid, err := ujwt.KeyID(accessToken)
@@ -109,7 +109,7 @@ func authenticateAccessToken(ctx context.Context, s *store.Store, dogfoodProject
 		}
 	}
 
-	aud := fmt.Sprintf("https://%s.tesseral.app", strings.ReplaceAll(dogfoodProjectID, "_", "-"))
+	aud := fmt.Sprintf("https://%s.tesseral.app", strings.ReplaceAll(consoleProjectID, "_", "-"))
 	var claims map[string]interface{}
 	if err := ujwt.Claims(pub, aud, time.Now(), &claims, accessToken); err != nil {
 		return nil, connect.NewError(connect.CodeUnauthenticated, err)
@@ -124,7 +124,7 @@ func authenticateAccessToken(ctx context.Context, s *store.Store, dogfoodProject
 		panic(fmt.Errorf("get project id organization backs: %w", err))
 	}
 
-	return &authn.DogfoodSessionContextData{
+	return &authn.ConsoleSessionContextData{
 		UserID:    userID,
 		SessionID: sessionID,
 		ProjectID: projectID,

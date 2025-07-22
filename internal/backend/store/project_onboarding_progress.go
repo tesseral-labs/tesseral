@@ -13,8 +13,8 @@ import (
 )
 
 func (s *Store) GetProjectOnboardingProgress(ctx context.Context, req *backendv1.GetProjectOnboardingProgressRequest) (*backendv1.GetProjectOnboardingProgressResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	_, q, _, rollback, err := s.tx(ctx)
@@ -41,8 +41,8 @@ func (s *Store) GetProjectOnboardingProgress(ctx context.Context, req *backendv1
 }
 
 func (s *Store) UpdateProjectOnboardingProgress(ctx context.Context, req *backendv1.UpdateProjectOnboardingProgressRequest) (*backendv1.UpdateProjectOnboardingProgressResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	_, q, commit, rollback, err := s.tx(ctx)

@@ -26,7 +26,7 @@ type Store struct {
 	consoleDomain                         string
 	authAppsRootDomain                    string
 	db                                    *pgxpool.Pool
-	dogfoodProjectID                      *uuid.UUID
+	consoleProjectID                      *uuid.UUID
 	hibp                                  *hibp.Client
 	intermediateSessionSigningKeyKMSKeyID string
 	s3                                    *s3.Client
@@ -63,7 +63,7 @@ type NewStoreParams struct {
 	ConsoleDomain                         string
 	AuthAppsRootDomain                    string
 	DB                                    *pgxpool.Pool
-	DogfoodProjectID                      *uuid.UUID
+	ConsoleProjectID                      *uuid.UUID
 	IntermediateSessionSigningKeyKMSKeyID string
 	S3                                    *s3.Client
 	KMS                                   *kms.Client
@@ -98,7 +98,7 @@ func New(p NewStoreParams) *Store {
 		consoleDomain:      p.ConsoleDomain,
 		authAppsRootDomain: p.AuthAppsRootDomain,
 		db:                 p.DB,
-		dogfoodProjectID:   p.DogfoodProjectID,
+		consoleProjectID:   p.ConsoleProjectID,
 		hibp: &hibp.Client{
 			HTTPClient: http.DefaultClient,
 		},

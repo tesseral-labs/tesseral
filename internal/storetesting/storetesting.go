@@ -20,8 +20,8 @@ type Environment struct {
 	KMS *testKms
 	S3  *testS3
 
-	DogfoodProjectID   *uuid.UUID
-	DogfoodUserID      string
+	ConsoleProjectID   *uuid.UUID
+	ConsoleUserID      string
 	ConsoleDomain      string
 	AuthAppsRootDomain string
 }
@@ -48,12 +48,12 @@ func NewEnvironment() (*Environment, func()) {
 
 func (e *Environment) seed() {
 	var (
-		dogfoodProjectID = uuid.MustParse("252491cc-76e3-4957-ab23-47d83c34f240")
-		dogfoodUserID    = uuid.MustParse("e071bbfe-6f27-4526-ab37-0ad251742836")
+		consoleProjectID = uuid.MustParse("252491cc-76e3-4957-ab23-47d83c34f240")
+		consoleUserID    = uuid.MustParse("e071bbfe-6f27-4526-ab37-0ad251742836")
 	)
 
-	e.DogfoodProjectID = &dogfoodProjectID
-	e.DogfoodUserID = idformat.User.Format(dogfoodUserID)
+	e.ConsoleProjectID = &consoleProjectID
+	e.ConsoleUserID = idformat.User.Format(consoleUserID)
 	e.ConsoleDomain = "console.tesseral.example.com"
 	e.AuthAppsRootDomain = "tesseral.example.app"
 
@@ -68,17 +68,17 @@ VALUES
     (gen_random_uuid(), '252491cc-76e3-4957-ab23-47d83c34f240', 'vault.console.tesseral.example.com'),
     (gen_random_uuid(), '252491cc-76e3-4957-ab23-47d83c34f240', 'console.tesseral.example.com');
 
--- Create the Dogfood Project's backing organization
+-- Create the Console Project's backing organization
 INSERT INTO organizations (id, display_name, project_id, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, scim_enabled)
   VALUES ('7a76decb-6d79-49ce-9449-34fcc53151df'::uuid, 'project_54vwf0clhh0caqe20eujxgpeq Backing Organization', '252491cc-76e3-4957-ab23-47d83c34f240', false, false, false, false, false, false, false, false);
 
 UPDATE projects SET organization_id = '7a76decb-6d79-49ce-9449-34fcc53151df'::uuid where id = '252491cc-76e3-4957-ab23-47d83c34f240'::uuid;
 
--- Create project UI settings for the dogfood project
+-- Create project UI settings for the console project
 INSERT INTO project_ui_settings (id, project_id)
   VALUES (gen_random_uuid(), '252491cc-76e3-4957-ab23-47d83c34f240'::uuid);
 
--- Create a user in the dogfood project
+-- Create a user in the console project
 INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
   VALUES ('e071bbfe-6f27-4526-ab37-0ad251742836'::uuid, 'root@app.tesseral.example.com', crypt('password', gen_salt('bf', 14)), '7a76decb-6d79-49ce-9449-34fcc53151df', true);
 `
@@ -102,7 +102,7 @@ INSERT INTO organizations (id, display_name, project_id, log_in_with_google, log
 `,
 		organizationID.String(),
 		fmt.Sprintf("%s Backing Organization", formattedProjectID),
-		*e.DogfoodProjectID,
+		*e.ConsoleProjectID,
 	)
 	if err != nil {
 		t.Fatalf("failed to create backing organization for test project: %v", err)

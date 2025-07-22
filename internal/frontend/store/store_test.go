@@ -38,7 +38,7 @@ func newTestUtil(t *testing.T) *testUtil {
 		DB:                              environment.DB,
 		KMS:                             environment.KMS.Client,
 		SessionSigningKeyKmsKeyID:       environment.KMS.SessionSigningKeyID,
-		DogfoodProjectID:                environment.DogfoodProjectID,
+		ConsoleProjectID:                environment.ConsoleProjectID,
 		ConsoleDomain:                   environment.ConsoleDomain,
 		AuthenticatorAppSecretsKMSKeyID: environment.KMS.AuthenticatorAppSecretsKMSKeyID,
 		OIDCClientSecretsKMSKeyID:       environment.KMS.OIDCClientSecretsKMSKeyID,

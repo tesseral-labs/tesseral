@@ -43,7 +43,7 @@ func newTestUtil(t *testing.T) (context.Context, *testUtil) {
 		MicrosoftOAuthClientSecretsKMSKeyID: environment.KMS.MicrosoftOAuthClientSecretsKMSKeyID,
 		GithubOAuthClientSecretsKMSKeyID:    environment.KMS.GithubOAuthClientSecretsKMSKeyID,
 		OIDCClientSecretsKMSKeyID:           environment.KMS.OIDCClientSecretsKMSKeyID,
-		DogfoodProjectID:                    environment.DogfoodProjectID,
+		ConsoleProjectID:                    environment.ConsoleProjectID,
 		ConsoleDomain:                       environment.ConsoleDomain,
 		AuthAppsRootDomain:                  environment.AuthAppsRootDomain,
 		OIDCClient:                          &oidcclient.Client{HTTPClient: http.DefaultClient},
@@ -56,7 +56,7 @@ func newTestUtil(t *testing.T) (context.Context, *testUtil) {
 	})
 
 	projectID, projectUserID := environment.NewProject(t)
-	ctx := authn.NewDogfoodSessionContext(t.Context(), authn.DogfoodSessionContextData{
+	ctx := authn.NewConsoleSessionContext(t.Context(), authn.ConsoleSessionContextData{
 		ProjectID: projectID,
 		UserID:    projectUserID,
 		SessionID: idformat.Session.Format(uuid.New()),

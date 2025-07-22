@@ -277,7 +277,7 @@ func (s *Store) sendUserInviteEmail(ctx context.Context, toAddress string, organ
 	subject := fmt.Sprintf("%s - You've been invited to join %s", qProject.DisplayName, organizationDisplayName)
 
 	vaultDomain := qProject.VaultDomain
-	if authn.ProjectID(ctx) == *s.dogfoodProjectID {
+	if authn.ProjectID(ctx) == *s.consoleProjectID {
 		vaultDomain = s.consoleDomain
 	}
 

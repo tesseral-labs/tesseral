@@ -25,12 +25,12 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 	}
 	defer rollback()
 
-	// Creating organizations directly on the Dogfood Project
+	// Creating organizations directly on the Console Project
 	// without a project to back with the organization will
 	// break the intermediate service, so we restrict the
 	// ability to create an organization in this case.
-	if authn.ProjectID(ctx) == *s.dogfoodProjectID {
-		return nil, apierror.NewPermissionDeniedError("dogfood project cannot create organizations", fmt.Errorf("dogfood project cannot create organizations"))
+	if authn.ProjectID(ctx) == *s.consoleProjectID {
+		return nil, apierror.NewPermissionDeniedError("console project cannot create organizations", fmt.Errorf("console project cannot create organizations"))
 	}
 
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
@@ -460,8 +460,8 @@ func (s *Store) DeleteOrganization(ctx context.Context, req *backendv1.DeleteOrg
 }
 
 func (s *Store) DisableOrganizationLogins(ctx context.Context, req *backendv1.DisableOrganizationLoginsRequest) (*backendv1.DisableOrganizationLoginsResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	_, q, commit, rollback, err := s.tx(ctx)
@@ -486,8 +486,8 @@ func (s *Store) DisableOrganizationLogins(ctx context.Context, req *backendv1.Di
 }
 
 func (s *Store) EnableOrganizationLogins(ctx context.Context, req *backendv1.EnableOrganizationLoginsRequest) (*backendv1.EnableOrganizationLoginsResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	_, q, commit, rollback, err := s.tx(ctx)

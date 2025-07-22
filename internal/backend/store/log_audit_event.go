@@ -52,18 +52,18 @@ func (s *Store) logAuditEvent(ctx context.Context, q *queries.Queries, data logA
 			return queries.AuditLogEvent{}, fmt.Errorf("parse backend api key id: %w", err)
 		}
 		qEventParams.ActorBackendApiKeyID = (*uuid.UUID)(&backendApiKeyUUID)
-	case contextData.DogfoodSession != nil:
-		dogfoodUserUUID, err := idformat.User.Parse(contextData.DogfoodSession.UserID)
+	case contextData.ConsoleSession != nil:
+		consoleUserUUID, err := idformat.User.Parse(contextData.ConsoleSession.UserID)
 		if err != nil {
-			return queries.AuditLogEvent{}, fmt.Errorf("parse dogfood session user id: %w", err)
+			return queries.AuditLogEvent{}, fmt.Errorf("parse console session user id: %w", err)
 		}
-		qEventParams.ActorConsoleUserID = (*uuid.UUID)(&dogfoodUserUUID)
+		qEventParams.ActorConsoleUserID = (*uuid.UUID)(&consoleUserUUID)
 
-		dogfoodSessionUUID, err := idformat.Session.Parse(contextData.DogfoodSession.SessionID)
+		consoleSessionUUID, err := idformat.Session.Parse(contextData.ConsoleSession.SessionID)
 		if err != nil {
-			return queries.AuditLogEvent{}, fmt.Errorf("parse dogfood session project id: %w", err)
+			return queries.AuditLogEvent{}, fmt.Errorf("parse console session project id: %w", err)
 		}
-		qEventParams.ActorConsoleSessionID = (*uuid.UUID)(&dogfoodSessionUUID)
+		qEventParams.ActorConsoleSessionID = (*uuid.UUID)(&consoleSessionUUID)
 	}
 
 	qEvent, err := q.CreateAuditLogEvent(ctx, qEventParams)

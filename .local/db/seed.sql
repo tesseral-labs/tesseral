@@ -1,6 +1,6 @@
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
--- Create the Dogfood Project
+-- Create the Console Project
 INSERT INTO projects (id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, vault_domain, email_send_from_domain, redirect_uri, cookie_domain)
 	VALUES ('56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2'::uuid, 'Tesseral Local Development', true, true, true, true, true, true, true, 'vault.console.tesseral.example.com', 'vault.console.tesseral.example.com', 'https://console.tesseral.example.com', 'console.tesseral.example.com');
 
@@ -10,25 +10,25 @@ VALUES
     (gen_random_uuid(), '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', 'vault.console.tesseral.example.com'),
     (gen_random_uuid(), '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', 'console.tesseral.example.com');
 
--- Create the Dogfood Project's backing organization
+-- Create the Console Project's backing organization
 INSERT INTO organizations (id, display_name, project_id, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, scim_enabled)
   VALUES ('7a76decb-6d79-49ce-9449-34fcc53151df'::uuid, 'project_54vwf0clhh0caqe20eujxgpeq Backing Organization', '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', true, false, true, true, true, true, true, true);
 
 UPDATE projects SET organization_id = '7a76decb-6d79-49ce-9449-34fcc53151df'::uuid where id = '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2'::uuid;
 
--- Create a user in the dogfood project
+-- Create a user in the console project
 INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
   VALUES (gen_random_uuid(), 'root@app.tesseral.example.com', crypt('password', gen_salt('bf', 14)), '7a76decb-6d79-49ce-9449-34fcc53151df', true);
 
--- Create project UI settings for the dogfood project
+-- Create project UI settings for the console project
 INSERT INTO project_ui_settings (id, project_id)
   VALUES (gen_random_uuid(), '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2'::uuid);
 
--- Create a backend API key in the dogfood project
+-- Create a backend API key in the console project
 INSERT INTO backend_api_keys (id, project_id, secret_token_sha256, display_name)
   VALUES (gen_random_uuid(), (SELECT id FROM projects LIMIT 1), digest(uuid_send('F938657E-65FC-4C43-B2F1-CE875A0B64D6'::uuid), 'sha256'), 'localhost');
 
--- Create a session signing key in the dogfood project
+-- Create a session signing key in the console project
 INSERT INTO session_signing_keys (id, project_id, public_key, private_key_cipher_text, expire_time) 
   VALUES (
     gen_random_uuid(), 

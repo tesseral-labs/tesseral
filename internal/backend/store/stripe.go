@@ -23,8 +23,8 @@ func (s *Store) GetProjectEntitlements(ctx context.Context, req *backendv1.GetPr
 }
 
 func (s *Store) CreateStripeCheckoutLink(ctx context.Context, req *backendv1.CreateStripeCheckoutLinkRequest) (*backendv1.CreateStripeCheckoutLinkResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	qProject, err := s.q.GetProjectByID(ctx, authn.ProjectID(ctx))

@@ -26,7 +26,7 @@ import (
 
 type Store struct {
 	db                                    *pgxpool.Pool
-	dogfoodProjectID                      *uuid.UUID
+	consoleProjectID                      *uuid.UUID
 	consoleDomain                         string
 	intermediateSessionSigningKeyKMSKeyID string
 	kms                                   *kms.Client
@@ -57,7 +57,7 @@ type Store struct {
 
 type NewStoreParams struct {
 	DB                                    *pgxpool.Pool
-	DogfoodProjectID                      *uuid.UUID
+	ConsoleProjectID                      *uuid.UUID
 	ConsoleDomain                         string
 	IntermediateSessionSigningKeyKMSKeyID string
 	KMS                                   *kms.Client
@@ -87,7 +87,7 @@ type NewStoreParams struct {
 func New(p NewStoreParams) *Store {
 	store := &Store{
 		db:                                    p.DB,
-		dogfoodProjectID:                      p.DogfoodProjectID,
+		consoleProjectID:                      p.ConsoleProjectID,
 		consoleDomain:                         p.ConsoleDomain,
 		intermediateSessionSigningKeyKMSKeyID: p.IntermediateSessionSigningKeyKMSKeyID,
 		kms:                                   p.KMS,
@@ -153,15 +153,15 @@ func timestampOrNil(t *time.Time) *timestamppb.Timestamp {
 	return timestamppb.New(*t)
 }
 
-// validateIsDogfoodSession returns an error if the caller isn't a dogfood
+// validateIsConsoleSession returns an error if the caller isn't a console
 // session.
 //
 // The intention of this method is to allow endpoints to prevent themselves from
 // being called by project API keys.
-func validateIsDogfoodSession(ctx context.Context) error {
+func validateIsConsoleSession(ctx context.Context) error {
 	data := authn.GetContextData(ctx)
-	if data.DogfoodSession == nil {
-		return apierror.NewUnauthenticatedError("this endpoint cannot be invoked by project API keys", fmt.Errorf("non-dogfood session request"))
+	if data.ConsoleSession == nil {
+		return apierror.NewUnauthenticatedError("this endpoint cannot be invoked by project API keys", fmt.Errorf("non-console session request"))
 	}
 	return nil
 }

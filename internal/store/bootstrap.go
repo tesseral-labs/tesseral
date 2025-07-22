@@ -20,20 +20,20 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type CreateDogfoodProjectRequest struct {
+type CreateConsoleProjectRequest struct {
 	RootUserEmail string
 	ConsoleDomain string
 	VaultDomain   string
 }
 
-type CreateDogfoodProjectResponse struct {
-	DogfoodProjectID                   string
+type CreateConsoleProjectResponse struct {
+	ConsoleProjectID                   string
 	BootstrapUserEmail                 string
 	BootstrapUserVerySensitivePassword string
 }
 
-// CreateDogfoodProject creates the dogfood project.
-func (s *Store) CreateDogfoodProject(ctx context.Context, req *CreateDogfoodProjectRequest) (*CreateDogfoodProjectResponse, error) {
+// CreateConsoleProject creates the console project.
+func (s *Store) CreateConsoleProject(ctx context.Context, req *CreateConsoleProjectRequest) (*CreateConsoleProjectResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -56,12 +56,12 @@ func (s *Store) CreateDogfoodProject(ctx context.Context, req *CreateDogfoodProj
 
 	// directly create project and organization that cyclically refer to each
 	// other
-	dogfoodProjectID := uuid.New()
-	dogfoodOrganizationID := uuid.New()
+	consoleProjectID := uuid.New()
+	consoleOrganizationID := uuid.New()
 
-	if _, err := q.CreateDogfoodProject(ctx, queries.CreateDogfoodProjectParams{
-		ID:                  dogfoodProjectID,
-		DisplayName:         "Tesseral Dogfood",
+	if _, err := q.CreateConsoleProject(ctx, queries.CreateConsoleProjectParams{
+		ID:                  consoleProjectID,
+		DisplayName:         "Tesseral Console",
 		RedirectUri:         fmt.Sprintf("https://%s", req.ConsoleDomain),
 		LogInWithGoogle:     false,
 		LogInWithMicrosoft:  false,
@@ -71,44 +71,44 @@ func (s *Store) CreateDogfoodProject(ctx context.Context, req *CreateDogfoodProj
 		EmailSendFromDomain: fmt.Sprintf("mail.%s", req.VaultDomain),
 		CookieDomain:        req.ConsoleDomain,
 	}); err != nil {
-		return nil, fmt.Errorf("create dogfood project: %w", err)
+		return nil, fmt.Errorf("create console project: %w", err)
 	}
 
 	for _, domain := range []string{req.ConsoleDomain, req.VaultDomain} {
 		if _, err := q.CreateProjectTrustedDomain(ctx, queries.CreateProjectTrustedDomainParams{
 			ID:        uuid.New(),
-			ProjectID: dogfoodProjectID,
+			ProjectID: consoleProjectID,
 			Domain:    domain,
 		}); err != nil {
-			return nil, fmt.Errorf("create dogfood project trusted domain: %w", err)
+			return nil, fmt.Errorf("create console project trusted domain: %w", err)
 		}
 	}
 
 	if _, err := q.CreateProjectUISettings(ctx, queries.CreateProjectUISettingsParams{
 		ID:        uuid.New(),
-		ProjectID: dogfoodProjectID,
+		ProjectID: consoleProjectID,
 	}); err != nil {
-		return nil, fmt.Errorf("create dogfood project ui settings: %w", err)
+		return nil, fmt.Errorf("create console project ui settings: %w", err)
 	}
 
 	if _, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
-		ID:                 dogfoodOrganizationID,
-		ProjectID:          dogfoodProjectID,
-		DisplayName:        "Tesseral Dogfood",
+		ID:                 consoleOrganizationID,
+		ProjectID:          consoleProjectID,
+		DisplayName:        "Tesseral Console",
 		LogInWithGoogle:    false,
 		LogInWithMicrosoft: false,
 		LogInWithEmail:     true,
 		LogInWithPassword:  true,
 	}); err != nil {
-		return nil, fmt.Errorf("create dogfood organization: %w", err)
+		return nil, fmt.Errorf("create console organization: %w", err)
 	}
 
 	// manually link project to organization
 	if _, err := q.UpdateProjectOrganizationID(ctx, queries.UpdateProjectOrganizationIDParams{
-		ID:             dogfoodProjectID,
-		OrganizationID: &dogfoodOrganizationID,
+		ID:             consoleProjectID,
+		OrganizationID: &consoleOrganizationID,
 	}); err != nil {
-		return nil, fmt.Errorf("update dogfood project organization: %w", err)
+		return nil, fmt.Errorf("update console project organization: %w", err)
 	}
 
 	// generate a random password for the bootstrap user
@@ -123,12 +123,12 @@ func (s *Store) CreateDogfoodProject(ctx context.Context, req *CreateDogfoodProj
 		panic(fmt.Errorf("bcrypt bootstrap user password: %w", err))
 	}
 
-	// create the bootstrap user inside the dogfood organization
+	// create the bootstrap user inside the console organization
 	bootstrapUserEmail := req.RootUserEmail
 	bootstrapUserPasswordBcrypt := string(bootstrapUserPasswordBcryptBytes)
 	if _, err := q.CreateUser(ctx, queries.CreateUserParams{
 		ID:             uuid.New(),
-		OrganizationID: dogfoodOrganizationID,
+		OrganizationID: consoleOrganizationID,
 		Email:          bootstrapUserEmail,
 		IsOwner:        true,
 		PasswordBcrypt: &bootstrapUserPasswordBcrypt,
@@ -169,7 +169,7 @@ func (s *Store) CreateDogfoodProject(ctx context.Context, req *CreateDogfoodProj
 	// Store the encrypted key in the database
 	if _, err := q.CreateSessionSigningKey(ctx, queries.CreateSessionSigningKeyParams{
 		ID:                   uuid.New(),
-		ProjectID:            dogfoodProjectID,
+		ProjectID:            consoleProjectID,
 		ExpireTime:           &expiresAt,
 		PublicKey:            publicKeyBytes,
 		PrivateKeyCipherText: sskEncryptOutput.CiphertextBlob,
@@ -181,8 +181,8 @@ func (s *Store) CreateDogfoodProject(ctx context.Context, req *CreateDogfoodProj
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &CreateDogfoodProjectResponse{
-		DogfoodProjectID:                   idformat.Project.Format(dogfoodProjectID),
+	return &CreateConsoleProjectResponse{
+		ConsoleProjectID:                   idformat.Project.Format(consoleProjectID),
 		BootstrapUserEmail:                 bootstrapUserEmail,
 		BootstrapUserVerySensitivePassword: bootstrapUserPassword,
 	}, nil

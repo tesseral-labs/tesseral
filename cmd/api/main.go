@@ -112,7 +112,7 @@ func main() {
 		SESSPFMXRecordValue                 string        `conf:"ses_spf_mx_record_value,noredact"`
 		DB                                  dbconn.Config `conf:"db,noredact"`
 		CloudflareAPIToken                  string        `conf:"cloudflare_api_token"`
-		DogfoodProjectID                    string        `conf:"dogfood_project_id,noredact"`
+		ConsoleProjectID                    string        `conf:"console_project_id,noredact"`
 		IntermediateSessionKMSKeyID         string        `conf:"intermediate_session_kms_key_id,noredact"`
 		KMSEndpoint                         string        `conf:"kms_endpoint_resolver_url,noredact"`
 		PageEncodingValue                   string        `conf:"page-encoding-value"`
@@ -207,11 +207,11 @@ func main() {
 		panic(fmt.Errorf("parse page encoding secret: %w", err))
 	}
 
-	dogfoodProjectID, err := idformat.Project.Parse(config.DogfoodProjectID)
+	consoleProjectID, err := idformat.Project.Parse(config.ConsoleProjectID)
 	if err != nil {
-		panic(fmt.Errorf("parse dogfood project ID: %w", err))
+		panic(fmt.Errorf("parse console project ID: %w", err))
 	}
-	uuidDogfoodProjectID := uuid.UUID(dogfoodProjectID[:])
+	uuidConsoleProjectID := uuid.UUID(consoleProjectID[:])
 
 	awsConfig, err := awsconfig.LoadDefaultConfig(context.Background())
 	if err != nil {
@@ -263,7 +263,7 @@ func main() {
 	// Register the backend service
 	backendStore := backendstore.New(backendstore.NewStoreParams{
 		DB:                                    db,
-		DogfoodProjectID:                      &uuidDogfoodProjectID,
+		ConsoleProjectID:                      &uuidConsoleProjectID,
 		ConsoleDomain:                         config.ConsoleDomain,
 		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
 		KMS:                                   kms_,
@@ -296,7 +296,7 @@ func main() {
 		connect.WithInterceptors(
 			opaqueinternalerror.NewInterceptor(),
 			httplog.NewInterceptor(),
-			backendinterceptor.New(backendStore, config.DogfoodProjectID),
+			backendinterceptor.New(backendStore, config.ConsoleProjectID),
 		),
 	)
 	backend := vanguard.NewService(backendConnectPath, backendConnectHandler)
@@ -308,7 +308,7 @@ func main() {
 	// Register the frontend service
 	frontendStore := frontendstore.New(frontendstore.NewStoreParams{
 		DB:                                    db,
-		DogfoodProjectID:                      &uuidDogfoodProjectID,
+		ConsoleProjectID:                      &uuidConsoleProjectID,
 		ConsoleDomain:                         config.ConsoleDomain,
 		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
 		OIDCClientSecretsKMSKeyID:             config.OIDCClientSecretsKMSKeyID,
@@ -344,7 +344,7 @@ func main() {
 		ConsoleDomain:                         config.ConsoleDomain,
 		AuthAppsRootDomain:                    config.AuthAppsRootDomain,
 		DB:                                    db,
-		DogfoodProjectID:                      &uuidDogfoodProjectID,
+		ConsoleProjectID:                      &uuidConsoleProjectID,
 		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
 		KMS:                                   kms_,
 		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},

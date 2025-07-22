@@ -55,8 +55,8 @@ func (s *Store) GetProject(ctx context.Context, req *backendv1.GetProjectRequest
 }
 
 func (s *Store) DisableProjectLogins(ctx context.Context, req *backendv1.DisableProjectLoginsRequest) (*backendv1.DisableProjectLoginsResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	_, q, commit, rollback, err := s.tx(ctx)
@@ -81,8 +81,8 @@ func (s *Store) DisableProjectLogins(ctx context.Context, req *backendv1.Disable
 }
 
 func (s *Store) EnableProjectLogins(ctx context.Context, req *backendv1.EnableProjectLoginsRequest) (*backendv1.EnableProjectLoginsResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	_, q, commit, rollback, err := s.tx(ctx)
@@ -103,8 +103,8 @@ func (s *Store) EnableProjectLogins(ctx context.Context, req *backendv1.EnablePr
 }
 
 func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectRequest) (*backendv1.UpdateProjectResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	// fetch project outside a transaction, so that we can carry out KMS
@@ -395,8 +395,8 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 }
 
 func (s *Store) ConsoleCreateProject(ctx context.Context, req *backendv1.ConsoleCreateProjectRequest) (*backendv1.ConsoleCreateProjectResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	qProject, err := s.q.GetProjectByID(ctx, authn.ProjectID(ctx))
@@ -426,7 +426,7 @@ func (s *Store) ConsoleCreateProject(ctx context.Context, req *backendv1.Console
 	}
 	defer rollback()
 
-	qConsoleProject, err := q.GetProjectByID(ctx, *s.dogfoodProjectID)
+	qConsoleProject, err := q.GetProjectByID(ctx, *s.consoleProjectID)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("console project not found", fmt.Errorf("get console project by id: %w", err))
@@ -435,14 +435,14 @@ func (s *Store) ConsoleCreateProject(ctx context.Context, req *backendv1.Console
 	}
 
 	contextData := authn.GetContextData(ctx)
-	userID, err := idformat.User.Parse(contextData.DogfoodSession.UserID)
+	userID, err := idformat.User.Parse(contextData.ConsoleSession.UserID)
 	if err != nil {
 		return nil, fmt.Errorf("parse user id: %w", err)
 	}
 
 	qUser, err := q.GetUser(ctx, queries.GetUserParams{
 		ID:        userID,
-		ProjectID: *s.dogfoodProjectID,
+		ProjectID: *s.consoleProjectID,
 	})
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -458,7 +458,7 @@ func (s *Store) ConsoleCreateProject(ctx context.Context, req *backendv1.Console
 
 	qOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
 		ID:          organizationID,
-		ProjectID:   *s.dogfoodProjectID,
+		ProjectID:   *s.consoleProjectID,
 		DisplayName: fmt.Sprintf("%s Backing Organization", formattedNewProjectID),
 
 		// same logic as in ordinary s.CreateOrganization, but mirroring the current Project's login methods

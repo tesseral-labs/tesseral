@@ -33,8 +33,8 @@ func (s *Store) ListSwitchableOrganizations(ctx context.Context, req *frontendv1
 	var orgs []*frontendv1.SwitchableOrganization
 	for _, qOrg := range qOrgs {
 		displayName := qOrg.DisplayName
-		if authn.ProjectID(ctx) == *s.dogfoodProjectID {
-			// for the dogfood project, use the display name of the project this
+		if authn.ProjectID(ctx) == *s.consoleProjectID {
+			// for the console project, use the display name of the project this
 			// org backs
 			qProject, err := q.GetProjectByBackingOrganizationID(ctx, &qOrg.ID)
 			if err != nil {

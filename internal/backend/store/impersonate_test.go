@@ -31,6 +31,6 @@ func TestCreateUserImpersonationToken(t *testing.T) {
 	require.True(t, res.UserImpersonationToken.CreateTime.AsTime().Before(time.Now()))
 	require.True(t, res.UserImpersonationToken.ExpireTime.AsTime().After(time.Now()))
 	require.Equal(t, userID, res.UserImpersonationToken.ImpersonatedId)
-	require.NotEmpty(t, authn.GetContextData(ctx).DogfoodSession.UserID, res.UserImpersonationToken.ImpersonatorId)
+	require.NotEmpty(t, authn.GetContextData(ctx).ConsoleSession.UserID, res.UserImpersonationToken.ImpersonatorId)
 	require.NotEmpty(t, res.UserImpersonationToken.SecretToken)
 }

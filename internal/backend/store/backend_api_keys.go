@@ -17,8 +17,8 @@ import (
 )
 
 func (s *Store) ListBackendAPIKeys(ctx context.Context, req *backendv1.ListBackendAPIKeysRequest) (*backendv1.ListBackendAPIKeysResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	_, q, _, rollback, err := s.tx(ctx)
@@ -60,8 +60,8 @@ func (s *Store) ListBackendAPIKeys(ctx context.Context, req *backendv1.ListBacke
 }
 
 func (s *Store) GetBackendAPIKey(ctx context.Context, req *backendv1.GetBackendAPIKeyRequest) (*backendv1.GetBackendAPIKeyResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	id, err := idformat.BackendAPIKey.Parse(req.Id)
@@ -85,8 +85,8 @@ func (s *Store) GetBackendAPIKey(ctx context.Context, req *backendv1.GetBackendA
 }
 
 func (s *Store) CreateBackendAPIKey(ctx context.Context, req *backendv1.CreateBackendAPIKeyRequest) (*backendv1.CreateBackendAPIKeyResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	qProject, err := s.q.GetProjectByID(ctx, authn.ProjectID(ctx))
@@ -126,8 +126,8 @@ func (s *Store) CreateBackendAPIKey(ctx context.Context, req *backendv1.CreateBa
 }
 
 func (s *Store) UpdateBackendAPIKey(ctx context.Context, req *backendv1.UpdateBackendAPIKeyRequest) (*backendv1.UpdateBackendAPIKeyResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	_, q, commit, rollback, err := s.tx(ctx)
@@ -175,8 +175,8 @@ func (s *Store) UpdateBackendAPIKey(ctx context.Context, req *backendv1.UpdateBa
 }
 
 func (s *Store) DeleteBackendAPIKey(ctx context.Context, req *backendv1.DeleteBackendAPIKeyRequest) (*backendv1.DeleteBackendAPIKeyResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	_, q, commit, rollback, err := s.tx(ctx)
@@ -218,8 +218,8 @@ func (s *Store) DeleteBackendAPIKey(ctx context.Context, req *backendv1.DeleteBa
 }
 
 func (s *Store) RevokeBackendAPIKey(ctx context.Context, req *backendv1.RevokeBackendAPIKeyRequest) (*backendv1.RevokeBackendAPIKeyResponse, error) {
-	if err := validateIsDogfoodSession(ctx); err != nil {
-		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	if err := validateIsConsoleSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
 	_, q, commit, rollback, err := s.tx(ctx)

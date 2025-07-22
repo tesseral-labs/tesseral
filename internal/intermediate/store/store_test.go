@@ -37,7 +37,7 @@ func newTestUtil(t *testing.T) (context.Context, *testUtil) {
 		S3:                        environment.S3.Client,
 		KMS:                       environment.KMS.Client,
 		SessionSigningKeyKmsKeyID: environment.KMS.SessionSigningKeyID,
-		DogfoodProjectID:          environment.DogfoodProjectID,
+		ConsoleProjectID:          environment.ConsoleProjectID,
 		ConsoleDomain:             environment.ConsoleDomain,
 	})
 	projectID, _ := environment.NewProject(t)
