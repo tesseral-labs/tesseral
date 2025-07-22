@@ -431,6 +431,8 @@ service BackendService {
   rpc UpdateProjectOnboardingProgress(UpdateProjectOnboardingProgressRequest) returns (UpdateProjectOnboardingProgressResponse);
 
   rpc ConsoleCreateProject(ConsoleCreateProjectRequest) returns (ConsoleCreateProjectResponse);
+
+  rpc ConsoleGetConfiguration(ConsoleGetConfigurationRequest) returns (ConsoleGetConfigurationResponse);
 }
 
 message GetProjectRequest {}
@@ -1353,4 +1355,10 @@ message UpdateProjectOnboardingProgressRequest {
 
 message UpdateProjectOnboardingProgressResponse {
   ProjectOnboardingProgress progress = 1;
+}
+
+message ConsoleGetConfigurationRequest {}
+
+message ConsoleGetConfigurationResponse {
+  ConsoleConfiguration configuration = 1;
 }

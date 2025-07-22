@@ -319,6 +319,9 @@ const (
 	// BackendServiceConsoleCreateProjectProcedure is the fully-qualified name of the BackendService's
 	// ConsoleCreateProject RPC.
 	BackendServiceConsoleCreateProjectProcedure = "/tesseral.backend.v1.BackendService/ConsoleCreateProject"
+	// BackendServiceConsoleGetConfigurationProcedure is the fully-qualified name of the
+	// BackendService's ConsoleGetConfiguration RPC.
+	BackendServiceConsoleGetConfigurationProcedure = "/tesseral.backend.v1.BackendService/ConsoleGetConfiguration"
 )
 
 // BackendServiceClient is a client for the tesseral.backend.v1.BackendService service.
@@ -477,6 +480,7 @@ type BackendServiceClient interface {
 	GetProjectOnboardingProgress(context.Context, *connect.Request[v1.GetProjectOnboardingProgressRequest]) (*connect.Response[v1.GetProjectOnboardingProgressResponse], error)
 	UpdateProjectOnboardingProgress(context.Context, *connect.Request[v1.UpdateProjectOnboardingProgressRequest]) (*connect.Response[v1.UpdateProjectOnboardingProgressResponse], error)
 	ConsoleCreateProject(context.Context, *connect.Request[v1.ConsoleCreateProjectRequest]) (*connect.Response[v1.ConsoleCreateProjectResponse], error)
+	ConsoleGetConfiguration(context.Context, *connect.Request[v1.ConsoleGetConfigurationRequest]) (*connect.Response[v1.ConsoleGetConfigurationResponse], error)
 }
 
 // NewBackendServiceClient constructs a client for the tesseral.backend.v1.BackendService service.
@@ -1066,6 +1070,12 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("ConsoleCreateProject")),
 			connect.WithClientOptions(opts...),
 		),
+		consoleGetConfiguration: connect.NewClient[v1.ConsoleGetConfigurationRequest, v1.ConsoleGetConfigurationResponse](
+			httpClient,
+			baseURL+BackendServiceConsoleGetConfigurationProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("ConsoleGetConfiguration")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -1167,6 +1177,7 @@ type backendServiceClient struct {
 	getProjectOnboardingProgress          *connect.Client[v1.GetProjectOnboardingProgressRequest, v1.GetProjectOnboardingProgressResponse]
 	updateProjectOnboardingProgress       *connect.Client[v1.UpdateProjectOnboardingProgressRequest, v1.UpdateProjectOnboardingProgressResponse]
 	consoleCreateProject                  *connect.Client[v1.ConsoleCreateProjectRequest, v1.ConsoleCreateProjectResponse]
+	consoleGetConfiguration               *connect.Client[v1.ConsoleGetConfigurationRequest, v1.ConsoleGetConfigurationResponse]
 }
 
 // GetProject calls tesseral.backend.v1.BackendService.GetProject.
@@ -1658,6 +1669,11 @@ func (c *backendServiceClient) ConsoleCreateProject(ctx context.Context, req *co
 	return c.consoleCreateProject.CallUnary(ctx, req)
 }
 
+// ConsoleGetConfiguration calls tesseral.backend.v1.BackendService.ConsoleGetConfiguration.
+func (c *backendServiceClient) ConsoleGetConfiguration(ctx context.Context, req *connect.Request[v1.ConsoleGetConfigurationRequest]) (*connect.Response[v1.ConsoleGetConfigurationResponse], error) {
+	return c.consoleGetConfiguration.CallUnary(ctx, req)
+}
+
 // BackendServiceHandler is an implementation of the tesseral.backend.v1.BackendService service.
 type BackendServiceHandler interface {
 	// Get the current project.
@@ -1814,6 +1830,7 @@ type BackendServiceHandler interface {
 	GetProjectOnboardingProgress(context.Context, *connect.Request[v1.GetProjectOnboardingProgressRequest]) (*connect.Response[v1.GetProjectOnboardingProgressResponse], error)
 	UpdateProjectOnboardingProgress(context.Context, *connect.Request[v1.UpdateProjectOnboardingProgressRequest]) (*connect.Response[v1.UpdateProjectOnboardingProgressResponse], error)
 	ConsoleCreateProject(context.Context, *connect.Request[v1.ConsoleCreateProjectRequest]) (*connect.Response[v1.ConsoleCreateProjectResponse], error)
+	ConsoleGetConfiguration(context.Context, *connect.Request[v1.ConsoleGetConfigurationRequest]) (*connect.Response[v1.ConsoleGetConfigurationResponse], error)
 }
 
 // NewBackendServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -2399,6 +2416,12 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("ConsoleCreateProject")),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceConsoleGetConfigurationHandler := connect.NewUnaryHandler(
+		BackendServiceConsoleGetConfigurationProcedure,
+		svc.ConsoleGetConfiguration,
+		connect.WithSchema(backendServiceMethods.ByName("ConsoleGetConfiguration")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/tesseral.backend.v1.BackendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case BackendServiceGetProjectProcedure:
@@ -2593,6 +2616,8 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceUpdateProjectOnboardingProgressHandler.ServeHTTP(w, r)
 		case BackendServiceConsoleCreateProjectProcedure:
 			backendServiceConsoleCreateProjectHandler.ServeHTTP(w, r)
+		case BackendServiceConsoleGetConfigurationProcedure:
+			backendServiceConsoleGetConfigurationHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -2984,4 +3009,8 @@ func (UnimplementedBackendServiceHandler) UpdateProjectOnboardingProgress(contex
 
 func (UnimplementedBackendServiceHandler) ConsoleCreateProject(context.Context, *connect.Request[v1.ConsoleCreateProjectRequest]) (*connect.Response[v1.ConsoleCreateProjectResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.ConsoleCreateProject is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) ConsoleGetConfiguration(context.Context, *connect.Request[v1.ConsoleGetConfigurationRequest]) (*connect.Response[v1.ConsoleGetConfigurationResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.ConsoleGetConfiguration is not implemented"))
 }

@@ -685,3 +685,7 @@ message ProjectOnboardingProgress {
   google.protobuf.Timestamp create_time = 6;
   google.protobuf.Timestamp update_time = 7;
 }
+
+message ConsoleConfiguration {
+  string console_project_id = 1;
+}

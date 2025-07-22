@@ -16,6 +16,7 @@ import { UserDetailsTab } from "@/pages/console/organizations/users/UserDetailsT
 import { UserPage } from "@/pages/console/organizations/users/UserPage";
 
 import { API_URL } from "./config";
+import { ConsoleConfigurationProvider } from "./lib/console-configuration";
 import { OrganizationApiKeysTab } from "./pages/console/organizations/OrganizationApiKeysTab";
 import { OrganizationAuthentication } from "./pages/console/organizations/OrganizationAuthenticationTab";
 import { OrganizationLogs } from "./pages/console/organizations/OrganizationLogsTab";
@@ -276,8 +277,10 @@ function AppWithinQueryClient() {
 export function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AppWithinQueryClient />
-      <Toaster />
+      <ConsoleConfigurationProvider>
+        <AppWithinQueryClient />
+        <Toaster />
+      </ConsoleConfigurationProvider>
     </QueryClientProvider>
   );
 }
