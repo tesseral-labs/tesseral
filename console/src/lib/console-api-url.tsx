@@ -22,7 +22,7 @@ export function ConsoleApiUrlProvider({ children }: PropsWithChildren) {
       } catch (error) {
         console.error("Failed to fetch config.json:", error);
       }
-    };
+    }
 
     fetchConfig();
   }, []);
