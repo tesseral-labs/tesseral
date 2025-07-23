@@ -7,4 +7,4 @@ node_modules
 /console/public/index.css
 /console/public/index.js
 /console/public/index.js.map
-/console/config.json
+/console/public/config.json
