@@ -16,6 +16,10 @@ import (
 	"go.opentelemetry.io/otel"
 )
 
+var skipRPCs = []string{
+	"/tesseral.backend.v1.BackendService/ConsoleGetConfiguration",
+}
+
 var errAuthorizationHeaderRequired = errors.New("authorization header is required")
 
 var tracer = otel.Tracer("github.com/tesseral-labs/tesseral/internal/backend/authn/interceptor")
@@ -25,6 +29,12 @@ func New(s *store.Store, consoleProjectID string) connect.UnaryInterceptorFunc {
 
 	return func(next connect.UnaryFunc) connect.UnaryFunc {
 		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
+			for _, rpc := range skipRPCs {
+				if req.Spec().Procedure == rpc {
+					return next(ctx, req)
+				}
+			}
+
 			ctx, span := tracer.Start(ctx, "backend/authn/interceptor")
 			defer span.End()
 
