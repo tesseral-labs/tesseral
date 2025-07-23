@@ -18,8 +18,6 @@ func (s *Store) ConsoleGetConfiguration(ctx context.Context, req *backendv1.Cons
 		return nil, apierror.NewFailedPreconditionError("console project id is not set", fmt.Errorf("console project id is nil"))
 	}
 
-	// Implementation of fetching console configuration from the store
-	// This is a placeholder for actual logic to retrieve the configuration
 	return &backendv1.ConsoleGetConfigurationResponse{
 		Configuration: &backendv1.ConsoleConfiguration{
 			ConsoleProjectId: idformat.Project.Format(derefOrEmpty(s.consoleProjectID)),
