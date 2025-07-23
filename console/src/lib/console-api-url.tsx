@@ -12,7 +12,7 @@ export function ConsoleApiUrlProvider({ children }: PropsWithChildren) {
   const [apiUrl, setApiUrl] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    const fetchConfig = async () => {
+    async function fetchConfig() {
       try {
         const response = await fetch("/config.json");
         if (response.ok) {
