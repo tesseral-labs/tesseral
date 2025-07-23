@@ -599,3 +599,8 @@ export const updateProjectOnboardingProgress = BackendService.method.updateProje
  * @generated from rpc tesseral.backend.v1.BackendService.ConsoleCreateProject
  */
 export const consoleCreateProject = BackendService.method.consoleCreateProject;
+
+/**
+ * @generated from rpc tesseral.backend.v1.BackendService.ConsoleGetConfiguration
+ */
+export const consoleGetConfiguration = BackendService.method.consoleGetConfiguration;
