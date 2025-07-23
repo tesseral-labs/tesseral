@@ -1,7 +1,8 @@
 import React, { createContext, useEffect, useMemo, useState } from "react";
 
-import { API_URL, CONSOLE_PROJECT_ID } from "@/config";
+import { API_URL } from "@/config";
 
+import { useConsoleConfiguration } from "./console-configuration";
 import { parseAccessToken } from "./parse-access-token";
 
 const Context = createContext<string | undefined>(undefined);
@@ -20,9 +21,11 @@ export function useAccessToken() {
 }
 
 function useAccessTokenInternal(): string | undefined {
+  const { consoleProjectId } = useConsoleConfiguration();
+
   const [error, setError] = useState<unknown>();
   const [accessToken, setAccessToken] = useState(() => {
-    return getCookie(`tesseral_${CONSOLE_PROJECT_ID}_access_token`);
+    return getCookie(`tesseral_${consoleProjectId}_access_token`);
   });
   const accessTokenLikelyValid = useAccessTokenLikelyValid(accessToken ?? "");
 

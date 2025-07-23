@@ -3,9 +3,9 @@ import { useMutation } from "@connectrpc/connect-query";
 import React, { createContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 
-import { CONSOLE_PROJECT_ID } from "@/config";
 import { refresh } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 
+import { useConsoleConfiguration } from "./console-configuration";
 import { parseAccessToken } from "./parse-access-token";
 
 const Context = createContext<string | undefined>(undefined);
@@ -25,9 +25,10 @@ export function useAccessToken() {
 
 function useAccessTokenInternal(): string | undefined {
   const navigate = useNavigate();
+  const { consoleProjectId } = useConsoleConfiguration();
   const [error, setError] = useState<unknown>();
   const [accessToken, setAccessToken] = useState(() => {
-    return getCookie(`tesseral_${CONSOLE_PROJECT_ID}_access_token`);
+    return getCookie(`tesseral_${consoleProjectId}_access_token`);
   });
   const { mutateAsync: refreshAsync } = useMutation(refresh);
   const { accessTokenLikelyValid } = useAccessTokenLikelyValid(
