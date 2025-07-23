@@ -115,6 +115,7 @@ const (
 	BackendService_GetProjectOnboardingProgress_FullMethodName          = "/tesseral.backend.v1.BackendService/GetProjectOnboardingProgress"
 	BackendService_UpdateProjectOnboardingProgress_FullMethodName       = "/tesseral.backend.v1.BackendService/UpdateProjectOnboardingProgress"
 	BackendService_ConsoleCreateProject_FullMethodName                  = "/tesseral.backend.v1.BackendService/ConsoleCreateProject"
+	BackendService_ConsoleGetConfiguration_FullMethodName               = "/tesseral.backend.v1.BackendService/ConsoleGetConfiguration"
 )
 
 // BackendServiceClient is the client API for BackendService service.
@@ -275,6 +276,7 @@ type BackendServiceClient interface {
 	GetProjectOnboardingProgress(ctx context.Context, in *GetProjectOnboardingProgressRequest, opts ...grpc.CallOption) (*GetProjectOnboardingProgressResponse, error)
 	UpdateProjectOnboardingProgress(ctx context.Context, in *UpdateProjectOnboardingProgressRequest, opts ...grpc.CallOption) (*UpdateProjectOnboardingProgressResponse, error)
 	ConsoleCreateProject(ctx context.Context, in *ConsoleCreateProjectRequest, opts ...grpc.CallOption) (*ConsoleCreateProjectResponse, error)
+	ConsoleGetConfiguration(ctx context.Context, in *ConsoleGetConfigurationRequest, opts ...grpc.CallOption) (*ConsoleGetConfigurationResponse, error)
 }
 
 type backendServiceClient struct {
@@ -1245,6 +1247,16 @@ func (c *backendServiceClient) ConsoleCreateProject(ctx context.Context, in *Con
 	return out, nil
 }
 
+func (c *backendServiceClient) ConsoleGetConfiguration(ctx context.Context, in *ConsoleGetConfigurationRequest, opts ...grpc.CallOption) (*ConsoleGetConfigurationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ConsoleGetConfigurationResponse)
+	err := c.cc.Invoke(ctx, BackendService_ConsoleGetConfiguration_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BackendServiceServer is the server API for BackendService service.
 // All implementations must embed UnimplementedBackendServiceServer
 // for forward compatibility.
@@ -1403,6 +1415,7 @@ type BackendServiceServer interface {
 	GetProjectOnboardingProgress(context.Context, *GetProjectOnboardingProgressRequest) (*GetProjectOnboardingProgressResponse, error)
 	UpdateProjectOnboardingProgress(context.Context, *UpdateProjectOnboardingProgressRequest) (*UpdateProjectOnboardingProgressResponse, error)
 	ConsoleCreateProject(context.Context, *ConsoleCreateProjectRequest) (*ConsoleCreateProjectResponse, error)
+	ConsoleGetConfiguration(context.Context, *ConsoleGetConfigurationRequest) (*ConsoleGetConfigurationResponse, error)
 	mustEmbedUnimplementedBackendServiceServer()
 }
 
@@ -1700,6 +1713,9 @@ func (UnimplementedBackendServiceServer) UpdateProjectOnboardingProgress(context
 }
 func (UnimplementedBackendServiceServer) ConsoleCreateProject(context.Context, *ConsoleCreateProjectRequest) (*ConsoleCreateProjectResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ConsoleCreateProject not implemented")
+}
+func (UnimplementedBackendServiceServer) ConsoleGetConfiguration(context.Context, *ConsoleGetConfigurationRequest) (*ConsoleGetConfigurationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConsoleGetConfiguration not implemented")
 }
 func (UnimplementedBackendServiceServer) mustEmbedUnimplementedBackendServiceServer() {}
 func (UnimplementedBackendServiceServer) testEmbeddedByValue()                        {}
@@ -3450,6 +3466,24 @@ func _BackendService_ConsoleCreateProject_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_ConsoleGetConfiguration_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConsoleGetConfigurationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).ConsoleGetConfiguration(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_ConsoleGetConfiguration_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).ConsoleGetConfiguration(ctx, req.(*ConsoleGetConfigurationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BackendService_ServiceDesc is the grpc.ServiceDesc for BackendService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -3840,6 +3874,10 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ConsoleCreateProject",
 			Handler:    _BackendService_ConsoleCreateProject_Handler,
+		},
+		{
+			MethodName: "ConsoleGetConfiguration",
+			Handler:    _BackendService_ConsoleGetConfiguration_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
