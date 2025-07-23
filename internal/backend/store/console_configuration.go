@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
-	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
@@ -14,13 +13,9 @@ func (s *Store) ConsoleGetConfiguration(ctx context.Context, req *backendv1.Cons
 		return nil, fmt.Errorf("validate is console session: %w", err)
 	}
 
-	if s.consoleProjectID == nil {
-		return nil, apierror.NewFailedPreconditionError("console project id is not set", fmt.Errorf("console project id is nil"))
-	}
-
 	return &backendv1.ConsoleGetConfigurationResponse{
 		Configuration: &backendv1.ConsoleConfiguration{
-			ConsoleProjectId: idformat.Project.Format(derefOrEmpty(s.consoleProjectID)),
+			ConsoleProjectId: idformat.Project.Format(*s.consoleProjectID),
 		},
 	}, nil
 }
