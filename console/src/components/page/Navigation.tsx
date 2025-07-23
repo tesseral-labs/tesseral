@@ -21,7 +21,7 @@ import {
   Vault,
   Webhook,
 } from "lucide-react";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -46,7 +46,6 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { API_URL } from "@/config";
 import {
   consoleCreateProject,
   getProject,
@@ -626,6 +625,14 @@ function NavigationUser() {
     navigate("/login");
   }
 
+  const [apiUrl, setApiUrl] = useState("");
+  useEffect(() => {
+    (async () => {
+      const config = await (await fetch("/config.json")).json();
+      setApiUrl(config.CONSOLE_API_URL);
+    })();
+  }, []);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="inline-flex items-center">
@@ -657,13 +664,13 @@ function NavigationUser() {
         <DropdownMenuGroup>
           <DropdownMenuLabel>Settings</DropdownMenuLabel>
           <DropdownMenuItem>
-            <Link to={`${API_URL}/user-settings`}>
+            <Link to={`${apiUrl}/user-settings`}>
               <User className="inline max-h-4 mr-2" />
               User Settings
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Link to={`${API_URL}/organization-settings`}>
+            <Link to={`${apiUrl}/organization-settings`}>
               <Building2 className="inline max-h-4 mr-2" />
               Organization Settings
             </Link>

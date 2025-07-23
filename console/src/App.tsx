@@ -6,6 +6,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 import { Toaster } from "sonner";
 
 import { PageShell } from "@/components/page";
+import { ConsoleApiUrlProvider, useConsoleApiUrl } from "@/lib/console-api-url";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { HomePage } from "@/pages/console/home/HomePage";
 import { ListOrganizationsPage } from "@/pages/console/organizations/ListOrganizationsPage";
@@ -15,7 +16,6 @@ import { OrganizationUsersTab } from "@/pages/console/organizations/Organization
 import { UserDetailsTab } from "@/pages/console/organizations/users/UserDetailsTab";
 import { UserPage } from "@/pages/console/organizations/users/UserPage";
 
-import { API_URL } from "./config";
 import { ConsoleConfigurationProvider } from "./lib/console-configuration";
 import { OrganizationApiKeysTab } from "./pages/console/organizations/OrganizationApiKeysTab";
 import { OrganizationAuthentication } from "./pages/console/organizations/OrganizationAuthenticationTab";
@@ -74,228 +74,219 @@ import { VerifyPasskeyPage } from "./pages/login/VerifyPasskeyPage";
 import { VerifyPasswordPage } from "./pages/login/VerifyPasswordPage";
 import { VerifySecondaryFactorPage } from "./pages/login/VerifySecondaryFactorPage";
 
-const queryClient = new QueryClient();
-
-const transport = createConnectTransport({
-  baseUrl: `${API_URL}/api/internal/connect`,
-  fetch: (input, init) =>
-    fetch(input, {
-      ...init,
-      credentials: "include",
-    }),
-});
-
 function AppWithinQueryClient() {
-  return (
-    <TransportProvider transport={transport}>
-      <ConsoleConfigurationProvider>
+    return (
         <BrowserRouter>
-          <Routes>
-            <Route
-              path="/project-settings"
-              element={<Navigate to="/settings/vault/domains" replace />}
-            />
-            <Route
-              path="/project-settings/publishable-keys"
-              element={<Navigate to="/settings/api-keys" replace />}
-            />
-
-            {/* Console Routes */}
-            <Route path="/" element={<PageShell />}>
-              <Route path="" element={<HomePage />} />
-
-              <Route path="organizations">
-                <Route path="" element={<ListOrganizationsPage />} />
-                <Route path=":organizationId" element={<OrganizationPage />}>
-                  <Route path="" element={<OrganizationDetailsTab />} />
-                  <Route
-                    path="authentication"
-                    element={<OrganizationAuthentication />}
-                  />
-                  <Route path="api-keys" element={<OrganizationApiKeysTab />} />
-                  <Route path="users" element={<OrganizationUsersTab />} />
-
-                  <Route path="logs" element={<OrganizationLogs />} />
-                </Route>
-              </Route>
-
-              <Route
-                path="organizations/:organizationId/users/:userId"
-                element={<UserPage />}
-              >
-                <Route path="" element={<UserDetailsTab />} />
-                <Route path="sessions" element={<UserSessionsTab />} />
-                <Route path="roles" element={<UserRolesTab />} />
-                <Route path="passkeys" element={<UserPasskeysTab />} />
-                <Route path="history" element={<UserHistoryTab />} />
-                <Route path="activity" element={<UserActivityTab />} />
-              </Route>
-
-              <Route
-                path="organizations/:organizationId/users/:userId/passkeys/:passkeyId"
-                element={<PasskeyPage />}
-              />
-
-              <Route
-                path="organizations/:organizationId/users/:userId/sessions/:sessionId"
-                element={<SessionPage />}
-              />
-
-              <Route
-                path="organizations/:organizationId/api-keys/:apiKeyId"
-                element={<OrganizationApiKeyPage />}
-              >
-                <Route path="" element={<OrganizationApiKeyDetailsTab />} />
-                <Route path="roles" element={<OrganizationApiKeyRolesTab />} />
-                <Route path="logs" element={<OrganizationApiKeyLogsTab />} />
-              </Route>
-
-              <Route
-                path="organizations/:organizationId/saml-connections/:samlConnectionId"
-                element={<OrganizationSamlConnectionPage />}
-              />
-
-              <Route
-                path="organizations/:organizationId/oidc-connections/:oidcConnectionId"
-                element={<OrganizationOidcConnectionPage />}
-              />
-
-              <Route
-                path="organizations/:organizationId/scim-api-keys/:scimApiKeyId"
-                element={<OrganizationScimApiKeyPage />}
-              >
-                <Route path="" element={<OrganizationScimApiKeyDetailsTab />} />
+            <Routes>
                 <Route
-                  path="logs"
-                  element={<OrganizationScimApiKeyLogsTab />}
+                    path="/project-settings"
+                    element={<Navigate to="/settings/vault/domains" replace />}
                 />
-              </Route>
-
-              <Route path="settings">
-                <Route path="" element={<SettingsOverviewPage />} />
                 <Route
-                  path="authentication"
-                  element={<AuthenticationSettingsPage />}
+                    path="/project-settings/publishable-keys"
+                    element={<Navigate to="/settings/api-keys" replace />}
                 />
-                <Route path="api-keys" element={<ApiKeySettingsPage />} />
-                <Route path="api-keys/backend-api-keys">
-                  <Route path="" element={<BackendApiKeysPage />} />
-                  <Route
-                    path=":backendApiKeyId"
-                    element={<BackendApiKeyPage />}
-                  />
+
+                {/* Console Routes */}
+                <Route path="/" element={<PageShell />}>
+                    <Route path="" element={<HomePage />} />
+
+                    <Route path="organizations">
+                        <Route path="" element={<ListOrganizationsPage />} />
+                        <Route path=":organizationId" element={<OrganizationPage />}>
+                            <Route path="" element={<OrganizationDetailsTab />} />
+                            <Route
+                                path="authentication"
+                                element={<OrganizationAuthentication />}
+                            />
+                            <Route path="api-keys" element={<OrganizationApiKeysTab />} />
+                            <Route path="users" element={<OrganizationUsersTab />} />
+
+                            <Route path="logs" element={<OrganizationLogs />} />
+                        </Route>
+                    </Route>
+
+                    <Route
+                        path="organizations/:organizationId/users/:userId"
+                        element={<UserPage />}
+                    >
+                        <Route path="" element={<UserDetailsTab />} />
+                        <Route path="sessions" element={<UserSessionsTab />} />
+                        <Route path="roles" element={<UserRolesTab />} />
+                        <Route path="passkeys" element={<UserPasskeysTab />} />
+                        <Route path="history" element={<UserHistoryTab />} />
+                        <Route path="activity" element={<UserActivityTab />} />
+                    </Route>
+
+                    <Route
+                        path="organizations/:organizationId/users/:userId/passkeys/:passkeyId"
+                        element={<PasskeyPage />}
+                    />
+
+                    <Route
+                        path="organizations/:organizationId/users/:userId/sessions/:sessionId"
+                        element={<SessionPage />}
+                    />
+
+                    <Route
+                        path="organizations/:organizationId/api-keys/:apiKeyId"
+                        element={<OrganizationApiKeyPage />}
+                    >
+                        <Route path="" element={<OrganizationApiKeyDetailsTab />} />
+                        <Route path="roles" element={<OrganizationApiKeyRolesTab />} />
+                        <Route path="logs" element={<OrganizationApiKeyLogsTab />} />
+                    </Route>
+
+                    <Route
+                        path="organizations/:organizationId/saml-connections/:samlConnectionId"
+                        element={<OrganizationSamlConnectionPage />}
+                    />
+
+                    <Route
+                        path="organizations/:organizationId/oidc-connections/:oidcConnectionId"
+                        element={<OrganizationOidcConnectionPage />}
+                    />
+
+                    <Route
+                        path="organizations/:organizationId/scim-api-keys/:scimApiKeyId"
+                        element={<OrganizationScimApiKeyPage />}
+                    >
+                        <Route path="" element={<OrganizationScimApiKeyDetailsTab />} />
+                        <Route path="logs" element={<OrganizationScimApiKeyLogsTab />} />
+                    </Route>
+
+                    <Route path="settings">
+                        <Route path="" element={<SettingsOverviewPage />} />
+                        <Route
+                            path="authentication"
+                            element={<AuthenticationSettingsPage />}
+                        />
+                        <Route path="api-keys" element={<ApiKeySettingsPage />} />
+                        <Route path="api-keys/backend-api-keys">
+                            <Route path="" element={<BackendApiKeysPage />} />
+                            <Route path=":backendApiKeyId" element={<BackendApiKeyPage />} />
+                        </Route>
+
+                        <Route path="access" element={<AccessSettingsPage />} />
+                        <Route path="vault" element={<VaultCustomizationPage />}>
+                            <Route path="" element={<VaultDetailsTab />} />
+                            <Route path="domains" element={<VaultDomainSettingsTab />} />
+                            <Route path="branding" element={<VaultBrandingSettingsTab />} />
+                        </Route>
+                    </Route>
+
+                    <Route
+                        path="stripe-checkout-success"
+                        element={<StripeCheckoutSuccessPage />}
+                    />
                 </Route>
 
-                <Route path="access" element={<AccessSettingsPage />} />
-                <Route path="vault" element={<VaultCustomizationPage />}>
-                  <Route path="" element={<VaultDetailsTab />} />
-                  <Route path="domains" element={<VaultDomainSettingsTab />} />
-                  <Route
-                    path="branding"
-                    element={<VaultBrandingSettingsTab />}
-                  />
+                {/* Login and Signup Routes */}
+                <Route path="login" element={<LoginPage />} />
+                <Route path="signup" element={<SignupPage />} />
+
+                <Route path="" element={<LoginFlowLayout />}>
+                    <Route path="verify-email" element={<VerifyEmailPage />} />
+                    <Route
+                        path="github-oauth-callback"
+                        element={<GithubOAuthCallbackPage />}
+                    />
+                    <Route
+                        path="google-oauth-callback"
+                        element={<GoogleOAuthCallbackPage />}
+                    />
+                    <Route
+                        path="microsoft-oauth-callback"
+                        element={<MicrosoftOAuthCallbackPage />}
+                    />
+                    <Route path="choose-organization" element={<ChooseProjectPage />} />
+                    <Route path="create-organization" element={<CreateProjectPage />} />
+                    <Route
+                        path="create-sandbox-project"
+                        element={<CreateSandboxProjectPage />}
+                    />
+                    <Route
+                        path="organizations/:organizationId/login"
+                        element={<OrganizationLoginPage />}
+                    />
+                    <Route
+                        path="authenticate-another-way"
+                        element={<AuthenticateAnotherWayPage />}
+                    />
+                    <Route path="verify-password" element={<VerifyPasswordPage />} />
+                    <Route path="forgot-password" element={<ForgotPasswordPage />} />
+                    <Route
+                        path="verify-secondary-factor"
+                        element={<VerifySecondaryFactorPage />}
+                    />
+                    <Route
+                        path="verify-authenticator-app"
+                        element={<VerifyAuthenticatorAppPage />}
+                    />
+                    <Route
+                        path="verify-authenticator-app-recovery-code"
+                        element={<VerifyAuthenticatorAppRecoveryCodePage />}
+                    />
+                    <Route path="verify-passkey" element={<VerifyPasskeyPage />} />
+                    <Route path="register-password" element={<RegisterPasswordPage />} />
+                    <Route
+                        path="register-secondary-factor"
+                        element={<RegisterSecondaryFactorPage />}
+                    />
+                    <Route path="register-passkey" element={<RegisterPasskeyPage />} />
+                    <Route
+                        path="register-authenticator-app"
+                        element={<RegisterAuthenticatorAppPage />}
+                    />
+                    <Route path="finish-login" element={<FinishLoginPage />} />
+
+                    <Route path="impersonate" element={<ImpersonatePage />} />
+                    <Route
+                        path="switch-organizations/:organizationId"
+                        element={<SwitchOrganizationsPage />}
+                    />
+
+                    <Route path="logout" element={<LogoutPage />} />
                 </Route>
-              </Route>
 
-              <Route
-                path="stripe-checkout-success"
-                element={<StripeCheckoutSuccessPage />}
-              />
-            </Route>
-
-            {/* Login and Signup Routes */}
-            <Route path="login" element={<LoginPage />} />
-            <Route path="signup" element={<SignupPage />} />
-
-            <Route path="" element={<LoginFlowLayout />}>
-              <Route path="verify-email" element={<VerifyEmailPage />} />
-              <Route
-                path="github-oauth-callback"
-                element={<GithubOAuthCallbackPage />}
-              />
-              <Route
-                path="google-oauth-callback"
-                element={<GoogleOAuthCallbackPage />}
-              />
-              <Route
-                path="microsoft-oauth-callback"
-                element={<MicrosoftOAuthCallbackPage />}
-              />
-              <Route
-                path="choose-organization"
-                element={<ChooseProjectPage />}
-              />
-              <Route
-                path="create-organization"
-                element={<CreateProjectPage />}
-              />
-              <Route
-                path="create-sandbox-project"
-                element={<CreateSandboxProjectPage />}
-              />
-              <Route
-                path="organizations/:organizationId/login"
-                element={<OrganizationLoginPage />}
-              />
-              <Route
-                path="authenticate-another-way"
-                element={<AuthenticateAnotherWayPage />}
-              />
-              <Route path="verify-password" element={<VerifyPasswordPage />} />
-              <Route path="forgot-password" element={<ForgotPasswordPage />} />
-              <Route
-                path="verify-secondary-factor"
-                element={<VerifySecondaryFactorPage />}
-              />
-              <Route
-                path="verify-authenticator-app"
-                element={<VerifyAuthenticatorAppPage />}
-              />
-              <Route
-                path="verify-authenticator-app-recovery-code"
-                element={<VerifyAuthenticatorAppRecoveryCodePage />}
-              />
-              <Route path="verify-passkey" element={<VerifyPasskeyPage />} />
-              <Route
-                path="register-password"
-                element={<RegisterPasswordPage />}
-              />
-              <Route
-                path="register-secondary-factor"
-                element={<RegisterSecondaryFactorPage />}
-              />
-              <Route
-                path="register-passkey"
-                element={<RegisterPasskeyPage />}
-              />
-              <Route
-                path="register-authenticator-app"
-                element={<RegisterAuthenticatorAppPage />}
-              />
-              <Route path="finish-login" element={<FinishLoginPage />} />
-
-              <Route path="impersonate" element={<ImpersonatePage />} />
-              <Route
-                path="switch-organizations/:organizationId"
-                element={<SwitchOrganizationsPage />}
-              />
-
-              <Route path="logout" element={<LogoutPage />} />
-            </Route>
-
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
+                <Route path="*" element={<NotFoundPage />} />
+            </Routes>
         </BrowserRouter>
-      </ConsoleConfigurationProvider>
-    </TransportProvider>
-  );
+    );
+}
+
+function QueryClientProviderWrapper({
+                                        children,
+                                    }: {
+    children: React.ReactNode;
+}) {
+    const apiUrl = useConsoleApiUrl();
+    const transport = createConnectTransport({
+        baseUrl: `${apiUrl}/api/internal/connect`,
+        fetch: (input, init) =>
+            fetch(input, {
+                ...init,
+                credentials: "include",
+            }),
+    });
+    const queryClient = new QueryClient();
+
+    return (
+        <QueryClientProvider client={queryClient}>
+            <TransportProvider transport={transport}>{children}</TransportProvider>
+        </QueryClientProvider>
+    );
 }
 
 export function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <AppWithinQueryClient />
-      <Toaster />
-    </QueryClientProvider>
-  );
+    return (
+        <ConsoleApiUrlProvider>
+            <QueryClientProviderWrapper>
+                <ConsoleConfigurationProvider>
+                    <AppWithinQueryClient />
+                    <Toaster />
+                </ConsoleConfigurationProvider>
+            </QueryClientProviderWrapper>
+        </ConsoleApiUrlProvider>
+    );
 }
