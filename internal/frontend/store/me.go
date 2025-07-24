@@ -54,13 +54,13 @@ func (s *Store) UpdateMe(ctx context.Context, req *frontendv1.UpdateMeRequest) (
 		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
+	// send sync user event
+	if err := s.sendSyncUserEvent(ctx, tx, qUpdatedUser); err != nil {
+		return nil, fmt.Errorf("send sync user event: %w", err)
 	}
 
-	// send sync user event
-	if err := s.sendSyncUserEvent(ctx, qUpdatedUser); err != nil {
-		return nil, fmt.Errorf("send sync user event: %w", err)
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &frontendv1.UpdateMeResponse{
