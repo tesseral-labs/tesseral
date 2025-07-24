@@ -1,0 +1,20 @@
+events {}
+
+http {
+    server {
+        listen 80;
+
+        location / {
+            root /www/public;
+            index index.html;
+
+            try_files $uri $uri/ /index.html;
+        }
+
+        location /api/ {
+            proxy_set_header X-Tesseral-Host $${TESSERAL_VAULT_TRUSTED_HOSTNAME_HEADER};
+            proxy_pass ${TESSERAL_VAULT_TESSERAL_INTERNAL_API_ENDPOINT}/api/;
+            proxy_ssl_server_name on;
+        }
+    }
+}
