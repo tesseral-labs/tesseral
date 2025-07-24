@@ -8,11 +8,12 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/svix/svix-webhooks/go/models"
 	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
+	backgroundworkerstore "github.com/tesseral-labs/tesseral/internal/backgroundworker/store"
+	"github.com/tesseral-labs/tesseral/internal/backgroundworker/workers"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -154,13 +155,13 @@ func (s *Store) CreateUser(ctx context.Context, req *backendv1.CreateUserRequest
 		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
+	// send sync user event
+	if err := s.sendSyncUserEvent(ctx, tx, qUser); err != nil {
+		return nil, fmt.Errorf("send sync user event: %w", err)
 	}
 
-	// send sync user event
-	if err := s.sendSyncUserEvent(ctx, qUser); err != nil {
-		return nil, fmt.Errorf("send sync user event: %w", err)
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &backendv1.CreateUserResponse{User: user}, nil
@@ -258,13 +259,13 @@ func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest
 		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
+	// send sync user event
+	if err := s.sendSyncUserEvent(ctx, tx, qUpdatedUser); err != nil {
+		return nil, fmt.Errorf("send sync user event: %w", err)
 	}
 
-	// send sync user event
-	if err := s.sendSyncUserEvent(ctx, qUpdatedUser); err != nil {
-		return nil, fmt.Errorf("send sync user event: %w", err)
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &backendv1.UpdateUserResponse{User: user}, nil
@@ -314,43 +315,34 @@ func (s *Store) DeleteUser(ctx context.Context, req *backendv1.DeleteUserRequest
 		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
+	// send sync user event
+	if err := s.sendSyncUserEvent(ctx, tx, qUser); err != nil {
+		return nil, fmt.Errorf("send sync user event: %w", err)
 	}
 
-	// send sync user event
-	if err := s.sendSyncUserEvent(ctx, qUser); err != nil {
-		return nil, fmt.Errorf("send sync user event: %w", err)
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &backendv1.DeleteUserResponse{}, nil
 }
 
-func (s *Store) sendSyncUserEvent(ctx context.Context, qUser queries.User) error {
-	qProjectWebhookSettings, err := s.q.GetProjectWebhookSettings(ctx, authn.ProjectID(ctx))
-	if err != nil {
-		// We want to ignore this error if the project does not have webhook settings
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil
-		}
-		return fmt.Errorf("get project by id: %w", err)
-	}
-
-	if qProjectWebhookSettings.AppID != nil && *qProjectWebhookSettings.AppID == "" {
-
-		message, err := s.svixClient.Message.Create(ctx, *qProjectWebhookSettings.AppID, models.MessageIn{
+func (s *Store) sendSyncUserEvent(ctx context.Context, tx pgx.Tx, qUser queries.User) error {
+	// Add the sync organization event to the background worker queue
+	if _, err := s.riverClient.InsertTx(ctx, tx, workers.BackgroundWorkerArgs{
+		ProjectID: idformat.Project.Format(authn.ProjectID(ctx)),
+		EventName: "send_webhook",
+		WebhookPayload: backgroundworkerstore.WebhookArgs{
 			EventType: "sync.user",
-			Payload: map[string]interface{}{
+			EventPayload: map[string]interface{}{
 				"type":   "sync.user",
 				"userId": idformat.User.Format(qUser.ID),
 			},
-		}, nil)
-		if err != nil {
-			return fmt.Errorf("create message: %w", err)
-		}
-
-		slog.InfoContext(ctx, "svix_message_created", "message_id", message.Id, "event_type", message.EventType, "user_id", idformat.User.Format(qUser.ID))
+		},
+	}, nil); err != nil {
+		return fmt.Errorf("insert background worker args: %w", err)
 	}
+	slog.InfoContext(ctx, "send_webhook_event_created", "event_type", "sync.user", "user_id", idformat.User.Format(qUser.ID))
 
 	return nil
 }

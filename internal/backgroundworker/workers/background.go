@@ -24,6 +24,12 @@ type BackgroundWorker struct {
 	Store *store.Store
 }
 
+func NewBackgroundWorker(store *store.Store) *BackgroundWorker {
+	return &BackgroundWorker{
+		Store: store,
+	}
+}
+
 func (w *BackgroundWorker) Work(ctx context.Context, job *river.Job[BackgroundWorkerArgs]) error {
 	projectID, err := idformat.Project.Parse(job.Args.ProjectID)
 	if err != nil {

@@ -7,8 +7,9 @@ import (
 	"log/slog"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/svix/svix-webhooks/go/models"
 	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
+	backgroundworkerstore "github.com/tesseral-labs/tesseral/internal/backgroundworker/store"
+	"github.com/tesseral-labs/tesseral/internal/backgroundworker/workers"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
@@ -184,14 +185,14 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
+	// send sync organization event
+	if err := s.sendSyncOrganizationEvent(ctx, tx, qUpdatedOrg); err != nil {
+		return nil, fmt.Errorf("send sync organization event: %w", err)
+	}
+
 	// Commit the transaction
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit transaction: %w", err)
-	}
-
-	// send sync organization event
-	if err := s.sendSyncOrganizationEvent(ctx, qUpdatedOrg); err != nil {
-		return nil, fmt.Errorf("send sync organization event: %w", err)
 	}
 
 	return &frontendv1.UpdateOrganizationResponse{
@@ -199,30 +200,22 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 	}, nil
 }
 
-func (s *Store) sendSyncOrganizationEvent(ctx context.Context, qOrg queries.Organization) error {
-	qProjectWebhookSettings, err := s.q.GetProjectWebhookSettings(ctx, authn.ProjectID(ctx))
-	if err != nil {
-		// We want to ignore this error if the project does not have webhook settings
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil
-		}
-		return fmt.Errorf("get project by id: %w", err)
-	}
-
-	if qProjectWebhookSettings.DirectWebhookUrl != nil && *qProjectWebhookSettings.DirectWebhookUrl != "" {
-		message, err := s.svixClient.Message.Create(ctx, *qProjectWebhookSettings.AppID, models.MessageIn{
+func (s *Store) sendSyncOrganizationEvent(ctx context.Context, tx pgx.Tx, qOrg queries.Organization) error {
+	// Add the sync organization event to the background worker queue
+	if _, err := s.riverClient.InsertTx(ctx, tx, workers.BackgroundWorkerArgs{
+		ProjectID: idformat.Project.Format(authn.ProjectID(ctx)),
+		EventName: "send_webhook",
+		WebhookPayload: backgroundworkerstore.WebhookArgs{
 			EventType: "sync.organization",
-			Payload: map[string]interface{}{
+			EventPayload: map[string]interface{}{
 				"type":           "sync.organization",
 				"organizationId": idformat.Organization.Format(qOrg.ID),
 			},
-		}, nil)
-		if err != nil {
-			return fmt.Errorf("create message: %w", err)
-		}
-
-		slog.InfoContext(ctx, "svix_message_created", "message_id", message.Id, "event_type", message.EventType, "organization_id", idformat.Organization.Format(qOrg.ID))
+		},
+	}, nil); err != nil {
+		return fmt.Errorf("insert background worker args: %w", err)
 	}
+	slog.InfoContext(ctx, "send_webhook_event_created", "event_type", "sync.organization", "organization_id", idformat.Organization.Format(qOrg.ID))
 
 	return nil
 }

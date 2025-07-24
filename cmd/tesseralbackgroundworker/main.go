@@ -6,6 +6,7 @@ import (
 	"log/slog"
 
 	"github.com/riverqueue/river"
+	"github.com/riverqueue/river/riverdriver/riverpgxv5"
 	"github.com/ssoready/conf"
 	svix "github.com/svix/svix-webhooks/go"
 	"github.com/tesseral-labs/tesseral/internal/backgroundworker/store"
@@ -24,8 +25,6 @@ func main() {
 
 	conf.Load(&config)
 
-	slog.Info("config", "config", conf.Redact(config))
-
 	db, err := dbconn.Open(context.Background(), config.DB)
 	if err != nil {
 		panic(fmt.Errorf("open database: %w", err))
@@ -37,14 +36,39 @@ func main() {
 		panic(fmt.Errorf("create svix client: %w", err))
 	}
 
+	store_ := store.New(store.NewStoreParams{
+		DB:   db,
+		Svix: svixClient,
+	})
+
 	riverWorkers := river.NewWorkers()
 
-	if err := river.AddWorkerSafely(riverWorkers, &workers.BackgroundWorker{
-		Store: store.New(store.NewStoreParams{
-			DB:   db,
-			Svix: svixClient,
-		}),
-	}); err != nil {
+	if err := river.AddWorkerSafely(riverWorkers, workers.NewBackgroundWorker(store_)); err != nil {
+		panic(err)
+	}
+
+	riverClient, err := river.NewClient(riverpgxv5.New(db), &river.Config{
+		Queues: map[string]river.QueueConfig{
+			river.QueueDefault: {
+				MaxWorkers: 100,
+			},
+		},
+		Workers: riverWorkers,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	ctx := context.Background()
+
+	defer func() {
+		// Handle graceful shutdown
+		if err := riverClient.Stop(ctx); err != nil {
+			slog.Error("failed to close river client", "error", err)
+		}
+	}()
+
+	if err := riverClient.Start(ctx); err != nil {
 		panic(err)
 	}
 }
