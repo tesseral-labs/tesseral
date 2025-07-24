@@ -2,6 +2,6 @@
 
 set -e
 
-envsubst '${TESSERAL_CONFIG_API_TESSERAL_INTERNAL_API}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
+envsubst '${TESSERAL_CONFIG_API_TESSERAL_INTERNAL_API_ENDPOINT}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
 exec nginx -g 'daemon off;'

@@ -5,7 +5,7 @@ http {
         listen 80;
 
         location / {
-            proxy_pass ${TESSERAL_CONFIG_API_TESSERAL_INTERNAL_API_ENDPOINT}/api/config-api/;
+            proxy_pass ${TESSERAL_BACKEND_API_TESSERAL_INTERNAL_API_ENDPOINT}/api/backend/;
             proxy_ssl_server_name on;
         }
     }
