@@ -96,6 +96,7 @@ jobs:
       - name: Build Console assets
         run: |
           cd console
+          npm ci
           npm run build
           cp -r public ../cmd/tesseral-console/public
 
@@ -139,6 +140,7 @@ jobs:
       - name: Build Vault assets
         run: |
           cd vault-ui
+          npm ci
           npm run build
           cp -r public ../cmd/tesseral-vault/public
 
