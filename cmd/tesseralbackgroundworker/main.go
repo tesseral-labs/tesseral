@@ -13,10 +13,15 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/backgroundworker/workers"
 	"github.com/tesseral-labs/tesseral/internal/dbconn"
 	"github.com/tesseral-labs/tesseral/internal/loadenv"
+	"github.com/tesseral-labs/tesseral/internal/secretload"
 )
 
 func main() {
 	loadenv.LoadEnv()
+
+	if err := secretload.Load(context.Background()); err != nil {
+		panic(fmt.Errorf("load secrets: %w", err))
+	}
 
 	config := struct {
 		DB         dbconn.Config `conf:"db,noredact"`
