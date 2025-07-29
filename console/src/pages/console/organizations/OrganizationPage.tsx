@@ -127,6 +127,12 @@ export function OrganizationPageTabs() {
           Authentication
         </TabLink>
         <TabLink
+          active={pathname.startsWith(`/organizations/${organizationId}/roles`)}
+          to={`/organizations/${organizationId}/roles`}
+        >
+          Roles
+        </TabLink>
+        <TabLink
           active={pathname.startsWith(
             `/organizations/${organizationId}/api-keys`,
           )}

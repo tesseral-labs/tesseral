@@ -20,6 +20,7 @@ import { ConsoleConfigurationProvider } from "./lib/console-configuration";
 import { OrganizationApiKeysTab } from "./pages/console/organizations/OrganizationApiKeysTab";
 import { OrganizationAuthentication } from "./pages/console/organizations/OrganizationAuthenticationTab";
 import { OrganizationLogs } from "./pages/console/organizations/OrganizationLogsTab";
+import { OrganizationRolesTab } from "./pages/console/organizations/OrganizationRolesTab";
 import { OrganizationApiKeyRolesTab } from "./pages/console/organizations/api-keys/OrganizationAPIKeyRolesTab";
 import { OrganizationApiKeyDetailsTab } from "./pages/console/organizations/api-keys/OrganizationApiKeyDetailsTab";
 import { OrganizationApiKeyLogsTab } from "./pages/console/organizations/api-keys/OrganizationApiKeyLogsTab";
@@ -100,6 +101,7 @@ function AppWithinQueryClient() {
                 element={<OrganizationAuthentication />}
               />
               <Route path="api-keys" element={<OrganizationApiKeysTab />} />
+              <Route path="roles" element={<OrganizationRolesTab />} />
               <Route path="users" element={<OrganizationUsersTab />} />
 
               <Route path="logs" element={<OrganizationLogs />} />
