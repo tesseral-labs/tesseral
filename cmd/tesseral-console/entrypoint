@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo '{"CONSOLE_API_URL": "'"$TESSERAL_CONSOLE_VAULT_ENDPOINT"'"}' > /www/public/config.json
+
+exec nginx -g 'daemon off;'
