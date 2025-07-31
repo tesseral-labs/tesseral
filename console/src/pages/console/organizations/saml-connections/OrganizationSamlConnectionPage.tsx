@@ -175,7 +175,7 @@ export function OrganizationSamlConnectionPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <div className="font-semibold">
+                <div className="font-medium text-sm">
                   Assertion Consumer Service (ACS) URL
                 </div>
                 <ValueCopier
@@ -186,7 +186,7 @@ export function OrganizationSamlConnectionPage() {
                 />
               </div>
               <div className="space-y-2">
-                <div className="font-semibold">SP Entity ID</div>
+                <div className="font-medium text-sm">SP Entity ID</div>
                 <ValueCopier
                   value={
                     getSamlConnectionResponse?.samlConnection?.spEntityId || ""

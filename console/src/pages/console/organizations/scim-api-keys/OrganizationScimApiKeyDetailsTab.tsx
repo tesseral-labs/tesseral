@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { ValueCopier } from "@/components/core/ValueCopier";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -36,6 +37,7 @@ import {
 import { Input } from "@/components/ui/input";
 import {
   deleteSCIMAPIKey,
+  getProject,
   getSCIMAPIKey,
   revokeSCIMAPIKey,
   updateSCIMAPIKey,
@@ -47,6 +49,8 @@ const schema = z.object({
 
 export function OrganizationScimApiKeyDetailsTab() {
   const { scimApiKeyId } = useParams();
+
+  const { data: getProjectResponse } = useQuery(getProject);
 
   const { data: getScimApiKeyResponse, refetch } = useQuery(getSCIMAPIKey, {
     id: scimApiKeyId,
@@ -133,6 +137,26 @@ export function OrganizationScimApiKeyDetailsTab() {
           </Card>
         </form>
       </Form>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Service Provider Details</CardTitle>
+          <CardDescription>
+            The configuration here is assigned automatically by Tesseral, and
+            needs to be inputted into your customer's Identity Provider by their
+            IT admin.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            <div className="font-medium text-sm">SCIM Base URL</div>
+            <ValueCopier
+              value={`https://${getProjectResponse?.project?.vaultDomain}/api/scim/v1`}
+              label="SCIM Base URL"
+            />
+          </div>
+        </CardContent>
+      </Card>
 
       <DangerZoneCard />
     </div>

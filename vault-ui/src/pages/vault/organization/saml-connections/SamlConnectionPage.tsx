@@ -165,37 +165,6 @@ export function SamlConnectionPage() {
         </Link>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Service Provider Details</CardTitle>
-          <CardDescription>
-            The configuration here is assigned automatically by Tesseral, and
-            needs to be inputted into your customer's Identity Provider by their
-            IT admin.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <div className="font-semibold">
-              Assertion Consumer Service (ACS) URL
-            </div>
-            <ValueCopier
-              value={getSamlConnectionResponse?.samlConnection?.spAcsUrl || ""}
-              label="ACS URL"
-            />
-          </div>
-          <div className="space-y-2">
-            <div className="font-semibold">SP Entity ID</div>
-            <ValueCopier
-              value={
-                getSamlConnectionResponse?.samlConnection?.spEntityId || ""
-              }
-              label="SP Entity ID"
-            />
-          </div>
-        </CardContent>
-      </Card>
-
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)}>
           <Card>
@@ -327,6 +296,36 @@ export function SamlConnectionPage() {
           </Card>
         </form>
       </Form>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Service Provider Details</CardTitle>
+          <CardDescription>
+            The configuration here needs to be inputted into your Identity
+            Provider.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <div className="font-medium text-sm">
+              Assertion Consumer Service (ACS) URL
+            </div>
+            <ValueCopier
+              value={getSamlConnectionResponse?.samlConnection?.spAcsUrl || ""}
+              label="ACS URL"
+            />
+          </div>
+          <div className="space-y-2">
+            <div className="font-medium text-sm">SP Entity ID</div>
+            <ValueCopier
+              value={
+                getSamlConnectionResponse?.samlConnection?.spEntityId || ""
+              }
+              label="SP Entity ID"
+            />
+          </div>
+        </CardContent>
+      </Card>
 
       <DangerZoneCard />
 
