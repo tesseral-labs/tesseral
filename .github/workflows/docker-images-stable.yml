@@ -1,0 +1,195 @@
+name: Docker Images (Stable Channel)
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  id-token: write
+
+env:
+  IMAGE_PREFIX: ""
+  IMAGE_TAGS: type=semver,pattern={{version}}
+
+jobs:
+  tesseral-backend-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/tesseral-labs/${{ env.IMAGE_PREFIX }}tesseral-backend-api
+          tags: ${{ env.IMAGE_TAGS }}
+
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: cmd/tesseral-backend-api
+          file: cmd/tesseral-backend-api/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ghcr.io/tesseral-labs/${{ env.IMAGE_PREFIX }}tesseral-backend-api
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
+
+  tesseral-config-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/tesseral-labs/${{ env.IMAGE_PREFIX }}tesseral-config-api
+          tags: ${{ env.IMAGE_TAGS }}
+
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: cmd/tesseral-config-api
+          file: cmd/tesseral-config-api/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ghcr.io/tesseral-labs/${{ env.IMAGE_PREFIX }}tesseral-config-api
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
+
+  tesseral-console:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Console assets
+        run: |
+          cd console
+          npm ci
+          npm run build
+          cp -r public ../cmd/tesseral-console/public
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/tesseral-labs/${{ env.IMAGE_PREFIX }}tesseral-console
+          tags: ${{ env.IMAGE_TAGS }}
+
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: cmd/tesseral-console
+          file: cmd/tesseral-console/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ghcr.io/tesseral-labs/${{ env.IMAGE_PREFIX }}tesseral-console
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
+
+  tesseral-vault:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Vault assets
+        run: |
+          cd vault-ui
+          npm ci
+          npm run build
+          cp -r public ../cmd/tesseral-vault/public
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/tesseral-labs/${{ env.IMAGE_PREFIX }}tesseral-vault
+          tags: ${{ env.IMAGE_TAGS }}
+
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: cmd/tesseral-vault
+          file: cmd/tesseral-vault/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ghcr.io/tesseral-labs/${{ env.IMAGE_PREFIX }}tesseral-vault
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
