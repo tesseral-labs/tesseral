@@ -1,5 +1,7 @@
 ![](./.github/img/splash.png)
 
+<br><br>
+
 # Tesseral
 
 Tesseral is **open source auth infrastructure for business software** (i.e., B2B
@@ -13,9 +15,13 @@ Most developers should start by using Tesseral's managed service, available at
 [console.tesseral.com](https://console.tesseral.com). You can also [self-host
 Tesseral](https://tesseral.com/docs/features/self-hosting-tesseral).
 
+<br><br>
+
+
 ## Key Features
 
 Tesseral bundles everything that a developer needs to manage users in business software. 
+<br><br>
 
 | <img width=500 />                                                                                                                                                                                                                                                                                                                                                                | <img width=500 />                                                  |
 |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------|
@@ -26,6 +32,7 @@ Tesseral bundles everything that a developer needs to manage users in business s
 | [**Magic Links**](https://tesseral.com/docs/login-methods/primary-factors/log-in-with-email-magic-links)<br /><br />Add "Log in with Email" support using magic links, without writing any code.                                                                                                                                                                                 | <img src="./.github/img/magic_links.png" /><tr></tr>               |
 | **Social Login**<br /><br />Add [Log in with Google](https://tesseral.com/docs/login-methods/primary-factors/log-in-with-google), [Log in with GitHub](https://tesseral.com/docs/login-methods/primary-factors/log-in-with-github), and [Log in with Microsoft](https://tesseral.com/docs/login-methods/primary-factors/log-in-with-microsoft) support without writing any code. | <img src="./.github/img/social_login.png" /><tr></tr>              |
 | [**SAML (Enterprise Single Sign-On)**](https://tesseral.com/docs/features/saml-sso)<br /><br />Add SAML support to your product without writing any code.                                                                                                                                                                                                                        | <img src="./.github/img/saml.png" /><tr></tr>                      |
+| [**OIDC (Enterprise Single Sign-On)**](https://tesseral.com/docs/features/oidc)<br /><br />Add OpenID Connect (OIDC) support to your product without writing any code.                                                                                                                                                                                                                        | <img src="./.github/img/oidc.png" /><tr></tr>                      |
 | [**SCIM (Enterprise Directory Sync)**](https://tesseral.com/docs/features/scim-provisioning)<br /><br />Add SCIM support to your product without writing any code.                                                                                                                                                                                                               | <img src="./.github/img/scim.png" /><tr></tr>                      |
 | [**Role-based access control (RBAC)**](https://tesseral.com/docs/features/role-based-access-control)<br /><br />Add fine-grained permissions to your product. The UI's done for you, just plug in `hasPermission` calls wherever you need them.                                                                                                                                  | <img src="./.github/img/rbac.png" /><tr></tr>                      |
 | [**Multi-factor authentication (MFA)**](https://tesseral.com/docs/features/multifactor-authentication-mfa)<br /><br />Add 2FA to your product without writing any code. Your customers can choose to require MFA for their users if they wish.                                                                                                                                   | <img src="./.github/img/mfa.png" /><tr></tr>                       |
@@ -33,15 +40,20 @@ Tesseral bundles everything that a developer needs to manage users in business s
 | [**Authenticator apps (TOTPs)**](https://tesseral.com/docs/login-methods/secondary-factors/login-with-authenticator-app)<br /><br />Add time-based one-time-password (TOTP) support to your product without writing any code.                                                                                                                                                    | <img src="./.github/img/totp.png" /><tr></tr>                      |
 | [**API key management**](https://tesseral.com/docs/features/managed-api-keys)<br /><br />Not just user authentication. If you want your customers to call your endpoints automatically, give them API keys. UIs, permissions, and authentication checks all come pre-built.                                                                                                      | <img src="./.github/img/api_keys.png" /><tr></tr>                  |
 | [**User invitations**](https://tesseral.com/docs/concepts/user-invites)<br /><br />Your users can invite their coworkers, or you can invite them yourself from the Tesseral Console.                                                                                                                                                                                             | <img src="./.github/img/invites.png" /><tr></tr>                   |
+| [**Audit logs**](https://tesseral.com/docs/features/managed-audit-logs)<br /><br />Get comprehensive logs of all actions taken in your product, and optionally share those logs with your customers.                                                                                                                                                                                                                        | <img src="./.github/img/audit-logs.png" /><tr></tr>                      |
 | [**Webhooks**](https://tesseral.com/docs/features/webhooks)<br /><br />Live-sync data from Tesseral into your database with realtime webhook delivery.                                                                                                                                                                                                                           | <img src="./.github/img/webhooks.png" /><tr></tr>                  |
+
+<br><br>
 
 ## Get Started
 
 ### Read the documentation
 
 We encourage all developers to read the full documentation first, which is
-available at tesseral.com/docs. This README provides only a very brief subset of
+available at [tesseral.com/docs](https://tesseral.com/docs). This README provides only a very brief subset of
 the docs to illustrate some basic ideas.
+
+<p>&nbsp;</p>
 
 ### SDKs
 
@@ -54,11 +66,14 @@ Tesseral currently offers several SDKs for common web development frameworks.
   * [Express](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-express)
   * [Python (Flask)](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-flask)
   * [Python (FastAPI)](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-fastapi)
+  * [Python (Django)](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-django)
   * [Golang](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-go)
   * [Rust (Axum)](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-axum)
 
 If you do not see your preferred framework listed here, please get in touch with
 support@tesseral.com; we may be able to give you early access.
+
+<br><br>
 
 ### Sign up
 
@@ -67,6 +82,9 @@ https://console.tesseral.com.
 
 You will need to create a Project and generate a Publishable Key. Publishable
 Keys always look like this: `publishable_key_...`.
+
+<p>&nbsp;</p>
+
 
 ### Integrate your frontend
 
@@ -105,6 +123,8 @@ including:
   expiring 
 * Automatically including access tokens in requests from your frontend
   to your backend
+
+<p>&nbsp;</p>
 
 ### Integrate your backend
 
@@ -165,9 +185,13 @@ Or their equivalent in your framework's SDK.
 
 Once you have your backend integrated, you have implemented Tesseral!
 
+<br></br>
+
 ## License
 
 [MIT](./LICENSE).
+
+<br></br>
 
 ## Contributing
 
@@ -175,7 +199,10 @@ We welcome outside contributions!
 
 Please be aware, however, that auth software is complex and extremely delicate.
 We are very cautious with the changes that we merge. We recommend you first open
-a GitHub issue outlining any proposed changes.
+a GitHub [issue](https://github.com/tesseral-labs/tesseral/issues) or kick off a [discussion](https://github.com/tesseral-labs/tesseral/discussions) outlining any proposed changes.
+
+<br></br>
+
 
 ## Security 
 
@@ -183,6 +210,9 @@ Please immediately report any potential vulnerabilities to
 security@tesseral.com. We will get back to you over email.
 
 Please do not open GitHub issues for any security-related concerns.
+
+<br></br>
+
 
 ## Community
 
@@ -198,14 +228,15 @@ Tesseral news by following us on
 You should also feel welcome to get in touch at founders@tesseral.com with
 questions.
 
+<br></br>
+
+
 ## Who we are
 
-This is commercial open source software managed by Tesseral, a startup based in
+This is commercial open source software managed by [Tesseral](https://tesseral.com), a startup based in
 San Francisco. We previously built
 [SSOReady](https://github.com/ssoready/ssoready), an open source middleware for
 SAML SSO and SCIM provisioning.
 
 Primary technical responsibility for Tesseral belongs to [Ulysse
-Carion](https://ucarion.com/), cofounder and CTO at Tesseral, and to Tesseral's
-technical staff: [Blake Williams](https://github.com/blakeofwilliam) and [Dillon
-Nys](https://github.com/dnys1).
+Carion](https://ucarion.com/), cofounder and CTO at Tesseral, and [Blake Williams](https://github.com/blakeofwilliam).
