@@ -52,7 +52,6 @@ import {
   revokeSCIMAPIKey,
   updateSCIMAPIKey,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
-import { useProjectSettings } from "@/lib/project-settings";
 
 const schema = z.object({
   displayName: z.string().min(1, "Display name is required"),
@@ -207,9 +206,7 @@ export function ScimApiKeyPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <div className="font-medium text-sm">
-              SCIM Base URL
-            </div>
+            <div className="font-medium text-sm">SCIM Base URL</div>
             <ValueCopier
               value={`https://${location.host}/api/scim/v1`}
               label="SCIM Base URL"
