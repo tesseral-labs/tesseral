@@ -10,7 +10,6 @@ import (
 	"connectrpc.com/connect"
 	"connectrpc.com/vanguard"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2"
 	"github.com/cloudflare/cloudflare-go/v4"
@@ -51,6 +50,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1/intermediatev1connect"
 	intermediateservice "github.com/tesseral-labs/tesseral/internal/intermediate/service"
 	intermediatestore "github.com/tesseral-labs/tesseral/internal/intermediate/store"
+	"github.com/tesseral-labs/tesseral/internal/kms"
 	"github.com/tesseral-labs/tesseral/internal/loadenv"
 	"github.com/tesseral-labs/tesseral/internal/microsoftoauth"
 	"github.com/tesseral-labs/tesseral/internal/multislog"
@@ -104,42 +104,42 @@ func main() {
 	loadenv.LoadEnv()
 
 	config := struct {
-		OTELExportTraces                    bool          `conf:"otel_export_traces,noredact"`
-		OTLPTraceGRPCInsecure               bool          `conf:"otlp_trace_grpc_insecure,noredact"`
-		ConsoleDomain                       string        `conf:"console_domain,noredact"`
-		AuthAppsRootDomain                  string        `conf:"auth_apps_root_domain,noredact"`
-		TesseralDNSVaultCNAMEValue          string        `conf:"tesseral_dns_vault_cname_value,noredact"`
-		SESSPFMXRecordValue                 string        `conf:"ses_spf_mx_record_value,noredact"`
-		DB                                  dbconn.Config `conf:"db,noredact"`
-		CloudflareAPIToken                  string        `conf:"cloudflare_api_token"`
-		ConsoleProjectID                    string        `conf:"console_project_id,noredact"`
-		IntermediateSessionKMSKeyID         string        `conf:"intermediate_session_kms_key_id,noredact"`
-		KMSEndpoint                         string        `conf:"kms_endpoint_resolver_url,noredact"`
-		PageEncodingValue                   string        `conf:"page-encoding-value"`
-		S3UserContentBucketName             string        `conf:"s3_user_content_bucket_name,noredact"`
-		S3Endpoint                          string        `conf:"s3_endpoint_resolver_url,noredact"`
-		SESEndpoint                         string        `conf:"ses_endpoint_resolver_url,noredact"`
-		ServeAddr                           string        `conf:"serve_addr,noredact"`
-		SessionKMSKeyID                     string        `conf:"session_kms_key_id,noredact"`
-		GithubOAuthClientSecretsKMSKeyID    string        `conf:"github_oauth_client_secrets_kms_key_id,noredact"`
-		GoogleOAuthClientSecretsKMSKeyID    string        `conf:"google_oauth_client_secrets_kms_key_id,noredact"`
-		MicrosoftOAuthClientSecretsKMSKeyID string        `conf:"microsoft_oauth_client_secrets_kms_key_id,noredact"`
-		OIDCClientSecretsKMSKeyID           string        `conf:"oidc_client_secrets_kms_key_id,noredact"`
-		AuthenticatorAppSecretsKMSKeyID     string        `conf:"authenticator_app_secrets_kms_key_id,noredact"`
-		UserContentBaseUrl                  string        `conf:"user_content_base_url,redact"`
-		TesseralDNSCloudflareZoneID         string        `conf:"tesseral_dns_cloudflare_zone_id,noredact"`
-		StripeAPIKey                        string        `conf:"stripe_api_key"`
-		StripePriceIDGrowthTier             string        `conf:"stripe_price_id_growth_tier,noredact"`
-		SvixApiKey                          string        `conf:"svix_api_key"`
-		DefaultGoogleOAuthClientID          string        `conf:"default_google_oauth_client_id,noredact"`
-		DefaultGoogleOAuthClientSecret      string        `conf:"default_google_oauth_client_secret"`
-		DefaultGoogleOAuthRedirectURI       string        `conf:"default_google_oauth_redirect_uri,noredact"`
-		DefaultMicrosoftOAuthClientID       string        `conf:"default_microsoft_oauth_client_id,noredact"`
-		DefaultMicrosoftOAuthClientSecret   string        `conf:"default_microsoft_oauth_client_secret"`
-		DefaultMicrosoftOAuthRedirectURI    string        `conf:"default_microsoft_oauth_redirect_uri,noredact"`
-		DefaultGitHubOAuthClientID          string        `conf:"default_github_oauth_client_id,noredact"`
-		DefaultGitHubOAuthClientSecret      string        `conf:"default_github_oauth_client_secret"`
-		DefaultGitHubOAuthRedirectURI       string        `conf:"default_github_oauth_redirect_uri,noredact"`
+		OTELExportTraces                  bool          `conf:"otel_export_traces,noredact"`
+		OTLPTraceGRPCInsecure             bool          `conf:"otlp_trace_grpc_insecure,noredact"`
+		ConsoleDomain                     string        `conf:"console_domain,noredact"`
+		AuthAppsRootDomain                string        `conf:"auth_apps_root_domain,noredact"`
+		TesseralDNSVaultCNAMEValue        string        `conf:"tesseral_dns_vault_cname_value,noredact"`
+		SESSPFMXRecordValue               string        `conf:"ses_spf_mx_record_value,noredact"`
+		DB                                dbconn.Config `conf:"db,noredact"`
+		CloudflareAPIToken                string        `conf:"cloudflare_api_token"`
+		ConsoleProjectID                  string        `conf:"console_project_id,noredact"`
+		IntermediateSessionKMSKeyID       string        `conf:"intermediate_session_kms_key_id,noredact"`
+		KMSEndpoint                       string        `conf:"kms_endpoint_resolver_url,noredact"`
+		PageEncodingValue                 string        `conf:"page-encoding-value"`
+		S3UserContentBucketName           string        `conf:"s3_user_content_bucket_name,noredact"`
+		S3Endpoint                        string        `conf:"s3_endpoint_resolver_url,noredact"`
+		SESEndpoint                       string        `conf:"ses_endpoint_resolver_url,noredact"`
+		ServeAddr                         string        `conf:"serve_addr,noredact"`
+		SessionSigningKeysKMS             kms.Config    `conf:"session_signing_keys_kms,noredact"`
+		GithubOAuthClientSecretsKMS       kms.Config    `conf:"github_oauth_client_secrets_kms,noredact"`
+		GoogleOAuthClientSecretsKMS       kms.Config    `conf:"google_oauth_client_secrets_kms,noredact"`
+		MicrosoftOAuthClientSecretsKMS    kms.Config    `conf:"microsoft_oauth_client_secrets_kms,noredact"`
+		OIDCClientSecretsKMS              kms.Config    `conf:"oidc_client_secrets_kms,noredact"`
+		AuthenticatorAppSecretsKMS        kms.Config    `conf:"authenticator_app_secrets_kms,noredact"`
+		UserContentBaseUrl                string        `conf:"user_content_base_url,redact"`
+		TesseralDNSCloudflareZoneID       string        `conf:"tesseral_dns_cloudflare_zone_id,noredact"`
+		StripeAPIKey                      string        `conf:"stripe_api_key"`
+		StripePriceIDGrowthTier           string        `conf:"stripe_price_id_growth_tier,noredact"`
+		SvixApiKey                        string        `conf:"svix_api_key"`
+		DefaultGoogleOAuthClientID        string        `conf:"default_google_oauth_client_id,noredact"`
+		DefaultGoogleOAuthClientSecret    string        `conf:"default_google_oauth_client_secret"`
+		DefaultGoogleOAuthRedirectURI     string        `conf:"default_google_oauth_redirect_uri,noredact"`
+		DefaultMicrosoftOAuthClientID     string        `conf:"default_microsoft_oauth_client_id,noredact"`
+		DefaultMicrosoftOAuthClientSecret string        `conf:"default_microsoft_oauth_client_secret"`
+		DefaultMicrosoftOAuthRedirectURI  string        `conf:"default_microsoft_oauth_redirect_uri,noredact"`
+		DefaultGitHubOAuthClientID        string        `conf:"default_github_oauth_client_id,noredact"`
+		DefaultGitHubOAuthClientSecret    string        `conf:"default_github_oauth_client_secret"`
+		DefaultGitHubOAuthRedirectURI     string        `conf:"default_github_oauth_redirect_uri,noredact"`
 	}{
 		PageEncodingValue: "0000000000000000000000000000000000000000000000000000000000000000",
 	}
@@ -218,11 +218,35 @@ func main() {
 		panic(fmt.Errorf("load aws config: %w", err))
 	}
 
-	kms_ := kms.NewFromConfig(awsConfig, func(o *kms.Options) {
-		if config.KMSEndpoint != "" {
-			o.BaseEndpoint = &config.KMSEndpoint
-		}
-	})
+	sessionSigningKeysKMS, err := kms.New(context.Background(), config.SessionSigningKeysKMS)
+	if err != nil {
+		panic(fmt.Errorf("create session signing keys kms: %w", err))
+	}
+
+	githubOAuthClientSecretsKMS, err := kms.New(context.Background(), config.GithubOAuthClientSecretsKMS)
+	if err != nil {
+		panic(fmt.Errorf("create github oauth client secrets kms: %w", err))
+	}
+
+	googleOAuthClientSecretsKMS, err := kms.New(context.Background(), config.GoogleOAuthClientSecretsKMS)
+	if err != nil {
+		panic(fmt.Errorf("create google oauth client secrets kms: %w", err))
+	}
+
+	microsoftOAuthClientSecretsKMS, err := kms.New(context.Background(), config.MicrosoftOAuthClientSecretsKMS)
+	if err != nil {
+		panic(fmt.Errorf("create microsoft oauth client secrets kms: %w", err))
+	}
+
+	oidcClientSecretsKMS, err := kms.New(context.Background(), config.OIDCClientSecretsKMS)
+	if err != nil {
+		panic(fmt.Errorf("create oidc client secrets kms: %w", err))
+	}
+
+	authenticatorAppSecretsKMS, err := kms.New(context.Background(), config.AuthenticatorAppSecretsKMS)
+	if err != nil {
+		panic(fmt.Errorf("create authenticator app secrets kms: %w", err))
+	}
 
 	s3_ := s3.NewFromConfig(awsConfig, func(o *s3.Options) {
 		if config.S3Endpoint != "" {
@@ -245,10 +269,9 @@ func main() {
 	stripeClient := stripeclient.New(config.StripeAPIKey, nil)
 
 	commonStore := commonstore.New(commonstore.NewStoreParams{
-		AppAuthRootDomain:         config.AuthAppsRootDomain,
-		DB:                        db,
-		KMS:                       kms_,
-		SessionSigningKeyKMSKeyID: config.SessionKMSKeyID,
+		AppAuthRootDomain:     config.AuthAppsRootDomain,
+		DB:                    db,
+		SessionSigningKeysKMS: sessionSigningKeysKMS,
 	})
 
 	cookier := cookies.Cookier{Store: commonStore}
@@ -262,32 +285,30 @@ func main() {
 
 	// Register the backend service
 	backendStore := backendstore.New(backendstore.NewStoreParams{
-		DB:                                    db,
-		ConsoleProjectID:                      &uuidConsoleProjectID,
-		ConsoleDomain:                         config.ConsoleDomain,
-		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
-		KMS:                                   kms_,
-		SES:                                   ses_,
-		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
-		S3:                                    s3_,
-		S3UserContentBucketName:               config.S3UserContentBucketName,
-		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
-		GoogleOAuthClientSecretsKMSKeyID:      config.GoogleOAuthClientSecretsKMSKeyID,
-		MicrosoftOAuthClientSecretsKMSKeyID:   config.MicrosoftOAuthClientSecretsKMSKeyID,
-		GithubOAuthClientSecretsKMSKeyID:      config.GithubOAuthClientSecretsKMSKeyID,
-		OIDCClientSecretsKMSKeyID:             config.OIDCClientSecretsKMSKeyID,
-		UserContentBaseUrl:                    config.UserContentBaseUrl,
-		AuthAppsRootDomain:                    config.AuthAppsRootDomain,
-		TesseralDNSVaultCNAMEValue:            config.TesseralDNSVaultCNAMEValue,
-		SESSPFMXRecordValue:                   config.SESSPFMXRecordValue,
-		TesseralDNSCloudflareZoneID:           config.TesseralDNSCloudflareZoneID,
-		Cloudflare:                            cloudflare.NewClient(option.WithAPIToken(config.CloudflareAPIToken)),
-		CloudflareDOH:                         &cloudflaredoh.Client{HTTPClient: &http.Client{}},
-		Stripe:                                stripeClient,
-		StripePriceIDGrowthTier:               config.StripePriceIDGrowthTier,
-		SvixClient:                            svixClient,
-		AuditlogStore:                         &auditlogStore,
-		OIDCClient:                            oidcClient,
+		DB:                             db,
+		ConsoleProjectID:               &uuidConsoleProjectID,
+		ConsoleDomain:                  config.ConsoleDomain,
+		SessionSigningKeyKMS:           sessionSigningKeysKMS,
+		GoogleOAuthClientSecretsKMS:    googleOAuthClientSecretsKMS,
+		MicrosoftOAuthClientSecretsKMS: microsoftOAuthClientSecretsKMS,
+		GithubOAuthClientSecretsKMS:    githubOAuthClientSecretsKMS,
+		OIDCClientSecretsKMS:           oidcClientSecretsKMS,
+		SES:                            ses_,
+		PageEncoder:                    pagetoken.Encoder{Secret: pageEncodingValue},
+		S3:                             s3_,
+		S3UserContentBucketName:        config.S3UserContentBucketName,
+		UserContentBaseUrl:             config.UserContentBaseUrl,
+		AuthAppsRootDomain:             config.AuthAppsRootDomain,
+		TesseralDNSVaultCNAMEValue:     config.TesseralDNSVaultCNAMEValue,
+		SESSPFMXRecordValue:            config.SESSPFMXRecordValue,
+		TesseralDNSCloudflareZoneID:    config.TesseralDNSCloudflareZoneID,
+		Cloudflare:                     cloudflare.NewClient(option.WithAPIToken(config.CloudflareAPIToken)),
+		CloudflareDOH:                  &cloudflaredoh.Client{HTTPClient: &http.Client{}},
+		Stripe:                         stripeClient,
+		StripePriceIDGrowthTier:        config.StripePriceIDGrowthTier,
+		SvixClient:                     svixClient,
+		AuditlogStore:                  &auditlogStore,
+		OIDCClient:                     oidcClient,
 	})
 	backendConnectPath, backendConnectHandler := backendv1connect.NewBackendServiceHandler(
 		&backendservice.Service{
@@ -307,19 +328,16 @@ func main() {
 
 	// Register the frontend service
 	frontendStore := frontendstore.New(frontendstore.NewStoreParams{
-		DB:                                    db,
-		ConsoleProjectID:                      &uuidConsoleProjectID,
-		ConsoleDomain:                         config.ConsoleDomain,
-		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
-		OIDCClientSecretsKMSKeyID:             config.OIDCClientSecretsKMSKeyID,
-		KMS:                                   kms_,
-		SES:                                   ses_,
-		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
-		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
-		AuthenticatorAppSecretsKMSKeyID:       config.AuthenticatorAppSecretsKMSKeyID,
-		SvixClient:                            svixClient,
-		AuditlogStore:                         &auditlogStore,
-		OIDCClient:                            oidcClient,
+		DB:                         db,
+		ConsoleProjectID:           &uuidConsoleProjectID,
+		ConsoleDomain:              config.ConsoleDomain,
+		OIDCClientSecretsKMS:       oidcClientSecretsKMS,
+		AuthenticatorAppSecretsKMS: authenticatorAppSecretsKMS,
+		SES:                        ses_,
+		PageEncoder:                pagetoken.Encoder{Secret: pageEncodingValue},
+		SvixClient:                 svixClient,
+		AuditlogStore:              &auditlogStore,
+		OIDCClient:                 oidcClient,
 	})
 	frontendConnectPath, frontendConnectHandler := frontendv1connect.NewFrontendServiceHandler(
 		&frontendservice.Service{
@@ -341,37 +359,35 @@ func main() {
 
 	// Register the intermediate service
 	intermediateStore := intermediatestore.New(intermediatestore.NewStoreParams{
-		ConsoleDomain:                         config.ConsoleDomain,
-		AuthAppsRootDomain:                    config.AuthAppsRootDomain,
-		DB:                                    db,
-		ConsoleProjectID:                      &uuidConsoleProjectID,
-		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
-		KMS:                                   kms_,
-		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
-		GithubOAuthClient:                     &githuboauth.Client{HTTPClient: &http.Client{}},
-		GoogleOAuthClient:                     &googleoauth.Client{HTTPClient: &http.Client{}},
-		MicrosoftOAuthClient:                  &microsoftoauth.Client{HTTPClient: &http.Client{}},
-		S3:                                    s3_,
-		SES:                                   ses_,
-		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
-		GithubOAuthClientSecretsKMSKeyID:      config.GithubOAuthClientSecretsKMSKeyID,
-		GoogleOAuthClientSecretsKMSKeyID:      config.GoogleOAuthClientSecretsKMSKeyID,
-		MicrosoftOAuthClientSecretsKMSKeyID:   config.MicrosoftOAuthClientSecretsKMSKeyID,
-		AuthenticatorAppSecretsKMSKeyID:       config.AuthenticatorAppSecretsKMSKeyID,
-		UserContentBaseUrl:                    config.UserContentBaseUrl,
-		S3UserContentBucketName:               config.S3UserContentBucketName,
-		StripeClient:                          stripeClient,
-		SvixClient:                            svixClient,
-		AuditlogStore:                         &auditlogStore,
-		DefaultGoogleOAuthClientID:            config.DefaultGoogleOAuthClientID,
-		DefaultGoogleOAuthClientSecret:        config.DefaultGoogleOAuthClientSecret,
-		DefaultGoogleOAuthRedirectURI:         config.DefaultGoogleOAuthRedirectURI,
-		DefaultMicrosoftOAuthClientID:         config.DefaultMicrosoftOAuthClientID,
-		DefaultMicrosoftOAuthClientSecret:     config.DefaultMicrosoftOAuthClientSecret,
-		DefaultMicrosoftOAuthRedirectURI:      config.DefaultMicrosoftOAuthRedirectURI,
-		DefaultGitHubOAuthClientID:            config.DefaultGitHubOAuthClientID,
-		DefaultGitHubOAuthClientSecret:        config.DefaultGitHubOAuthClientSecret,
-		DefaultGitHubOAuthRedirectURI:         config.DefaultGitHubOAuthRedirectURI,
+		ConsoleDomain:                     config.ConsoleDomain,
+		AuthAppsRootDomain:                config.AuthAppsRootDomain,
+		DB:                                db,
+		ConsoleProjectID:                  &uuidConsoleProjectID,
+		SessionSigningKeyKMS:              sessionSigningKeysKMS,
+		GithubOAuthClientSecretsKMS:       githubOAuthClientSecretsKMS,
+		GoogleOAuthClientSecretsKMS:       googleOAuthClientSecretsKMS,
+		MicrosoftOAuthClientSecretsKMS:    microsoftOAuthClientSecretsKMS,
+		AuthenticatorAppSecretsKMS:        authenticatorAppSecretsKMS,
+		PageEncoder:                       pagetoken.Encoder{Secret: pageEncodingValue},
+		GithubOAuthClient:                 &githuboauth.Client{HTTPClient: &http.Client{}},
+		GoogleOAuthClient:                 &googleoauth.Client{HTTPClient: &http.Client{}},
+		MicrosoftOAuthClient:              &microsoftoauth.Client{HTTPClient: &http.Client{}},
+		S3:                                s3_,
+		SES:                               ses_,
+		UserContentBaseUrl:                config.UserContentBaseUrl,
+		S3UserContentBucketName:           config.S3UserContentBucketName,
+		StripeClient:                      stripeClient,
+		SvixClient:                        svixClient,
+		AuditlogStore:                     &auditlogStore,
+		DefaultGoogleOAuthClientID:        config.DefaultGoogleOAuthClientID,
+		DefaultGoogleOAuthClientSecret:    config.DefaultGoogleOAuthClientSecret,
+		DefaultGoogleOAuthRedirectURI:     config.DefaultGoogleOAuthRedirectURI,
+		DefaultMicrosoftOAuthClientID:     config.DefaultMicrosoftOAuthClientID,
+		DefaultMicrosoftOAuthClientSecret: config.DefaultMicrosoftOAuthClientSecret,
+		DefaultMicrosoftOAuthRedirectURI:  config.DefaultMicrosoftOAuthRedirectURI,
+		DefaultGitHubOAuthClientID:        config.DefaultGitHubOAuthClientID,
+		DefaultGitHubOAuthClientSecret:    config.DefaultGitHubOAuthClientSecret,
+		DefaultGitHubOAuthRedirectURI:     config.DefaultGitHubOAuthRedirectURI,
 	})
 	intermediateConnectPath, intermediateConnectHandler := intermediatev1connect.NewIntermediateServiceHandler(
 		&intermediateservice.Service{
@@ -404,11 +420,10 @@ func main() {
 	samlServiceHandler = samlinterceptor.New(samlStore, projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), &cookier, samlServiceHandler)
 
 	oidcStore := oidcstore.New(oidcstore.NewStoreParams{
-		DB:                        db,
-		KMS:                       kms_,
-		OIDCClientSecretsKMSKeyID: config.OIDCClientSecretsKMSKeyID,
-		OIDCClient:                oidcClient,
-		AuditlogStore:             &auditlogStore,
+		DB:                   db,
+		OIDCClientSecretsKMS: oidcClientSecretsKMS,
+		OIDCClient:           oidcClient,
+		AuditlogStore:        &auditlogStore,
 	})
 	oidcService := oidcservice.Service{
 		Store:             oidcStore,

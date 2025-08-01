@@ -1,10 +1,9 @@
 package storetesting
 
 import (
+	"crypto/rand"
 	"testing"
 
-	"github.com/aws/aws-sdk-go-v2/service/kms"
-	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -14,9 +13,13 @@ func TestNewKMS(t *testing.T) {
 	client, cleanup := newKMS()
 	t.Cleanup(cleanup)
 
-	_, err := client.CreateKey(t.Context(), &kms.CreateKeyInput{
-		KeySpec:  types.KeySpecEccNistP256,
-		KeyUsage: types.KeyUsageTypeSignVerify,
-	})
-	require.NoError(t, err, "failed to create KMS key")
+	var plaintext [32]byte
+	_, _ = rand.Read(plaintext[:]) // infallible
+	encrypted, err := client.SessionSigningKeysKMS.Encrypt(t.Context(), plaintext[:])
+	require.NoError(t, err)
+
+	plaintext2, err := client.SessionSigningKeysKMS.Decrypt(t.Context(), encrypted)
+	require.NoError(t, err)
+
+	require.Equal(t, plaintext[:], plaintext2)
 }

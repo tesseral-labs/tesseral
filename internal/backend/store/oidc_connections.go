@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/aws/aws-sdk-go-v2/service/kms"
-	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
@@ -168,15 +166,11 @@ func (s *Store) CreateOIDCConnection(ctx context.Context, req *backendv1.CreateO
 
 	var clientSecretCiphertext []byte
 	if req.OidcConnection.ClientSecret != "" {
-		encryptRes, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
-			KeyId:               &s.oidcClientSecretsKMSKeyID,
-			EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-			Plaintext:           []byte(req.OidcConnection.ClientSecret),
-		})
+		encryptRes, err := s.oidcClientSecretsKMS.Encrypt(ctx, []byte(req.OidcConnection.ClientSecret))
 		if err != nil {
 			return nil, fmt.Errorf("encrypt oidc client secret: %w", err)
 		}
-		clientSecretCiphertext = encryptRes.CiphertextBlob
+		clientSecretCiphertext = encryptRes
 	}
 
 	qOIDCConnection, err := q.CreateOIDCConnection(ctx, queries.CreateOIDCConnectionParams{
@@ -294,15 +288,11 @@ func (s *Store) UpdateOIDCConnection(ctx context.Context, req *backendv1.UpdateO
 	}
 
 	if req.OidcConnection.ClientSecret != "" {
-		encryptRes, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
-			KeyId:               &s.oidcClientSecretsKMSKeyID,
-			EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-			Plaintext:           []byte(req.OidcConnection.ClientSecret),
-		})
+		encryptRes, err := s.oidcClientSecretsKMS.Encrypt(ctx, []byte(req.OidcConnection.ClientSecret))
 		if err != nil {
 			return nil, fmt.Errorf("encrypt oidc client secret: %w", err)
 		}
-		updates.ClientSecretCiphertext = encryptRes.CiphertextBlob
+		updates.ClientSecretCiphertext = encryptRes
 	}
 
 	if req.OidcConnection.Primary != nil {

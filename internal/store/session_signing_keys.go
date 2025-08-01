@@ -8,8 +8,6 @@ import (
 	"crypto/x509"
 	"time"
 
-	"github.com/aws/aws-sdk-go-v2/service/kms"
-	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/store/queries"
@@ -55,11 +53,7 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 	}
 
 	// Encrypt the symmetric key with the KMS
-	encryptOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
-		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		KeyId:               &s.sessionSigningKeyKmsKeyID,
-		Plaintext:           privateKeyBytes,
-	})
+	encryptOutput, err := s.sessionSigningKeyKMS.Encrypt(ctx, privateKeyBytes)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +73,7 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 		ProjectID:            projectId,
 		ExpireTime:           &expiresAt,
 		PublicKey:            publicKeyBytes,
-		PrivateKeyCipherText: encryptOutput.CiphertextBlob,
+		PrivateKeyCipherText: encryptOutput,
 	})
 	if err != nil {
 		return nil, err

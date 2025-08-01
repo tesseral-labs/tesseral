@@ -7,8 +7,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/aws/aws-sdk-go-v2/service/kms"
-	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
@@ -88,16 +86,12 @@ func (s *Store) RedeemGithubOAuthCode(ctx context.Context, req *intermediatev1.R
 		clientID = *qProject.GithubOauthClientID
 		redirectURI = req.RedirectUrl
 
-		decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
-			CiphertextBlob:      qProject.GithubOauthClientSecretCiphertext,
-			EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-			KeyId:               &s.githubOAuthClientSecretsKMSKeyID,
-		})
+		decryptRes, err := s.githubOAuthClientSecretsKMS.Decrypt(ctx, qProject.GithubOauthClientSecretCiphertext)
 		if err != nil {
 			return nil, fmt.Errorf("decrypt github oauth client secret: %v", err)
 		}
 
-		clientSecret = string(decryptRes.Plaintext)
+		clientSecret = string(decryptRes)
 	}
 
 	stateSHA := sha256.Sum256([]byte(req.State))

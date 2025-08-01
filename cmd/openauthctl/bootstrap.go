@@ -5,20 +5,22 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/tesseral-labs/tesseral/internal/kms"
 	"github.com/tesseral-labs/tesseral/internal/store"
 )
 
 type bootstrapArgs struct {
-	Args                   args   `cli:"bootstrap,subcmd"`
-	Database               string `cli:"--database"`
-	KMSEndpoint            string `cli:"--kms-endpoint"`
-	SessionSigningKMSKeyID string `cli:"--session-kms-key-id"`
-	RootUserEmail          string `cli:"--root-user-email"`
-	ConsoleDomain          string `cli:"--console-domain"`
-	VaultDomain            string `cli:"--vault-domain"`
+	Args          args   `cli:"bootstrap,subcmd"`
+	Database      string `cli:"--database"`
+	ConsoleDomain string `cli:"--console-domain"`
+	VaultDomain   string `cli:"--vault-domain"`
+	RootUserEmail string `cli:"--root-user-email"`
+
+	SessionSigningKeysKMSBackend                 string `cli:"--session-signing-keys-kms-backend"`
+	SessionSigningKeysKMSAWSKMSV1KeyID           string `cli:"--session-signing-keys-kms-aws-kms-v1-key-id"`
+	SessionSigningKeysKMSAWSKMSV1KMSBaseEndpoint string `cli:"--session-signing-keys-kms-aws-kms-v1-kms-base-endpoint"`
+	SessionSigningKeysKMSGCPKMSV1KeyName         string `cli:"--session-signing-keys-kms-gcp-kms-v1-key-name"`
 }
 
 func (bootstrapArgs) Description() string {
@@ -31,16 +33,11 @@ Bootstrap a Tesseral database.
 
 Outputs, tab-separated, a project ID, an email, and a very sensitive password.
 
-The project ID is the bootstrap ("console") project ID. The email and password
-are a login method for an admin user in that project.
+The project ID is the console project ID. The email and password are a login
+method for a "root" user, an owner of the console project.
 
-Delete this admin user before deploying this Tesseral instance in production.
-
-This command does not provision an AWS SES email identity. You must create and
-verify an AWS SES email identity for the domain mail.VAULT_DOMAIN, where
-VAULT_DOMAIN is the value you provided for --vault-domain.
-
-You must also create DNS records for --vault-domain to CNAME to a vault proxy.
+Rotate or delete the root password before deploying this Tesseral instance in
+production.
 `)
 }
 
@@ -50,21 +47,19 @@ func bootstrap(ctx context.Context, args bootstrapArgs) error {
 		panic(err)
 	}
 
-	awsConf, err := config.LoadDefaultConfig(context.TODO())
+	sessionSigningKeysKMS, err := kms.New(ctx, kms.Config{
+		Backend:                 args.SessionSigningKeysKMSBackend,
+		AWSKMSV1KeyID:           args.SessionSigningKeysKMSAWSKMSV1KeyID,
+		AWSKMSV1KMSBaseEndpoint: args.SessionSigningKeysKMSAWSKMSV1KMSBaseEndpoint,
+		GCPKMSV1KeyName:         args.SessionSigningKeysKMSGCPKMSV1KeyName,
+	})
 	if err != nil {
-		panic(fmt.Errorf("load aws config: %w", err))
+		panic(fmt.Errorf("create session signing keys kms: %w", err))
 	}
 
-	kms_ := kms.NewFromConfig(awsConf, func(o *kms.Options) {
-		if args.KMSEndpoint != "" {
-			o.BaseEndpoint = &args.KMSEndpoint
-		}
-	})
-
 	s := store.New(store.NewStoreParams{
-		DB:                        db,
-		KMS:                       kms_,
-		SessionSigningKeyKmsKeyID: args.SessionSigningKMSKeyID,
+		DB:                   db,
+		SessionSigningKeyKMS: sessionSigningKeysKMS,
 	})
 
 	res, err := s.CreateConsoleProject(ctx, &store.CreateConsoleProjectRequest{

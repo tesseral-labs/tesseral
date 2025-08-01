@@ -12,8 +12,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/aws/aws-sdk-go-v2/service/kms"
-	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
@@ -189,16 +187,12 @@ func (s *Store) IssueAccessToken(ctx context.Context, projectID uuid.UUID, refre
 	sessionSigningKeyID := idformat.SessionSigningKey.Format(qSessionSigningKey.ID)
 	slog.InfoContext(ctx, "sign_with_session_key", "session_signing_key_id", sessionSigningKeyID)
 
-	decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
-		CiphertextBlob:      qSessionSigningKey.PrivateKeyCipherText,
-		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		KeyId:               &s.sessionSigningKeyKMSKeyID,
-	})
+	decryptRes, err := s.sessionSigningKeysKMS.Decrypt(ctx, qSessionSigningKey.PrivateKeyCipherText)
 	if err != nil {
 		return "", fmt.Errorf("decrypt session signing key ciphertext: %w", err)
 	}
 
-	priv, err := x509.ParseECPrivateKey(decryptRes.Plaintext)
+	priv, err := x509.ParseECPrivateKey(decryptRes)
 	if err != nil {
 		panic(fmt.Errorf("private key from bytes: %w", err))
 	}

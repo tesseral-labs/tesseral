@@ -32,10 +32,9 @@ type testUtil struct {
 
 func newTestUtil(t *testing.T) (context.Context, *testUtil) {
 	store := New(NewStoreParams{
-		DB:                        environment.DB,
-		KMS:                       environment.KMS.Client,
-		OIDCClientSecretsKMSKeyID: environment.KMS.OIDCClientSecretsKMSKeyID,
-		OIDCClient:                &oidcclient.Client{HTTPClient: http.DefaultClient},
+		DB:                   environment.DB,
+		OIDCClientSecretsKMS: environment.KMS.OIDCClientSecretsKMS,
+		OIDCClient:           &oidcclient.Client{HTTPClient: http.DefaultClient},
 	})
 
 	projectID, _ := environment.NewProject(t)

@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -15,43 +14,38 @@ import (
 	auditlogstore "github.com/tesseral-labs/tesseral/internal/auditlog/store"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/hibp"
+	"github.com/tesseral-labs/tesseral/internal/kms"
 	"github.com/tesseral-labs/tesseral/internal/oidcclient"
 	"github.com/tesseral-labs/tesseral/internal/pagetoken"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type Store struct {
-	db                                    *pgxpool.Pool
-	consoleProjectID                      *uuid.UUID
-	consoleDomain                         string
-	hibp                                  *hibp.Client
-	intermediateSessionSigningKeyKMSKeyID string
-	oidcClientSecretsKMSKeyID             string
-	kms                                   *kms.Client
-	ses                                   *sesv2.Client
-	pageEncoder                           pagetoken.Encoder
-	q                                     *queries.Queries
-	sessionSigningKeyKmsKeyID             string
-	authenticatorAppSecretsKMSKeyID       string
-	svixClient                            *svix.Svix
-	auditlogStore                         *auditlogstore.Store
-	oidc                                  *oidcclient.Client
+	db                         *pgxpool.Pool
+	consoleProjectID           *uuid.UUID
+	consoleDomain              string
+	hibp                       *hibp.Client
+	oidcClientSecretsKMS       *kms.KMS
+	authenticatorAppSecretsKMS *kms.KMS
+	ses                        *sesv2.Client
+	pageEncoder                pagetoken.Encoder
+	q                          *queries.Queries
+	svixClient                 *svix.Svix
+	auditlogStore              *auditlogstore.Store
+	oidc                       *oidcclient.Client
 }
 
 type NewStoreParams struct {
-	DB                                    *pgxpool.Pool
-	ConsoleProjectID                      *uuid.UUID
-	ConsoleDomain                         string
-	IntermediateSessionSigningKeyKMSKeyID string
-	OIDCClientSecretsKMSKeyID             string
-	KMS                                   *kms.Client
-	SES                                   *sesv2.Client
-	PageEncoder                           pagetoken.Encoder
-	SessionSigningKeyKmsKeyID             string
-	AuthenticatorAppSecretsKMSKeyID       string
-	SvixClient                            *svix.Svix
-	AuditlogStore                         *auditlogstore.Store
-	OIDCClient                            *oidcclient.Client
+	DB                         *pgxpool.Pool
+	ConsoleProjectID           *uuid.UUID
+	ConsoleDomain              string
+	OIDCClientSecretsKMS       *kms.KMS
+	AuthenticatorAppSecretsKMS *kms.KMS
+	SES                        *sesv2.Client
+	PageEncoder                pagetoken.Encoder
+	SvixClient                 *svix.Svix
+	AuditlogStore              *auditlogstore.Store
+	OIDCClient                 *oidcclient.Client
 }
 
 func New(p NewStoreParams) *Store {
@@ -62,17 +56,14 @@ func New(p NewStoreParams) *Store {
 		hibp: &hibp.Client{
 			HTTPClient: http.DefaultClient,
 		},
-		intermediateSessionSigningKeyKMSKeyID: p.IntermediateSessionSigningKeyKMSKeyID,
-		oidcClientSecretsKMSKeyID:             p.OIDCClientSecretsKMSKeyID,
-		kms:                                   p.KMS,
-		ses:                                   p.SES,
-		pageEncoder:                           p.PageEncoder,
-		q:                                     queries.New(p.DB),
-		sessionSigningKeyKmsKeyID:             p.SessionSigningKeyKmsKeyID,
-		authenticatorAppSecretsKMSKeyID:       p.AuthenticatorAppSecretsKMSKeyID,
-		svixClient:                            p.SvixClient,
-		auditlogStore:                         p.AuditlogStore,
-		oidc:                                  p.OIDCClient,
+		oidcClientSecretsKMS:       p.OIDCClientSecretsKMS,
+		authenticatorAppSecretsKMS: p.AuthenticatorAppSecretsKMS,
+		ses:                        p.SES,
+		pageEncoder:                p.PageEncoder,
+		q:                          queries.New(p.DB),
+		svixClient:                 p.SvixClient,
+		auditlogStore:              p.AuditlogStore,
+		oidc:                       p.OIDCClient,
 	}
 
 	return store

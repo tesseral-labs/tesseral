@@ -11,8 +11,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/aws/aws-sdk-go-v2/service/kms"
-	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	"github.com/tesseral-labs/tesseral/internal/bcryptcost"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
@@ -151,12 +149,7 @@ func (s *Store) CreateConsoleProject(ctx context.Context, req *CreateConsoleProj
 		return nil, err
 	}
 
-	// Encrypt the symmetric key with the KMS
-	sskEncryptOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
-		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		KeyId:               &s.sessionSigningKeyKmsKeyID,
-		Plaintext:           privateKeyBytes,
-	})
+	sskEncryptedBytes, err := s.sessionSigningKeyKMS.Encrypt(ctx, privateKeyBytes)
 	if err != nil {
 		return nil, fmt.Errorf("encrypt session signing key: %w", err)
 	}
@@ -172,7 +165,7 @@ func (s *Store) CreateConsoleProject(ctx context.Context, req *CreateConsoleProj
 		ProjectID:            consoleProjectID,
 		ExpireTime:           &expiresAt,
 		PublicKey:            publicKeyBytes,
-		PrivateKeyCipherText: sskEncryptOutput.CiphertextBlob,
+		PrivateKeyCipherText: sskEncryptedBytes,
 	}); err != nil {
 		return nil, err
 	}

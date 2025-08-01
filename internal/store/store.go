@@ -4,42 +4,36 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/tesseral-labs/tesseral/internal/kms"
 	"github.com/tesseral-labs/tesseral/internal/pagetoken"
 	"github.com/tesseral-labs/tesseral/internal/store/queries"
 )
 
 type Store struct {
-	db                                    *pgxpool.Pool
-	consoleProjectID                      *uuid.UUID
-	intermediateSessionSigningKeyKMSKeyID string
-	kms                                   *kms.Client
-	pageEncoder                           pagetoken.Encoder
-	q                                     *queries.Queries
-	sessionSigningKeyKmsKeyID             string
+	db                   *pgxpool.Pool
+	consoleProjectID     *uuid.UUID
+	sessionSigningKeyKMS *kms.KMS
+	pageEncoder          pagetoken.Encoder
+	q                    *queries.Queries
 }
 
 type NewStoreParams struct {
-	DB                                    *pgxpool.Pool
-	ConsoleProjectID                      *uuid.UUID
-	IntermediateSessionSigningKeyKMSKeyID string
-	KMS                                   *kms.Client
-	PageEncoder                           pagetoken.Encoder
-	SessionSigningKeyKmsKeyID             string
+	DB                   *pgxpool.Pool
+	ConsoleProjectID     *uuid.UUID
+	SessionSigningKeyKMS *kms.KMS
+	PageEncoder          pagetoken.Encoder
 }
 
 func New(p NewStoreParams) *Store {
 	store := &Store{
-		db:                                    p.DB,
-		consoleProjectID:                      p.ConsoleProjectID,
-		intermediateSessionSigningKeyKMSKeyID: p.IntermediateSessionSigningKeyKMSKeyID,
-		kms:                                   p.KMS,
-		pageEncoder:                           p.PageEncoder,
-		q:                                     queries.New(p.DB),
-		sessionSigningKeyKmsKeyID:             p.SessionSigningKeyKmsKeyID,
+		db:                   p.DB,
+		consoleProjectID:     p.ConsoleProjectID,
+		sessionSigningKeyKMS: p.SessionSigningKeyKMS,
+		pageEncoder:          p.PageEncoder,
+		q:                    queries.New(p.DB),
 	}
 
 	return store

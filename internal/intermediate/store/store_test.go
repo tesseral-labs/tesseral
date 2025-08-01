@@ -33,12 +33,16 @@ type testUtil struct {
 
 func newTestUtil(t *testing.T) (context.Context, *testUtil) {
 	store := New(NewStoreParams{
-		DB:                        environment.DB,
-		S3:                        environment.S3.Client,
-		KMS:                       environment.KMS.Client,
-		SessionSigningKeyKmsKeyID: environment.KMS.SessionSigningKeyID,
-		ConsoleProjectID:          environment.ConsoleProjectID,
-		ConsoleDomain:             environment.ConsoleDomain,
+		DB:                             environment.DB,
+		S3:                             environment.S3.Client,
+		ConsoleProjectID:               environment.ConsoleProjectID,
+		ConsoleDomain:                  environment.ConsoleDomain,
+		AuthAppsRootDomain:             environment.AuthAppsRootDomain,
+		SessionSigningKeyKMS:           environment.KMS.SessionSigningKeysKMS,
+		GithubOAuthClientSecretsKMS:    environment.KMS.GithubOAuthClientSecretsKMS,
+		GoogleOAuthClientSecretsKMS:    environment.KMS.GoogleOAuthClientSecretsKMS,
+		MicrosoftOAuthClientSecretsKMS: environment.KMS.MicrosoftOAuthClientSecretsKMS,
+		AuthenticatorAppSecretsKMS:     environment.KMS.AuthenticatorAppSecretsKMS,
 	})
 	projectID, _ := environment.NewProject(t)
 

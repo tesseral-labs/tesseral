@@ -3,25 +3,28 @@ package storetesting
 import (
 	"context"
 	"log"
+	"os"
 	"strings"
 
-	"github.com/aws/aws-sdk-go-v2/service/kms"
+	"github.com/tesseral-labs/tesseral/internal/kms"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/wait"
 )
 
 type testKms struct {
-	*kms.Client
-
-	SessionSigningKeyID                 string
-	GoogleOAuthClientSecretsKMSKeyID    string
-	MicrosoftOAuthClientSecretsKMSKeyID string
-	GithubOAuthClientSecretsKMSKeyID    string
-	OIDCClientSecretsKMSKeyID           string
-	AuthenticatorAppSecretsKMSKeyID     string
+	SessionSigningKeysKMS          *kms.KMS
+	GoogleOAuthClientSecretsKMS    *kms.KMS
+	MicrosoftOAuthClientSecretsKMS *kms.KMS
+	GithubOAuthClientSecretsKMS    *kms.KMS
+	OIDCClientSecretsKMS           *kms.KMS
+	AuthenticatorAppSecretsKMS     *kms.KMS
 }
 
 func newKMS() (*testKms, func()) {
+	_ = os.Setenv("AWS_ACCESS_KEY_ID", "test")
+	_ = os.Setenv("AWS_SECRET_ACCESS_KEY", "test")
+	_ = os.Setenv("AWS_REGION", awsTestRegion)
+
 	container, err := testcontainers.GenericContainer(
 		context.Background(),
 		testcontainers.GenericContainerRequest{
@@ -272,17 +275,73 @@ Aliases:
 		cleanup()
 		log.Panicf("get local KMS endpoint: %v", err)
 	}
-	cfg := kms.Options{
-		Region:       awsTestRegion,
-		BaseEndpoint: &endpoint,
+
+	sessionSigningKeysKMS, err := kms.New(context.Background(), kms.Config{
+		Backend:                 "aws_kms_v1",
+		AWSKMSV1KeyID:           "bc436485-5092-42b8-92a3-0aa8b93536dc",
+		AWSKMSV1KMSBaseEndpoint: endpoint,
+	})
+	if err != nil {
+		cleanup()
+		log.Panicf("create session signing keys KMS: %v", err)
 	}
+
+	googleOAuthKMS, err := kms.New(context.Background(), kms.Config{
+		Backend:                 "aws_kms_v1",
+		AWSKMSV1KeyID:           "d5670d9b-184a-400a-a08b-d05d7b99f91c",
+		AWSKMSV1KMSBaseEndpoint: endpoint,
+	})
+	if err != nil {
+		cleanup()
+		log.Panicf("create google oauth KMS: %v", err)
+	}
+
+	microsoftOAuthKMS, err := kms.New(context.Background(), kms.Config{
+		Backend:                 "aws_kms_v1",
+		AWSKMSV1KeyID:           "e612b031-6241-4df0-8bd0-17b19995ef14",
+		AWSKMSV1KMSBaseEndpoint: endpoint,
+	})
+	if err != nil {
+		cleanup()
+		log.Panicf("create microsoft oauth KMS: %v", err)
+	}
+
+	githubOAuthKMS, err := kms.New(context.Background(), kms.Config{
+		Backend:                 "aws_kms_v1",
+		AWSKMSV1KeyID:           "48f79cf6-2bbd-4f65-a934-ad1df7122fbd",
+		AWSKMSV1KMSBaseEndpoint: endpoint,
+	})
+	if err != nil {
+		cleanup()
+		log.Panicf("create github oauth KMS: %v", err)
+	}
+
+	oidcClientKMS, err := kms.New(context.Background(), kms.Config{
+		Backend:                 "aws_kms_v1",
+		AWSKMSV1KeyID:           "0c261e98-324b-447b-a960-f66b8213610f",
+		AWSKMSV1KMSBaseEndpoint: endpoint,
+	})
+	if err != nil {
+		cleanup()
+		log.Panicf("create oidc client KMS: %v", err)
+	}
+
+	authenticatorAppKMS, err := kms.New(context.Background(), kms.Config{
+		Backend:                 "aws_kms_v1",
+		AWSKMSV1KeyID:           "186bf523-bc6a-479b-8ed1-e198298b98f2",
+		AWSKMSV1KMSBaseEndpoint: endpoint,
+	})
+	if err != nil {
+		cleanup()
+		log.Panicf("create authenticator app KMS: %v", err)
+	}
+
 	return &testKms{
-		Client:                              kms.New(cfg),
-		SessionSigningKeyID:                 "bc436485-5092-42b8-92a3-0aa8b93536dc",
-		GoogleOAuthClientSecretsKMSKeyID:    "d5670d9b-184a-400a-a08b-d05d7b99f91c",
-		MicrosoftOAuthClientSecretsKMSKeyID: "e612b031-6241-4df0-8bd0-17b19995ef14",
-		GithubOAuthClientSecretsKMSKeyID:    "48f79cf6-2bbd-4f65-a934-ad1df7122fbd",
-		OIDCClientSecretsKMSKeyID:           "0c261e98-324b-447b-a960-f66b8213610f",
-		AuthenticatorAppSecretsKMSKeyID:     "186bf523-bc6a-479b-8ed1-e198298b98f2",
+		SessionSigningKeysKMS:          sessionSigningKeysKMS,
+		GoogleOAuthClientSecretsKMS:    googleOAuthKMS,
+		MicrosoftOAuthClientSecretsKMS: microsoftOAuthKMS,
+		GithubOAuthClientSecretsKMS:    githubOAuthKMS,
+		OIDCClientSecretsKMS:           oidcClientKMS,
+		AuthenticatorAppSecretsKMS:     authenticatorAppKMS,
 	}, cleanup
 }

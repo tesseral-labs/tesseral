@@ -8,8 +8,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/aws/aws-sdk-go-v2/service/kms"
-	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
@@ -40,11 +38,7 @@ func (s *Store) GetAuthenticatorAppOptions(ctx context.Context, req *intermediat
 		return nil, fmt.Errorf("read random bytes: %w", err)
 	}
 
-	encryptRes, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
-		KeyId:               &s.authenticatorAppSecretsKMSKeyID,
-		Plaintext:           secret[:],
-		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-	})
+	encryptRes, err := s.authenticatorAppSecretsKMS.Encrypt(ctx, secret[:])
 	if err != nil {
 		return nil, fmt.Errorf("encrypt authenticator app secret: %w", err)
 	}
@@ -80,7 +74,7 @@ func (s *Store) GetAuthenticatorAppOptions(ctx context.Context, req *intermediat
 
 	if _, err := q.UpdateIntermediateSessionAuthenticatorAppSecretCiphertext(ctx, queries.UpdateIntermediateSessionAuthenticatorAppSecretCiphertextParams{
 		ID:                               authn.IntermediateSessionID(ctx),
-		AuthenticatorAppSecretCiphertext: encryptRes.CiphertextBlob,
+		AuthenticatorAppSecretCiphertext: encryptRes,
 	}); err != nil {
 		return nil, fmt.Errorf("update intermediate session authenticator app secret ciphertext: %w", err)
 	}
@@ -396,16 +390,12 @@ func (s *Store) getIntermediateSessionPendingAuthenticatorAppSecret(ctx context.
 		return nil, fmt.Errorf("rollback: %w", err)
 	}
 
-	decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
-		KeyId:               &s.authenticatorAppSecretsKMSKeyID,
-		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		CiphertextBlob:      qIntermediateSession.AuthenticatorAppSecretCiphertext,
-	})
+	decryptRes, err := s.authenticatorAppSecretsKMS.Decrypt(ctx, qIntermediateSession.AuthenticatorAppSecretCiphertext)
 	if err != nil {
 		return nil, fmt.Errorf("decrypt authenticator app secret ciphertext: %w", err)
 	}
 
-	return decryptRes.Plaintext, nil
+	return decryptRes, nil
 }
 
 func (s *Store) getAuthenticatorAppSecret(ctx context.Context) ([]byte, error) {
@@ -438,16 +428,12 @@ func (s *Store) getAuthenticatorAppSecret(ctx context.Context) ([]byte, error) {
 		return nil, fmt.Errorf("rollback: %w", err)
 	}
 
-	decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
-		KeyId:               &s.authenticatorAppSecretsKMSKeyID,
-		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		CiphertextBlob:      qMatchingUser.AuthenticatorAppSecretCiphertext,
-	})
+	decryptRes, err := s.authenticatorAppSecretsKMS.Decrypt(ctx, qMatchingUser.AuthenticatorAppSecretCiphertext)
 	if err != nil {
 		return nil, fmt.Errorf("decrypt authenticator app secret ciphertext: %w", err)
 	}
 
-	return decryptRes.Plaintext, nil
+	return decryptRes, nil
 }
 
 func (s *Store) checkShouldRegisterAuthenticatorApp(ctx context.Context) error {

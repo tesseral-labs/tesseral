@@ -34,25 +34,23 @@ type testUtil struct {
 
 func newTestUtil(t *testing.T) (context.Context, *testUtil) {
 	store := New(NewStoreParams{
-		DB:                                  environment.DB,
-		S3:                                  environment.S3.Client,
-		S3UserContentBucketName:             environment.S3.UserContentBucketName,
-		KMS:                                 environment.KMS.Client,
-		SessionSigningKeyKmsKeyID:           environment.KMS.SessionSigningKeyID,
-		GoogleOAuthClientSecretsKMSKeyID:    environment.KMS.GoogleOAuthClientSecretsKMSKeyID,
-		MicrosoftOAuthClientSecretsKMSKeyID: environment.KMS.MicrosoftOAuthClientSecretsKMSKeyID,
-		GithubOAuthClientSecretsKMSKeyID:    environment.KMS.GithubOAuthClientSecretsKMSKeyID,
-		OIDCClientSecretsKMSKeyID:           environment.KMS.OIDCClientSecretsKMSKeyID,
-		ConsoleProjectID:                    environment.ConsoleProjectID,
-		ConsoleDomain:                       environment.ConsoleDomain,
-		AuthAppsRootDomain:                  environment.AuthAppsRootDomain,
-		OIDCClient:                          &oidcclient.Client{HTTPClient: http.DefaultClient},
+		DB:                             environment.DB,
+		S3:                             environment.S3.Client,
+		S3UserContentBucketName:        environment.S3.UserContentBucketName,
+		SessionSigningKeyKMS:           environment.KMS.SessionSigningKeysKMS,
+		GoogleOAuthClientSecretsKMS:    environment.KMS.GoogleOAuthClientSecretsKMS,
+		MicrosoftOAuthClientSecretsKMS: environment.KMS.MicrosoftOAuthClientSecretsKMS,
+		GithubOAuthClientSecretsKMS:    environment.KMS.GithubOAuthClientSecretsKMS,
+		OIDCClientSecretsKMS:           environment.KMS.OIDCClientSecretsKMS,
+		ConsoleProjectID:               environment.ConsoleProjectID,
+		ConsoleDomain:                  environment.ConsoleDomain,
+		AuthAppsRootDomain:             environment.AuthAppsRootDomain,
+		OIDCClient:                     &oidcclient.Client{HTTPClient: http.DefaultClient},
 	})
 	commonStore := commonstore.New(commonstore.NewStoreParams{
-		AppAuthRootDomain:         environment.ConsoleDomain,
-		DB:                        environment.DB,
-		KMS:                       environment.KMS.Client,
-		SessionSigningKeyKMSKeyID: environment.KMS.SessionSigningKeyID,
+		AppAuthRootDomain:     environment.ConsoleDomain,
+		DB:                    environment.DB,
+		SessionSigningKeysKMS: environment.KMS.SessionSigningKeysKMS,
 	})
 
 	projectID, projectUserID := environment.NewProject(t)

@@ -35,20 +35,17 @@ type testUtil struct {
 
 func newTestUtil(t *testing.T) *testUtil {
 	store := New(NewStoreParams{
-		DB:                              environment.DB,
-		KMS:                             environment.KMS.Client,
-		SessionSigningKeyKmsKeyID:       environment.KMS.SessionSigningKeyID,
-		ConsoleProjectID:                environment.ConsoleProjectID,
-		ConsoleDomain:                   environment.ConsoleDomain,
-		AuthenticatorAppSecretsKMSKeyID: environment.KMS.AuthenticatorAppSecretsKMSKeyID,
-		OIDCClientSecretsKMSKeyID:       environment.KMS.OIDCClientSecretsKMSKeyID,
-		OIDCClient:                      &oidcclient.Client{HTTPClient: http.DefaultClient},
+		DB:                         environment.DB,
+		ConsoleProjectID:           environment.ConsoleProjectID,
+		ConsoleDomain:              environment.ConsoleDomain,
+		OIDCClientSecretsKMS:       environment.KMS.OIDCClientSecretsKMS,
+		AuthenticatorAppSecretsKMS: environment.KMS.AuthenticatorAppSecretsKMS,
+		OIDCClient:                 &oidcclient.Client{HTTPClient: http.DefaultClient},
 	})
 	commonStore := commonstore.New(commonstore.NewStoreParams{
-		AppAuthRootDomain:         environment.ConsoleDomain,
-		DB:                        environment.DB,
-		KMS:                       environment.KMS.Client,
-		SessionSigningKeyKMSKeyID: environment.KMS.SessionSigningKeyID,
+		AppAuthRootDomain:     environment.ConsoleDomain,
+		DB:                    environment.DB,
+		SessionSigningKeysKMS: environment.KMS.SessionSigningKeysKMS,
 	})
 	projectID, _ := environment.NewProject(t)
 

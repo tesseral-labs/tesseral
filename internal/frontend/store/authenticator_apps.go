@@ -7,8 +7,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/aws/aws-sdk-go-v2/service/kms"
-	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
@@ -30,11 +28,7 @@ func (s *Store) GetAuthenticatorAppOptions(ctx context.Context) (*frontendv1.Get
 		return nil, fmt.Errorf("read random bytes: %w", err)
 	}
 
-	encryptRes, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
-		KeyId:               &s.authenticatorAppSecretsKMSKeyID,
-		Plaintext:           secret[:],
-		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-	})
+	encryptRes, err := s.authenticatorAppSecretsKMS.Encrypt(ctx, secret[:])
 	if err != nil {
 		return nil, fmt.Errorf("encrypt authenticator app secret: %w", err)
 	}
@@ -47,7 +41,7 @@ func (s *Store) GetAuthenticatorAppOptions(ctx context.Context) (*frontendv1.Get
 
 	if _, err := q.CreateUserAuthenticatorAppChallenge(ctx, queries.CreateUserAuthenticatorAppChallengeParams{
 		UserID:                           authn.UserID(ctx),
-		AuthenticatorAppSecretCiphertext: encryptRes.CiphertextBlob,
+		AuthenticatorAppSecretCiphertext: encryptRes,
 	}); err != nil {
 		return nil, fmt.Errorf("create user authenticator app challenge: %w", err)
 	}
@@ -161,14 +155,10 @@ func (s *Store) getUserAuthenticatorAppChallengeSecret(ctx context.Context) ([]b
 		return nil, fmt.Errorf("get user authenticator app challenge: %w", err)
 	}
 
-	decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
-		KeyId:               &s.authenticatorAppSecretsKMSKeyID,
-		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		CiphertextBlob:      qUserAuthenticatorAppChallenge.AuthenticatorAppSecretCiphertext,
-	})
+	decryptRes, err := s.authenticatorAppSecretsKMS.Decrypt(ctx, qUserAuthenticatorAppChallenge.AuthenticatorAppSecretCiphertext)
 	if err != nil {
 		return nil, fmt.Errorf("decrypt authenticator app secret ciphertext: %w", err)
 	}
 
-	return decryptRes.Plaintext, nil
+	return decryptRes, nil
 }

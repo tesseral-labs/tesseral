@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/aws/aws-sdk-go-v2/service/kms"
-	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	"github.com/tesseral-labs/tesseral/internal/emailaddr"
 	"github.com/tesseral-labs/tesseral/internal/oidc/authn"
@@ -56,19 +54,15 @@ func (s *Store) ExchangeOIDCCode(ctx context.Context, oidcConnectionID string, c
 		clientAuthPost  string
 	)
 	if qOIDCConnection.ClientSecretCiphertext != nil {
-		decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
-			KeyId:               &s.oidcClientSecretsKMSKeyID,
-			EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-			CiphertextBlob:      qOIDCConnection.ClientSecretCiphertext,
-		})
+		decryptRes, err := s.oidcClientSecretsKMS.Decrypt(ctx, qOIDCConnection.ClientSecretCiphertext)
 		if err != nil {
 			return "", fmt.Errorf("decrypt oidc client secret: %w", err)
 		}
 		switch {
 		case slices.Contains(config.TokenEndpointAuthMethodsSupported, "client_secret_post"):
-			clientAuthPost = string(decryptRes.Plaintext)
+			clientAuthPost = string(decryptRes)
 		case slices.Contains(config.TokenEndpointAuthMethodsSupported, "client_secret_basic") || len(config.TokenEndpointAuthMethodsSupported) == 0: // If omitted, the default is client_secret_basic
-			clientAuthBasic = base64.StdEncoding.EncodeToString(fmt.Appendf(nil, "%s:%s", qOIDCConnection.ClientID, string(decryptRes.Plaintext)))
+			clientAuthBasic = base64.StdEncoding.EncodeToString(fmt.Appendf(nil, "%s:%s", qOIDCConnection.ClientID, string(decryptRes)))
 		default:
 			return "", fmt.Errorf("OIDC connection %s does not support client authentication method for token endpoint: %s", oidcConnectionID, config.TokenEndpointAuthMethodsSupported)
 		}

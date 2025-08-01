@@ -14,8 +14,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/aws/aws-sdk-go-v2/service/kms"
-	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/stripe/stripe-go/v82"
@@ -134,16 +132,12 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 
 	updates.GoogleOauthClientSecretCiphertext = qProject.GoogleOauthClientSecretCiphertext
 	if req.Project.GoogleOauthClientSecret != "" {
-		encryptRes, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
-			KeyId:               &s.googleOAuthClientSecretsKMSKeyID,
-			Plaintext:           []byte(req.Project.GoogleOauthClientSecret),
-			EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		})
+		encryptRes, err := s.googleOAuthClientSecretsKMS.Encrypt(ctx, []byte(req.Project.GoogleOauthClientSecret))
 		if err != nil {
 			return nil, fmt.Errorf("encrypt google oauth client secret: %w", err)
 		}
 
-		updates.GoogleOauthClientSecretCiphertext = encryptRes.CiphertextBlob
+		updates.GoogleOauthClientSecretCiphertext = encryptRes
 	}
 
 	updates.MicrosoftOauthClientID = qProject.MicrosoftOauthClientID
@@ -153,16 +147,12 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 
 	updates.MicrosoftOauthClientSecretCiphertext = qProject.MicrosoftOauthClientSecretCiphertext
 	if req.Project.MicrosoftOauthClientSecret != "" {
-		encryptRes, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
-			KeyId:               &s.microsoftOAuthClientSecretsKMSKeyID,
-			Plaintext:           []byte(req.Project.MicrosoftOauthClientSecret),
-			EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		})
+		encryptRes, err := s.microsoftOAuthClientSecretsKMS.Encrypt(ctx, []byte(req.Project.MicrosoftOauthClientSecret))
 		if err != nil {
 			return nil, fmt.Errorf("encrypt microsoft oauth client secret: %w", err)
 		}
 
-		updates.MicrosoftOauthClientSecretCiphertext = encryptRes.CiphertextBlob
+		updates.MicrosoftOauthClientSecretCiphertext = encryptRes
 	}
 
 	updates.GithubOauthClientID = qProject.GithubOauthClientID
@@ -172,16 +162,12 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 
 	updates.GithubOauthClientSecretCiphertext = qProject.GithubOauthClientSecretCiphertext
 	if req.Project.GithubOauthClientSecret != "" {
-		encryptRes, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
-			KeyId:               &s.githubOAuthClientSecretsKMSKeyID,
-			Plaintext:           []byte(req.Project.GithubOauthClientSecret),
-			EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		})
+		encryptRes, err := s.githubOAuthClientSecretsKMS.Encrypt(ctx, []byte(req.Project.GithubOauthClientSecret))
 		if err != nil {
 			return nil, fmt.Errorf("encrypt github oauth client secret: %w", err)
 		}
 
-		updates.GithubOauthClientSecretCiphertext = encryptRes.CiphertextBlob
+		updates.GithubOauthClientSecretCiphertext = encryptRes
 	}
 
 	updates.LogInWithGoogle = qProject.LogInWithGoogle
@@ -589,16 +575,12 @@ func (s *Store) generateSessionSigningKey(ctx context.Context) (*ecdsa.PublicKey
 	}
 
 	// Encrypt the symmetric key with the KMS
-	sskEncryptOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
-		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		KeyId:               &s.sessionSigningKeyKmsKeyID,
-		Plaintext:           privateKeyBytes,
-	})
+	sskEncryptOutput, err := s.sessionSigningKeyKMS.Encrypt(ctx, privateKeyBytes)
 	if err != nil {
 		return nil, nil, fmt.Errorf("encrypt session signing key: %w", err)
 	}
 
-	return privateKey.Public().(*ecdsa.PublicKey), sskEncryptOutput.CiphertextBlob, nil
+	return privateKey.Public().(*ecdsa.PublicKey), sskEncryptOutput, nil
 }
 
 func (s *Store) upsertStripeCustomerProjectID(projectID string, stripeCustomerID *string) error {

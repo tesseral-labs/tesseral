@@ -13,8 +13,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/aws/aws-sdk-go-v2/service/kms"
-	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	"github.com/stripe/stripe-go/v82"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
@@ -127,11 +125,7 @@ func (s *Store) CreateProject(ctx context.Context, req *intermediatev1.CreatePro
 	}
 
 	// Encrypt the symmetric key with the KMS
-	sskEncryptOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
-		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		KeyId:               &s.sessionSigningKeyKmsKeyID,
-		Plaintext:           privateKeyBytes,
-	})
+	sskEncryptOutput, err := s.sessionSigningKeyKMS.Encrypt(ctx, privateKeyBytes)
 	if err != nil {
 		return nil, fmt.Errorf("encrypt session signing key: %w", err)
 	}
@@ -148,7 +142,7 @@ func (s *Store) CreateProject(ctx context.Context, req *intermediatev1.CreatePro
 		ID:                   uuid.New(),
 		ProjectID:            qProject.ID,
 		PublicKey:            publicKeyBytes,
-		PrivateKeyCipherText: sskEncryptOutput.CiphertextBlob,
+		PrivateKeyCipherText: sskEncryptOutput,
 		CreateTime:           &createTime,
 		ExpireTime:           &expireTime,
 	}); err != nil {
@@ -269,16 +263,12 @@ func (s *Store) onboardingGenerateSessionSigningKey(ctx context.Context) (*ecdsa
 	}
 
 	// Encrypt the symmetric key with the KMS
-	sskEncryptOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
-		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		KeyId:               &s.sessionSigningKeyKmsKeyID,
-		Plaintext:           privateKeyBytes,
-	})
+	sskEncryptOutput, err := s.sessionSigningKeyKMS.Encrypt(ctx, privateKeyBytes)
 	if err != nil {
 		return nil, nil, fmt.Errorf("encrypt session signing key: %w", err)
 	}
 
-	return privateKey.Public().(*ecdsa.PublicKey), sskEncryptOutput.CiphertextBlob, nil
+	return privateKey.Public().(*ecdsa.PublicKey), sskEncryptOutput, nil
 }
 
 type createProjectForCurrentUserArgs struct {
