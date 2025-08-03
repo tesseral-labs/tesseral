@@ -141,3 +141,33 @@ SELECT
 FROM
     projects;
 
+-- name: UpdateProject :one
+UPDATE
+    projects
+SET
+    vault_domain = $2
+WHERE
+    id = $1
+RETURNING
+    *;
+
+-- name: UpdateProjectLogoURL :one
+UPDATE
+    project_ui_settings
+SET
+    logo_url = $2
+WHERE
+    project_id = $1
+RETURNING
+    *;
+
+-- name: UpdateProjectDarkModeLogoURL :one
+UPDATE
+    project_ui_settings
+SET
+    dark_mode_logo_url = $2
+WHERE
+    project_id = $1
+RETURNING
+    *;
+

@@ -1092,7 +1092,7 @@ func (q *Queries) GetProjectTrustedDomains(ctx context.Context, projectID uuid.U
 
 const getProjectUISettings = `-- name: GetProjectUISettings :one
 SELECT
-    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time, log_in_layout, auto_create_organizations, self_serve_create_organizations, self_serve_create_users
+    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time, log_in_layout, auto_create_organizations, self_serve_create_organizations, self_serve_create_users, logo_url, dark_mode_logo_url
 FROM
     project_ui_settings
 WHERE
@@ -1114,6 +1114,8 @@ func (q *Queries) GetProjectUISettings(ctx context.Context, projectID uuid.UUID)
 		&i.AutoCreateOrganizations,
 		&i.SelfServeCreateOrganizations,
 		&i.SelfServeCreateUsers,
+		&i.LogoUrl,
+		&i.DarkModeLogoUrl,
 	)
 	return i, err
 }

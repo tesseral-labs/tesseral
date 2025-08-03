@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	cli.Run(context.Background(), version, force, up, bootstrap)
+	cli.Run(context.Background(), version, force, up, bootstrap, updateProject)
 }
 
 type args struct {

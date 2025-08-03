@@ -177,7 +177,7 @@ const createProjectUISettings = `-- name: CreateProjectUISettings :one
 INSERT INTO project_ui_settings (id, project_id, primary_color, detect_dark_mode_enabled)
     VALUES ($1, $2, $3, $4)
 RETURNING
-    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time, log_in_layout, auto_create_organizations, self_serve_create_organizations, self_serve_create_users
+    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time, log_in_layout, auto_create_organizations, self_serve_create_organizations, self_serve_create_users, logo_url, dark_mode_logo_url
 `
 
 type CreateProjectUISettingsParams struct {
@@ -207,6 +207,8 @@ func (q *Queries) CreateProjectUISettings(ctx context.Context, arg CreateProject
 		&i.AutoCreateOrganizations,
 		&i.SelfServeCreateOrganizations,
 		&i.SelfServeCreateUsers,
+		&i.LogoUrl,
+		&i.DarkModeLogoUrl,
 	)
 	return i, err
 }
@@ -494,6 +496,138 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 		&i.DisplayName,
 		&i.ProfilePictureUrl,
 		&i.GithubUserID,
+	)
+	return i, err
+}
+
+const updateProject = `-- name: UpdateProject :one
+UPDATE
+    projects
+SET
+    vault_domain = $2
+WHERE
+    id = $1
+RETURNING
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily, stripe_customer_id, entitled_custom_vault_domains, entitled_backend_api_keys, log_in_with_github, github_oauth_client_id, github_oauth_client_secret_ciphertext, api_keys_enabled, api_key_secret_token_prefix, audit_logs_enabled, log_in_with_oidc
+`
+
+type UpdateProjectParams struct {
+	ID          uuid.UUID
+	VaultDomain string
+}
+
+func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (Project, error) {
+	row := q.db.QueryRow(ctx, updateProject, arg.ID, arg.VaultDomain)
+	var i Project
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.LogInWithPassword,
+		&i.LogInWithGoogle,
+		&i.LogInWithMicrosoft,
+		&i.GoogleOauthClientID,
+		&i.MicrosoftOauthClientID,
+		&i.GoogleOauthClientSecretCiphertext,
+		&i.MicrosoftOauthClientSecretCiphertext,
+		&i.DisplayName,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.LoginsDisabled,
+		&i.LogInWithAuthenticatorApp,
+		&i.LogInWithPasskey,
+		&i.LogInWithEmail,
+		&i.LogInWithSaml,
+		&i.RedirectUri,
+		&i.AfterLoginRedirectUri,
+		&i.AfterSignupRedirectUri,
+		&i.VaultDomain,
+		&i.EmailSendFromDomain,
+		&i.CookieDomain,
+		&i.EmailQuotaDaily,
+		&i.StripeCustomerID,
+		&i.EntitledCustomVaultDomains,
+		&i.EntitledBackendApiKeys,
+		&i.LogInWithGithub,
+		&i.GithubOauthClientID,
+		&i.GithubOauthClientSecretCiphertext,
+		&i.ApiKeysEnabled,
+		&i.ApiKeySecretTokenPrefix,
+		&i.AuditLogsEnabled,
+		&i.LogInWithOidc,
+	)
+	return i, err
+}
+
+const updateProjectDarkModeLogoURL = `-- name: UpdateProjectDarkModeLogoURL :one
+UPDATE
+    project_ui_settings
+SET
+    dark_mode_logo_url = $2
+WHERE
+    project_id = $1
+RETURNING
+    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time, log_in_layout, auto_create_organizations, self_serve_create_organizations, self_serve_create_users, logo_url, dark_mode_logo_url
+`
+
+type UpdateProjectDarkModeLogoURLParams struct {
+	ProjectID       uuid.UUID
+	DarkModeLogoUrl *string
+}
+
+func (q *Queries) UpdateProjectDarkModeLogoURL(ctx context.Context, arg UpdateProjectDarkModeLogoURLParams) (ProjectUiSetting, error) {
+	row := q.db.QueryRow(ctx, updateProjectDarkModeLogoURL, arg.ProjectID, arg.DarkModeLogoUrl)
+	var i ProjectUiSetting
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.PrimaryColor,
+		&i.DetectDarkModeEnabled,
+		&i.DarkModePrimaryColor,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.LogInLayout,
+		&i.AutoCreateOrganizations,
+		&i.SelfServeCreateOrganizations,
+		&i.SelfServeCreateUsers,
+		&i.LogoUrl,
+		&i.DarkModeLogoUrl,
+	)
+	return i, err
+}
+
+const updateProjectLogoURL = `-- name: UpdateProjectLogoURL :one
+UPDATE
+    project_ui_settings
+SET
+    logo_url = $2
+WHERE
+    project_id = $1
+RETURNING
+    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time, log_in_layout, auto_create_organizations, self_serve_create_organizations, self_serve_create_users, logo_url, dark_mode_logo_url
+`
+
+type UpdateProjectLogoURLParams struct {
+	ProjectID uuid.UUID
+	LogoUrl   *string
+}
+
+func (q *Queries) UpdateProjectLogoURL(ctx context.Context, arg UpdateProjectLogoURLParams) (ProjectUiSetting, error) {
+	row := q.db.QueryRow(ctx, updateProjectLogoURL, arg.ProjectID, arg.LogoUrl)
+	var i ProjectUiSetting
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.PrimaryColor,
+		&i.DetectDarkModeEnabled,
+		&i.DarkModePrimaryColor,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.LogInLayout,
+		&i.AutoCreateOrganizations,
+		&i.SelfServeCreateOrganizations,
+		&i.SelfServeCreateUsers,
+		&i.LogoUrl,
+		&i.DarkModeLogoUrl,
 	)
 	return i, err
 }
