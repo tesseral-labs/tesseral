@@ -40,6 +40,11 @@ export function FinishLoginPage() {
         }
       }
 
+      // clear out any localstorage state related to useLoginPageQueryParams
+      localStorage.removeItem("relayed-session-state");
+      localStorage.removeItem("redirect-uri");
+      localStorage.removeItem("return-relayed-session-token-as-query-param");
+
       window.location.href = url.toString();
     })();
   }, [settings, exchangeIntermediateSessionForSessionAsync]);
