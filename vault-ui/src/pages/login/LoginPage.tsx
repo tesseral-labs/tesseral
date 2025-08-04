@@ -107,10 +107,11 @@ function LoginPageContents() {
     createIntermediateSession,
   );
 
-  const [
-    { relayedSessionState, redirectURI, returnRelayedSessionTokenAsQueryParam },
-    serializedQueryParamState,
-  ] = useLoginPageQueryParams();
+  const {
+    relayedSessionState,
+    redirectURI,
+    returnRelayedSessionTokenAsQueryParam,
+  } = useLoginPageQueryParams();
 
   async function createIntermediateSessionWithRelayedSessionState() {
     await createIntermediateSessionMutation.mutateAsync({
@@ -448,7 +449,7 @@ function LoginPageContents() {
         <p className="text-center mt-4 text-xs text-muted-foreground">
           Don't have an account?{" "}
           <Link
-            to={`/signup${serializedQueryParamState}`}
+            to="/signup"
             className="cursor-pointer text-foreground underline underline-offset-2 decoration-muted-foreground"
           >
             Sign up.

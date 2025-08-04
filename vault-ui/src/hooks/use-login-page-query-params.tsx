@@ -7,30 +7,57 @@ interface LoginPageQueryParams {
   returnRelayedSessionTokenAsQueryParam: boolean;
 }
 
-export function useLoginPageQueryParams(): [LoginPageQueryParams, string] {
+export function useLoginPageQueryParams(): LoginPageQueryParams {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [relayedSessionState] = useState(() => {
-    return searchParams.get("relayed-session-state");
+  const [relayedSessionState, setRelayedSessionState] = useState(() => {
+    return localStorage.getItem("relayed-session-state");
   });
 
-  const [redirectURI] = useState(() => {
-    return searchParams.get("redirect-uri");
+  const [redirectURI, setRedirectURI] = useState(() => {
+    return localStorage.getItem("redirect-uri");
   });
 
-  const [returnRelayedSessionTokenAsQueryParam] = useState(() => {
-    return searchParams.get("return-relayed-session-token-as-query-param");
+  const [
+    returnRelayedSessionTokenAsQueryParam,
+    setReturnRelayedSessionTokenAsQueryParam,
+  ] = useState(() => {
+    return localStorage.getItem("return-relayed-session-token-as-query-param");
   });
 
   useEffect(() => {
     const newParams = new URLSearchParams();
+
+    if (searchParams.has("relayed-session-state")) {
+      setRelayedSessionState(searchParams.get("relayed-session-state"));
+      localStorage.setItem(
+        "relayed-session-state",
+        searchParams.get("relayed-session-state")!,
+      );
+    }
+
+    if (searchParams.has("redirect-uri")) {
+      setRedirectURI(searchParams.get("redirect-uri"));
+      localStorage.setItem("redirect-uri", searchParams.get("redirect-uri")!);
+    }
+
+    if (searchParams.has("return-relayed-session-token-as-query-param")) {
+      setReturnRelayedSessionTokenAsQueryParam(
+        searchParams.get("return-relayed-session-token-as-query-param"),
+      );
+      localStorage.setItem(
+        "return-relayed-session-token-as-query-param",
+        searchParams.get("return-relayed-session-token-as-query-param")!,
+      );
+    }
+
     newParams.delete("relayed-session-state");
     newParams.delete("redirect-uri");
     newParams.delete("return-relayed-session-token-as-query-param");
     setSearchParams(newParams);
-  }, [setSearchParams]);
+  }, [searchParams, setSearchParams]);
 
-  const state = useMemo(() => {
+  return useMemo(() => {
     return {
       relayedSessionState: relayedSessionState || "",
       redirectURI: redirectURI || "",
@@ -38,27 +65,4 @@ export function useLoginPageQueryParams(): [LoginPageQueryParams, string] {
         returnRelayedSessionTokenAsQueryParam === "1",
     } as LoginPageQueryParams;
   }, [relayedSessionState, redirectURI, returnRelayedSessionTokenAsQueryParam]);
-
-  const serialized = useMemo(() => {
-    const search = new URLSearchParams();
-    if (relayedSessionState) {
-      search.set("relayed-session-state", relayedSessionState);
-    }
-    if (redirectURI) {
-      search.set("redirect-uri", redirectURI);
-    }
-    if (returnRelayedSessionTokenAsQueryParam) {
-      search.set(
-        "return-relayed-session-token-as-query-param",
-        returnRelayedSessionTokenAsQueryParam,
-      );
-    }
-
-    if (search.size === 0) {
-      return "";
-    }
-    return `?${search.toString()}`;
-  }, [redirectURI, relayedSessionState, returnRelayedSessionTokenAsQueryParam]);
-
-  return [state, serialized];
 }
