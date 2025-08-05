@@ -28,8 +28,8 @@ func main() {
 	// do direct os.Getenv here so that we don't depend on secretload, conf, or
 	// other things that themselves may fail
 	if err := sentry.Init(sentry.ClientOptions{
-		Dsn:         os.Getenv("API_SENTRY_DSN"),
-		Environment: os.Getenv("API_SENTRY_ENVIRONMENT"),
+		Dsn:         os.Getenv("TESSERAL_BACKGROUND_WORKER_SENTRY_DSN"),
+		Environment: os.Getenv("TESSERAL_BACKGROUND_WORKER_SENTRY_ENVIRONMENT"),
 	}); err != nil {
 		panic(fmt.Errorf("init sentry: %w", err))
 	}
