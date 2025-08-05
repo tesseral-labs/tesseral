@@ -35,6 +35,8 @@ func (s *Store) SendWebhook(ctx context.Context, req *SendWebhookRequest) error 
 		return fmt.Errorf("get project by id: %w", err)
 	}
 
+	slog.InfoContext(ctx, "project_webhook_settings", "direct_webhook_url", qProjectWebhookSettings.DirectWebhookUrl, "svix_app_id", qProjectWebhookSettings.AppID)
+
 	if qProjectWebhookSettings.DirectWebhookUrl != nil {
 		slog.InfoContext(ctx, "handle_direct_webhook", "url", *qProjectWebhookSettings.DirectWebhookUrl)
 
