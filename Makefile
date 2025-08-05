@@ -14,6 +14,8 @@ bootstrap:
 	done
 	@# Run database migrations
 	make migrate up
+	go install github.com/riverqueue/river/cmd/river@latest
+	river migrate-up --database-url 'postgres://postgres:password@localhost?sslmode=disable'
 	@# Seed the database
 	psql "postgres://postgres:password@localhost:5432?sslmode=disable" -f .local/db/seed.sql
 	@# Stop the docker containers

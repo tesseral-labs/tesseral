@@ -19,6 +19,26 @@ services:
     ports:
       - "3001:3001"
     tty: true
+  tesseral-background-worker:
+    build:
+      dockerfile: ./cmd/tesseral-background-worker/Dockerfile
+      context: .
+    develop:
+      watch:
+        - action: rebuild
+          path: ./cmd/tesseral-background-worker/
+        - action: rebuild
+          path: ./internal/
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      TESSERAL_BACKGROUND_WORKER_DB_DSN: "postgres://postgres:password@postgres:5432/postgres"
+    ports:
+      - "3003:3003"
+    env_file:
+      - .env
+    tty: true
   console:
     command: bash -c "npm i --force && npm run dev"
     env_file:

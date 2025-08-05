@@ -3,6 +3,7 @@ package workers
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
 	"github.com/riverqueue/river"
 	"github.com/tesseral-labs/tesseral/internal/backgroundworker/store"
@@ -31,6 +32,8 @@ func NewBackgroundWorker(store *store.Store) *BackgroundWorker {
 }
 
 func (w *BackgroundWorker) Work(ctx context.Context, job *river.Job[BackgroundWorkerArgs]) error {
+	slog.InfoContext(ctx, "work", "args", job.Args)
+
 	projectID, err := idformat.Project.Parse(job.Args.ProjectID)
 	if err != nil {
 		return fmt.Errorf("parse project id: %w", err)

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -46,11 +47,13 @@ func main() {
 	loadenv.LoadEnv()
 
 	config := struct {
+		ServeAddr  string        `conf:"serve_addr,noredact"`
 		DB         dbconn.Config `conf:"db,noredact"`
 		SvixApiKey string        `conf:"svix_api_key,noredact"`
 	}{}
 
 	conf.Load(&config)
+	slog.Info("config", "config", conf.Redact(config))
 
 	db, err := dbconn.Open(context.Background(), config.DB)
 	if err != nil {
@@ -90,18 +93,31 @@ func main() {
 		panic(fmt.Errorf("start river: %w", err))
 	}
 
-	sigintOrTerm := make(chan os.Signal, 1)
-	signal.Notify(sigintOrTerm, syscall.SIGINT, syscall.SIGTERM)
+	go func() {
+		sigintOrTerm := make(chan os.Signal, 1)
+		signal.Notify(sigintOrTerm, syscall.SIGINT, syscall.SIGTERM)
 
-	slog.Info("wait_sigint_sigterm")
-	<-sigintOrTerm
+		slog.Info("wait_sigint_sigterm")
+		<-sigintOrTerm
 
-	slog.Info("stop")
-	if err := riverClient.Stop(context.Background()); err != nil {
-		if errors.Is(err, context.DeadlineExceeded) {
-			return
+		slog.Info("stop_river")
+		if err := riverClient.Stop(context.Background()); err != nil {
+			if errors.Is(err, context.DeadlineExceeded) {
+				return
+			}
+			panic(fmt.Errorf("stop river: %w", err))
 		}
-		panic(fmt.Errorf("stop river: %w", err))
+	}()
+
+	mux := http.NewServeMux()
+	mux.Handle("/api/internal/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		slog.InfoContext(r.Context(), "health")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("ok"))
+	}))
+
+	slog.Info("serve")
+	if err := http.ListenAndServe(config.ServeAddr, mux); err != nil {
+		panic(err)
 	}
-	slog.Info("stopped")
 }

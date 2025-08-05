@@ -12,7 +12,7 @@ COPY internal ./internal
 
 ARG TARGETOS
 ARG TARGETARCH
-RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -ldflags "-w -s" -o tesseralbackgroundworker ./cmd/tesseralbackgroundworker
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -ldflags "-w -s" -o tesseral-background-worker ./cmd/tesseral-background-worker
 
 FROM scratch
 
