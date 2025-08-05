@@ -205,6 +205,7 @@ func (s *Store) sendSyncOrganizationEvent(ctx context.Context, tx pgx.Tx, qOrg q
 		ProjectID: idformat.Project.Format(authn.ProjectID(ctx)),
 		EventName: "sync.organization",
 		Payload: map[string]interface{}{
+			"type":           "sync.organization",
 			"organizationId": idformat.Organization.Format(qOrg.ID),
 		},
 	}, nil); err != nil {

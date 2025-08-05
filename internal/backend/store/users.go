@@ -332,6 +332,7 @@ func (s *Store) sendSyncUserEvent(ctx context.Context, tx pgx.Tx, qUser queries.
 		ProjectID: idformat.Project.Format(authn.ProjectID(ctx)),
 		EventName: "sync.user",
 		Payload: map[string]any{
+			"type":   "sync.user",
 			"userId": idformat.User.Format(qUser.ID),
 		},
 	}, nil); err != nil {
