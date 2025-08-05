@@ -50,6 +50,8 @@ func (s *Store) SendWebhook(ctx context.Context, req *SendWebhookRequest) error 
 			return fmt.Errorf("new http request: %w", err)
 		}
 
+		httpReq.Header.Set("Content-Type", "application/json")
+
 		httpRes, err := s.DirectWebhookHTTPClient.Do(httpReq)
 		if err != nil {
 			return fmt.Errorf("send http request: %w", err)
