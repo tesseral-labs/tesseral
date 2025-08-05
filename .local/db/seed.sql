@@ -72,6 +72,9 @@ values (
            (select now() + interval '1 year')
        );
 
+-- create company1's webhook settings
+insert into project_webhook_settings (id, project_id, app_id) values (gen_random_uuid(), '7abd6d2e-c314-456e-b9c5-bdbb62f0345f', 'app_30stIF9Prf8ht0g9pwDyNFyI6a3');
+
 -- Create company2's project
 insert into projects (id, log_in_with_email, log_in_with_password, log_in_with_google, log_in_with_microsoft, display_name, vault_domain, email_send_from_domain, redirect_uri, cookie_domain)
 values ('24ba0dd5-e178-460e-8f7a-f3f72cf6a1e7'::uuid, true, false, false, false, 'Company Two', 'vault.company2.example.com', 'vault.company2.example.com', 'http://company2.example.com', 'company2.example.com');

@@ -38,13 +38,7 @@ func (s *Store) SendWebhook(ctx context.Context, req *SendWebhookRequest) error 
 	if qProjectWebhookSettings.DirectWebhookUrl != nil {
 		slog.InfoContext(ctx, "handle_direct_webhook", "url", *qProjectWebhookSettings.DirectWebhookUrl)
 
-		body, err := json.Marshal(struct {
-			Type string         `json:"type"`
-			Data map[string]any `json:"data"`
-		}{
-			Type: req.EventType,
-			Data: req.Payload,
-		})
+		body, err := json.Marshal(req.Payload)
 		if err != nil {
 			return fmt.Errorf("marshal webhook body: %w", err)
 		}

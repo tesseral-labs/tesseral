@@ -23,7 +23,7 @@ func (s *Store) GetProjectWebhookManagementURL(ctx context.Context, req *backend
 
 	res := &backendv1.GetProjectWebhookManagementURLResponse{}
 
-	if qProjectWebhookSettings.AppID == nil || *qProjectWebhookSettings.AppID == "" {
+	if qProjectWebhookSettings.AppID != nil && *qProjectWebhookSettings.AppID != "" {
 		dashboard, err := s.svixClient.Authentication.AppPortalAccess(ctx, *qProjectWebhookSettings.AppID, models.AppPortalAccessIn{}, nil)
 		if err != nil {
 			return nil, fmt.Errorf("get app portal access: %w", err)
