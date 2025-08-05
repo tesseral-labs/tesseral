@@ -28,8 +28,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1/backendv1connect"
 	backendservice "github.com/tesseral-labs/tesseral/internal/backend/service"
 	backendstore "github.com/tesseral-labs/tesseral/internal/backend/store"
-	backgroundworkerstore "github.com/tesseral-labs/tesseral/internal/backgroundworker/store"
-	"github.com/tesseral-labs/tesseral/internal/backgroundworker/workers"
+	"github.com/tesseral-labs/tesseral/internal/backgroundworker/webhookworker"
 	"github.com/tesseral-labs/tesseral/internal/cloudflaredoh"
 	"github.com/tesseral-labs/tesseral/internal/common/accesstoken"
 	"github.com/tesseral-labs/tesseral/internal/common/corstrusteddomains"
@@ -272,26 +271,16 @@ func main() {
 
 	stripeClient := stripeclient.New(config.StripeAPIKey, nil)
 
-	store_ := backgroundworkerstore.New(backgroundworkerstore.NewStoreParams{
-		DB:   db,
-		Svix: svixClient,
-	})
-
+	// Register River workers, but never start them from this binary.
+	//
+	// https://riverqueue.com/docs#insert-only-clients
 	riverWorkers := river.NewWorkers()
-
-	if err := river.AddWorkerSafely(riverWorkers, workers.NewBackgroundWorker(store_)); err != nil {
-		panic(err)
-	}
+	river.AddWorker(riverWorkers, &webhookworker.Worker{})
 	riverClient, err := river.NewClient(riverpgxv5.New(db), &river.Config{
-		Queues: map[string]river.QueueConfig{
-			river.QueueDefault: {
-				MaxWorkers: 100,
-			},
-		},
 		Workers: riverWorkers,
 	})
 	if err != nil {
-		panic(err)
+		panic(fmt.Errorf("create river client: %w", err))
 	}
 
 	commonStore := commonstore.New(commonstore.NewStoreParams{
@@ -335,7 +324,7 @@ func main() {
 		SvixClient:                     svixClient,
 		AuditlogStore:                  &auditlogStore,
 		OIDCClient:                     oidcClient,
-		RiverClient:                           riverClient,
+		RiverClient:                    riverClient,
 	})
 	backendConnectPath, backendConnectHandler := backendv1connect.NewBackendServiceHandler(
 		&backendservice.Service{
@@ -362,9 +351,9 @@ func main() {
 		AuthenticatorAppSecretsKMS: authenticatorAppSecretsKMS,
 		SES:                        ses_,
 		PageEncoder:                pagetoken.Encoder{Secret: pageEncodingValue},
-		AuditlogStore:                         &auditlogStore,
-		OIDCClient:                            oidcClient,
-		RiverClient:                           riverClient,
+		AuditlogStore:              &auditlogStore,
+		OIDCClient:                 oidcClient,
+		RiverClient:                riverClient,
 	})
 	frontendConnectPath, frontendConnectHandler := frontendv1connect.NewFrontendServiceHandler(
 		&frontendservice.Service{
@@ -402,7 +391,7 @@ func main() {
 		S3:                                s3_,
 		SES:                               ses_,
 		UserContentBaseUrl:                config.UserContentBaseUrl,
-		RiverClient:                           riverClient,
+		RiverClient:                       riverClient,
 		S3UserContentBucketName:           config.S3UserContentBucketName,
 		StripeClient:                      stripeClient,
 		SvixClient:                        svixClient,

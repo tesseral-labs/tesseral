@@ -1,24 +1,32 @@
 package store
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log/slog"
+	"net/http"
 
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/svix/svix-webhooks/go/models"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
-type WebhookArgs struct {
-	EventType    string                 `json:"event_type"`
-	EventPayload map[string]interface{} `json:"event_payload"`
+type SendWebhookRequest struct {
+	ProjectID string
+	EventType string
+	Payload   map[string]any
 }
 
-func (s *Store) SendWebhook(ctx context.Context, projectID uuid.UUID, args WebhookArgs) error {
+func (s *Store) SendWebhook(ctx context.Context, req *SendWebhookRequest) error {
+	projectID, err := idformat.Project.Parse(req.ProjectID)
+	if err != nil {
+		return fmt.Errorf("parse project id: %w", err)
+	}
 
-	qProjectWebhookSettings, err := s.q.GetProjectWebhookSettings(ctx, projectID)
+	qProjectWebhookSettings, err := s.q().GetProjectWebhookSettings(ctx, projectID)
 	if err != nil {
 		// We want to ignore this error if the project does not have webhook settings
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -28,21 +36,47 @@ func (s *Store) SendWebhook(ctx context.Context, projectID uuid.UUID, args Webho
 	}
 
 	if qProjectWebhookSettings.DirectWebhookUrl != nil {
-		// TODO: Handle direct webhooks if they exist
-		return fmt.Errorf("direct webhooks are not yet implemented")
-	}
+		slog.InfoContext(ctx, "handle_direct_webhook", "url", *qProjectWebhookSettings.DirectWebhookUrl)
 
-	if qProjectWebhookSettings.AppID != nil && *qProjectWebhookSettings.AppID != "" {
+		body, err := json.Marshal(struct {
+			Type string         `json:"type"`
+			Data map[string]any `json:"data"`
+		}{
+			Type: req.EventType,
+			Data: req.Payload,
+		})
+		if err != nil {
+			return fmt.Errorf("marshal webhook body: %w", err)
+		}
+
+		httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, *qProjectWebhookSettings.DirectWebhookUrl, bytes.NewReader(body))
+		if err != nil {
+			return fmt.Errorf("new http request: %w", err)
+		}
+
+		httpRes, err := s.DirectWebhookHTTPClient.Do(httpReq)
+		if err != nil {
+			return fmt.Errorf("send http request: %w", err)
+		}
+
+		defer func() { _ = httpRes.Body.Close() }()
+
+		if httpRes.StatusCode != http.StatusOK {
+			return fmt.Errorf("bad response status code: %s", httpRes.Status)
+		}
+	} else if qProjectWebhookSettings.AppID != nil && *qProjectWebhookSettings.AppID != "" {
+		slog.InfoContext(ctx, "handle_svix_webhook", "svix_app_id", *qProjectWebhookSettings.AppID)
+
 		// If the project has an app ID, we can send the webhook via Svix
-		message, err := s.svix.Message.Create(ctx, *qProjectWebhookSettings.AppID, models.MessageIn{
-			EventType: args.EventType,
-			Payload:   args.EventPayload,
+		message, err := s.Svix.Message.Create(ctx, *qProjectWebhookSettings.AppID, models.MessageIn{
+			EventType: req.EventType,
+			Payload:   req.Payload,
 		}, nil)
 		if err != nil {
 			return fmt.Errorf("send webhook via svix: %w", err)
 		}
 
-		slog.InfoContext(ctx, "svix_message_created", "message_id", message.Id, "event_type", message.EventType, "event_payload", args.EventPayload)
+		slog.InfoContext(ctx, "svix_message_created", "message_id", message.Id)
 	}
 
 	return nil

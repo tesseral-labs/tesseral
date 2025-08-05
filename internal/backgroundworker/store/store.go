@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -11,28 +12,17 @@ import (
 )
 
 type Store struct {
-	db   *pgxpool.Pool
-	q    *queries.Queries
-	svix *svix.Svix
+	DB                      *pgxpool.Pool
+	Svix                    *svix.Svix
+	DirectWebhookHTTPClient *http.Client
 }
 
-type NewStoreParams struct {
-	DB   *pgxpool.Pool
-	Svix *svix.Svix
-}
-
-func New(p NewStoreParams) *Store {
-	store := &Store{
-		db:   p.DB,
-		q:    queries.New(p.DB),
-		svix: p.Svix,
-	}
-
-	return store
+func (s *Store) q() *queries.Queries {
+	return queries.New(s.DB)
 }
 
 func (s *Store) tx(ctx context.Context) (tx pgx.Tx, q *queries.Queries, commit func() error, rollback func() error, err error) {
-	tx, err = s.db.BeginTx(ctx, pgx.TxOptions{})
+	tx, err = s.DB.BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
 		return nil, nil, nil, nil, fmt.Errorf("begin tx: %w", err)
 	}

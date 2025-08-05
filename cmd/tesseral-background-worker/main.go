@@ -17,7 +17,7 @@ import (
 	"github.com/ssoready/conf"
 	svix "github.com/svix/svix-webhooks/go"
 	"github.com/tesseral-labs/tesseral/internal/backgroundworker/store"
-	"github.com/tesseral-labs/tesseral/internal/backgroundworker/workers"
+	"github.com/tesseral-labs/tesseral/internal/backgroundworker/webhookworker"
 	"github.com/tesseral-labs/tesseral/internal/common/sentryintegration"
 	"github.com/tesseral-labs/tesseral/internal/dbconn"
 	"github.com/tesseral-labs/tesseral/internal/loadenv"
@@ -66,14 +66,14 @@ func main() {
 		panic(fmt.Errorf("create svix client: %w", err))
 	}
 
-	store_ := store.New(store.NewStoreParams{
-		DB:   db,
-		Svix: svixClient,
-	})
-
 	riverWorkers := river.NewWorkers()
-
-	river.AddWorker(riverWorkers, workers.NewBackgroundWorker(store_))
+	river.AddWorker(riverWorkers, &webhookworker.Worker{
+		Store: &store.Store{
+			DB:                      db,
+			Svix:                    svixClient,
+			DirectWebhookHTTPClient: &http.Client{},
+		},
+	})
 
 	riverClient, err := river.NewClient(riverpgxv5.New(db), &river.Config{
 		Queues: map[string]river.QueueConfig{

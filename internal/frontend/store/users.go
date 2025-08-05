@@ -9,8 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
-	backgroundworkerstore "github.com/tesseral-labs/tesseral/internal/backgroundworker/store"
-	"github.com/tesseral-labs/tesseral/internal/backgroundworker/workers"
+	"github.com/tesseral-labs/tesseral/internal/backgroundworker/webhookworker"
 	"github.com/tesseral-labs/tesseral/internal/bcryptcost"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
@@ -273,15 +272,11 @@ func (s *Store) DeleteUser(ctx context.Context, req *frontendv1.DeleteUserReques
 
 func (s *Store) sendSyncUserEvent(ctx context.Context, tx pgx.Tx, qUser queries.User) error {
 	// Add the sync organization event to the background worker queue
-	if _, err := s.riverClient.InsertTx(ctx, tx, workers.BackgroundWorkerArgs{
+	if _, err := s.riverClient.InsertTx(ctx, tx, webhookworker.Args{
 		ProjectID: idformat.Project.Format(authn.ProjectID(ctx)),
-		EventName: "send_webhook",
-		WebhookPayload: backgroundworkerstore.WebhookArgs{
-			EventType: "sync.user",
-			EventPayload: map[string]interface{}{
-				"type":   "sync.user",
-				"userId": idformat.User.Format(qUser.ID),
-			},
+		EventName: "sync.user",
+		Payload: map[string]interface{}{
+			"userId": idformat.User.Format(qUser.ID),
 		},
 	}, nil); err != nil {
 		return fmt.Errorf("insert background worker args: %w", err)

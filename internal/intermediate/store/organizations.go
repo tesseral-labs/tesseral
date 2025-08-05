@@ -8,8 +8,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	backgroundworkerstore "github.com/tesseral-labs/tesseral/internal/backgroundworker/store"
-	"github.com/tesseral-labs/tesseral/internal/backgroundworker/workers"
+	"github.com/tesseral-labs/tesseral/internal/backgroundworker/webhookworker"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/emailaddr"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
@@ -459,15 +458,11 @@ func (s *Store) getVisibleOrganizations(ctx context.Context, q *queries.Queries,
 
 func (s *Store) sendSyncOrganizationEvent(ctx context.Context, tx pgx.Tx, qOrg queries.Organization) error {
 	// Add the sync organization event to the background worker queue
-	if _, err := s.riverClient.InsertTx(ctx, tx, workers.BackgroundWorkerArgs{
+	if _, err := s.riverClient.InsertTx(ctx, tx, webhookworker.Args{
 		ProjectID: idformat.Project.Format(authn.ProjectID(ctx)),
-		EventName: "send_webhook",
-		WebhookPayload: backgroundworkerstore.WebhookArgs{
-			EventType: "sync.organization",
-			EventPayload: map[string]interface{}{
-				"type":           "sync.organization",
-				"organizationId": idformat.Organization.Format(qOrg.ID),
-			},
+		EventName: "sync.organization",
+		Payload: map[string]any{
+			"organizationId": idformat.Organization.Format(qOrg.ID),
 		},
 	}, nil); err != nil {
 		return fmt.Errorf("insert background worker args: %w", err)

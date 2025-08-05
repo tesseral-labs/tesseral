@@ -12,8 +12,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
-	backgroundworkerstore "github.com/tesseral-labs/tesseral/internal/backgroundworker/store"
-	"github.com/tesseral-labs/tesseral/internal/backgroundworker/workers"
+	"github.com/tesseral-labs/tesseral/internal/backgroundworker/webhookworker"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -510,15 +509,11 @@ func (s *Store) EnableOrganizationLogins(ctx context.Context, req *backendv1.Ena
 
 func (s *Store) sendSyncOrganizationEvent(ctx context.Context, tx pgx.Tx, qOrg queries.Organization) error {
 	// Add the sync organization event to the background worker queue
-	if _, err := s.riverClient.InsertTx(ctx, tx, workers.BackgroundWorkerArgs{
+	if _, err := s.riverClient.InsertTx(ctx, tx, webhookworker.Args{
 		ProjectID: idformat.Project.Format(authn.ProjectID(ctx)),
-		EventName: "send_webhook",
-		WebhookPayload: backgroundworkerstore.WebhookArgs{
-			EventType: "sync.organization",
-			EventPayload: map[string]interface{}{
-				"type":           "sync.organization",
-				"organizationId": idformat.Organization.Format(qOrg.ID),
-			},
+		EventName: "sync.organization",
+		Payload: map[string]any{
+			"organizationId": idformat.Organization.Format(qOrg.ID),
 		},
 	}, nil); err != nil {
 		return fmt.Errorf("insert background worker args: %w", err)
