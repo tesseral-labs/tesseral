@@ -443,11 +443,12 @@ type ProjectUiSetting struct {
 }
 
 type ProjectWebhookSetting struct {
-	ID         uuid.UUID
-	ProjectID  uuid.UUID
-	AppID      string
-	CreateTime *time.Time
-	UpdateTime *time.Time
+	ID               uuid.UUID
+	ProjectID        uuid.UUID
+	AppID            *string
+	CreateTime       *time.Time
+	UpdateTime       *time.Time
+	DirectWebhookUrl *string
 }
 
 type PublishableKey struct {
