@@ -18,7 +18,6 @@ FROM scratch
 
 COPY --from=build /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=build /work/tesseralbackgroundworker /tesseralbackgroundworker
+COPY --from=build /work/tesseral-background-worker /tesseral-background-worker
 
-EXPOSE 3001
-ENTRYPOINT ["/tesseralbackgroundworker"]
+ENTRYPOINT ["/tesseral-background-worker"]
