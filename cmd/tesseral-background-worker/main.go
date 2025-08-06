@@ -14,6 +14,8 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/riverdriver/riverpgxv5"
+	"github.com/riverqueue/river/rivertype"
+	"github.com/riverqueue/rivercontrib/otelriver"
 	"github.com/ssoready/conf"
 	svix "github.com/svix/svix-webhooks/go"
 	"github.com/tesseral-labs/tesseral/internal/backgroundworker/store"
@@ -21,7 +23,16 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/common/sentryintegration"
 	"github.com/tesseral-labs/tesseral/internal/dbconn"
 	"github.com/tesseral-labs/tesseral/internal/loadenv"
+	"github.com/tesseral-labs/tesseral/internal/multislog"
 	"github.com/tesseral-labs/tesseral/internal/secretload"
+	"go.opentelemetry.io/contrib/bridges/otelslog"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
+	"go.opentelemetry.io/otel/log/global"
+	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/sdk/log"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
 func main() {
@@ -47,12 +58,63 @@ func main() {
 	loadenv.LoadEnv()
 
 	config := struct {
-		ServeAddr  string        `conf:"serve_addr,noredact"`
-		DB         dbconn.Config `conf:"db,noredact"`
-		SvixApiKey string        `conf:"svix_api_key,noredact"`
+		OTELExportTraces      bool          `conf:"otel_export_traces,noredact"`
+		OTLPTraceGRPCInsecure bool          `conf:"otlp_trace_grpc_insecure,noredact"`
+		ServeAddr             string        `conf:"serve_addr,noredact"`
+		DB                    dbconn.Config `conf:"db,noredact"`
+		SvixApiKey            string        `conf:"svix_api_key,noredact"`
 	}{}
 
 	conf.Load(&config)
+
+	if config.OTELExportTraces {
+		var exporterOpts []otlptracegrpc.Option
+		if config.OTLPTraceGRPCInsecure {
+			exporterOpts = append(exporterOpts, otlptracegrpc.WithInsecure())
+		}
+
+		exporter, err := otlptracegrpc.New(context.Background(), exporterOpts...)
+		if err != nil {
+			panic(fmt.Errorf("create otel trace exporter: %w", err))
+		}
+
+		tracerProvider := sdktrace.NewTracerProvider(sdktrace.WithBatcher(exporter))
+
+		defer func() {
+			if err := tracerProvider.Shutdown(context.Background()); err != nil {
+				panic(fmt.Errorf("shutdown tracer provider: %w", err))
+			}
+		}()
+
+		otel.SetTracerProvider(tracerProvider)
+		otel.SetTextMapPropagator(propagation.TraceContext{})
+
+		logExporter, err := otlploghttp.New(context.Background())
+		if err != nil {
+			panic(fmt.Errorf("create otel log exporter: %w", err))
+		}
+
+		lp := log.NewLoggerProvider(
+			log.WithProcessor(
+				log.NewBatchProcessor(logExporter),
+			),
+		)
+		defer func() {
+			if err := lp.Shutdown(context.Background()); err != nil {
+				panic(fmt.Errorf("shutdown logger provider: %w", err))
+			}
+		}()
+
+		global.SetLoggerProvider(lp)
+
+		slogHandler := ctxlog.NewHandler(
+			sentryintegration.NewSlogHandler(
+				multislog.Handler{jsonHandler, otelslog.NewHandler("api")},
+			),
+		)
+		slog.SetDefault(slog.New(slogHandler))
+	}
+
 	slog.Info("config", "config", conf.Redact(config))
 
 	db, err := dbconn.Open(context.Background(), config.DB)
@@ -77,6 +139,9 @@ func main() {
 
 	riverClient, err := river.NewClient(riverpgxv5.New(db), &river.Config{
 		Logger: slog.Default(),
+		Middleware: []rivertype.Middleware{
+			otelriver.NewMiddleware(nil),
+		},
 		Queues: map[string]river.QueueConfig{
 			river.QueueDefault: {
 				MaxWorkers: 100,

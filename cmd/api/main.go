@@ -20,6 +20,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/riverdriver/riverpgxv5"
+	"github.com/riverqueue/river/rivertype"
+	"github.com/riverqueue/rivercontrib/otelriver"
 	"github.com/ssoready/conf"
 	stripeclient "github.com/stripe/stripe-go/v82/client"
 	svix "github.com/svix/svix-webhooks/go"
@@ -277,6 +279,9 @@ func main() {
 	riverWorkers := river.NewWorkers()
 	river.AddWorker(riverWorkers, &webhookworker.Worker{})
 	riverClient, err := river.NewClient(riverpgxv5.New(db), &river.Config{
+		Middleware: []rivertype.Middleware{
+			otelriver.NewMiddleware(nil),
+		},
 		Workers: riverWorkers,
 	})
 	if err != nil {
