@@ -62,7 +62,7 @@ func main() {
 		OTLPTraceGRPCInsecure bool          `conf:"otlp_trace_grpc_insecure,noredact"`
 		ServeAddr             string        `conf:"serve_addr,noredact"`
 		DB                    dbconn.Config `conf:"db,noredact"`
-		SvixApiKey            string        `conf:"svix_api_key,noredact"`
+		SvixApiKey            string        `conf:"svix_api_key"`
 	}{}
 
 	conf.Load(&config)
