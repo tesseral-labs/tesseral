@@ -113,11 +113,6 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *frontendv1.CreateUser
 		return nil, apierror.NewPermissionDeniedError("self-serve user creation disabled", nil)
 	}
 
-	qOrg, err := q.GetOrganizationByID(ctx, authn.OrganizationID(ctx))
-	if err != nil {
-		return nil, fmt.Errorf("get organization by id: %w", err)
-	}
-
 	// As a sanity measure, prevent invites to existing users with the same
 	// email. Otherwise, those invites will remain present even after the user
 	// is deleted, and so someone with that email address could redeem the
@@ -262,4 +257,3 @@ func parseUserInvite(qUserInvite queries.UserInvite) *frontendv1.UserInvite {
 		Owner:      qUserInvite.IsOwner,
 	}
 }
-

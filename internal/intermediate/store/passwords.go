@@ -1,6 +1,7 @@
 package store
 
 import (
+	"bytes"
 	"context"
 	"crypto/sha256"
 	"errors"
@@ -458,7 +459,6 @@ func (s *Store) IssuePasswordResetCode(ctx context.Context, req *intermediatev1.
 
 	return &intermediatev1.IssuePasswordResetCodeResponse{}, nil
 }
-
 
 func (s *Store) VerifyPasswordResetCode(ctx context.Context, req *intermediatev1.VerifyPasswordResetCodeRequest) (*intermediatev1.VerifyPasswordResetCodeResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
