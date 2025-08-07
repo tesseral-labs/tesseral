@@ -466,7 +466,7 @@ func (s *Store) sendSyncOrganizationEvent(ctx context.Context, tx pgx.Tx, qOrg q
 			"organizationId": idformat.Organization.Format(qOrg.ID),
 		},
 	}, nil); err != nil {
-		return fmt.Errorf("insert background worker args: %w", err)
+		return fmt.Errorf("insert job: %w", err)
 	}
 	slog.InfoContext(ctx, "send_webhook_event_created", "event_type", "sync.organization", "organization_id", idformat.Organization.Format(qOrg.ID))
 

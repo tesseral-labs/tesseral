@@ -319,7 +319,7 @@ func (s *Store) sendSyncUserEvent(ctx context.Context, tx pgx.Tx, qUser queries.
 			"userId": idformat.User.Format(qUser.ID),
 		},
 	}, nil); err != nil {
-		return fmt.Errorf("insert background worker args: %w", err)
+		return fmt.Errorf("insert job: %w", err)
 	}
 	slog.InfoContext(ctx, "send_webhook_event_created", "event_type", "sync.user", "user_id", idformat.User.Format(qUser.ID))
 
