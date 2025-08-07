@@ -5,9 +5,13 @@ import (
 	"embed"
 	"fmt"
 	"log"
+	"log/slog"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/riverqueue/river/riverdriver/riverpgxv5"
+	"github.com/riverqueue/river/rivermigrate"
 )
 
 //go:embed migrations
@@ -94,7 +98,23 @@ type upArgs struct {
 	MigrateArgs migrateArgs `cli:"up,subcmd"`
 }
 
-func up(_ context.Context, args upArgs) error {
+func up(ctx context.Context, args upArgs) error {
+	db, err := pgxpool.New(ctx, args.MigrateArgs.Database)
+	if err != nil {
+		return fmt.Errorf("create db pool: %w", err)
+	}
+
+	migrator, err := rivermigrate.New(riverpgxv5.New(db), nil)
+	if err != nil {
+		return fmt.Errorf("create river migrator: %w", err)
+	}
+
+	migrator.Logger = slog.Default()
+
+	if _, err := migrator.Migrate(ctx, rivermigrate.DirectionUp, nil); err != nil {
+		return fmt.Errorf("migrate river: %w", err)
+	}
+
 	m, err := args.MigrateArgs.migrate()
 	if err != nil {
 		return err
