@@ -52,7 +52,7 @@ type Store struct {
 	svixClient                     *svix.Svix
 	auditlogStore                  *auditlogstore.Store
 	oidc                           *oidcclient.Client
-	riverClient                           *river.Client[pgx.Tx]
+	riverClient                    *river.Client[pgx.Tx]
 }
 
 type NewStoreParams struct {
@@ -80,7 +80,7 @@ type NewStoreParams struct {
 	SvixClient                     *svix.Svix
 	AuditlogStore                  *auditlogstore.Store
 	OIDCClient                     *oidcclient.Client
-	RiverClient                           *river.Client[pgx.Tx]
+	RiverClient                    *river.Client[pgx.Tx]
 }
 
 func New(p NewStoreParams) *Store {
@@ -111,7 +111,7 @@ func New(p NewStoreParams) *Store {
 		svixClient:                     p.SvixClient,
 		auditlogStore:                  p.AuditlogStore,
 		oidc:                           p.OIDCClient,
-		riverClient:                           p.RiverClient,
+		riverClient:                    p.RiverClient,
 	}
 
 	return store

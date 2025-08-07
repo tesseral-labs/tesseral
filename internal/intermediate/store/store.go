@@ -43,7 +43,7 @@ type Store struct {
 	googleOAuthClient                 *googleoauth.Client
 	microsoftOAuthClient              *microsoftoauth.Client
 	userContentBaseUrl                string
-	riverClient                           *river.Client[pgx.Tx]
+	riverClient                       *river.Client[pgx.Tx]
 	s3UserContentBucketName           string
 	stripeClient                      *stripeclient.API
 	svixClient                        *svix.Svix
@@ -76,7 +76,7 @@ type NewStoreParams struct {
 	GoogleOAuthClient                 *googleoauth.Client
 	MicrosoftOAuthClient              *microsoftoauth.Client
 	UserContentBaseUrl                string
-	RiverClient                           *river.Client[pgx.Tx]
+	RiverClient                       *river.Client[pgx.Tx]
 	S3UserContentBucketName           string
 	StripeClient                      *stripeclient.API
 	SvixClient                        *svix.Svix
@@ -115,7 +115,7 @@ func New(p NewStoreParams) *Store {
 		microsoftOAuthClientSecretsKMS:    p.MicrosoftOAuthClientSecretsKMS,
 		authenticatorAppSecretsKMS:        p.AuthenticatorAppSecretsKMS,
 		userContentBaseUrl:                p.UserContentBaseUrl,
-		riverClient:                           p.RiverClient,
+		riverClient:                       p.RiverClient,
 		s3UserContentBucketName:           p.S3UserContentBucketName,
 		stripeClient:                      p.StripeClient,
 		svixClient:                        p.SvixClient,
