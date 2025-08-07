@@ -385,7 +385,7 @@ func (s *Store) attemptMatchPassword(ctx context.Context, q *queries.Queries, qU
 }
 
 func (s *Store) IssuePasswordResetCode(ctx context.Context, req *intermediatev1.IssuePasswordResetCodeRequest) (*intermediatev1.IssuePasswordResetCodeResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}

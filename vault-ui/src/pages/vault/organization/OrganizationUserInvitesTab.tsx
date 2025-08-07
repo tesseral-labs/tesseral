@@ -250,9 +250,9 @@ function InviteUserButton() {
       await createUserInviteMutation.mutateAsync({
         userInvite: {
           email: data.email,
-          owner: data.owner || false,
+          owner: data.owner ?? false,
         },
-        sendEmail: data.sendEmail || true,
+        sendEmail: data.sendEmail ?? true,
       });
       await refetch();
       form.reset();
