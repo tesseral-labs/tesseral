@@ -10,6 +10,8 @@ import (
 	"os/signal"
 	"syscall"
 
+	awsconfig "github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/sesv2"
 	"github.com/cyrusaf/ctxlog"
 	"github.com/getsentry/sentry-go"
 	"github.com/riverqueue/river"
@@ -18,6 +20,7 @@ import (
 	"github.com/riverqueue/rivercontrib/otelriver"
 	"github.com/ssoready/conf"
 	svix "github.com/svix/svix-webhooks/go"
+	"github.com/tesseral-labs/tesseral/internal/backgroundworker/emailworker"
 	"github.com/tesseral-labs/tesseral/internal/backgroundworker/store"
 	"github.com/tesseral-labs/tesseral/internal/backgroundworker/webhookworker"
 	"github.com/tesseral-labs/tesseral/internal/common/sentryintegration"
@@ -63,6 +66,9 @@ func main() {
 		ServeAddr             string        `conf:"serve_addr,noredact"`
 		DB                    dbconn.Config `conf:"db,noredact"`
 		SvixApiKey            string        `conf:"svix_api_key"`
+		SESBaseEndpoint       string        `conf:"ses_base_endpoint,noredact"`
+		ConsoleProjectID      string        `conf:"console_project_id,noredact"`
+		ConsoleDomain         string        `conf:"console_domain,noredact"`
 	}{}
 
 	conf.Load(&config)
@@ -128,13 +134,32 @@ func main() {
 		panic(fmt.Errorf("create svix client: %w", err))
 	}
 
+	awsConfig, err := awsconfig.LoadDefaultConfig(context.Background())
+	if err != nil {
+		panic(fmt.Errorf("load aws config: %w", err))
+	}
+
+	sesClient := sesv2.NewFromConfig(awsConfig, func(o *sesv2.Options) {
+		if config.SESBaseEndpoint != "" {
+			o.BaseEndpoint = &config.SESBaseEndpoint
+		}
+	})
+
+	backgroundStore := &store.Store{
+		DB:                      db,
+		Svix:                    svixClient,
+		DirectWebhookHTTPClient: &http.Client{},
+		SES:                     sesClient,
+		ConsoleProjectID:        config.ConsoleProjectID,
+		ConsoleDomain:           config.ConsoleDomain,
+	}
+
 	riverWorkers := river.NewWorkers()
 	river.AddWorker(riverWorkers, &webhookworker.Worker{
-		Store: &store.Store{
-			DB:                      db,
-			Svix:                    svixClient,
-			DirectWebhookHTTPClient: &http.Client{},
-		},
+		Store: backgroundStore,
+	})
+	river.AddWorker(riverWorkers, &emailworker.Worker{
+		Store: backgroundStore,
 	})
 
 	riverClient, err := river.NewClient(riverpgxv5.New(db), &river.Config{

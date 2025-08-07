@@ -14,3 +14,19 @@ FROM
 WHERE
     id = $1;
 
+-- name: GetUserInvite :one
+SELECT
+    *
+FROM
+    user_invites
+WHERE
+    id = $1;
+
+-- name: GetOrganization :one
+SELECT
+    *
+FROM
+    organizations
+WHERE
+    id = $1;
+

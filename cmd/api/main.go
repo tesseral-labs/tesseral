@@ -30,6 +30,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1/backendv1connect"
 	backendservice "github.com/tesseral-labs/tesseral/internal/backend/service"
 	backendstore "github.com/tesseral-labs/tesseral/internal/backend/store"
+	"github.com/tesseral-labs/tesseral/internal/backgroundworker/emailworker"
 	"github.com/tesseral-labs/tesseral/internal/backgroundworker/webhookworker"
 	"github.com/tesseral-labs/tesseral/internal/cloudflaredoh"
 	"github.com/tesseral-labs/tesseral/internal/common/accesstoken"
@@ -278,6 +279,7 @@ func main() {
 	// https://riverqueue.com/docs#insert-only-clients
 	riverWorkers := river.NewWorkers()
 	river.AddWorker(riverWorkers, &webhookworker.Worker{})
+	river.AddWorker(riverWorkers, &emailworker.Worker{})
 	riverClient, err := river.NewClient(riverpgxv5.New(db), &river.Config{
 		Middleware: []rivertype.Middleware{
 			otelriver.NewMiddleware(nil),

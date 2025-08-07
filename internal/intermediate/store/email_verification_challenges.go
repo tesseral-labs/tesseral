@@ -6,15 +6,12 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
-	"html/template"
 	"log/slog"
 	"strings"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/service/sesv2"
-	"github.com/aws/aws-sdk-go-v2/service/sesv2/types"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/tesseral-labs/tesseral/internal/backgroundworker/emailworker"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
 	intermediatev1 "github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1"
@@ -27,7 +24,7 @@ import (
 var defaultEmailQuotaDaily int32 = 1000
 
 func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *intermediatev1.IssueEmailVerificationChallengeRequest) (*intermediatev1.IssueEmailVerificationChallengeResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+	tx, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -92,12 +89,18 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *interm
 		return nil, apierror.NewFailedPreconditionError("email daily quota exceeded", fmt.Errorf("email daily quota exceeded"))
 	}
 
-	if err := commit(); err != nil {
-		return nil, err
+	if _, err := s.riverClient.InsertTx(ctx, tx, emailworker.Args{
+		ProjectID: idformat.Project.Format(authn.ProjectID(ctx)),
+		VerifyEmail: &emailworker.VerifyEmailParams{
+			EmailAddress:          req.Email,
+			EmailVerificationCode: idformat.EmailVerificationChallengeCode.Format(emailVerificationChallengeCode),
+		},
+	}, nil); err != nil {
+		return nil, fmt.Errorf("insert email worker job: %w", err)
 	}
 
-	if err := s.sendEmailVerificationChallenge(ctx, req.Email, idformat.EmailVerificationChallengeCode.Format(emailVerificationChallengeCode)); err != nil {
-		return nil, fmt.Errorf("send email verification challenge: %w", err)
+	if err := commit(); err != nil {
+		return nil, err
 	}
 
 	return &intermediatev1.IssueEmailVerificationChallengeResponse{}, nil
@@ -164,67 +167,4 @@ func (s *Store) VerifyEmailChallenge(ctx context.Context, req *intermediatev1.Ve
 	}
 
 	return &intermediatev1.VerifyEmailChallengeResponse{}, nil
-}
-
-var emailVerificationEmailBodyTmpl = template.Must(template.New("emailVerificationEmailBody").Parse(`Hello,
-
-To continue logging in to {{ .ProjectDisplayName }}, please verify your email address by visiting the link below.
-
-{{ .EmailVerificationLink }}
-
-You can also go back to the "Check your email" page and enter this verification code manually:
-
-{{ .EmailVerificationCode }}
-
-If you did not request this verification, please ignore this email.
-`))
-
-func (s *Store) sendEmailVerificationChallenge(ctx context.Context, toAddress string, secretToken string) error {
-	qProject, err := s.q.GetProjectByID(ctx, authn.ProjectID(ctx))
-	if err != nil {
-		return fmt.Errorf("get project by id: %w", err)
-	}
-
-	subject := fmt.Sprintf("%s - Verify your email address", qProject.DisplayName)
-
-	vaultDomain := qProject.VaultDomain
-	if authn.ProjectID(ctx) == *s.consoleProjectID {
-		vaultDomain = s.consoleDomain
-	}
-
-	var body bytes.Buffer
-	if err := emailVerificationEmailBodyTmpl.Execute(&body, struct {
-		ProjectDisplayName    string
-		EmailVerificationLink string
-		EmailVerificationCode string
-	}{
-		ProjectDisplayName:    qProject.DisplayName,
-		EmailVerificationLink: fmt.Sprintf("https://%s/verify-email?code=%s", vaultDomain, secretToken),
-		EmailVerificationCode: secretToken,
-	}); err != nil {
-		return fmt.Errorf("execute email verification email body template: %w", err)
-	}
-
-	if _, err := s.ses.SendEmail(ctx, &sesv2.SendEmailInput{
-		Content: &types.EmailContent{
-			Simple: &types.Message{
-				Subject: &types.Content{
-					Data: &subject,
-				},
-				Body: &types.Body{
-					Text: &types.Content{
-						Data: aws.String(body.String()),
-					},
-				},
-			},
-		},
-		Destination: &types.Destination{
-			ToAddresses: []string{toAddress},
-		},
-		FromEmailAddress: aws.String(fmt.Sprintf("noreply@%s", qProject.EmailSendFromDomain)),
-	}); err != nil {
-		return fmt.Errorf("send email: %w", err)
-	}
-
-	return nil
 }
