@@ -10,6 +10,8 @@ import (
 	"github.com/golang-migrate/migrate/v4/database/pgx/v5"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/riverqueue/river/riverdriver/riverpgxv5"
+	"github.com/riverqueue/river/rivermigrate"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
 )
@@ -75,6 +77,17 @@ func newDB() (*pgxpool.Pool, func()) {
 	if err != nil {
 		cleanupContainer()
 		log.Panicf("create pgx pool: %v", err)
+	}
+
+	riverMigrator, err := rivermigrate.New(riverpgxv5.New(pool), nil)
+	if err != nil {
+		cleanupContainer()
+		log.Panicf("create river migrator: %v", err)
+	}
+
+	if _, err := riverMigrator.Migrate(ctx, rivermigrate.DirectionUp, nil); err != nil {
+		cleanupContainer()
+		log.Panicf("migrate river: %v", err)
 	}
 
 	return pool, func() {
