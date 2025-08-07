@@ -11,7 +11,6 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/riverqueue/river"
-	svix "github.com/svix/svix-webhooks/go"
 	auditlogstore "github.com/tesseral-labs/tesseral/internal/auditlog/store"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/hibp"
@@ -31,10 +30,9 @@ type Store struct {
 	ses                        *sesv2.Client
 	pageEncoder                pagetoken.Encoder
 	q                          *queries.Queries
-	svixClient                 *svix.Svix
-	auditlogStore              *auditlogstore.Store
-	oidc                       *oidcclient.Client
-	riverClient                *river.Client[pgx.Tx]
+	auditlogStore                         *auditlogstore.Store
+	oidc                                  *oidcclient.Client
+	riverClient                           *river.Client[pgx.Tx]
 }
 
 type NewStoreParams struct {
@@ -45,10 +43,9 @@ type NewStoreParams struct {
 	AuthenticatorAppSecretsKMS *kms.KMS
 	SES                        *sesv2.Client
 	PageEncoder                pagetoken.Encoder
-	SvixClient                 *svix.Svix
-	AuditlogStore              *auditlogstore.Store
-	OIDCClient                 *oidcclient.Client
-	RiverClient                *river.Client[pgx.Tx]
+	AuditlogStore                         *auditlogstore.Store
+	OIDCClient                            *oidcclient.Client
+	RiverClient                           *river.Client[pgx.Tx]
 }
 
 func New(p NewStoreParams) *Store {
@@ -64,10 +61,9 @@ func New(p NewStoreParams) *Store {
 		ses:                        p.SES,
 		pageEncoder:                p.PageEncoder,
 		q:                          queries.New(p.DB),
-		svixClient:                 p.SvixClient,
-		auditlogStore:              p.AuditlogStore,
-		oidc:                       p.OIDCClient,
-		riverClient:                p.RiverClient,
+		auditlogStore:                         p.AuditlogStore,
+		oidc:                                  p.OIDCClient,
+		riverClient:                           p.RiverClient,
 	}
 
 	return store
