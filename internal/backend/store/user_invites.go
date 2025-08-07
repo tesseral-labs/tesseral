@@ -183,14 +183,17 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *backendv1.CreateUserI
 	}
 
 	if req.SendEmail {
-		if _, err := s.riverClient.InsertTx(ctx, tx, emailworker.Args{
+		jobInsertRes, err := s.riverClient.InsertTx(ctx, tx, emailworker.Args{
 			ProjectID: idformat.Project.Format(authn.ProjectID(ctx)),
 			UserInvite: &emailworker.UserInviteParams{
 				UserInviteID: idformat.UserInvite.Format(qUserInvite.ID),
 			},
-		}, nil); err != nil {
+		}, nil)
+		if err != nil {
 			return nil, fmt.Errorf("insert email worker job: %w", err)
 		}
+
+		slog.InfoContext(ctx, "email_worker_job_inserted", "job_id", jobInsertRes.Job.ID)
 	}
 
 	if err := commit(); err != nil {

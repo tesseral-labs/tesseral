@@ -328,17 +328,19 @@ func (s *Store) DeleteUser(ctx context.Context, req *backendv1.DeleteUserRequest
 
 func (s *Store) sendSyncUserEvent(ctx context.Context, tx pgx.Tx, qUser queries.User) error {
 	// Add the sync organization event to the background worker queue
-	if _, err := s.riverClient.InsertTx(ctx, tx, webhookworker.Args{
+	jobInsertRes, err := s.riverClient.InsertTx(ctx, tx, webhookworker.Args{
 		ProjectID: idformat.Project.Format(authn.ProjectID(ctx)),
 		EventName: "sync.user",
 		Payload: map[string]any{
 			"type":   "sync.user",
 			"userId": idformat.User.Format(qUser.ID),
 		},
-	}, nil); err != nil {
+	}, nil)
+	if err != nil {
 		return fmt.Errorf("insert job: %w", err)
 	}
-	slog.InfoContext(ctx, "send_webhook_event_created", "event_type", "sync.user", "user_id", idformat.User.Format(qUser.ID))
+
+	slog.InfoContext(ctx, "webhook_worker_job_inserted", "job_id", jobInsertRes.Job.ID, "event_type", "sync.user", "user_id", idformat.User.Format(qUser.ID))
 
 	return nil
 }

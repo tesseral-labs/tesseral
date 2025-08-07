@@ -439,15 +439,18 @@ func (s *Store) IssuePasswordResetCode(ctx context.Context, req *intermediatev1.
 		return nil, apierror.NewFailedPreconditionError("email daily quota exceeded", fmt.Errorf("email daily quota exceeded"))
 	}
 
-	if _, err := s.riverClient.InsertTx(ctx, tx, emailworker.Args{
+	jobInsertRes, err := s.riverClient.InsertTx(ctx, tx, emailworker.Args{
 		ProjectID: idformat.Project.Format(authn.ProjectID(ctx)),
 		PasswordReset: &emailworker.PasswordResetParams{
 			EmailAddress:      *qIntermediateSession.Email,
 			PasswordResetCode: idformat.PasswordResetCode.Format(passwordResetCodeUUID),
 		},
-	}, nil); err != nil {
+	}, nil)
+	if err != nil {
 		return nil, fmt.Errorf("insert email worker job: %w", err)
 	}
+
+	slog.InfoContext(ctx, "email_worker_job_inserted", "job_id", jobInsertRes.Job.ID)
 
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)

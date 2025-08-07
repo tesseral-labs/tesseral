@@ -89,15 +89,18 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *interm
 		return nil, apierror.NewFailedPreconditionError("email daily quota exceeded", fmt.Errorf("email daily quota exceeded"))
 	}
 
-	if _, err := s.riverClient.InsertTx(ctx, tx, emailworker.Args{
+	jobInsertRes, err := s.riverClient.InsertTx(ctx, tx, emailworker.Args{
 		ProjectID: idformat.Project.Format(authn.ProjectID(ctx)),
 		VerifyEmail: &emailworker.VerifyEmailParams{
 			EmailAddress:          req.Email,
 			EmailVerificationCode: idformat.EmailVerificationChallengeCode.Format(emailVerificationChallengeCode),
 		},
-	}, nil); err != nil {
+	}, nil)
+	if err != nil {
 		return nil, fmt.Errorf("insert email worker job: %w", err)
 	}
+
+	slog.InfoContext(ctx, "email_worker_job_inserted", "job_id", jobInsertRes.Job.ID)
 
 	if err := commit(); err != nil {
 		return nil, err
