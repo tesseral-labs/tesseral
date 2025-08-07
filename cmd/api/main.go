@@ -356,6 +356,7 @@ func main() {
 		AuthenticatorAppSecretsKMS: authenticatorAppSecretsKMS,
 		SES:                        ses_,
 		PageEncoder:                pagetoken.Encoder{Secret: pageEncodingValue},
+		SvixClient:                 svixClient,
 		AuditlogStore:              &auditlogStore,
 		OIDCClient:                 oidcClient,
 		RiverClient:                riverClient,
