@@ -105,8 +105,75 @@ type SendEmailPasswordResetRequest struct {
 }
 
 func (s *Store) SendEmailPasswordReset(ctx context.Context, req *SendEmailPasswordResetRequest) error {
-	panic("unimplemented")
+	projectID, err := idformat.Project.Parse(req.ProjectID)
+	if err != nil {
+		return fmt.Errorf("parse project id: %w", err)
+	}
+
+	qProject, err := s.q().GetProject(ctx, projectID)
+	if err != nil {
+		return fmt.Errorf("get project by id: %w", err)
+	}
+
+	if qProject.CustomEmailPasswordReset {
+		if err := s.SendWebhook(ctx, &SendWebhookRequest{
+			ProjectID: req.ProjectID,
+			EventType: "custom_email.password_reset",
+			Payload: map[string]any{
+				"email_address":       req.EmailAddress,
+				"password_reset_code": req.PasswordResetCode,
+			},
+		}); err != nil {
+			return fmt.Errorf("send webhook: %w", err)
+		}
+		return nil
+	}
+
+	var body bytes.Buffer
+	if err := passwordResetEmailBodyTmpl.Execute(&body, struct {
+		ProjectDisplayName string
+		PasswordResetCode  string
+	}{
+		ProjectDisplayName: qProject.DisplayName,
+		PasswordResetCode:  req.PasswordResetCode,
+	}); err != nil {
+		return fmt.Errorf("execute password reset email body template: %w", err)
+	}
+
+	if _, err := s.SES.SendEmail(ctx, &sesv2.SendEmailInput{
+		Content: &types.EmailContent{
+			Simple: &types.Message{
+				Subject: &types.Content{
+					Data: aws.String(fmt.Sprintf("%s - Reset password", qProject.DisplayName)),
+				},
+				Body: &types.Body{
+					Text: &types.Content{
+						Data: aws.String(body.String()),
+					},
+				},
+			},
+		},
+		Destination: &types.Destination{
+			ToAddresses: []string{req.EmailAddress},
+		},
+		FromEmailAddress: aws.String(fmt.Sprintf("noreply@%s", qProject.EmailSendFromDomain)),
+	}); err != nil {
+		return fmt.Errorf("send email: %w", err)
+	}
+
+	return nil
 }
+
+var passwordResetEmailBodyTmpl = template.Must(template.New("passwordResetEmailBody").Parse(`Hello,
+
+Someone has requested a password reset for your {{ .ProjectDisplayName }} account. If you did not request this, please ignore this email.
+
+To continue logging in to {{ .ProjectDisplayName }}, please go back to the "Forgot password" page and enter this verification code:
+
+{{ .PasswordResetCode }}
+
+If you did not request this verification, please ignore this email.
+`))
 
 type SendEmailUserInviteRequest struct {
 	ProjectID    string
