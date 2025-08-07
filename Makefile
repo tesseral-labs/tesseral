@@ -60,7 +60,7 @@ queries:
 		internal/common/store/queries \
 		internal/configapi/store/queries \
 		internal/defaultoauth/store/queries \
-		internal/defaultoauth/store/queries-backgroundworker
+		internal/backgroundworker/store/queries
 	./bin/pg_format/pg_format -i sqlc/queries.sql
 	./bin/pg_format/pg_format -i sqlc/queries-auditlog.sql
 	./bin/pg_format/pg_format -i sqlc/queries-backend.sql
