@@ -1,0 +1,118 @@
+package store
+
+import (
+	"bytes"
+	"context"
+	"fmt"
+	"text/template"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/sesv2"
+	"github.com/aws/aws-sdk-go-v2/service/sesv2/types"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
+)
+
+type SendEmailVerifyEmailRequest struct {
+	ProjectID             string
+	EmailAddress          string
+	EmailVerificationCode string
+}
+
+func (s *Store) SendEmailVerifyEmail(ctx context.Context, req *SendEmailVerifyEmailRequest) error {
+	projectID, err := idformat.Project.Parse(req.ProjectID)
+	if err != nil {
+		return fmt.Errorf("parse project id: %w", err)
+	}
+
+	qProject, err := s.q().GetProject(ctx, projectID)
+	if err != nil {
+		return fmt.Errorf("get project by id: %w", err)
+	}
+
+	if qProject.CustomEmailVerifyEmail {
+		if err := s.SendWebhook(ctx, &SendWebhookRequest{
+			ProjectID: req.ProjectID,
+			EventType: "custom_email.verify_email",
+			Payload: map[string]any{
+				"email_address":           req.EmailAddress,
+				"email_verification_code": req.EmailVerificationCode,
+			},
+		}); err != nil {
+			return fmt.Errorf("send webhook: %w", err)
+		}
+		return nil
+	}
+
+	vaultDomain := qProject.VaultDomain
+	if req.ProjectID == s.ConsoleProjectID {
+		vaultDomain = s.ConsoleDomain
+	}
+
+	var body bytes.Buffer
+	if err := emailVerificationEmailBodyTmpl.Execute(&body, struct {
+		ProjectDisplayName    string
+		EmailVerificationLink string
+		EmailVerificationCode string
+	}{
+		ProjectDisplayName:    qProject.DisplayName,
+		EmailVerificationLink: fmt.Sprintf("https://%s/verify-email?code=%s", vaultDomain, req.EmailVerificationCode),
+		EmailVerificationCode: req.EmailVerificationCode,
+	}); err != nil {
+		return fmt.Errorf("execute email verification email body template: %w", err)
+	}
+
+	if _, err := s.SES.SendEmail(ctx, &sesv2.SendEmailInput{
+		Content: &types.EmailContent{
+			Simple: &types.Message{
+				Subject: &types.Content{
+					Data: aws.String(fmt.Sprintf("%s - Verify your email address", qProject.DisplayName)),
+				},
+				Body: &types.Body{
+					Text: &types.Content{
+						Data: aws.String(body.String()),
+					},
+				},
+			},
+		},
+		Destination: &types.Destination{
+			ToAddresses: []string{req.EmailAddress},
+		},
+		FromEmailAddress: aws.String(fmt.Sprintf("noreply@%s", qProject.EmailSendFromDomain)),
+	}); err != nil {
+		return fmt.Errorf("send email: %w", err)
+	}
+
+	return nil
+}
+
+var emailVerificationEmailBodyTmpl = template.Must(template.New("emailVerificationEmailBody").Parse(`Hello,
+
+To continue logging in to {{ .ProjectDisplayName }}, please verify your email address by visiting the link below.
+
+{{ .EmailVerificationLink }}
+
+You can also go back to the "Check your email" page and enter this verification code manually:
+
+{{ .EmailVerificationCode }}
+
+If you did not request this verification, please ignore this email.
+`))
+
+type SendEmailPasswordResetRequest struct {
+	ProjectID         string
+	EmailAddress      string
+	PasswordResetCode string
+}
+
+func (s *Store) SendEmailPasswordReset(ctx context.Context, req *SendEmailPasswordResetRequest) error {
+	panic("unimplemented")
+}
+
+type SendEmailUserInviteRequest struct {
+	ProjectID    string
+	UserInviteID string
+}
+
+func (s *Store) SendEmailUserInvite(ctx context.Context, req *SendEmailUserInviteRequest) error {
+	panic("unimplemented")
+}
