@@ -122,7 +122,10 @@ SET
     cookie_domain = $17,
     api_keys_enabled = $21,
     api_key_secret_token_prefix = $22,
-    audit_logs_enabled = $23
+    audit_logs_enabled = $23,
+    custom_email_verify_email = $25,
+    custom_email_password_reset = $26,
+    custom_email_user_invite = $27
 WHERE
     id = $1
 RETURNING

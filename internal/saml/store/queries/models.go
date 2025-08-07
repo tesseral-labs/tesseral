@@ -401,6 +401,9 @@ type Project struct {
 	ApiKeySecretTokenPrefix              *string
 	AuditLogsEnabled                     bool
 	LogInWithOidc                        bool
+	CustomEmailVerifyEmail               bool
+	CustomEmailPasswordReset             bool
+	CustomEmailUserInvite                bool
 }
 
 type ProjectEmailQuotaDailyUsage struct {

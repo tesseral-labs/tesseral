@@ -107,6 +107,10 @@ message Project {
 
   // Whether the Project has audit logging enabled.
   optional bool audit_logs_enabled = 29;
+
+  optional bool custom_email_verify_email = 31;
+  optional bool custom_email_password_reset = 32;
+  optional bool custom_email_user_invite = 33;
 }
 
 message VaultDomainSettings {

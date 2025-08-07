@@ -264,6 +264,21 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		updates.CookieDomain = req.Project.CookieDomain
 	}
 
+	updates.CustomEmailVerifyEmail = qProject.CustomEmailVerifyEmail
+	if req.Project.CustomEmailVerifyEmail != nil {
+		updates.CustomEmailVerifyEmail = *req.Project.CustomEmailVerifyEmail
+	}
+
+	updates.CustomEmailPasswordReset = qProject.CustomEmailPasswordReset
+	if req.Project.CustomEmailPasswordReset != nil {
+		updates.CustomEmailPasswordReset = *req.Project.CustomEmailPasswordReset
+	}
+
+	updates.CustomEmailUserInvite = qProject.CustomEmailUserInvite
+	if req.Project.CustomEmailUserInvite != nil {
+		updates.CustomEmailUserInvite = *req.Project.CustomEmailUserInvite
+	}
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -666,5 +681,8 @@ func (s *Store) parseProject(qProject *queries.Project, qProjectTrustedDomains [
 		ApiKeysEnabled:             &qProject.ApiKeysEnabled,
 		ApiKeySecretTokenPrefix:    qProject.ApiKeySecretTokenPrefix,
 		AuditLogsEnabled:           refOrNil(qProject.AuditLogsEnabled),
+		CustomEmailVerifyEmail:     &qProject.CustomEmailVerifyEmail,
+		CustomEmailPasswordReset:   &qProject.CustomEmailPasswordReset,
+		CustomEmailUserInvite:      &qProject.CustomEmailUserInvite,
 	}
 }
