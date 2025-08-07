@@ -1,22 +1,18 @@
 package store
 
 import (
-	"bytes"
 	"context"
 	"errors"
 	"fmt"
 	"log/slog"
-	"text/template"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/service/sesv2"
-	"github.com/aws/aws-sdk-go-v2/service/sesv2/types"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/backgroundworker/emailworker"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -186,14 +182,19 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *backendv1.CreateUserI
 		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
+	if req.SendEmail {
+		if _, err := s.riverClient.InsertTx(ctx, tx, emailworker.Args{
+			ProjectID: idformat.Project.Format(authn.ProjectID(ctx)),
+			UserInvite: &emailworker.UserInviteParams{
+				UserInviteID: idformat.UserInvite.Format(qUserInvite.ID),
+			},
+		}, nil); err != nil {
+			return nil, fmt.Errorf("insert email worker job: %w", err)
+		}
 	}
 
-	if req.SendEmail {
-		if err := s.sendUserInviteEmail(ctx, req.UserInvite.Email, qOrg.DisplayName); err != nil {
-			return nil, fmt.Errorf("send user invite email: %w", err)
-		}
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &backendv1.CreateUserInviteResponse{UserInvite: parseUserInvite(qUserInvite)}, nil
@@ -262,61 +263,3 @@ func parseUserInvite(qUserInvite queries.UserInvite) *backendv1.UserInvite {
 	}
 }
 
-var userInviteEmailBodyTmpl = template.Must(template.New("userInviteEmailBodyTmpl").Parse(`Hello,
-
-You have been invited to join {{ .OrganizationDisplayName }} in {{ .ProjectDisplayName }}.
-
-You can accept this invite by signing up for {{ .ProjectDisplayName }}:
-
-{{ .SignupLink }}
-`))
-
-func (s *Store) sendUserInviteEmail(ctx context.Context, toAddress string, organizationDisplayName string) error {
-	qProject, err := s.q.GetProjectByID(ctx, authn.ProjectID(ctx))
-	if err != nil {
-		return fmt.Errorf("get project by id: %w", err)
-	}
-
-	subject := fmt.Sprintf("%s - You've been invited to join %s", qProject.DisplayName, organizationDisplayName)
-
-	vaultDomain := qProject.VaultDomain
-	if authn.ProjectID(ctx) == *s.consoleProjectID {
-		vaultDomain = s.consoleDomain
-	}
-
-	var body bytes.Buffer
-	if err := userInviteEmailBodyTmpl.Execute(&body, struct {
-		ProjectDisplayName      string
-		OrganizationDisplayName string
-		SignupLink              string
-	}{
-		ProjectDisplayName:      qProject.DisplayName,
-		OrganizationDisplayName: organizationDisplayName,
-		SignupLink:              fmt.Sprintf("https://%s/signup", vaultDomain),
-	}); err != nil {
-		return fmt.Errorf("execute email verification email body template: %w", err)
-	}
-
-	if _, err := s.ses.SendEmail(ctx, &sesv2.SendEmailInput{
-		Content: &types.EmailContent{
-			Simple: &types.Message{
-				Subject: &types.Content{
-					Data: &subject,
-				},
-				Body: &types.Body{
-					Text: &types.Content{
-						Data: aws.String(body.String()),
-					},
-				},
-			},
-		},
-		Destination: &types.Destination{
-			ToAddresses: []string{toAddress},
-		},
-		FromEmailAddress: aws.String(fmt.Sprintf("noreply@%s", qProject.EmailSendFromDomain)),
-	}); err != nil {
-		return fmt.Errorf("send email: %w", err)
-	}
-
-	return nil
-}

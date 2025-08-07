@@ -1,19 +1,15 @@
 package store
 
 import (
-	"bytes"
 	"context"
 	"crypto/sha256"
 	"errors"
 	"fmt"
-	"html/template"
 	"log/slog"
 	"time"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/service/sesv2"
-	"github.com/aws/aws-sdk-go-v2/service/sesv2/types"
 	"github.com/google/uuid"
+	"github.com/tesseral-labs/tesseral/internal/backgroundworker/emailworker"
 	"github.com/tesseral-labs/tesseral/internal/bcryptcost"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
@@ -443,70 +439,23 @@ func (s *Store) IssuePasswordResetCode(ctx context.Context, req *intermediatev1.
 		return nil, apierror.NewFailedPreconditionError("email daily quota exceeded", fmt.Errorf("email daily quota exceeded"))
 	}
 
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
+	if _, err := s.riverClient.InsertTx(ctx, tx, emailworker.Args{
+		ProjectID: idformat.Project.Format(authn.ProjectID(ctx)),
+		PasswordReset: &emailworker.PasswordResetParams{
+			EmailAddress:      *qIntermediateSession.Email,
+			PasswordResetCode: idformat.PasswordResetCode.Format(passwordResetCodeUUID),
+		},
+	}, nil); err != nil {
+		return nil, fmt.Errorf("insert email worker job: %w", err)
 	}
 
-	if err := s.sendPasswordResetCode(ctx, *qIntermediateSession.Email, idformat.PasswordResetCode.Format(passwordResetCodeUUID)); err != nil {
-		return nil, fmt.Errorf("send password reset code: %w", err)
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &intermediatev1.IssuePasswordResetCodeResponse{}, nil
 }
 
-var passwordResetEmailBodyTmpl = template.Must(template.New("emailVerificationEmailBody").Parse(`Hello,
-
-Someone has requested a password reset for your {{ .ProjectDisplayName }} account. If you did not request this, please ignore this email.
-
-To continue logging in to {{ .ProjectDisplayName }}, please go back to the "Forgot password" page and enter this verification code:
-
-{{ .PasswordResetCode }}
-
-If you did not request this verification, please ignore this email.
-`))
-
-func (s *Store) sendPasswordResetCode(ctx context.Context, toAddress string, passwordResetCode string) error {
-	qProject, err := s.q.GetProjectByID(ctx, authn.ProjectID(ctx))
-	if err != nil {
-		return fmt.Errorf("get project by id: %w", err)
-	}
-
-	subject := fmt.Sprintf("%s - Reset password", qProject.DisplayName)
-
-	var body bytes.Buffer
-	if err := passwordResetEmailBodyTmpl.Execute(&body, struct {
-		ProjectDisplayName string
-		PasswordResetCode  string
-	}{
-		ProjectDisplayName: qProject.DisplayName,
-		PasswordResetCode:  passwordResetCode,
-	}); err != nil {
-		return fmt.Errorf("execute password reset email body template: %w", err)
-	}
-
-	if _, err := s.ses.SendEmail(ctx, &sesv2.SendEmailInput{
-		Content: &types.EmailContent{
-			Simple: &types.Message{
-				Subject: &types.Content{
-					Data: &subject,
-				},
-				Body: &types.Body{
-					Text: &types.Content{
-						Data: aws.String(body.String()),
-					},
-				},
-			},
-		},
-		Destination: &types.Destination{
-			ToAddresses: []string{toAddress},
-		},
-		FromEmailAddress: aws.String(fmt.Sprintf("noreply@%s", qProject.EmailSendFromDomain)),
-	}); err != nil {
-		return fmt.Errorf("send email: %w", err)
-	}
-
-	return nil
-}
 
 func (s *Store) VerifyPasswordResetCode(ctx context.Context, req *intermediatev1.VerifyPasswordResetCodeRequest) (*intermediatev1.VerifyPasswordResetCodeResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
