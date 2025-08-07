@@ -8,8 +8,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/svix/svix-webhooks/go/models"
 	auditlogv1 "github.com/tesseral-labs/tesseral/internal/auditlog/gen/tesseral/auditlog/v1"
-	"github.com/tesseral-labs/tesseral/internal/backgroundworker/webhookworker"
 	"github.com/tesseral-labs/tesseral/internal/bcryptcost"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
@@ -271,18 +271,31 @@ func (s *Store) DeleteUser(ctx context.Context, req *frontendv1.DeleteUserReques
 }
 
 func (s *Store) sendSyncUserEvent(ctx context.Context, tx pgx.Tx, qUser queries.User) error {
-	// Add the sync organization event to the background worker queue
-	if _, err := s.riverClient.InsertTx(ctx, tx, webhookworker.Args{
-		ProjectID: idformat.Project.Format(authn.ProjectID(ctx)),
-		EventName: "sync.user",
+	qProjectWebhookSettings, err := s.q.GetProjectWebhookSettings(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		// We want to ignore this error if the project does not have webhook settings
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil
+		}
+		return fmt.Errorf("get project by id: %w", err)
+	}
+
+	if qProjectWebhookSettings.AppID == nil {
+		return nil
+	}
+
+	message, err := s.svixClient.Message.Create(ctx, *qProjectWebhookSettings.AppID, models.MessageIn{
+		EventType: "sync.user",
 		Payload: map[string]interface{}{
 			"type":   "sync.user",
 			"userId": idformat.User.Format(qUser.ID),
 		},
-	}, nil); err != nil {
-		return fmt.Errorf("insert background worker args: %w", err)
+	}, nil)
+	if err != nil {
+		return fmt.Errorf("create message: %w", err)
 	}
-	slog.InfoContext(ctx, "send_webhook_event_created", "event_type", "sync.user", "user_id", idformat.User.Format(qUser.ID))
+
+	slog.InfoContext(ctx, "svix_message_created", "message_id", message.Id, "event_type", message.EventType, "user_id", idformat.User.Format(qUser.ID))
 
 	return nil
 }
