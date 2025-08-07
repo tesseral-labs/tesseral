@@ -35,6 +35,7 @@ type testUtil struct {
 func newTestUtil(t *testing.T) (context.Context, *testUtil) {
 	store := New(NewStoreParams{
 		DB:                             environment.DB,
+		RiverClient:                    environment.River,
 		S3:                             environment.S3.Client,
 		S3UserContentBucketName:        environment.S3.UserContentBucketName,
 		SessionSigningKeyKMS:           environment.KMS.SessionSigningKeysKMS,

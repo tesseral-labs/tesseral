@@ -10,15 +10,22 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/riverqueue/river"
+	"github.com/riverqueue/river/riverdriver/riverpgxv5"
+	"github.com/riverqueue/river/rivertype"
+	"github.com/riverqueue/rivercontrib/otelriver"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
+	"github.com/tesseral-labs/tesseral/internal/backgroundworker/webhookworker"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
 type Environment struct {
-	DB  *pgxpool.Pool
-	KMS *testKms
-	S3  *testS3
+	DB    *pgxpool.Pool
+	River *river.Client[pgx.Tx]
+	KMS   *testKms
+	S3    *testS3
 
 	ConsoleProjectID   *uuid.UUID
 	ConsoleUserID      string
@@ -32,10 +39,23 @@ func NewEnvironment() (*Environment, func()) {
 	kms, cleanupKms := newKMS()
 	s3, cleanupS3 := newS3()
 
+	riverWorkers := river.NewWorkers()
+	river.AddWorker(riverWorkers, &webhookworker.Worker{})
+	riverClient, err := river.NewClient(riverpgxv5.New(db), &river.Config{
+		Middleware: []rivertype.Middleware{
+			otelriver.NewMiddleware(nil),
+		},
+		Workers: riverWorkers,
+	})
+	if err != nil {
+		log.Panicf("failed to create river client: %v", err)
+	}
+
 	env := &Environment{
-		DB:  db,
-		S3:  s3,
-		KMS: kms,
+		DB:    db,
+		River: riverClient,
+		S3:    s3,
+		KMS:   kms,
 	}
 	env.seed()
 
