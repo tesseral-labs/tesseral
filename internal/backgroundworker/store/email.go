@@ -34,9 +34,9 @@ func (s *Store) SendEmailVerifyEmail(ctx context.Context, req *SendEmailVerifyEm
 			ProjectID: req.ProjectID,
 			EventType: "custom_email.verify_email",
 			Payload: map[string]any{
-				"type":                  "custom_email.verify_email",
-				"emailAddress":          req.EmailAddress,
-				"emailVerificationCode": req.EmailVerificationCode,
+				"type":                           "custom_email.verify_email",
+				"emailAddress":                   req.EmailAddress,
+				"emailVerificationChallengeCode": req.EmailVerificationCode,
 			},
 		}); err != nil {
 			return fmt.Errorf("send webhook: %w", err)
