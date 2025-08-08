@@ -102,8 +102,8 @@ export function CustomEmailSettingsCard() {
                   <div className="space-y-2">
                     <FormLabel>Custom Email Verification</FormLabel>
                     <FormDescription>
-                      Send a <code
-                      className="text-xs">custom_email.verify_email</code>{" "}
+                      Send a{" "}
+                      <code className="text-xs">custom_email.verify_email</code>{" "}
                       webhook event when Users verify their email address.
                     </FormDescription>
                     <FormMessage />
@@ -125,8 +125,10 @@ export function CustomEmailSettingsCard() {
                   <div className="space-y-2">
                     <FormLabel>Custom Password Reset</FormLabel>
                     <FormDescription>
-                      Send a <code
-                      className="text-xs">custom_email.password_reset</code>{" "}
+                      Send a{" "}
+                      <code className="text-xs">
+                        custom_email.password_reset
+                      </code>{" "}
                       webhook event when Users forget their password.
                     </FormDescription>
                     <FormMessage />
@@ -148,8 +150,8 @@ export function CustomEmailSettingsCard() {
                   <div className="space-y-2">
                     <FormLabel>Custom User Invite</FormLabel>
                     <FormDescription>
-                      Send a <code
-                      className="text-xs">custom_email.user_invite</code>{" "}
+                      Send a{" "}
+                      <code className="text-xs">custom_email.user_invite</code>{" "}
                       webhook event when Users are invited.
                     </FormDescription>
                     <FormMessage />
