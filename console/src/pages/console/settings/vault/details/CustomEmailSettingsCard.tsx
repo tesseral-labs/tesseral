@@ -89,7 +89,8 @@ export function CustomEmailSettingsCard() {
               <span>Custom Email Settings</span>
             </CardTitle>
             <CardDescription>
-              Configure custom email sending settings for this project.
+              By default, Tesseral will send emails on your behalf. You can have
+              Tesseral send you a webhook instead.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 flex-grow">
@@ -101,8 +102,9 @@ export function CustomEmailSettingsCard() {
                   <div className="space-y-2">
                     <FormLabel>Custom Email Verification</FormLabel>
                     <FormDescription>
-                      When enabled, use custom email templates and settings for
-                      email verification messages.
+                      Send a <code
+                      className="text-xs">custom_email.verify_email</code>{" "}
+                      webhook event when Users verify their email address.
                     </FormDescription>
                     <FormMessage />
                   </div>
@@ -123,8 +125,9 @@ export function CustomEmailSettingsCard() {
                   <div className="space-y-2">
                     <FormLabel>Custom Password Reset</FormLabel>
                     <FormDescription>
-                      When enabled, use custom email templates and settings for
-                      password reset messages.
+                      Send a <code
+                      className="text-xs">custom_email.password_reset</code>{" "}
+                      webhook event when Users forget their password.
                     </FormDescription>
                     <FormMessage />
                   </div>
@@ -145,8 +148,9 @@ export function CustomEmailSettingsCard() {
                   <div className="space-y-2">
                     <FormLabel>Custom User Invite</FormLabel>
                     <FormDescription>
-                      When enabled, use custom email templates and settings for
-                      user invitation messages.
+                      Send a <code
+                      className="text-xs">custom_email.user_invite</code>{" "}
+                      webhook event when Users are invited.
                     </FormDescription>
                     <FormMessage />
                   </div>
