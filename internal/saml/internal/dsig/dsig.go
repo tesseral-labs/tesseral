@@ -57,6 +57,8 @@ func Verify(cert *x509.Certificate, data []byte) ([]byte, error) {
 		{URI: "http://www.w3.org/2000/09/xmldsig#", Local: "SignatureValue"},
 	}, unverifiedDoc.Root)
 
+	// some sanity checks for client, i.e. prevent nil pointer de-reference
+	// Not actually a security boundary
 	if signatureValue.Element == nil || signatureValue.Element.Children[0].Text == nil {
 		return nil, ErrUnsigned
 	}
@@ -99,6 +101,10 @@ func Verify(cert *x509.Certificate, data []byte) ([]byte, error) {
 		{URI: "http://www.w3.org/2000/09/xmldsig#", Local: "X509Certificate"},
 	}, unverifiedDoc.Root)
 
+	if x509Certificate.Element == nil || x509Certificate.Element.Children[0].Text == nil {
+		return nil, fmt.Errorf("no certificate in keyInfo")
+	}
+
 	resCertBase64 := *x509Certificate.Element.Children[0].Text
 	resCertBase64 = strings.ReplaceAll(resCertBase64, " ", "")
 	resCertBase64 = strings.ReplaceAll(resCertBase64, "\n", "")
@@ -116,38 +122,19 @@ func Verify(cert *x509.Certificate, data []byte) ([]byte, error) {
 		return nil, BadCertificateError{BadCertificate: badCert}
 	}
 
-	digestData, err := responseDigestData(unverifiedDoc)
-	if err != nil {
-		return nil, err
-	}
-
-	digestHash := sha256.Sum256(digestData)
-	digestHashBase64 := base64.StdEncoding.EncodeToString(digestHash[:])
-
-	digestValue, _ := onlyPathHoistNames(path{
-		{URI: "urn:oasis:names:tc:SAML:2.0:protocol", Local: "Response"},
-		{URI: "urn:oasis:names:tc:SAML:2.0:assertion", Local: "Assertion"},
-		{URI: "http://www.w3.org/2000/09/xmldsig#", Local: "Signature"},
-		{URI: "http://www.w3.org/2000/09/xmldsig#", Local: "SignedInfo"},
-		{URI: "http://www.w3.org/2000/09/xmldsig#", Local: "Reference"},
-		{URI: "http://www.w3.org/2000/09/xmldsig#", Local: "DigestValue"},
-	}, unverifiedDoc.Root)
-
-	if *digestValue.Element.Children[0].Text != digestHashBase64 {
-		return nil, ErrBadDigest
-	}
-
+	// actually crypto authentication happens here
+	// start from a trusted public key
 	publicKey, ok := cert.PublicKey.(*rsa.PublicKey)
 	if !ok {
 		return nil, ErrNoRSAPublicKey
 	}
 
-	signatureData, err := responseSignatureData(data)
+	signedInfoBytes, err := responseSignatureData(data)
 	if err != nil {
 		return nil, err
 	}
 
-	signatureHash := sha256.Sum256(signatureData)
+	signatureHash := sha256.Sum256(signedInfoBytes)
 
 	//signatureBase64 := signatureBase64
 	signatureBase64 = strings.ReplaceAll(signatureBase64, " ", "")
@@ -161,7 +148,49 @@ func Verify(cert *x509.Certificate, data []byte) ([]byte, error) {
 		return nil, fmt.Errorf("verify signature: %w", err)
 	}
 
-	return digestData, nil
+	// Authenticates: signedInfoBytes,
+	// Since signatureHash is signed (sha-256 hash of signedInfoBytes), signedInfoBytes is also signed
+
+	// Re-Parse signedInfoBytes to get DigestValue (sha-256 of referenced data).
+	signedInfo, err := uxml.Parse(signedInfoBytes)
+	if err != nil {
+		return nil, fmt.Errorf("unable to parse signedInfo: %w", err)
+	}
+
+	// we can trust the DigestValue, since the DigestValue is parsed from signedInfoBytes
+
+	digestValue, _ := onlyPathHoistNames(path{
+		{URI: "http://www.w3.org/2000/09/xmldsig#", Local: "SignedInfo"},
+		{URI: "http://www.w3.org/2000/09/xmldsig#", Local: "Reference"},
+		{URI: "http://www.w3.org/2000/09/xmldsig#", Local: "DigestValue"},
+	}, signedInfo.Root)
+
+	// nil-pointer de-ref
+	if digestValue.Element == nil || digestValue.Element.Children[0].Text == nil {
+		return nil, fmt.Errorf("digestValue is empty")
+	}
+
+	// parse the trusted DigestValue element, to get the raw digest bytes
+	digestValueBase64 := *digestValue.Element.Children[0].Text
+	signedDigestValue, err := base64.StdEncoding.DecodeString(digestValueBase64)
+	if err != nil {
+		return nil, err
+	}
+
+	// obtained referenced bytes we wish to authenticate
+	referencedBytes, err := responseDigestData(unverifiedDoc)
+	if err != nil {
+		return nil, err
+	}
+
+	referencedBytesHash := sha256.Sum256(referencedBytes)
+
+	// authenticate referencedBytes against trusted digest
+	if !bytes.Equal(signedDigestValue, referencedBytesHash[:]) {
+		return nil, ErrBadDigest
+	}
+	// now the referencedBytes is trusted, so return it
+	return referencedBytes, nil
 }
 
 func responseDigestData(unverifiedDoc *uxml.Document) ([]byte, error) {
