@@ -108,8 +108,16 @@ message Project {
   // Whether the Project has audit logging enabled.
   optional bool audit_logs_enabled = 29;
 
+  // Whether to fire a "custom_email.verify_email" webhook instead of sending an
+  // email when Users verify their email address.
   optional bool custom_email_verify_email = 31;
+
+  // Whether to fire a "custom_email.password_reset" webhook instead of sending
+  // an email when Users reset their password.
   optional bool custom_email_password_reset = 32;
+
+  // Whether to fire a "custom_email.user_invite" webhook instead of sending an
+  // email when inviting Users.
   optional bool custom_email_user_invite = 33;
 }
 

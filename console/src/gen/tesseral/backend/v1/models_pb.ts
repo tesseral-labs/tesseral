@@ -242,16 +242,25 @@ export type Project = Message<"tesseral.backend.v1.Project"> & {
   auditLogsEnabled?: boolean;
 
   /**
+   * Whether to fire a "custom_email.verify_email" webhook instead of sending an
+   * email when Users verify their email address.
+   *
    * @generated from field: optional bool custom_email_verify_email = 31;
    */
   customEmailVerifyEmail?: boolean;
 
   /**
+   * Whether to fire a "custom_email.password_reset" webhook instead of sending
+   * an email when Users reset their password.
+   *
    * @generated from field: optional bool custom_email_password_reset = 32;
    */
   customEmailPasswordReset?: boolean;
 
   /**
+   * Whether to fire a "custom_email.user_invite" webhook instead of sending an
+   * email when inviting Users.
+   *
    * @generated from field: optional bool custom_email_user_invite = 33;
    */
   customEmailUserInvite?: boolean;

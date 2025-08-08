@@ -241,12 +241,18 @@ type Project struct {
 	// The prefix used for API Key secret tokens.
 	ApiKeySecretTokenPrefix *string `protobuf:"bytes,28,opt,name=api_key_secret_token_prefix,json=apiKeySecretTokenPrefix,proto3,oneof" json:"api_key_secret_token_prefix,omitempty"`
 	// Whether the Project has audit logging enabled.
-	AuditLogsEnabled         *bool `protobuf:"varint,29,opt,name=audit_logs_enabled,json=auditLogsEnabled,proto3,oneof" json:"audit_logs_enabled,omitempty"`
-	CustomEmailVerifyEmail   *bool `protobuf:"varint,31,opt,name=custom_email_verify_email,json=customEmailVerifyEmail,proto3,oneof" json:"custom_email_verify_email,omitempty"`
+	AuditLogsEnabled *bool `protobuf:"varint,29,opt,name=audit_logs_enabled,json=auditLogsEnabled,proto3,oneof" json:"audit_logs_enabled,omitempty"`
+	// Whether to fire a "custom_email.verify_email" webhook instead of sending an
+	// email when Users verify their email address.
+	CustomEmailVerifyEmail *bool `protobuf:"varint,31,opt,name=custom_email_verify_email,json=customEmailVerifyEmail,proto3,oneof" json:"custom_email_verify_email,omitempty"`
+	// Whether to fire a "custom_email.password_reset" webhook instead of sending
+	// an email when Users reset their password.
 	CustomEmailPasswordReset *bool `protobuf:"varint,32,opt,name=custom_email_password_reset,json=customEmailPasswordReset,proto3,oneof" json:"custom_email_password_reset,omitempty"`
-	CustomEmailUserInvite    *bool `protobuf:"varint,33,opt,name=custom_email_user_invite,json=customEmailUserInvite,proto3,oneof" json:"custom_email_user_invite,omitempty"`
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+	// Whether to fire a "custom_email.user_invite" webhook instead of sending an
+	// email when inviting Users.
+	CustomEmailUserInvite *bool `protobuf:"varint,33,opt,name=custom_email_user_invite,json=customEmailUserInvite,proto3,oneof" json:"custom_email_user_invite,omitempty"`
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
 }
 
 func (x *Project) Reset() {
