@@ -34,6 +34,7 @@ func (s *Store) SendEmailVerifyEmail(ctx context.Context, req *SendEmailVerifyEm
 			ProjectID: req.ProjectID,
 			EventType: "custom_email.verify_email",
 			Payload: map[string]any{
+				"type":                  "custom_email.verify_email",
 				"emailAddress":          req.EmailAddress,
 				"emailVerificationCode": req.EmailVerificationCode,
 			},
@@ -120,6 +121,7 @@ func (s *Store) SendEmailPasswordReset(ctx context.Context, req *SendEmailPasswo
 			ProjectID: req.ProjectID,
 			EventType: "custom_email.password_reset",
 			Payload: map[string]any{
+				"type":              "custom_email.password_reset",
 				"emailAddress":      req.EmailAddress,
 				"passwordResetCode": req.PasswordResetCode,
 			},
@@ -220,6 +222,7 @@ func (s *Store) SendEmailUserInvite(ctx context.Context, req *SendEmailUserInvit
 			ProjectID: req.ProjectID,
 			EventType: "custom_email.user_invite",
 			Payload: map[string]any{
+				"type":         "custom_email.user_invite",
 				"userInviteId": req.UserInviteID,
 			},
 		}); err != nil {
