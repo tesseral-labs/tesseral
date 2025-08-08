@@ -265,4 +265,3 @@ func parseUserInvite(qUserInvite queries.UserInvite) *backendv1.UserInvite {
 		Owner:          qUserInvite.IsOwner,
 	}
 }
-
