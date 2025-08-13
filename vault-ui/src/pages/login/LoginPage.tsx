@@ -157,20 +157,10 @@ function LoginPageContents() {
     window.location.href = url;
   }
 
-  async function handleLogInWithSaml(samlConnectionId: string) {
-    await createIntermediateSessionWithRelayedSessionState();
-    window.location.href = `/api/saml/v1/${samlConnectionId}/init`;
-  }
-
-  async function handleLogInWithOidc(oidcConnectionId: string) {
-    await createIntermediateSessionWithRelayedSessionState();
-    window.location.href = `/api/oidc/v1/${oidcConnectionId}/init`;
-  }
-
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      email: "",
+      email: localStorage.getItem("last_used_email") || "",
       password: "",
     },
   });
@@ -189,7 +179,16 @@ function LoginPageContents() {
   const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
   const navigate = useNavigate();
 
+  const watchEmail = form.watch("email");
+  const [debouncedEmail, setDebouncedEmail] = useState("");
+  useEffect(() => {
+    const interval = setInterval(() => setDebouncedEmail(watchEmail), 250);
+    return () => clearInterval(interval);
+  }, [watchEmail]);
+
   async function handleLogInWithEmail(values: z.infer<typeof schema>) {
+    localStorage.setItem("last_used_email", debouncedEmail);
+
     setSubmitting(true);
     await createIntermediateSessionWithRelayedSessionState();
     await setEmailAsPrimaryLoginFactorMutation.mutateAsync({});
@@ -201,6 +200,8 @@ function LoginPageContents() {
   }
 
   async function handleLogInWithPassword(values: z.infer<typeof schema>) {
+    localStorage.setItem("last_used_email", debouncedEmail);
+
     setSubmitting(true);
     await createIntermediateSessionWithRelayedSessionState();
 
@@ -244,12 +245,19 @@ function LoginPageContents() {
     redirectNextLoginFlowPage();
   }
 
-  const watchEmail = form.watch("email");
-  const [debouncedEmail, setDebouncedEmail] = useState("");
-  useEffect(() => {
-    const interval = setInterval(() => setDebouncedEmail(watchEmail), 250);
-    return () => clearInterval(interval);
-  }, [watchEmail]);
+  async function handleLogInWithSaml(samlConnectionId: string) {
+    localStorage.setItem("last_used_email", debouncedEmail);
+
+    await createIntermediateSessionWithRelayedSessionState();
+    window.location.href = `/api/saml/v1/${samlConnectionId}/init`;
+  }
+
+  async function handleLogInWithOidc(oidcConnectionId: string) {
+    localStorage.setItem("last_used_email", debouncedEmail);
+
+    await createIntermediateSessionWithRelayedSessionState();
+    window.location.href = `/api/oidc/v1/${oidcConnectionId}/init`;
+  }
 
   const { data: listSAMLOrganizationsResponse } = useQuery(
     listSAMLOrganizations,
@@ -280,6 +288,10 @@ function LoginPageContents() {
     settings.logInWithPassword ||
     settings.logInWithSaml ||
     settings.logInWithOidc;
+
+  const hasSAMLOrOIDCConnection =
+    (listSAMLOrganizationsResponse?.organizations?.length ?? 0) > 0 ||
+    (listOIDCOrganizationsResponse?.organizations?.length ?? 0) > 0;
 
   return (
     <>
@@ -336,13 +348,7 @@ function LoginPageContents() {
 
           {hasBelowFoldMethod && (
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(
-                  settings.logInWithPassword
-                    ? handleLogInWithPassword
-                    : handleLogInWithEmail,
-                )}
-              >
+              <form>
                 <div className="space-y-4">
                   <FormField
                     control={form.control}
@@ -379,12 +385,50 @@ function LoginPageContents() {
                   )}
                 </div>
 
+                {listSAMLOrganizationsResponse?.organizations?.map((org) => (
+                  <Button
+                    key={org.id}
+                    type="submit"
+                    className="mt-4 w-full"
+                    onClick={() =>
+                      handleLogInWithSaml(org.primarySamlConnectionId)
+                    }
+                    disabled={submitting}
+                  >
+                    {submitting && (
+                      <LoaderCircleIcon className="h-4 w-4 animate-spin" />
+                    )}
+                    Log in with SAML ({org.displayName})
+                  </Button>
+                ))}
+
+                {listOIDCOrganizationsResponse?.organizations?.map((org) => (
+                  <Button
+                    key={org.id}
+                    type="submit"
+                    className="mt-4 w-full"
+                    onClick={() =>
+                      handleLogInWithOidc(org.primaryOidcConnectionId)
+                    }
+                    disabled={submitting}
+                  >
+                    {submitting && (
+                      <LoaderCircleIcon className="h-4 w-4 animate-spin" />
+                    )}
+                    Log in with OIDC ({org.displayName})
+                  </Button>
+                ))}
+
                 {settings.logInWithPassword ? (
                   <>
                     <Button
-                      type="submit"
+                      type={hasSAMLOrOIDCConnection ? "button" : "submit"}
+                      variant={
+                        hasSAMLOrOIDCConnection ? "secondary" : undefined
+                      }
                       className="mt-4 w-full"
                       disabled={submitting}
+                      onClick={form.handleSubmit(handleLogInWithPassword)}
                     >
                       Log in with Password
                     </Button>
@@ -403,9 +447,11 @@ function LoginPageContents() {
                   </>
                 ) : (
                   <Button
-                    type="submit"
+                    type={hasSAMLOrOIDCConnection ? "button" : "submit"}
+                    variant={hasSAMLOrOIDCConnection ? "secondary" : undefined}
                     className="mt-4 w-full"
                     disabled={submitting}
+                    onClick={form.handleSubmit(handleLogInWithEmail)}
                   >
                     {submitting && (
                       <LoaderCircleIcon className="h-4 w-4 animate-spin" />
@@ -413,32 +459,6 @@ function LoginPageContents() {
                     Log in with Magic Link
                   </Button>
                 )}
-
-                {listSAMLOrganizationsResponse?.organizations?.map((org) => (
-                  <Button
-                    key={org.id}
-                    type="button"
-                    className="mt-4 w-full"
-                    onClick={() =>
-                      handleLogInWithSaml(org.primarySamlConnectionId)
-                    }
-                  >
-                    Log in with SAML ({org.displayName})
-                  </Button>
-                ))}
-
-                {listOIDCOrganizationsResponse?.organizations?.map((org) => (
-                  <Button
-                    key={org.id}
-                    type="button"
-                    className="mt-4 w-full"
-                    onClick={() =>
-                      handleLogInWithOidc(org.primaryOidcConnectionId)
-                    }
-                  >
-                    Log in with OIDC ({org.displayName})
-                  </Button>
-                ))}
               </form>
             </Form>
           )}

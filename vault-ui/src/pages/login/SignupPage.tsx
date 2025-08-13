@@ -198,6 +198,16 @@ function SignupPageContents() {
     return () => clearInterval(interval);
   }, [watchEmail]);
 
+  async function handleLogInWithSaml(samlConnectionId: string) {
+    await createIntermediateSessionWithRelayedSessionState();
+    window.location.href = `/api/saml/v1/${samlConnectionId}/init`;
+  }
+
+  async function handleLogInWithOidc(oidcConnectionId: string) {
+    await createIntermediateSessionWithRelayedSessionState();
+    window.location.href = `/api/oidc/v1/${oidcConnectionId}/init`;
+  }
+
   const { data: listSAMLOrganizationsResponse } = useQuery(
     listSAMLOrganizations,
     {
@@ -227,6 +237,10 @@ function SignupPageContents() {
     settings.logInWithPassword ||
     settings.logInWithSaml ||
     settings.logInWithOidc;
+
+  const hasSAMLOrOIDCConnection =
+    (listSAMLOrganizationsResponse?.organizations?.length ?? 0) > 0 ||
+    (listOIDCOrganizationsResponse?.organizations?.length ?? 0) > 0;
 
   return (
     <LoginFlowCard>
@@ -282,7 +296,7 @@ function SignupPageContents() {
 
         {hasBelowFoldMethod && (
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)}>
+            <form>
               <FormField
                 control={form.control}
                 name="email"
@@ -297,38 +311,54 @@ function SignupPageContents() {
                 )}
               />
 
+              {listSAMLOrganizationsResponse?.organizations?.map((org) => (
+                <Button
+                  key={org.id}
+                  type="submit"
+                  className="mt-4 w-full"
+                  onClick={() =>
+                    handleLogInWithSaml(org.primarySamlConnectionId)
+                  }
+                  disabled={submitting}
+                >
+                  {submitting && (
+                    <LoaderCircleIcon className="h-4 w-4 animate-spin" />
+                  )}
+                  Log in with SAML ({org.displayName})
+                </Button>
+              ))}
+
+              {listOIDCOrganizationsResponse?.organizations?.map((org) => (
+                <Button
+                  key={org.id}
+                  type="submit"
+                  className="mt-4 w-full"
+                  onClick={() =>
+                    handleLogInWithOidc(org.primaryOidcConnectionId)
+                  }
+                  disabled={submitting}
+                >
+                  {submitting && (
+                    <LoaderCircleIcon className="h-4 w-4 animate-spin" />
+                  )}
+                  Log in with OIDC ({org.displayName})
+                </Button>
+              ))}
+
               <Button
-                type="submit"
+                type={hasSAMLOrOIDCConnection ? "button" : "submit"}
+                variant={
+                  hasSAMLOrOIDCConnection ? "secondary" : undefined
+                }
                 className="mt-4 w-full"
                 disabled={submitting}
+                onClick={form.handleSubmit(handleSubmit)}
               >
                 {submitting && (
                   <LoaderCircleIcon className="h-4 w-4 animate-spin" />
                 )}
                 Sign up
               </Button>
-
-              {listSAMLOrganizationsResponse?.organizations?.map((org) => (
-                <a
-                  key={org.id}
-                  href={`/api/saml/v1/${org.primarySamlConnectionId}/init`}
-                >
-                  <Button type="button" className="mt-4 w-full">
-                    Log in with SAML ({org.displayName})
-                  </Button>
-                </a>
-              ))}
-
-              {listOIDCOrganizationsResponse?.organizations?.map((org) => (
-                <a
-                  key={org.id}
-                  href={`/api/oidc/v1/${org.primaryOidcConnectionId}/init`}
-                >
-                  <Button type="button" className="mt-4 w-full">
-                    Log in with OIDC ({org.displayName})
-                  </Button>
-                </a>
-              ))}
             </form>
           </Form>
         )}
