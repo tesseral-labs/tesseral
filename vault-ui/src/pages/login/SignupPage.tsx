@@ -347,9 +347,7 @@ function SignupPageContents() {
 
               <Button
                 type={hasSAMLOrOIDCConnection ? "button" : "submit"}
-                variant={
-                  hasSAMLOrOIDCConnection ? "secondary" : undefined
-                }
+                variant={hasSAMLOrOIDCConnection ? "secondary" : undefined}
                 className="mt-4 w-full"
                 disabled={submitting}
                 onClick={form.handleSubmit(handleSubmit)}
