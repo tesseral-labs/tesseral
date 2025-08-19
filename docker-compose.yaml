@@ -1,19 +1,19 @@
 services:
-  api:
+  tesseral-internal-api:
     build:
-      dockerfile: ./cmd/api/Dockerfile
+      dockerfile: cmd/tesseral-internal-api/Dockerfile
       context: .
     develop:
       watch:
         - action: rebuild
-          path: ./cmd/api/
+          path: cmd/tesseral-internal-api/
         - action: rebuild
           path: ./internal/
     depends_on:
       postgres:
         condition: service_healthy
     environment:
-      API_DB_DSN: "postgres://postgres:password@postgres:5432/postgres"
+      TESSERAL_INTERNAL_API_DB_DSN: "postgres://postgres:password@postgres:5432/postgres"
     env_file:
       - .env
     ports:

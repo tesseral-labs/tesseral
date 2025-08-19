@@ -12,13 +12,13 @@ COPY internal ./internal
 
 ARG TARGETOS
 ARG TARGETARCH
-RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -ldflags "-w -s" -o api ./cmd/api
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -ldflags "-w -s" -o tesseral-internal-api ./cmd/tesseral-internal-api
 
 FROM scratch
 
 COPY --from=build /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=build /work/api /api
+COPY --from=build /work/tesseral-internal-api /tesseral-internal-api
 
 EXPOSE 3001
-ENTRYPOINT ["/api"]
+ENTRYPOINT ["/tesseral-internal-api"]
