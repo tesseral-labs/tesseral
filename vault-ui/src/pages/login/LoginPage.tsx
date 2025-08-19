@@ -390,9 +390,10 @@ function LoginPageContents() {
                     key={org.id}
                     type="submit"
                     className="mt-4 w-full"
-                    onClick={() =>
-                      handleLogInWithSaml(org.primarySamlConnectionId)
-                    }
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLogInWithSaml(org.primarySamlConnectionId);
+                    }}
                     disabled={submitting}
                   >
                     {submitting && (
@@ -407,9 +408,10 @@ function LoginPageContents() {
                     key={org.id}
                     type="submit"
                     className="mt-4 w-full"
-                    onClick={() =>
-                      handleLogInWithOidc(org.primaryOidcConnectionId)
-                    }
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLogInWithOidc(org.primaryOidcConnectionId);
+                    }}
                     disabled={submitting}
                   >
                     {submitting && (
