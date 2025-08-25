@@ -29,6 +29,10 @@ type Config struct {
 
 func New(ctx context.Context, config Config) (*KMS, error) {
 	switch config.Backend {
+	case "dangerously_store_plaintext_private_keys":
+		return &KMS{
+			config: config,
+		}, nil
 	case "aws_kms_v1":
 		awsConfig, err := awsconfig.LoadDefaultConfig(ctx)
 		if err != nil {
@@ -62,6 +66,8 @@ func New(ctx context.Context, config Config) (*KMS, error) {
 
 func (k *KMS) Encrypt(ctx context.Context, plaintext []byte) ([]byte, error) {
 	switch k.config.Backend {
+	case "dangerously_store_plaintext_private_keys":
+		return plaintext, nil
 	case "aws_kms_v1":
 		encryptRes, err := k.awskmsClient.Encrypt(ctx, &awskms.EncryptInput{
 			KeyId:               &k.config.AWSKMSV1KeyID,
@@ -90,6 +96,8 @@ func (k *KMS) Encrypt(ctx context.Context, plaintext []byte) ([]byte, error) {
 
 func (k *KMS) Decrypt(ctx context.Context, ciphertext []byte) ([]byte, error) {
 	switch k.config.Backend {
+	case "dangerously_store_plaintext_private_keys":
+		return ciphertext, nil
 	case "aws_kms_v1":
 		decryptRes, err := k.awskmsClient.Decrypt(ctx, &awskms.DecryptInput{
 			KeyId:               &k.config.AWSKMSV1KeyID,
