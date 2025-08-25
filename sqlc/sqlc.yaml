@@ -2,7 +2,7 @@ version: "2"
 sql:
   - engine: "postgresql"
     queries: "queries.sql"
-    schema: "../cmd/openauthctl/migrations"
+    schema: "../cmd/tesseralctl/migrations"
     gen:
       go: &go
         sql_package: "pgx/v5"
@@ -54,77 +54,77 @@ sql:
               type: "*AuditLogEventResourceType"
   - engine: "postgresql"
     queries: "queries-auditlog.sql"
-    schema: "../cmd/openauthctl/migrations"
+    schema: "../cmd/tesseralctl/migrations"
     gen:
       go:
         <<: *go
         out: "../internal/auditlog/store/queries"
   - engine: "postgresql"
     queries: "queries-backend.sql"
-    schema: "../cmd/openauthctl/migrations"
+    schema: "../cmd/tesseralctl/migrations"
     gen:
       go:
         <<: *go
         out: "../internal/backend/store/queries"
   - engine: "postgresql"
     queries: "queries-frontend.sql"
-    schema: "../cmd/openauthctl/migrations"
+    schema: "../cmd/tesseralctl/migrations"
     gen:
       go:
         <<: *go
         out: "../internal/frontend/store/queries"
   - engine: "postgresql"
     queries: "queries-intermediate.sql"
-    schema: "../cmd/openauthctl/migrations"
+    schema: "../cmd/tesseralctl/migrations"
     gen:
       go:
         <<: *go
         out: "../internal/intermediate/store/queries"
   - engine: "postgresql"
     queries: "queries-saml.sql"
-    schema: "../cmd/openauthctl/migrations"
+    schema: "../cmd/tesseralctl/migrations"
     gen:
       go:
         <<: *go
         out: "../internal/saml/store/queries"
   - engine: "postgresql"
     queries: "queries-scim.sql"
-    schema: "../cmd/openauthctl/migrations"
+    schema: "../cmd/tesseralctl/migrations"
     gen:
       go:
         <<: *go
         out: "../internal/scim/store/queries"
   - engine: "postgresql"
     queries: "queries-common.sql"
-    schema: "../cmd/openauthctl/migrations"
+    schema: "../cmd/tesseralctl/migrations"
     gen:
       go:
         <<: *go
         out: "../internal/common/store/queries"
   - engine: "postgresql"
     queries: "queries-configapi.sql"
-    schema: "../cmd/openauthctl/migrations"
+    schema: "../cmd/tesseralctl/migrations"
     gen:
       go:
         <<: *go
         out: "../internal/configapi/store/queries"
   - engine: "postgresql"
     queries: "queries-oidc.sql"
-    schema: "../cmd/openauthctl/migrations"
+    schema: "../cmd/tesseralctl/migrations"
     gen:
       go:
         <<: *go
         out: "../internal/oidc/store/queries"
   - engine: "postgresql"
     queries: "queries-defaultoauth.sql"
-    schema: "../cmd/openauthctl/migrations"
+    schema: "../cmd/tesseralctl/migrations"
     gen:
       go:
         <<: *go
         out: "../internal/defaultoauth/store/queries"
   - engine: "postgresql"
     queries: "queries-backgroundworker.sql"
-    schema: "../cmd/openauthctl/migrations"
+    schema: "../cmd/tesseralctl/migrations"
     gen:
       go:
         <<: *go

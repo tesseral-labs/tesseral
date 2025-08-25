@@ -28,7 +28,7 @@ dev:
 .PHONY: migrate
 ARGS = $(wordlist 2, $(words $(MAKECMDGOALS)), $(MAKECMDGOALS))
 migrate:
-	migrate -path cmd/openauthctl/migrations -database "postgres://postgres:password@localhost:5432?sslmode=disable" $(ARGS)
+	migrate -path cmd/tesseralctl/migrations -database "postgres://postgres:password@localhost:5432?sslmode=disable" $(ARGS)
 %:
 	@:
 

@@ -24,7 +24,7 @@ type migrateArgs struct {
 }
 
 func (migrateArgs) ExtendedDescription() string {
-	return "Run openauth database migrations"
+	return "Run tesseral database migrations"
 }
 
 func (a migrateArgs) migrate() (*migrate.Migrate, error) {

@@ -4,7 +4,7 @@ set -e -o pipefail
 
 case $1 in
   local)
-    docker run -v ./cmd/openauthctl/migrations:/migrations --network host migrate/migrate -path /migrations -database 'postgres://postgres:password@localhost?sslmode=disable' ${@:2}
+    docker run -v ./cmd/tesseralctl/migrations:/migrations --network host migrate/migrate -path /migrations -database 'postgres://postgres:password@localhost?sslmode=disable' ${@:2}
     exit 0
     ;;
 
@@ -22,4 +22,4 @@ case $1 in
 esac
 
 # shellcheck disable=SC2068
-go run ./cmd/openauthctl migrate --database "$dsn" ${@:2}
+go run ./cmd/tesseralctl migrate --database "$dsn" ${@:2}

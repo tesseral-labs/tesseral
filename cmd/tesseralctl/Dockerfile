@@ -12,12 +12,12 @@ COPY internal ./internal
 
 ARG TARGETOS
 ARG TARGETARCH
-RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -ldflags "-w -s" -o openauthctl ./cmd/openauthctl
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -ldflags "-w -s" -o tesseralctl ./cmd/tesseralctl
 
 FROM scratch
 
 COPY --from=build /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=build /work/openauthctl /openauthctl
+COPY --from=build /work/tesseralctl /tesseralctl
 
-ENTRYPOINT ["/openauthctl"]
+ENTRYPOINT ["/tesseralctl"]

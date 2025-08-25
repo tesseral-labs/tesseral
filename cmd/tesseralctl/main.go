@@ -15,5 +15,5 @@ type args struct {
 }
 
 func (args) ExtendedDescription() string {
-	return "Control the openauth database"
+	return "Control tesseraldb"
 }

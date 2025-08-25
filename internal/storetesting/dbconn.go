@@ -55,7 +55,7 @@ func newDB() (*pgxpool.Pool, func()) {
 		log.Panic("failed to get current file path")
 	}
 
-	migrationsDir := filepath.Join(currentFile, "../../../cmd/openauthctl/migrations")
+	migrationsDir := filepath.Join(currentFile, "../../../cmd/tesseralctl/migrations")
 	m, err := migrate.NewWithDatabaseInstance("file://"+migrationsDir, "pgx", db)
 	if err != nil {
 		cleanupContainer()
