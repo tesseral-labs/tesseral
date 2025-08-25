@@ -43,7 +43,7 @@ jobs:
         id: push
         uses: docker/build-push-action@v6
         with:
-          context: cmd/tesseral-internal-api
+          context: .
           file: cmd/tesseral-internal-api/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
