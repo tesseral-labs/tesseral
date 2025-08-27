@@ -1,6 +1,7 @@
 package corstrusteddomains
 
 import (
+	"log/slog"
 	"net/http"
 
 	"github.com/rs/cors"
@@ -17,6 +18,8 @@ func Handler(s *store.Store, p *projectid.Sniffer, h http.Handler) http.Handler 
 		ctx := r.Context()
 		ctx, span := tracer.Start(ctx, "common/corstrusteddomains/handler")
 		defer span.End()
+
+		slog.InfoContext(ctx, "cors_request", "host", r.Host, "x_tesseral_host", r.Header.Get("X-Tesseral-Host"))
 
 		projectID, err := p.GetProjectID(r.Header.Get("X-Tesseral-Host"))
 		if err != nil {
