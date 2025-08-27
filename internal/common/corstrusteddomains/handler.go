@@ -19,7 +19,7 @@ func Handler(s *store.Store, p *projectid.Sniffer, h http.Handler) http.Handler 
 		ctx, span := tracer.Start(ctx, "common/corstrusteddomains/handler")
 		defer span.End()
 
-		slog.InfoContext(ctx, "cors_request", "host", r.Host, "x_tesseral_host", r.Header.Get("X-Tesseral-Host"))
+		slog.InfoContext(ctx, "cors_request", "host", r.Host, "x_tesseral_host", r.Header.Get("X-Tesseral-Host"), "header", r.Header)
 
 		projectID, err := p.GetProjectID(r.Header.Get("X-Tesseral-Host"))
 		if err != nil {
