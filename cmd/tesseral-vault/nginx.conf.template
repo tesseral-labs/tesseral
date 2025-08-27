@@ -5,6 +5,8 @@ http {
         listen 80;
 
         location / {
+            include mime.types;
+
             root /www/public;
             index index.html;
 

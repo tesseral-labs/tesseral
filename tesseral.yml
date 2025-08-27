@@ -319,7 +319,7 @@ spec:
     spec:
       containers:
         - name: tesseral-vault
-          image: ghcr.io/tesseral-labs/unstable-tesseral-vault:sha-4850a0e
+          image: ghcr.io/tesseral-labs/unstable-tesseral-vault:sha-9026da6
           ports:
             - containerPort: 80
           envFrom:
