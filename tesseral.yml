@@ -1,5 +1,26 @@
-# docker run --network host ghcr.io/tesseral-labs/unstable-tesseralctl:sha-a2697e8 migrate --database 'postgres://postgres:password@host.docker.internal:50254/postgres?sslmode=disable' up
-# project_8xrx1tuecutwy2ve1pwd2myqt	root@tesseral.local	this_is_a_very_sensitive_password_45231cb57eeb1b839ef2665958b3fea8
+apiVersion: eks.amazonaws.com/v1
+kind: IngressClassParams
+metadata:
+  name: alb
+spec:
+  scheme: internet-facing
+---
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: alb
+  annotations:
+    # Use this annotation to set an IngressClass as Default
+    # If an Ingress doesn't specify a class, it will use the Default
+    ingressclass.kubernetes.io/is-default-class: "true"
+spec:
+  # Configures the IngressClass to use EKS Auto Mode
+  controller: eks.amazonaws.com/alb
+  parameters:
+    apiGroup: eks.amazonaws.com
+    kind: IngressClassParams
+    name: alb
+---
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -8,104 +29,21 @@ metadata:
     name: tesseral
 ---
 apiVersion: v1
-kind: PersistentVolume
-metadata:
-  namespace: tesseral
-  name: tesseraldb
-spec:
-  accessModes:
-    - ReadWriteOnce
-  capacity:
-    storage: 2Gi
-  hostPath:
-    path: /data/tesseraldb
-  storageClassName: standard
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  namespace: tesseral
-  name: tesseraldb
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 2Gi
-  volumeName: tesseraldb
----
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  namespace: tesseral
-  name: tesseraldb
-  labels:
-    app: tesseraldb
-    role: service
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: tesseraldb
-      role: service
-  serviceName: tesseraldb
-  template:
-    metadata:
-      labels:
-        app: tesseraldb
-        role: service
-    spec:
-      containers:
-        - name: postgres
-          image: postgres:15.8
-          env:
-            - name: POSTGRES_PASSWORD
-              value: password
-          ports:
-            - containerPort: 5432
-              name: postgres
-              protocol: TCP
-          volumeMounts:
-            - name: tesseraldb
-              mountPath: /var/lib/postgresql/data
-      volumes:
-        - name: tesseraldb
-          persistentVolumeClaim:
-            claimName: tesseraldb
----
-apiVersion: v1
-kind: Service
-metadata:
-  namespace: tesseral
-  name: tesseraldb
-  labels:
-    app: tesseraldb
-    role: service
-spec:
-  selector:
-    app: tesseraldb
-    role: service
-  type: NodePort
-  ports:
-    - name: tesseraldb
-      port: 5432
-      targetPort: 5432
-      protocol: TCP
----
-apiVersion: v1
 kind: ConfigMap
 metadata:
   namespace: tesseral
   name: tesseral-internal-api
 data:
-  TESSERAL_INTERNAL_API_CONSOLE_PROJECT_ID: "project_8xrx1tuecutwy2ve1pwd2myqt"
-  TESSERAL_INTERNAL_API_SESSION_SIGNING_KEYS_KMS_BACKEND: "dangerously_store_plaintext_private_keys"
+  TESSERAL_INTERNAL_API_CONSOLE_PROJECT_ID: "project_3xl34fv7r4snik1ekj2zvouyp"
+  TESSERAL_INTERNAL_API_SESSION_SIGNING_KEYS_KMS_BACKEND: "aws_kms_v1"
+  TESSERAL_INTERNAL_API_SESSION_SIGNING_KEYS_KMS_AWS_KMS_V1_KEY_ID: "b312eb62-dc0b-44dc-8917-9801f0142953"
+
+  # TODO
   TESSERAL_INTERNAL_API_GOOGLE_OAUTH_CLIENT_SECRETS_KMS_BACKEND: "dangerously_store_plaintext_private_keys"
   TESSERAL_INTERNAL_API_MICROSOFT_OAUTH_CLIENT_SECRETS_KMS_BACKEND: "dangerously_store_plaintext_private_keys"
   TESSERAL_INTERNAL_API_GITHUB_OAUTH_CLIENT_SECRETS_KMS_BACKEND: "dangerously_store_plaintext_private_keys"
   TESSERAL_INTERNAL_API_AUTHENTICATOR_APP_SECRETS_KMS_BACKEND: "dangerously_store_plaintext_private_keys"
   TESSERAL_INTERNAL_API_OIDC_CLIENT_SECRETS_KMS_BACKEND: "dangerously_store_plaintext_private_keys"
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -193,6 +131,28 @@ spec:
       targetPort: 80
       protocol: TCP
 ---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: tesseral
+  name: tesseral-backend-api
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-2:337607240212:certificate/04124df7-c11a-4aa2-a438-253420076cf4
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: tesseral-backend-api
+                port:
+                  number: 80
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -240,13 +200,35 @@ spec:
       targetPort: 80
       protocol: TCP
 ---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: tesseral
+  name: tesseral-config-api
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-2:337607240212:certificate/4dbf9972-2807-4bf8-98e5-0dffd9901fcf
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: tesseral-config-api
+                port:
+                  number: 80
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   namespace: tesseral
   name: tesseral-console
 data:
-  TESSERAL_CONSOLE_VAULT_ENDPOINT: "https://vault.console.tesseral.local"
+  TESSERAL_CONSOLE_VAULT_ENDPOINT: "https://vault.console.laresset-selfhost1.com"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -286,6 +268,28 @@ spec:
     - port: 80
       targetPort: 80
       protocol: TCP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: tesseral
+  name: tesseral-console
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-2:337607240212:certificate/9cbf59f5-896f-4205-b596-edcfb4aa2424
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: tesseral-console
+                port:
+                  number: 80
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -334,3 +338,25 @@ spec:
     - port: 80
       targetPort: 80
       protocol: TCP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: tesseral
+  name: tesseral-vault
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-2:337607240212:certificate/fe424c8a-6c5a-454e-87d9-d3cc15fcf971
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: tesseral-vault
+                port:
+                  number: 80

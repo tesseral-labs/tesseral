@@ -20,7 +20,7 @@ func Handler(s *store.Store, p *projectid.Sniffer, h http.Handler) http.Handler 
 
 		projectID, err := p.GetProjectID(r.Header.Get("X-Tesseral-Host"))
 		if err != nil {
-			http.Error(w, "", http.StatusNotFound)
+			http.Error(w, "X-Tesseral-Host not configured", http.StatusNotFound)
 			return
 		}
 
