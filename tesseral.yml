@@ -64,7 +64,7 @@ spec:
     spec:
       containers:
         - name: tesseral-internal-api
-          image: ghcr.io/tesseral-labs/unstable-tesseral-internal-api:sha-52b9d08
+          image: ghcr.io/tesseral-labs/unstable-tesseral-internal-api:sha-6fd3dd9
           ports:
             - containerPort: 80
           envFrom:
