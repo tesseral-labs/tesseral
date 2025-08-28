@@ -160,7 +160,7 @@ func (s *Store) CreateProject(ctx context.Context, req *CreateProjectRequest) (*
 	// Store the encrypted key in the database
 	if _, err := q.CreateSessionSigningKey(ctx, queries.CreateSessionSigningKeyParams{
 		ID:                   uuid.New(),
-		ProjectID:            consoleProjectID,
+		ProjectID:            qProject.ID,
 		ExpireTime:           &expiresAt,
 		PublicKey:            publicKeyBytes,
 		PrivateKeyCipherText: sskEncryptedBytes,
