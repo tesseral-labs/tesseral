@@ -29,6 +29,14 @@ metadata:
     name: tesseral
 ---
 apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: tesseral
+  name: tesseral-internal-api
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::337607240212:role/tesseral-selfhost1-tesseral-internal-api"
+---
+apiVersion: v1
 kind: ConfigMap
 metadata:
   namespace: tesseral
@@ -62,6 +70,7 @@ spec:
       labels:
         app: tesseral-internal-api
     spec:
+      serviceAccountName: tesseral-internal-api
       containers:
         - name: tesseral-internal-api
           image: ghcr.io/tesseral-labs/unstable-tesseral-internal-api:sha-6fd3dd9
@@ -249,7 +258,7 @@ spec:
     spec:
       containers:
         - name: tesseral-console
-          image: ghcr.io/tesseral-labs/unstable-tesseral-console:sha-52b9d08
+          image: ghcr.io/tesseral-labs/unstable-tesseral-console:sha-c70803b
           ports:
             - containerPort: 80
           envFrom:
@@ -319,7 +328,7 @@ spec:
     spec:
       containers:
         - name: tesseral-vault
-          image: ghcr.io/tesseral-labs/unstable-tesseral-vault:sha-9026da6
+          image: ghcr.io/tesseral-labs/unstable-tesseral-vault:sha-c70803b
           ports:
             - containerPort: 80
           envFrom:
@@ -348,6 +357,28 @@ metadata:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-2:337607240212:certificate/fe424c8a-6c5a-454e-87d9-d3cc15fcf971
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: tesseral-vault
+                port:
+                  number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: tesseral
+  name: tesseral-vault-project-1
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-2:337607240212:certificate/558374d7-0fb4-463a-8bea-0e7bff71fef5
 spec:
   ingressClassName: alb
   rules:
