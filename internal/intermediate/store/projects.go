@@ -24,6 +24,10 @@ import (
 )
 
 func (s *Store) CreateProject(ctx context.Context, req *intermediatev1.CreateProjectRequest) (*intermediatev1.CreateProjectResponse, error) {
+	if !s.projectCreationFromConsoleEnabled {
+		return nil, fmt.Errorf("project creation from console not enabled")
+	}
+
 	if authn.ProjectID(ctx) != *s.consoleProjectID {
 		return nil, apierror.NewPermissionDeniedError("cannot create a project", fmt.Errorf("create project attempted on non-console project: %s", authn.ProjectID(ctx)))
 	}
@@ -159,6 +163,10 @@ func (s *Store) CreateProject(ctx context.Context, req *intermediatev1.CreatePro
 }
 
 func (s *Store) OnboardingCreateProjects(ctx context.Context, req *intermediatev1.OnboardingCreateProjectsRequest) (*intermediatev1.OnboardingCreateProjectsResponse, error) {
+	if !s.projectCreationFromConsoleEnabled {
+		return nil, fmt.Errorf("project creation from console not enabled")
+	}
+
 	qProject, err := s.q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		return nil, fmt.Errorf("get project by id: %w", err)

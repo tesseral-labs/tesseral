@@ -396,6 +396,10 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 }
 
 func (s *Store) ConsoleCreateProject(ctx context.Context, req *backendv1.ConsoleCreateProjectRequest) (*backendv1.ConsoleCreateProjectResponse, error) {
+	if !s.projectCreationFromConsoleEnabled {
+		return nil, apierror.NewFailedPreconditionError("project creation from console not enabled", nil)
+	}
+
 	if err := validateIsConsoleSession(ctx); err != nil {
 		return nil, fmt.Errorf("validate is console session: %w", err)
 	}

@@ -146,6 +146,7 @@ func main() {
 		DefaultGitHubOAuthClientID        string        `conf:"default_github_oauth_client_id,noredact"`
 		DefaultGitHubOAuthClientSecret    string        `conf:"default_github_oauth_client_secret"`
 		DefaultGitHubOAuthRedirectURI     string        `conf:"default_github_oauth_redirect_uri,noredact"`
+		ProjectCreationFromConsoleEnabled bool          `conf:"project_creation_from_console_enabled,noredact"`
 	}{
 		PageEncodingValue: "0000000000000000000000000000000000000000000000000000000000000000",
 	}
@@ -307,31 +308,32 @@ func main() {
 
 	// Register the backend service
 	backendStore := backendstore.New(backendstore.NewStoreParams{
-		DB:                             db,
-		ConsoleProjectID:               &uuidConsoleProjectID,
-		ConsoleDomain:                  config.ConsoleDomain,
-		SessionSigningKeyKMS:           sessionSigningKeysKMS,
-		GoogleOAuthClientSecretsKMS:    googleOAuthClientSecretsKMS,
-		MicrosoftOAuthClientSecretsKMS: microsoftOAuthClientSecretsKMS,
-		GithubOAuthClientSecretsKMS:    githubOAuthClientSecretsKMS,
-		OIDCClientSecretsKMS:           oidcClientSecretsKMS,
-		SES:                            ses_,
-		PageEncoder:                    pagetoken.Encoder{Secret: pageEncodingValue},
-		S3:                             s3_,
-		S3UserContentBucketName:        config.S3UserContentBucketName,
-		UserContentBaseUrl:             config.UserContentBaseUrl,
-		AuthAppsRootDomain:             config.AuthAppsRootDomain,
-		TesseralDNSVaultCNAMEValue:     config.TesseralDNSVaultCNAMEValue,
-		SESSPFMXRecordValue:            config.SESSPFMXRecordValue,
-		TesseralDNSCloudflareZoneID:    config.TesseralDNSCloudflareZoneID,
-		Cloudflare:                     cloudflare.NewClient(option.WithAPIToken(config.CloudflareAPIToken)),
-		CloudflareDOH:                  &cloudflaredoh.Client{HTTPClient: &http.Client{}},
-		Stripe:                         stripeClient,
-		StripePriceIDGrowthTier:        config.StripePriceIDGrowthTier,
-		SvixClient:                     svixClient,
-		AuditlogStore:                  &auditlogStore,
-		OIDCClient:                     oidcClient,
-		RiverClient:                    riverClient,
+		DB:                                db,
+		ConsoleProjectID:                  &uuidConsoleProjectID,
+		ConsoleDomain:                     config.ConsoleDomain,
+		SessionSigningKeyKMS:              sessionSigningKeysKMS,
+		GoogleOAuthClientSecretsKMS:       googleOAuthClientSecretsKMS,
+		MicrosoftOAuthClientSecretsKMS:    microsoftOAuthClientSecretsKMS,
+		GithubOAuthClientSecretsKMS:       githubOAuthClientSecretsKMS,
+		OIDCClientSecretsKMS:              oidcClientSecretsKMS,
+		SES:                               ses_,
+		PageEncoder:                       pagetoken.Encoder{Secret: pageEncodingValue},
+		S3:                                s3_,
+		S3UserContentBucketName:           config.S3UserContentBucketName,
+		UserContentBaseUrl:                config.UserContentBaseUrl,
+		AuthAppsRootDomain:                config.AuthAppsRootDomain,
+		TesseralDNSVaultCNAMEValue:        config.TesseralDNSVaultCNAMEValue,
+		SESSPFMXRecordValue:               config.SESSPFMXRecordValue,
+		TesseralDNSCloudflareZoneID:       config.TesseralDNSCloudflareZoneID,
+		Cloudflare:                        cloudflare.NewClient(option.WithAPIToken(config.CloudflareAPIToken)),
+		CloudflareDOH:                     &cloudflaredoh.Client{HTTPClient: &http.Client{}},
+		Stripe:                            stripeClient,
+		StripePriceIDGrowthTier:           config.StripePriceIDGrowthTier,
+		SvixClient:                        svixClient,
+		AuditlogStore:                     &auditlogStore,
+		OIDCClient:                        oidcClient,
+		RiverClient:                       riverClient,
+		ProjectCreationFromConsoleEnabled: config.ProjectCreationFromConsoleEnabled,
 	})
 	backendConnectPath, backendConnectHandler := backendv1connect.NewBackendServiceHandler(
 		&backendservice.Service{
@@ -413,6 +415,7 @@ func main() {
 		DefaultGitHubOAuthClientID:        config.DefaultGitHubOAuthClientID,
 		DefaultGitHubOAuthClientSecret:    config.DefaultGitHubOAuthClientSecret,
 		DefaultGitHubOAuthRedirectURI:     config.DefaultGitHubOAuthRedirectURI,
+		ProjectCreationFromConsoleEnabled: config.ProjectCreationFromConsoleEnabled,
 	})
 	intermediateConnectPath, intermediateConnectHandler := intermediatev1connect.NewIntermediateServiceHandler(
 		&intermediateservice.Service{
