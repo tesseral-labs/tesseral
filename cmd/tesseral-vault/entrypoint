@@ -7,5 +7,4 @@ export TESSERAL_VAULT_TRUSTED_HOST_HEADER="http_$(echo "${TESSERAL_VAULT_TRUSTED
 
 envsubst '${TESSERAL_VAULT_TESSERAL_INTERNAL_API_ENDPOINT},${TESSERAL_VAULT_TRUSTED_HOST_HEADER}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
-cat /etc/nginx/nginx.conf
 exec nginx -g 'daemon off;'
