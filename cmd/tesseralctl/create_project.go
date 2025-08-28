@@ -10,12 +10,15 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/store"
 )
 
-type bootstrapArgs struct {
-	Args          args   `cli:"bootstrap,subcmd"`
-	Database      string `cli:"--database"`
-	ConsoleDomain string `cli:"--console-domain"`
-	VaultDomain   string `cli:"--vault-domain"`
-	RootUserEmail string `cli:"--root-user-email"`
+type createProjectArgs struct {
+	Args             args   `cli:"create-project,subcmd"`
+	Database         string `cli:"--database"`
+	ConsoleProjectID string `cli:"--console-project-id"`
+	ProjectName      string `cli:"--project-name"`
+	OwnerUserEmail   string `cli:"--owner-user-email"`
+	VaultDomain      string `cli:"--vault-domain"`
+	LogoURL          string `cli:"--logo-url"`
+	DarkModeLogoURL  string `cli:"--dark-mode-logo-url"`
 
 	SessionSigningKeysKMSBackend                 string `cli:"--session-signing-keys-kms-backend"`
 	SessionSigningKeysKMSAWSKMSV1KeyID           string `cli:"--session-signing-keys-kms-aws-kms-v1-key-id"`
@@ -23,25 +26,17 @@ type bootstrapArgs struct {
 	SessionSigningKeysKMSGCPKMSV1KeyName         string `cli:"--session-signing-keys-kms-gcp-kms-v1-key-name"`
 }
 
-func (bootstrapArgs) Description() string {
-	return "Bootstrap a Tesseral database"
+func (createProjectArgs) Description() string {
+	return "Create a Tesseral Project directly"
 }
 
-func (bootstrapArgs) ExtendedDescription() string {
+func (createProjectArgs) ExtendedDescription() string {
 	return strings.TrimSpace(`
-Bootstrap a Tesseral database.
-
-Outputs, tab-separated, a project ID, an email, and a very sensitive password.
-
-The project ID is the console project ID. The email and password are a login
-method for a "root" user, an owner of the console project.
-
-Rotate or delete the root password before deploying this Tesseral instance in
-production.
+Create a Tesseral Project directly, without the Tesseral Console or Backend API.
 `)
 }
 
-func bootstrap(ctx context.Context, args bootstrapArgs) error {
+func createProject(ctx context.Context, args createProjectArgs) error {
 	db, err := pgxpool.New(context.Background(), args.Database)
 	if err != nil {
 		return fmt.Errorf("create db pool: %w", err)
@@ -62,20 +57,23 @@ func bootstrap(ctx context.Context, args bootstrapArgs) error {
 		SessionSigningKeyKMS: sessionSigningKeysKMS,
 	})
 
-	res, err := s.CreateConsoleProject(ctx, &store.CreateConsoleProjectRequest{
-		RootUserEmail: args.RootUserEmail,
-		ConsoleDomain: args.ConsoleDomain,
-		VaultDomain:   args.VaultDomain,
+	res, err := s.CreateProject(ctx, &store.CreateProjectRequest{
+		ConsoleProjectID: args.ConsoleProjectID,
+		ProjectName:      args.ProjectName,
+		OwnerUserEmail:   args.OwnerUserEmail,
+		VaultDomain:      args.VaultDomain,
+		LogoURL:          args.LogoURL,
+		DarkModeLogoURL:  args.DarkModeLogoURL,
 	})
 	if err != nil {
-		return fmt.Errorf("create console project: %w", err)
+		return fmt.Errorf("store: %w", err)
 	}
 
 	fmt.Printf(
-		"%s\t%s\t%s\n",
-		res.ConsoleProjectID,
-		res.BootstrapUserEmail,
-		res.BootstrapUserVerySensitivePassword,
+		"%s\t%s\n",
+		res.ProjectID,
+		res.OwnerPassword,
 	)
+
 	return nil
 }
