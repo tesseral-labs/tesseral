@@ -161,7 +161,7 @@ function ConfigureVaultTrustedDomainsButton() {
                     <FormMessage />
                     <FormControl>
                       <InputTags
-                        placeholder="app.company.com, localhost:3000"
+                        placeholder="app.company.com, localhost"
                         {...field}
                       />
                     </FormControl>
