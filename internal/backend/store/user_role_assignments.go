@@ -235,6 +235,11 @@ func (s *Store) CreateUserRoleAssignment(ctx context.Context, req *backendv1.Cre
 		return nil, fmt.Errorf("create audit log event: %w", err)
 	}
 
+	// send sync user event
+	if err := s.sendSyncUserEvent(ctx, tx, qUser); err != nil {
+		return nil, fmt.Errorf("send sync user event: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
@@ -295,6 +300,11 @@ func (s *Store) DeleteUserRoleAssignment(ctx context.Context, req *backendv1.Del
 		ResourceID:     &qUserRoleAssignment.UserID,
 	}); err != nil {
 		return nil, fmt.Errorf("create audit log event: %w", err)
+	}
+
+	// send sync user event
+	if err := s.sendSyncUserEvent(ctx, tx, qUser); err != nil {
+		return nil, fmt.Errorf("send sync user event: %w", err)
 	}
 
 	if err := commit(); err != nil {
