@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -11,6 +12,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/backgroundworker/webhookworker"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
@@ -236,7 +238,7 @@ func (s *Store) CreateUserRoleAssignment(ctx context.Context, req *backendv1.Cre
 	}
 
 	// send sync user event
-	if err := s.sendSyncUserEvent(ctx, tx, qUser); err != nil {
+	if err := s.sendSyncUserRoleAssignmentsEvent(ctx, tx, qUser); err != nil {
 		return nil, fmt.Errorf("send sync user event: %w", err)
 	}
 
@@ -303,8 +305,8 @@ func (s *Store) DeleteUserRoleAssignment(ctx context.Context, req *backendv1.Del
 	}
 
 	// send sync user event
-	if err := s.sendSyncUserEvent(ctx, tx, qUser); err != nil {
-		return nil, fmt.Errorf("send sync user event: %w", err)
+	if err := s.sendSyncUserRoleAssignmentsEvent(ctx, tx, qUser); err != nil {
+		return nil, fmt.Errorf("send sync user role assignments event: %w", err)
 	}
 
 	if err := commit(); err != nil {
@@ -320,4 +322,23 @@ func parseUserRoleAssignment(qUserRoleAssignment queries.UserRoleAssignment) *ba
 		RoleId: idformat.Role.Format(qUserRoleAssignment.RoleID),
 		UserId: idformat.User.Format(qUserRoleAssignment.UserID),
 	}
+}
+
+func (s *Store) sendSyncUserRoleAssignmentsEvent(ctx context.Context, tx pgx.Tx, qUser queries.User) error {
+	// Add the sync organization event to the background worker queue
+	jobInsertRes, err := s.riverClient.InsertTx(ctx, tx, webhookworker.Args{
+		ProjectID: idformat.Project.Format(authn.ProjectID(ctx)),
+		EventName: "sync.user_role_assignments",
+		Payload: map[string]any{
+			"type":   "sync.user_role_assignments",
+			"userId": idformat.User.Format(qUser.ID),
+		},
+	}, nil)
+	if err != nil {
+		return fmt.Errorf("insert job: %w", err)
+	}
+
+	slog.InfoContext(ctx, "webhook_worker_job_inserted", "job_id", jobInsertRes.Job.ID, "event_type", "sync.user", "user_id", idformat.User.Format(qUser.ID))
+
+	return nil
 }
