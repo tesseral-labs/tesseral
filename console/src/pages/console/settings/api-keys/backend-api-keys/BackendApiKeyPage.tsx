@@ -77,6 +77,7 @@ export function BackendApiKeyPage() {
       id: backendApiKeyId,
       backendApiKey: {
         displayName: data.displayName,
+        authenticationOnly: data.authenticationOnly,
       },
     });
     await refetch();
@@ -86,6 +87,8 @@ export function BackendApiKeyPage() {
   useEffect(() => {
     form.reset({
       displayName: getBackendApiKeyResponse?.backendApiKey?.displayName || "",
+      authenticationOnly:
+        getBackendApiKeyResponse?.backendApiKey?.authenticationOnly || false,
     });
   }, [getBackendApiKeyResponse, form]);
 

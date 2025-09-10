@@ -21,7 +21,7 @@ var skipRPCs = []string{
 }
 
 var authenticationRPCs = []string{
-	"/tesseral.backend.v1.BackendService/Authenticate",
+	"/tesseral.backend.v1.BackendService/AuthenticateAPIKey",
 }
 
 var errAuthorizationHeaderRequired = errors.New("authorization header is required")
