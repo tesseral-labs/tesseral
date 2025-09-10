@@ -217,6 +217,7 @@ export function ListBackendApiKeysCard() {
                             </HoverCard>
                           </div>
                         </TableHead>
+                        <TableHead>Type</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Created</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
@@ -238,6 +239,15 @@ export function ListBackendApiKeysCard() {
                               value={key.id}
                               label="Backend API Key ID"
                             />
+                          </TableCell>
+                          <TableCell>
+                            {key.authenticationOnly ? (
+                              <Badge variant="secondary">
+                                Authentication Only
+                              </Badge>
+                            ) : (
+                              <Badge>Full Access</Badge>
+                            )}
                           </TableCell>
                           <TableCell>
                             {key.revoked ? (
