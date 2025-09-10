@@ -255,6 +255,7 @@ message BackendAPIKey {
   google.protobuf.Timestamp update_time = 4;
   string secret_token = 5;
   bool revoked = 6;
+  optional bool authentication_only = 7;
 }
 
 message PublishableKey {

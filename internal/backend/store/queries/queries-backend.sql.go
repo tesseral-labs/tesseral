@@ -439,17 +439,18 @@ func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEve
 }
 
 const createBackendAPIKey = `-- name: CreateBackendAPIKey :one
-INSERT INTO backend_api_keys (id, project_id, display_name, secret_token_sha256)
-    VALUES ($1, $2, $3, $4)
+INSERT INTO backend_api_keys (id, project_id, display_name, secret_token_sha256, authentication_only)
+    VALUES ($1, $2, $3, $4, $5)
 RETURNING
-    id, project_id, secret_token_sha256, display_name, create_time, update_time
+    id, project_id, secret_token_sha256, display_name, create_time, update_time, authentication_only
 `
 
 type CreateBackendAPIKeyParams struct {
-	ID                uuid.UUID
-	ProjectID         uuid.UUID
-	DisplayName       string
-	SecretTokenSha256 []byte
+	ID                 uuid.UUID
+	ProjectID          uuid.UUID
+	DisplayName        string
+	SecretTokenSha256  []byte
+	AuthenticationOnly bool
 }
 
 func (q *Queries) CreateBackendAPIKey(ctx context.Context, arg CreateBackendAPIKeyParams) (BackendApiKey, error) {
@@ -458,6 +459,7 @@ func (q *Queries) CreateBackendAPIKey(ctx context.Context, arg CreateBackendAPIK
 		arg.ProjectID,
 		arg.DisplayName,
 		arg.SecretTokenSha256,
+		arg.AuthenticationOnly,
 	)
 	var i BackendApiKey
 	err := row.Scan(
@@ -467,6 +469,7 @@ func (q *Queries) CreateBackendAPIKey(ctx context.Context, arg CreateBackendAPIK
 		&i.DisplayName,
 		&i.CreateTime,
 		&i.UpdateTime,
+		&i.AuthenticationOnly,
 	)
 	return i, err
 }
@@ -1744,7 +1747,7 @@ func (q *Queries) GetActions(ctx context.Context, projectID uuid.UUID) ([]Action
 
 const getBackendAPIKey = `-- name: GetBackendAPIKey :one
 SELECT
-    id, project_id, secret_token_sha256, display_name, create_time, update_time
+    id, project_id, secret_token_sha256, display_name, create_time, update_time, authentication_only
 FROM
     backend_api_keys
 WHERE
@@ -1767,13 +1770,14 @@ func (q *Queries) GetBackendAPIKey(ctx context.Context, arg GetBackendAPIKeyPara
 		&i.DisplayName,
 		&i.CreateTime,
 		&i.UpdateTime,
+		&i.AuthenticationOnly,
 	)
 	return i, err
 }
 
 const getBackendAPIKeyBySecretTokenSHA256 = `-- name: GetBackendAPIKeyBySecretTokenSHA256 :one
 SELECT
-    id, project_id, secret_token_sha256, display_name, create_time, update_time
+    id, project_id, secret_token_sha256, display_name, create_time, update_time, authentication_only
 FROM
     backend_api_keys
 WHERE
@@ -1790,6 +1794,7 @@ func (q *Queries) GetBackendAPIKeyBySecretTokenSHA256(ctx context.Context, secre
 		&i.DisplayName,
 		&i.CreateTime,
 		&i.UpdateTime,
+		&i.AuthenticationOnly,
 	)
 	return i, err
 }
@@ -2750,7 +2755,7 @@ func (q *Queries) ListAllAPIKeyRoleAssignments(ctx context.Context, arg ListAllA
 
 const listBackendAPIKeys = `-- name: ListBackendAPIKeys :many
 SELECT
-    id, project_id, secret_token_sha256, display_name, create_time, update_time
+    id, project_id, secret_token_sha256, display_name, create_time, update_time, authentication_only
 FROM
     backend_api_keys
 WHERE
@@ -2783,6 +2788,7 @@ func (q *Queries) ListBackendAPIKeys(ctx context.Context, arg ListBackendAPIKeys
 			&i.DisplayName,
 			&i.CreateTime,
 			&i.UpdateTime,
+			&i.AuthenticationOnly,
 		); err != nil {
 			return nil, err
 		}
@@ -3522,7 +3528,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, project_id, secret_token_sha256, display_name, create_time, update_time
+    id, project_id, secret_token_sha256, display_name, create_time, update_time, authentication_only
 `
 
 func (q *Queries) RevokeBackendAPIKey(ctx context.Context, id uuid.UUID) (BackendApiKey, error) {
@@ -3535,6 +3541,7 @@ func (q *Queries) RevokeBackendAPIKey(ctx context.Context, id uuid.UUID) (Backen
 		&i.DisplayName,
 		&i.CreateTime,
 		&i.UpdateTime,
+		&i.AuthenticationOnly,
 	)
 	return i, err
 }
@@ -3607,20 +3614,22 @@ UPDATE
     backend_api_keys
 SET
     update_time = now(),
-    display_name = $1
+    display_name = $1,
+    authentication_only = $2
 WHERE
-    id = $2
+    id = $3
 RETURNING
-    id, project_id, secret_token_sha256, display_name, create_time, update_time
+    id, project_id, secret_token_sha256, display_name, create_time, update_time, authentication_only
 `
 
 type UpdateBackendAPIKeyParams struct {
-	DisplayName string
-	ID          uuid.UUID
+	DisplayName        string
+	AuthenticationOnly bool
+	ID                 uuid.UUID
 }
 
 func (q *Queries) UpdateBackendAPIKey(ctx context.Context, arg UpdateBackendAPIKeyParams) (BackendApiKey, error) {
-	row := q.db.QueryRow(ctx, updateBackendAPIKey, arg.DisplayName, arg.ID)
+	row := q.db.QueryRow(ctx, updateBackendAPIKey, arg.DisplayName, arg.AuthenticationOnly, arg.ID)
 	var i BackendApiKey
 	err := row.Scan(
 		&i.ID,
@@ -3629,6 +3638,7 @@ func (q *Queries) UpdateBackendAPIKey(ctx context.Context, arg UpdateBackendAPIK
 		&i.DisplayName,
 		&i.CreateTime,
 		&i.UpdateTime,
+		&i.AuthenticationOnly,
 	)
 	return i, err
 }

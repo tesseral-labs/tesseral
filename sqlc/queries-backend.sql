@@ -432,8 +432,8 @@ WHERE
     AND project_id = $2;
 
 -- name: CreateBackendAPIKey :one
-INSERT INTO backend_api_keys (id, project_id, display_name, secret_token_sha256)
-    VALUES ($1, $2, $3, $4)
+INSERT INTO backend_api_keys (id, project_id, display_name, secret_token_sha256, authentication_only)
+    VALUES ($1, $2, $3, $4, $5)
 RETURNING
     *;
 
@@ -442,9 +442,10 @@ UPDATE
     backend_api_keys
 SET
     update_time = now(),
-    display_name = $1
+    display_name = $1,
+    authentication_only = $2
 WHERE
-    id = $2
+    id = $3
 RETURNING
     *;
 

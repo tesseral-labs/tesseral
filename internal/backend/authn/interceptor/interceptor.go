@@ -20,6 +20,10 @@ var skipRPCs = []string{
 	"/tesseral.backend.v1.BackendService/ConsoleGetConfiguration",
 }
 
+var authenticationRPCs = []string{
+	"/tesseral.backend.v1.BackendService/Authenticate",
+}
+
 var errAuthorizationHeaderRequired = errors.New("authorization header is required")
 
 var tracer = otel.Tracer("github.com/tesseral-labs/tesseral/internal/backend/authn/interceptor")
@@ -57,6 +61,10 @@ func New(s *store.Store, consoleProjectID string) connect.UnaryInterceptorFunc {
 						return nil, connect.NewError(connect.CodeUnauthenticated, err)
 					}
 					return nil, fmt.Errorf("authenticate project api key: %w", err)
+				}
+
+				if res.AuthenticationOnly && !reqContainsAllowedRPC(req, authenticationRPCs) {
+					return nil, connect.NewError(connect.CodePermissionDenied, errors.New("permission denied"))
 				}
 
 				ctx = authn.NewBackendAPIKeyContext(ctx, &authn.BackendAPIKeyContextData{
@@ -139,4 +147,13 @@ func authenticateAccessToken(ctx context.Context, s *store.Store, consoleProject
 		SessionID: sessionID,
 		ProjectID: projectID,
 	}, nil
+}
+
+func reqContainsAllowedRPC(req connect.AnyRequest, allowedRPCs []string) bool {
+	for _, rpc := range allowedRPCs {
+		if rpc == req.Spec().Procedure {
+			return true
+		}
+	}
+	return false
 }

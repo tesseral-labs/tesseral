@@ -14,8 +14,9 @@ import (
 var ErrBadBackendAPIKey = fmt.Errorf("bad backend api key")
 
 type AuthenticateBackendAPIKeyResponse struct {
-	BackendAPIKeyID string
-	ProjectID       string
+	BackendAPIKeyID    string
+	ProjectID          string
+	AuthenticationOnly bool
 }
 
 func (s *Store) AuthenticateBackendAPIKey(ctx context.Context, bearerToken string) (*AuthenticateBackendAPIKeyResponse, error) {
@@ -41,7 +42,8 @@ func (s *Store) AuthenticateBackendAPIKey(ctx context.Context, bearerToken strin
 	}
 
 	return &AuthenticateBackendAPIKeyResponse{
-		BackendAPIKeyID: idformat.BackendAPIKey.Format(qBackendAPIKey.ID),
-		ProjectID:       idformat.Project.Format(qBackendAPIKey.ProjectID),
+		BackendAPIKeyID:    idformat.BackendAPIKey.Format(qBackendAPIKey.ID),
+		ProjectID:          idformat.Project.Format(qBackendAPIKey.ProjectID),
+		AuthenticationOnly: qBackendAPIKey.AuthenticationOnly,
 	}, nil
 }

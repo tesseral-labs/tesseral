@@ -104,13 +104,19 @@ func (s *Store) CreateBackendAPIKey(ctx context.Context, req *backendv1.CreateBa
 	}
 	defer rollback()
 
+	var authenticationOnly bool
+	if req.BackendApiKey.AuthenticationOnly != nil {
+		authenticationOnly = *req.BackendApiKey.AuthenticationOnly
+	}
+
 	token := uuid.New()
 	tokenSHA256 := sha256.Sum256(token[:])
 	qBackendAPIKey, err := q.CreateBackendAPIKey(ctx, queries.CreateBackendAPIKeyParams{
-		ID:                uuid.New(),
-		ProjectID:         authn.ProjectID(ctx),
-		DisplayName:       req.BackendApiKey.DisplayName,
-		SecretTokenSha256: tokenSHA256[:],
+		ID:                 uuid.New(),
+		ProjectID:          authn.ProjectID(ctx),
+		DisplayName:        req.BackendApiKey.DisplayName,
+		SecretTokenSha256:  tokenSHA256[:],
+		AuthenticationOnly: authenticationOnly,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create backend api key: %w", err)
@@ -160,6 +166,10 @@ func (s *Store) UpdateBackendAPIKey(ctx context.Context, req *backendv1.UpdateBa
 
 	if req.BackendApiKey.DisplayName != "" {
 		updates.DisplayName = req.BackendApiKey.DisplayName
+	}
+
+	if req.BackendApiKey.AuthenticationOnly != nil {
+		updates.AuthenticationOnly = *req.BackendApiKey.AuthenticationOnly
 	}
 
 	qUpdatedBackendAPIKey, err := q.UpdateBackendAPIKey(ctx, updates)
@@ -247,11 +257,12 @@ func (s *Store) RevokeBackendAPIKey(ctx context.Context, req *backendv1.RevokeBa
 
 func parseBackendAPIKey(qBackendAPIKey queries.BackendApiKey) *backendv1.BackendAPIKey {
 	return &backendv1.BackendAPIKey{
-		Id:          idformat.BackendAPIKey.Format(qBackendAPIKey.ID),
-		DisplayName: qBackendAPIKey.DisplayName,
-		CreateTime:  timestamppb.New(*qBackendAPIKey.CreateTime),
-		UpdateTime:  timestamppb.New(*qBackendAPIKey.UpdateTime),
-		SecretToken: "", // intentionally left blank
-		Revoked:     qBackendAPIKey.SecretTokenSha256 == nil,
+		Id:                 idformat.BackendAPIKey.Format(qBackendAPIKey.ID),
+		DisplayName:        qBackendAPIKey.DisplayName,
+		CreateTime:         timestamppb.New(*qBackendAPIKey.CreateTime),
+		UpdateTime:         timestamppb.New(*qBackendAPIKey.UpdateTime),
+		SecretToken:        "", // intentionally left blank
+		Revoked:            qBackendAPIKey.SecretTokenSha256 == nil,
+		AuthenticationOnly: refOrNil(qBackendAPIKey.AuthenticationOnly),
 	}
 }

@@ -241,12 +241,13 @@ type AuditLogEvent struct {
 }
 
 type BackendApiKey struct {
-	ID                uuid.UUID
-	ProjectID         uuid.UUID
-	SecretTokenSha256 []byte
-	DisplayName       string
-	CreateTime        *time.Time
-	UpdateTime        *time.Time
+	ID                 uuid.UUID
+	ProjectID          uuid.UUID
+	SecretTokenSha256  []byte
+	DisplayName        string
+	CreateTime         *time.Time
+	UpdateTime         *time.Time
+	AuthenticationOnly bool
 }
 
 type IntermediateSession struct {

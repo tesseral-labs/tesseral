@@ -40,6 +40,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import {
   deleteBackendAPIKey,
   getBackendAPIKey,
@@ -48,6 +49,7 @@ import {
 
 const schema = z.object({
   displayName: z.string().min(1, "Display name is required"),
+  authenticationOnly: z.boolean(),
 });
 
 export function BackendApiKeyPage() {
@@ -65,6 +67,8 @@ export function BackendApiKeyPage() {
     resolver: zodResolver(schema),
     defaultValues: {
       displayName: getBackendApiKeyResponse?.backendApiKey?.displayName || "",
+      authenticationOnly:
+        getBackendApiKeyResponse?.backendApiKey?.authenticationOnly || false,
     },
   });
 
@@ -169,6 +173,26 @@ export function BackendApiKeyPage() {
                         className="max-w-2xl"
                         placeholder="Enter display name"
                         {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="authenticationOnly"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Authentication Only</FormLabel>
+                    <FormDescription>
+                      If enabled, this API key can only be used for
+                      authentication.
+                    </FormDescription>
+                    <FormMessage />
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
                       />
                     </FormControl>
                   </FormItem>
