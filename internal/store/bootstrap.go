@@ -57,7 +57,7 @@ func (s *Store) CreateConsoleProject(ctx context.Context, req *CreateConsoleProj
 	consoleProjectID := uuid.New()
 	consoleOrganizationID := uuid.New()
 
-	if _, err := q.CreateConsoleProject(ctx, queries.CreateConsoleProjectParams{
+	if _, err := q.CreateProject(ctx, queries.CreateProjectParams{
 		ID:                  consoleProjectID,
 		DisplayName:         "Tesseral Console",
 		RedirectUri:         fmt.Sprintf("https://%s", req.ConsoleDomain),

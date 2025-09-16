@@ -57,6 +57,7 @@ type Store struct {
 	defaultGitHubOAuthClientID        string
 	defaultGitHubOAuthClientSecret    string
 	defaultGitHubOAuthRedirectURI     string
+	projectCreationFromConsoleEnabled bool
 }
 
 type NewStoreParams struct {
@@ -90,6 +91,7 @@ type NewStoreParams struct {
 	DefaultGitHubOAuthClientID        string
 	DefaultGitHubOAuthClientSecret    string
 	DefaultGitHubOAuthRedirectURI     string
+	ProjectCreationFromConsoleEnabled bool
 }
 
 func New(p NewStoreParams) *Store {
@@ -129,6 +131,7 @@ func New(p NewStoreParams) *Store {
 		defaultGitHubOAuthClientID:        p.DefaultGitHubOAuthClientID,
 		defaultGitHubOAuthClientSecret:    p.DefaultGitHubOAuthClientSecret,
 		defaultGitHubOAuthRedirectURI:     p.DefaultGitHubOAuthRedirectURI,
+		projectCreationFromConsoleEnabled: p.ProjectCreationFromConsoleEnabled,
 	}
 
 	return store
